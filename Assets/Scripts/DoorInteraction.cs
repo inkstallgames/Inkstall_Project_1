@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class DoorInteraction : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private Animator animator;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip doorOpenSound;
+    [SerializeField] private AudioClip doorCloseSound;
 
-    // Update is called once per frame
-    void Update()
+    private bool isOpen = false;
+
+    void OnTriggerEnter(Collider other)
     {
-        
+        if (other.CompareTag("Player"))
+        {
+            if (isOpen)
+            {
+                animator.Play("DoorClose"); // Replace with actual animation name
+                audioSource.PlayOneShot(doorCloseSound);
+                isOpen = false;
+            }
+            else
+            {
+                animator.Play("DoorOpen"); // Replace with actual animation name
+                audioSource.PlayOneShot(doorOpenSound);
+                isOpen = true;
+            }
+        }
     }
 }

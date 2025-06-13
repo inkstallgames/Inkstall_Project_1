@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerSpawner : MonoBehaviour
-{    [Header("Assign the Player Prefab")]
-    public GameObject playerPrefab;
+{
+    [Header("Assign the Player Prefab")]
+    [SerializeField] private GameObject playerPrefab;
 
-    [Header("List of Spawn Points")]
-    public Transform[] spawnPoints;
+    [SerializeField] private Transform spawnPointsParent;
 
+    private Transform[] spawnPoints;
+
+    void Awake()
+    {
+        spawnPoints = new Transform[spawnPointsParent.childCount];
+        for (int i = 0; i < spawnPointsParent.childCount; i++)
+        {
+            spawnPoints[i] = spawnPointsParent.GetChild(i);
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -30,5 +40,5 @@ public class PlayerSpawner : MonoBehaviour
         // Instantiate player at the chosen spawn point
         Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
     }
-    
+
 }

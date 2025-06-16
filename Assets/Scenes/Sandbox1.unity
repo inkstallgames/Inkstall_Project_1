@@ -15009,7 +15009,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalTime: 30
+  totalTime: 180
   timerText: {fileID: 1194441157}
   timerRunning: 1
   tickSound: {fileID: 8300000, guid: bbb7c848b236a994a835f80c489027d3, type: 3}
@@ -18789,8 +18789,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

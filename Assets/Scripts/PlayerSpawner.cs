@@ -20,7 +20,6 @@ public class PlayerSpawner : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         SpawnPlayer();
@@ -38,7 +37,16 @@ public class PlayerSpawner : MonoBehaviour
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
         // Instantiate player at the chosen spawn point
-        Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
-    }
+        GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
 
+        // ✅ Assign spawned player to GameManager
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.playerController = player;
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ GameManager.Instance is null! PlayerController not set.");
+        }
+    }
 }

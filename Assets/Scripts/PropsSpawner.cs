@@ -1,18 +1,17 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PropsSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject[] propPrefabs; // Total 100 props
-    [SerializeField] private Transform spawnParent; // Parent of all spawn points
-
-    private Transform[] spawnPoints;  // Automatically populated
+    [SerializeField] private GameObject[] propPrefabs; // All available prop prefabs
+    [SerializeField] private Transform spawnParent;    // Parent containing spawn points
     public int numberOfPropsToSpawn = 5;
+
+    private Transform[] spawnPoints;
 
     void Awake()
     {
-        // Collect all child transforms under the parent
+        // Collect all child transforms under the parent as spawn points
         List<Transform> points = new List<Transform>();
         foreach (Transform child in spawnParent)
         {
@@ -28,34 +27,73 @@ public class PropsSpawner : MonoBehaviour
 
     void SpawnRandomProps()
     {
-        // Clone arrays to lists for shuffling
+        if (propPrefabs.Length == 0 || spawnPoints.Length == 0)
+        {
+            Debug.LogError("❌ No prop prefabs or spawn points assigned!");
+            return;
+        }
+
+        if (numberOfPropsToSpawn > propPrefabs.Length)
+        {
+            Debug.LogWarning("⚠️ Not enough unique props to spawn. Reducing count.");
+            numberOfPropsToSpawn = propPrefabs.Length;
+        }
+
+        if (numberOfPropsToSpawn > spawnPoints.Length)
+        {
+            Debug.LogWarning("⚠️ Not enough spawn points. Reducing count.");
+            numberOfPropsToSpawn = spawnPoints.Length;
+        }
+
         List<GameObject> shuffledProps = new List<GameObject>(propPrefabs);
         List<Transform> shuffledSpawns = new List<Transform>(spawnPoints);
 
-        // Shuffle props
-        for (int i = 0; i < shuffledProps.Count; i++)
-        {
-            int rnd = Random.Range(i, shuffledProps.Count);
-            var temp = shuffledProps[i];
-            shuffledProps[i] = shuffledProps[rnd];
-            shuffledProps[rnd] = temp;
-        }
+        // Shuffle props and spawns
+        Shuffle(shuffledProps);
+        Shuffle(shuffledSpawns);
 
-        // Shuffle spawn points
-        for (int i = 0; i < shuffledSpawns.Count; i++)
-        {
-            int rnd = Random.Range(i, shuffledSpawns.Count);
-            var temp = shuffledSpawns[i];
-            shuffledSpawns[i] = shuffledSpawns[rnd];
-            shuffledSpawns[rnd] = temp;
-        }
-
-        // Spawn unique props at unique spawn points
         for (int i = 0; i < numberOfPropsToSpawn; i++)
         {
             GameObject propToSpawn = shuffledProps[i];
             Transform spawnPoint = shuffledSpawns[i];
-            Instantiate(propToSpawn, spawnPoint.position, spawnPoint.rotation);
+
+            GameObject spawnedProp = Instantiate(propToSpawn, spawnPoint.position, spawnPoint.rotation);
+
+            // Add collider if missing
+            if (!spawnedProp.TryGetComponent<Collider>(out _))
+            {
+                spawnedProp.AddComponent<BoxCollider>();
+            }
+
+            // Add CollectibleProp script if missing
+            if (!spawnedProp.TryGetComponent<CollectibleProp>(out _))
+            {
+                spawnedProp.AddComponent<CollectibleProp>();
+            }
+
+            // Optional tag
+            spawnedProp.tag = "Collectible";
+
+            // ✅ Register with GameManager
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.RegisterCollectible();
+            }
+            else
+            {
+                Debug.LogWarning("❌ GameManager instance not found during prop registration!");
+            }
+        }
+    }
+
+    void Shuffle<T>(List<T> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            int rnd = Random.Range(i, list.Count);
+            T temp = list[i];
+            list[i] = list[rnd];
+            list[rnd] = temp;
         }
     }
 }

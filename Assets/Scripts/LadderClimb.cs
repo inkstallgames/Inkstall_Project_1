@@ -2,45 +2,40 @@ using UnityEngine;
 
 public class LadderClimb : MonoBehaviour
 {
-    [SerializeField] private float climbSpeed = 3f;
-    [SerializeField] private string ladderTag = "Ladder";
-
-    private CharacterController controller;
+    public float climbSpeed = 3f;
     private bool isClimbing = false;
-    private bool isOnLadder = false;
+    private Rigidbody rb;
 
-    private void Start()
+    void Start()
     {
-        controller = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
     }
 
-    private void Update()
+    void Update()
     {
         if (isClimbing)
         {
             float verticalInput = Input.GetAxis("Vertical");
-            Vector3 climbDirection = Vector3.up * verticalInput;
-
-            controller.Move(climbDirection * climbSpeed * Time.deltaTime);
+            rb.velocity = new Vector3(rb.velocity.x, verticalInput * climbSpeed, rb.velocity.z);
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(ladderTag))
+        if (other.CompareTag("Ladder"))
         {
-            isOnLadder = true;
-            controller.enabled = false; // disable CC to allow manual climbing
             isClimbing = true;
-            controller.enabled = true;
+            rb.useGravity = false;
+            rb.velocity = Vector3.zero;
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag(ladderTag))
+        if (other.CompareTag("Ladder"))
         {
             isClimbing = false;
+            rb.useGravity = true;
         }
     }
 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 151095085702202133}
   - component: {fileID: 3870588497892560048}
   - component: {fileID: 1320646448463329402}
-  - component: {fileID: 3995807456110628285}
+  - component: {fileID: -9117713454374557390}
   m_Layer: 0
   m_Name: Bell pepper green slice
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3995807456110628285
-MeshCollider:
+--- !u!65 &-9117713454374557390
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +102,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4500512173872332228, guid: 222601f744058524a9b045c51c2d24ff, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.35426676, y: 0.016932143, z: 0.33479005}
+  m_Center: {x: -0.0033338442, y: 0.008465479, z: 0.0072665513}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4083468583896867215}
   - component: {fileID: 1082199404824030762}
   - component: {fileID: 2945435340153559776}
-  - component: {fileID: 8426843246514557560}
+  - component: {fileID: -22072528668104058}
   m_Layer: 0
   m_Name: Swirl lollipop C
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8426843246514557560
-MeshCollider:
+--- !u!65 &-22072528668104058
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +102,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 350214282994534250, guid: bf55125ab89421b4ba245dfe3a5138c8, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.20412141, y: 0.50137305, z: 0.023039246}
+  m_Center: {x: 0.0036714114, y: 0.2506866, z: -0.000000007450581}

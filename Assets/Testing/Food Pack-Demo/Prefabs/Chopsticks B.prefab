@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5471933606466574461}
   - component: {fileID: 8962142414353029080}
   - component: {fileID: 6609905754032415506}
-  - component: {fileID: -198389069493672497}
+  - component: {fileID: -1971911652126074136}
   m_Layer: 0
   m_Name: Chopsticks B
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &-198389069493672497
-MeshCollider:
+--- !u!65 &-1971911652126074136
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +102,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 7230657514613870278, guid: 8a638df0cb613a1468a3e1cbd713bd2d, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.6910446, y: 0.016963579, z: 0.056740165}
+  m_Center: {x: -0.000027060509, y: 0.008482352, z: -0.00000026542693}

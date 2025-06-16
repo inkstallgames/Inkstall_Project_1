@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
     {
         if (playerController != null)
         {
-            FirstPersonController controller = playerController.GetComponent<FirstPersonController>();
+            FirstPersonController controller = playerController.GetComponentInChildren<FirstPersonController>();
             if (controller != null)
             {
                 controller.enabled = false;

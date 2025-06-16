@@ -3,15 +3,18 @@ using UnityEngine;
 
 public class PropsSpawner : MonoBehaviour
 {
+    [Header("Prop Settings")]
     [SerializeField] private GameObject[] propPrefabs; // All available prop prefabs
-    [SerializeField] private Transform spawnParent;    // Parent containing spawn points
     public int numberOfPropsToSpawn = 5;
+    public float minDistanceBetweenProps = 5f; // ✅ Minimum allowed distance between props
+
+    [Header("Spawn Point Settings")]
+    [SerializeField] private Transform spawnParent;    // Parent containing spawn points
 
     private Transform[] spawnPoints;
 
     void Awake()
     {
-        // Collect all child transforms under the parent as spawn points
         List<Transform> points = new List<Transform>();
         foreach (Transform child in spawnParent)
         {
@@ -35,7 +38,7 @@ public class PropsSpawner : MonoBehaviour
 
         if (numberOfPropsToSpawn > propPrefabs.Length)
         {
-            Debug.LogWarning("⚠️ Not enough unique props to spawn. Reducing count.");
+            Debug.LogWarning("⚠️ Not enough unique props. Reducing count.");
             numberOfPropsToSpawn = propPrefabs.Length;
         }
 
@@ -46,43 +49,60 @@ public class PropsSpawner : MonoBehaviour
         }
 
         List<GameObject> shuffledProps = new List<GameObject>(propPrefabs);
-        List<Transform> shuffledSpawns = new List<Transform>(spawnPoints);
-
-        // Shuffle props and spawns
         Shuffle(shuffledProps);
-        Shuffle(shuffledSpawns);
 
-        for (int i = 0; i < numberOfPropsToSpawn; i++)
+        List<Transform> usedSpawns = new List<Transform>();
+        int spawnedCount = 0;
+        int attempts = 0;
+        int maxAttempts = 100; // avoid infinite loop
+
+        while (spawnedCount < numberOfPropsToSpawn && attempts < maxAttempts)
         {
-            GameObject propToSpawn = shuffledProps[i];
-            Transform spawnPoint = shuffledSpawns[i];
+            Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
-            GameObject spawnedProp = Instantiate(propToSpawn, spawnPoint.position, spawnPoint.rotation);
-
-            // Add collider if missing
-            if (!spawnedProp.TryGetComponent<Collider>(out _))
+            // Check distance from already used spawn points
+            bool tooClose = false;
+            foreach (Transform used in usedSpawns)
             {
-                spawnedProp.AddComponent<BoxCollider>();
+                if (Vector3.Distance(spawnPoint.position, used.position) < minDistanceBetweenProps)
+                {
+                    tooClose = true;
+                    break;
+                }
             }
 
-            // Add CollectibleProp script if missing
-            if (!spawnedProp.TryGetComponent<CollectibleProp>(out _))
+            if (!tooClose)
             {
-                spawnedProp.AddComponent<CollectibleProp>();
+                GameObject propToSpawn = shuffledProps[spawnedCount];
+                GameObject spawnedProp = Instantiate(propToSpawn, spawnPoint.position, spawnPoint.rotation);
+
+                // Add collider if missing
+                if (!spawnedProp.TryGetComponent<Collider>(out _))
+                    spawnedProp.AddComponent<BoxCollider>();
+
+                // Add CollectibleProp script if missing
+                if (!spawnedProp.TryGetComponent<CollectibleProp>(out _))
+                    spawnedProp.AddComponent<CollectibleProp>();
+
+                // Optional tag
+                spawnedProp.tag = "Collectible";
+
+                // Register with GameManager
+                if (GameManager.Instance != null)
+                    GameManager.Instance.RegisterCollectible();
+                else
+                    Debug.LogWarning("❌ GameManager not found during prop registration!");
+
+                usedSpawns.Add(spawnPoint);
+                spawnedCount++;
             }
 
-            // Optional tag
-            spawnedProp.tag = "Collectible";
+            attempts++;
+        }
 
-            // ✅ Register with GameManager
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.RegisterCollectible();
-            }
-            else
-            {
-                Debug.LogWarning("❌ GameManager instance not found during prop registration!");
-            }
+        if (spawnedCount < numberOfPropsToSpawn)
+        {
+            Debug.LogWarning($"⚠️ Only {spawnedCount}/{numberOfPropsToSpawn} props spawned due to spacing limits.");
         }
     }
 

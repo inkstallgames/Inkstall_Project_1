@@ -15,6 +15,11 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverUI;      
     public GameObject playerController; // Assigned at runtime when player is spawned
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip winSound;
+    [SerializeField] private AudioClip gameOverSound;
+    [SerializeField] private float soundVolume = 1f;
+
     void Awake()
     {
         if (Instance == null)
@@ -55,6 +60,10 @@ public class GameManager : MonoBehaviour
         if (gameTimer != null) gameTimer.PauseTimer();
         if (winUI != null) winUI.SetActive(true);
 
+        // 🔊 Play win sound
+        if (winSound != null)
+            AudioSource.PlayClipAtPoint(winSound, Camera.main.transform.position, soundVolume);
+
         DisablePlayerMovement();
     }
 
@@ -67,7 +76,16 @@ public class GameManager : MonoBehaviour
         if (gameTimer != null) gameTimer.PauseTimer();
         if (gameOverUI != null) gameOverUI.SetActive(true);
 
+        // 🔊 Play game over sound
+        if (gameOverSound != null)
+            AudioSource.PlayClipAtPoint(gameOverSound, Camera.main.transform.position, soundVolume);
+
         DisablePlayerMovement();
+    }
+
+    public int PropsLeft()
+    {
+        return totalPropsToCollect - propsCollected;
     }
 
     private void DisablePlayerMovement()

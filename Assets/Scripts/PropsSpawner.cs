@@ -4,12 +4,16 @@ using UnityEngine;
 public class PropsSpawner : MonoBehaviour
 {
     [Header("Prop Settings")]
-    [SerializeField] private GameObject[] propPrefabs; // All available prop prefabs
+    [SerializeField] private GameObject[] propPrefabs;
     public int numberOfPropsToSpawn = 5;
-    public float minDistanceBetweenProps = 5f; // ✅ Minimum allowed distance between props
+    public float minDistanceBetweenProps = 5f;
 
     [Header("Spawn Point Settings")]
-    [SerializeField] private Transform spawnParent;    // Parent containing spawn points
+    [SerializeField] Transform spawnParent;
+
+    [Header("Audio Settings")]
+    [SerializeField] AudioClip pickupSound;
+    [SerializeField] float pickupVolume = 1f;
 
     private Transform[] spawnPoints;
 
@@ -42,67 +46,61 @@ public class PropsSpawner : MonoBehaviour
             numberOfPropsToSpawn = propPrefabs.Length;
         }
 
-        if (numberOfPropsToSpawn > spawnPoints.Length)
-        {
-            Debug.LogWarning("⚠️ Not enough spawn points. Reducing count.");
-            numberOfPropsToSpawn = spawnPoints.Length;
-        }
-
         List<GameObject> shuffledProps = new List<GameObject>(propPrefabs);
         Shuffle(shuffledProps);
 
-        List<Transform> usedSpawns = new List<Transform>();
-        int spawnedCount = 0;
-        int attempts = 0;
-        int maxAttempts = 100; // avoid infinite loop
+        List<Transform> shuffledSpawnPoints = new List<Transform>(spawnPoints);
+        Shuffle(shuffledSpawnPoints);
 
-        while (spawnedCount < numberOfPropsToSpawn && attempts < maxAttempts)
+        List<Transform> selectedSpawns = new List<Transform>();
+
+        foreach (Transform candidate in shuffledSpawnPoints)
         {
-            Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-
-            // Check distance from already used spawn points
-            bool tooClose = false;
-            foreach (Transform used in usedSpawns)
+            bool valid = true;
+            foreach (Transform placed in selectedSpawns)
             {
-                if (Vector3.Distance(spawnPoint.position, used.position) < minDistanceBetweenProps)
+                if (Vector3.Distance(candidate.position, placed.position) < minDistanceBetweenProps)
                 {
-                    tooClose = true;
+                    valid = false;
                     break;
                 }
             }
 
-            if (!tooClose)
+            if (valid)
             {
-                GameObject propToSpawn = shuffledProps[spawnedCount];
-                GameObject spawnedProp = Instantiate(propToSpawn, spawnPoint.position, spawnPoint.rotation);
-
-                // Add collider if missing
-                if (!spawnedProp.TryGetComponent<Collider>(out _))
-                    spawnedProp.AddComponent<BoxCollider>();
-
-                // Add CollectibleProp script if missing
-                if (!spawnedProp.TryGetComponent<CollectibleProp>(out _))
-                    spawnedProp.AddComponent<CollectibleProp>();
-
-                // Optional tag
-                spawnedProp.tag = "Collectible";
-
-                // Register with GameManager
-                if (GameManager.Instance != null)
-                    GameManager.Instance.RegisterCollectible();
-                else
-                    Debug.LogWarning("❌ GameManager not found during prop registration!");
-
-                usedSpawns.Add(spawnPoint);
-                spawnedCount++;
+                selectedSpawns.Add(candidate);
+                if (selectedSpawns.Count == numberOfPropsToSpawn)
+                    break;
             }
-
-            attempts++;
         }
 
-        if (spawnedCount < numberOfPropsToSpawn)
+        if (selectedSpawns.Count < numberOfPropsToSpawn)
         {
-            Debug.LogWarning($"⚠️ Only {spawnedCount}/{numberOfPropsToSpawn} props spawned due to spacing limits.");
+            Debug.LogWarning($"⚠️ Only {selectedSpawns.Count}/{numberOfPropsToSpawn} props could be placed due to spacing.");
+        }
+
+        for (int i = 0; i < selectedSpawns.Count; i++)
+        {
+            GameObject propToSpawn = shuffledProps[i];
+            Transform spawnPoint = selectedSpawns[i];
+
+            GameObject spawnedProp = Instantiate(propToSpawn, spawnPoint.position, spawnPoint.rotation);
+
+            if (!spawnedProp.TryGetComponent<Collider>(out _))
+                spawnedProp.AddComponent<BoxCollider>();
+
+            CollectibleProp cp = spawnedProp.GetComponent<CollectibleProp>();
+            if (cp == null)
+                cp = spawnedProp.AddComponent<CollectibleProp>();
+
+            cp.SetPickupSound(pickupSound, pickupVolume); // 🔊 Assign sound
+
+            spawnedProp.tag = "Collectible";
+
+            if (GameManager.Instance != null)
+                GameManager.Instance.RegisterCollectible();
+            else
+                Debug.LogWarning("❌ GameManager not found during prop registration!");
         }
     }
 

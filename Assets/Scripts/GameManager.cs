@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject winUI;           
     public GameObject gameOverUI;      
     public GameObject playerController; // Assigned at runtime when player is spawned
+    public GameObject crosshair;        // Reference to crosshair UI
 
     [Header("Audio")]
     [SerializeField] private AudioClip winSound;
@@ -43,7 +44,7 @@ public class GameManager : MonoBehaviour
     public void CollectProp()
     {
         propsCollected++;
-        Debug.Log($"📦 Collected {propsCollected}/{totalPropsToCollect}");
+        Debug.Log($"Collected {propsCollected}/{totalPropsToCollect}");
 
         if (!gameEnded && propsCollected >= totalPropsToCollect)
         {
@@ -56,11 +57,12 @@ public class GameManager : MonoBehaviour
         if (gameEnded) return;
         gameEnded = true;
 
-        Debug.Log("🎉 Game Win! All props collected.");
+        Debug.Log("Game Win! All props collected.");
         if (gameTimer != null) gameTimer.PauseTimer();
         if (winUI != null) winUI.SetActive(true);
+        if (crosshair != null) crosshair.SetActive(false); // Hide crosshair
 
-        // 🔊 Play win sound
+        // Play win sound
         if (winSound != null)
             AudioSource.PlayClipAtPoint(winSound, Camera.main.transform.position, soundVolume);
 
@@ -72,11 +74,12 @@ public class GameManager : MonoBehaviour
         if (gameEnded) return;
         gameEnded = true;
 
-        Debug.Log("🛑 Game Over! Time's up.");
+        Debug.Log("Game Over! Time's up.");
         if (gameTimer != null) gameTimer.PauseTimer();
         if (gameOverUI != null) gameOverUI.SetActive(true);
+        if (crosshair != null) crosshair.SetActive(false); // Hide crosshair
 
-        // 🔊 Play game over sound
+        // Play game over sound
         if (gameOverSound != null)
             AudioSource.PlayClipAtPoint(gameOverSound, Camera.main.transform.position, soundVolume);
 
@@ -100,7 +103,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("⚠️ PlayerController not assigned in GameManager.");
+            Debug.LogWarning("PlayerController not assigned in GameManager.");
         }
     }
 }

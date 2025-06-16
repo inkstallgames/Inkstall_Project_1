@@ -75,7 +75,7 @@ public class GameTimer : MonoBehaviour
 
     void EndGame()
     {
-        Debug.Log("🛑 Time’s Up! Game Over.");
+        Debug.Log("Time’s Up! Game Over.");
 
         if (timerText != null)
             timerText.gameObject.SetActive(false);

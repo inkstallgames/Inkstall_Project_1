@@ -17,9 +17,9 @@ public class CollectibleProp : MonoBehaviour
         if (isCollected) return;
         isCollected = true;
 
-        Debug.Log("✅ Collected: " + gameObject.name);
+        Debug.Log("Collected: " + gameObject.name);
 
-        // ✅ Skip pickup sound if this is the last prop
+        // Skip pickup sound if this is the last prop
         if (GameManager.Instance != null)
         {
             if (GameManager.Instance.PropsLeft() > 1 && pickupSound != null)
@@ -31,7 +31,7 @@ public class CollectibleProp : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("⚠️ GameManager instance not found when collecting prop.");
+            Debug.LogWarning("GameManager instance not found when collecting prop.");
         }
 
         Destroy(gameObject);

@@ -29,7 +29,6 @@ public class PropsSpawner : MonoBehaviour
 
     void Start()
     {
-        // fakePropCount = Mathf.Clamp(fakePropCount, 0, totalPropsToSpawn); 
         SpawnAllProps();
     }
 

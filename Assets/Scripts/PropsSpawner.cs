@@ -69,9 +69,6 @@ public class PropsSpawner : MonoBehaviour
             if (fakeProp.GetComponent<CollectibleProp>() == null)
                 fakeProp.AddComponent<CollectibleProp>();
 
-            fakeProp.name += " (FAKE)"; // Dev-friendly name
-            Debug.Log($"🟡 Marked as FAKE: {fakeProp.name}");
-
             GameManager.Instance?.RegisterCollectible();
         }
 

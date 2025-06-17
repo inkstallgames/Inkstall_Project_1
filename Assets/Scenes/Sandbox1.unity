@@ -15199,7 +15199,7 @@ GameObject:
   - component: {fileID: 977753792}
   - component: {fileID: 977753791}
   m_Layer: 5
-  m_Name: GameWin
+  m_Name: GameWin_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18717,7 +18717,7 @@ GameObject:
   - component: {fileID: 1194441158}
   - component: {fileID: 1194441157}
   m_Layer: 5
-  m_Name: TimerText
+  m_Name: Timer_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27763,7 +27763,7 @@ GameObject:
   - component: {fileID: 1774634695}
   - component: {fileID: 1774634694}
   m_Layer: 5
-  m_Name: GameOver
+  m_Name: GameOver_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30897,7 +30897,7 @@ GameObject:
   - component: {fileID: 1981799376}
   - component: {fileID: 1981799375}
   m_Layer: 5
-  m_Name: Crosshair
+  m_Name: Crosshair_IMG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

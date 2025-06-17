@@ -4,13 +4,13 @@ using UnityEngine;
 public class PropsSpawner : MonoBehaviour
 {
     [Header("Prop Settings")]
-    [SerializeField] private GameObject[] propPrefabs;
+    [SerializeField] private GameObject[] propsPrefabs;
     [Min(1)] public int totalPropsToSpawn = 15;
     [Min(1)] public int fakePropCount = 5;
     public float minDistanceBetweenProps = 3f;
     public bool preventOverlap = true;
 
-    [Header("Props Spawn Points")]
+    [Header("Assign Spawn Points Parent")]
     [SerializeField] private Transform spawnPointsParent;
 
     private Transform[] spawnPoints;
@@ -32,7 +32,7 @@ public class PropsSpawner : MonoBehaviour
 
     void SpawnAllProps()
     {
-        if (propPrefabs.Length == 0 || spawnPoints.Length == 0)
+        if (propsPrefabs.Length == 0 || spawnPoints.Length == 0)
         {
             Debug.LogError("❌ No prop prefabs or spawn points assigned!");
             return;
@@ -49,7 +49,7 @@ public class PropsSpawner : MonoBehaviour
             Vector3 spawnPos = shuffledSpawns[i].position;
             if (preventOverlap && IsTooClose(spawnPos)) continue;
 
-            GameObject prefab = propPrefabs[Random.Range(0, propPrefabs.Length)];
+            GameObject prefab = propsPrefabs[Random.Range(0, propsPrefabs.Length)];
             GameObject prop = Instantiate(prefab, spawnPos, shuffledSpawns[i].rotation);
 
             var identity = prop.GetComponent<PropIdentity>() ?? prop.AddComponent<PropIdentity>();

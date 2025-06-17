@@ -7,6 +7,7 @@ public class PlayerSpawner : MonoBehaviour
     [Header("Assign the Player Prefab")]
     [SerializeField] private GameObject playerPrefab;
 
+    [Header("Assign Spawn Points Parent")]
     [SerializeField] private Transform spawnPointsParent;
 
     private Transform[] spawnPoints;
@@ -29,7 +30,8 @@ public class PlayerSpawner : MonoBehaviour
     {
         if (playerPrefab == null || spawnPoints.Length == 0)
         {
-            Debug.LogWarning("Missing player prefab or spawn points!");
+            // Error Handling
+            Debug.LogWarning("Missing player prefab or player spawn points!");
             return;
         }
 

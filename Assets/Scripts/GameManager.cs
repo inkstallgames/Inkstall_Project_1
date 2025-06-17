@@ -14,8 +14,9 @@ public class GameManager : MonoBehaviour
     public GameTimer gameTimer;        
     public GameObject winUI;           
     public GameObject gameOverUI;      
-    public GameObject playerController; // Assigned at runtime when player is spawned
     public GameObject crosshair;        // Reference to crosshair UI
+    [Tooltip("Assigned automatically at runtime when player is spawned")]
+    public GameObject playerController; // Assigned at runtime when player is spawned
 
     [Header("Audio")]
     [SerializeField] private AudioClip winSound;

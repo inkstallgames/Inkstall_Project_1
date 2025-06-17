@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerSpawner : MonoBehaviour
@@ -48,7 +46,7 @@ public class PlayerSpawner : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("⚠️ GameManager.Instance is null! PlayerController not set.");
+            Debug.LogWarning("GameManager.Instance is null! PlayerController not set.");
         }
     }
 }

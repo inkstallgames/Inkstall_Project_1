@@ -3,18 +3,21 @@ using UnityEngine;
 
 public class PropsSpawner : MonoBehaviour
 {
-    [Header("Prop Settings")]
+    [Header("Assign all props prefabs")]
     [SerializeField] private GameObject[] propsPrefabs;
+
+    [Header("Assign Spawn Points Parent")]
+    [SerializeField] private Transform spawnPointsParent;
+
+    [Header("Prop Settings")]
     [Min(1)] public int totalPropsToSpawn = 15;
     [Min(1)] public int fakePropCount = 5;
     public float minDistanceBetweenProps = 3f;
     public bool preventOverlap = true;
 
-    [Header("Assign Spawn Points Parent")]
-    [SerializeField] private Transform spawnPointsParent;
-
     private Transform[] spawnPoints;
     private List<GameObject> spawnedProps = new List<GameObject>();
+
 
     void Awake()
     {
@@ -26,7 +29,7 @@ public class PropsSpawner : MonoBehaviour
 
     void Start()
     {
-        fakePropCount = Mathf.Clamp(fakePropCount, 0, totalPropsToSpawn);
+        // fakePropCount = Mathf.Clamp(fakePropCount, 0, totalPropsToSpawn); 
         SpawnAllProps();
     }
 

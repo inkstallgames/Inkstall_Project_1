@@ -554,7 +554,7 @@ PrefabInstance:
     - target: {fileID: 3943683173585774888, guid: 3a62d6ac10141ce4297fac8c809c8a4b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.586
+      value: -0.84
       objectReference: {fileID: 0}
     - target: {fileID: 5705581856693490608, guid: 3a62d6ac10141ce4297fac8c809c8a4b,
         type: 3}
@@ -14958,8 +14958,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 962220123}
-  - component: {fileID: 962220124}
   - component: {fileID: 962220125}
+  - component: {fileID: 962220124}
   - component: {fileID: 962220126}
   - component: {fileID: 962220127}
   m_Layer: 0

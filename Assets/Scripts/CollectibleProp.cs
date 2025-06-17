@@ -4,8 +4,12 @@ using UnityEngine;
 public class CollectibleProp : MonoBehaviour
 {
     private bool isCollected = false;
-    private AudioClip pickupSound;
-    private float pickupVolume = 1f;
+
+    [Header("Sound Settings")]
+    [SerializeField] private AudioClip fakePickupSound;
+    [SerializeField] private AudioClip realInteractSound;
+    [Range(0f, 1f)] [SerializeField] private float soundVolume = 1f;
+
     private PropIdentity identity;
 
     void Awake()
@@ -18,40 +22,37 @@ public class CollectibleProp : MonoBehaviour
         }
     }
 
-    public void SetPickupSound(AudioClip clip, float volume)
-    {
-        pickupSound = clip;
-        pickupVolume = volume;
-    }
-
     public void Interact()
     {
-        // Only fake props can be collected
-        if (!identity.isFake)
+        if (identity == null) return;
+
+        if (identity.isFake)
         {
-            Debug.LogWarning($"❌ Tried to collect real prop: {gameObject.name}");
-            return;
-        }
+            if (isCollected) return;
+            isCollected = true;
 
-        if (isCollected) return;
-        isCollected = true;
+            Debug.Log($"✅ Collected fake prop: {gameObject.name}");
 
-        Debug.Log($"✅ Collected fake prop: {gameObject.name}");
+            if (fakePickupSound != null)
+                AudioSource.PlayClipAtPoint(fakePickupSound, transform.position, soundVolume);
 
-        if (GameManager.Instance != null)
-        {
-            if (GameManager.Instance.PropsLeft() > 1 && pickupSound != null)
+            if (GameManager.Instance != null)
             {
-                AudioSource.PlayClipAtPoint(pickupSound, transform.position, pickupVolume);
+                GameManager.Instance.CollectProp();
+            }
+            else
+            {
+                Debug.LogWarning("⚠️ GameManager instance not found when collecting prop.");
             }
 
-            GameManager.Instance.CollectProp();
+            Destroy(gameObject);
         }
         else
         {
-            Debug.LogWarning("⚠️ GameManager instance not found when collecting prop.");
-        }
+            Debug.Log($"🟤 Interacted with real prop: {gameObject.name}");
 
-        Destroy(gameObject);
+            if (realInteractSound != null)
+                AudioSource.PlayClipAtPoint(realInteractSound, transform.position, soundVolume);
+        }
     }
 }

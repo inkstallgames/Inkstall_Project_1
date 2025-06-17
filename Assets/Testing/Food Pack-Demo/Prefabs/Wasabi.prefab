@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4805971853258655496}
   - component: {fileID: 8439154691577546925}
   - component: {fileID: 5978828892496854119}
-  - component: {fileID: -962699993898398436}
+  - component: {fileID: 142739808224561564}
   m_Layer: 0
   m_Name: Wasabi
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &-962699993898398436
-MeshCollider:
+--- !u!65 &142739808224561564
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +102,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -4310635774658252947, guid: 77c404ad8e2bebb4e94af41133adb8e0, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 0.21451378, y: 0.07684787, z: 0.21451336}
+  m_Center: {x: -0.0000020228326, y: 0.038423304, z: 0.00000035762787}

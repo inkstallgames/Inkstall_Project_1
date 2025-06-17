@@ -616,7 +616,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: House_07 (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7132518249991118111, guid: 3a62d6ac10141ce4297fac8c809c8a4b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -7823,7 +7824,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: House_07 (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7132518249991118111, guid: 3a62d6ac10141ce4297fac8c809c8a4b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -14956,10 +14958,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 962220123}
-  - component: {fileID: 962220128}
-  - component: {fileID: 962220125}
-  - component: {fileID: 962220126}
-  - component: {fileID: 962220127}
+  - component: {fileID: 962220124}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -14982,60 +14981,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &962220125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962220122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c0ed95b858be38d49827033620029e21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 3878651120489037043, guid: f6611e2ba640e4e45b8b26e9c7fb2b6c,
-    type: 3}
-  spawnPointsParent: {fileID: 2020832637}
---- !u!114 &962220126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962220122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalTime: 180
-  timerText: {fileID: 1194441157}
-  timerRunning: 1
-  tickSound: {fileID: 8300000, guid: bbb7c848b236a994a835f80c489027d3, type: 3}
-  tickVolume: 1
---- !u!114 &962220127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962220122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2169b008ae359144ca4cff41c1e16f64, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalPropsToCollect: 5
-  gameTimer: {fileID: 962220126}
-  winUI: {fileID: 977753789}
-  gameOverUI: {fileID: 1774634692}
-  playerController: {fileID: 0}
-  crosshair: {fileID: 1981799373}
-  winSound: {fileID: 8300000, guid: 6618dde00549b60489d6bbcadd555662, type: 3}
-  gameOverSound: {fileID: 8300000, guid: 1d365603505a99a4bbb4fbc905712060, type: 3}
-  soundVolume: 1
---- !u!114 &962220128
+--- !u!114 &962220124
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -15103,11 +15049,11 @@ MonoBehaviour:
   - {fileID: 8575389795609162483, guid: 72f7713924360c14295e85883d1da829, type: 3}
   - {fileID: 2413022455490541954, guid: 2bcf8f1ece629e344865b2e9f599dc3f, type: 3}
   - {fileID: 5330552507610586546, guid: 25de3c6a9e21111478797ddd16d93022, type: 3}
-  numberOfPropsToSpawn: 5
-  minDistanceBetweenProps: 5
-  spawnParent: {fileID: 1972454296}
-  pickupSound: {fileID: 8300000, guid: f37d6ded3435822409ff14912251bd77, type: 3}
-  pickupVolume: 1
+  totalPropsToSpawn: 15
+  fakePropCount: 5
+  minDistanceBetweenProps: 3
+  preventOverlap: 1
+  propsSpawnParent: {fileID: 1972454296}
 --- !u!4 &963104813 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2314720440659131352, guid: f782e17cfa8ac8d468f5789f45f3aab1,
@@ -21033,7 +20979,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: House_07 (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7132518249991118111, guid: 3a62d6ac10141ce4297fac8c809c8a4b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

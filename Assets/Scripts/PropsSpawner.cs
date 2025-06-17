@@ -5,34 +5,32 @@ public class PropsSpawner : MonoBehaviour
 {
     [Header("Prop Settings")]
     [SerializeField] private GameObject[] propPrefabs;
-    public int numberOfPropsToSpawn = 5;
-    public float minDistanceBetweenProps = 5f;
+    [Min(1)] public int totalPropsToSpawn = 15;
+    [Min(1)] public int fakePropCount = 5;
+    public float minDistanceBetweenProps = 3f;
+    public bool preventOverlap = true;
 
-    [Header("Spawn Point Settings")]
-    [SerializeField] Transform spawnParent;
-
-    [Header("Audio Settings")]
-    [SerializeField] AudioClip pickupSound;
-    [SerializeField] float pickupVolume = 1f;
+    [Header("Props Spawn Points")]
+    [SerializeField] private Transform propsSpawnParent;
 
     private Transform[] spawnPoints;
+    private List<GameObject> spawnedProps = new List<GameObject>();
 
     void Awake()
     {
         List<Transform> points = new List<Transform>();
-        foreach (Transform child in spawnParent)
-        {
+        foreach (Transform child in propsSpawnParent)
             points.Add(child);
-        }
         spawnPoints = points.ToArray();
     }
 
     void Start()
     {
-        SpawnRandomProps();
+        fakePropCount = Mathf.Clamp(fakePropCount, 0, totalPropsToSpawn);
+        SpawnAllProps();
     }
 
-    void SpawnRandomProps()
+    void SpawnAllProps()
     {
         if (propPrefabs.Length == 0 || spawnPoints.Length == 0)
         {
@@ -40,68 +38,40 @@ public class PropsSpawner : MonoBehaviour
             return;
         }
 
-        if (numberOfPropsToSpawn > propPrefabs.Length)
+        List<Transform> shuffledSpawns = new List<Transform>(spawnPoints);
+        Shuffle(shuffledSpawns);
+
+        int spawnCount = Mathf.Min(totalPropsToSpawn, shuffledSpawns.Count);
+        spawnedProps.Clear();
+
+        for (int i = 0; i < spawnCount; i++)
         {
-            Debug.LogWarning("⚠️ Not enough unique props. Reducing count.");
-            numberOfPropsToSpawn = propPrefabs.Length;
+            Vector3 spawnPos = shuffledSpawns[i].position;
+            if (preventOverlap && IsTooClose(spawnPos)) continue;
+
+            GameObject prefab = propPrefabs[Random.Range(0, propPrefabs.Length)];
+            GameObject prop = Instantiate(prefab, spawnPos, shuffledSpawns[i].rotation);
+
+            var identity = prop.GetComponent<PropIdentity>() ?? prop.AddComponent<PropIdentity>();
+            identity.isFake = false;
+            spawnedProps.Add(prop);
         }
 
-        List<GameObject> shuffledProps = new List<GameObject>(propPrefabs);
-        Shuffle(shuffledProps);
+        Shuffle(spawnedProps);
 
-        List<Transform> shuffledSpawnPoints = new List<Transform>(spawnPoints);
-        Shuffle(shuffledSpawnPoints);
-
-        List<Transform> selectedSpawns = new List<Transform>();
-
-        foreach (Transform candidate in shuffledSpawnPoints)
+        for (int i = 0; i < fakePropCount && i < spawnedProps.Count; i++)
         {
-            bool valid = true;
-            foreach (Transform placed in selectedSpawns)
-            {
-                if (Vector3.Distance(candidate.position, placed.position) < minDistanceBetweenProps)
-                {
-                    valid = false;
-                    break;
-                }
-            }
+            GameObject fakeProp = spawnedProps[i];
+            var identity = fakeProp.GetComponent<PropIdentity>();
+            identity.isFake = true;
 
-            if (valid)
-            {
-                selectedSpawns.Add(candidate);
-                if (selectedSpawns.Count == numberOfPropsToSpawn)
-                    break;
-            }
+            if (fakeProp.GetComponent<CollectibleProp>() == null)
+                fakeProp.AddComponent<CollectibleProp>();
+
+            GameManager.Instance?.RegisterCollectible();
         }
 
-        if (selectedSpawns.Count < numberOfPropsToSpawn)
-        {
-            Debug.LogWarning($"⚠️ Only {selectedSpawns.Count}/{numberOfPropsToSpawn} props could be placed due to spacing.");
-        }
-
-        for (int i = 0; i < selectedSpawns.Count; i++)
-        {
-            GameObject propToSpawn = shuffledProps[i];
-            Transform spawnPoint = selectedSpawns[i];
-
-            GameObject spawnedProp = Instantiate(propToSpawn, spawnPoint.position, spawnPoint.rotation);
-
-            if (!spawnedProp.TryGetComponent<Collider>(out _))
-                spawnedProp.AddComponent<BoxCollider>();
-
-            CollectibleProp cp = spawnedProp.GetComponent<CollectibleProp>();
-            if (cp == null)
-                cp = spawnedProp.AddComponent<CollectibleProp>();
-
-            cp.SetPickupSound(pickupSound, pickupVolume); // 🔊 Assign sound
-
-            spawnedProp.tag = "Collectible";
-
-            if (GameManager.Instance != null)
-                GameManager.Instance.RegisterCollectible();
-            else
-                Debug.LogWarning("❌ GameManager not found during prop registration!");
-        }
+        Debug.Log($"✅ Spawned {spawnedProps.Count} props: {fakePropCount} fake, {spawnedProps.Count - fakePropCount} real.");
     }
 
     void Shuffle<T>(List<T> list)
@@ -109,9 +79,38 @@ public class PropsSpawner : MonoBehaviour
         for (int i = 0; i < list.Count; i++)
         {
             int rnd = Random.Range(i, list.Count);
-            T temp = list[i];
-            list[i] = list[rnd];
-            list[rnd] = temp;
+            (list[i], list[rnd]) = (list[rnd], list[i]);
         }
     }
+
+    bool IsTooClose(Vector3 newPos)
+    {
+        foreach (var existing in spawnedProps)
+        {
+            if (Vector3.Distance(existing.transform.position, newPos) < minDistanceBetweenProps)
+                return true;
+        }
+        return false;
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (propsSpawnParent == null) return;
+
+        Gizmos.color = Color.cyan;
+        foreach (Transform child in propsSpawnParent)
+            Gizmos.DrawWireSphere(child.position, 0.5f);
+
+        if (Application.isPlaying)
+        {
+            Gizmos.color = Color.red;
+            foreach (var prop in spawnedProps)
+            {
+                if (prop.GetComponent<PropIdentity>()?.isFake == true)
+                    Gizmos.DrawSphere(prop.transform.position, 0.3f);
+            }
+        }
+    }
+#endif
 }

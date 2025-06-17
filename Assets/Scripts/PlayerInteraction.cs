@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
@@ -20,11 +19,15 @@ public class PlayerInteraction : MonoBehaviour
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
         {
-            // Try to get CollectibleProp component
             CollectibleProp collectible = hit.collider.GetComponent<CollectibleProp>();
+
             if (collectible != null)
             {
-                collectible.Interact(); // Collect the prop
+                collectible.Interact();
+            }
+            else
+            {
+                Debug.Log($"🟤 No collectible on: {hit.collider.gameObject.name}");
             }
         }
     }

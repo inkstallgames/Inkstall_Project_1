@@ -11,7 +11,7 @@ public class PropsSpawner : MonoBehaviour
     public bool preventOverlap = true;
 
     [Header("Props Spawn Points")]
-    [SerializeField] private Transform propsSpawnParent;
+    [SerializeField] private Transform spawnPointsParent;
 
     private Transform[] spawnPoints;
     private List<GameObject> spawnedProps = new List<GameObject>();
@@ -19,7 +19,7 @@ public class PropsSpawner : MonoBehaviour
     void Awake()
     {
         List<Transform> points = new List<Transform>();
-        foreach (Transform child in propsSpawnParent)
+        foreach (Transform child in spawnPointsParent)
             points.Add(child);
         spawnPoints = points.ToArray();
     }
@@ -54,6 +54,7 @@ public class PropsSpawner : MonoBehaviour
 
             var identity = prop.GetComponent<PropIdentity>() ?? prop.AddComponent<PropIdentity>();
             identity.isFake = false;
+
             spawnedProps.Add(prop);
         }
 
@@ -67,6 +68,9 @@ public class PropsSpawner : MonoBehaviour
 
             if (fakeProp.GetComponent<CollectibleProp>() == null)
                 fakeProp.AddComponent<CollectibleProp>();
+
+            fakeProp.name += " (FAKE)"; // Dev-friendly name
+            Debug.Log($"🟡 Marked as FAKE: {fakeProp.name}");
 
             GameManager.Instance?.RegisterCollectible();
         }
@@ -96,21 +100,31 @@ public class PropsSpawner : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if (propsSpawnParent == null) return;
+        if (spawnPointsParent == null) return;
 
         Gizmos.color = Color.cyan;
-        foreach (Transform child in propsSpawnParent)
-            Gizmos.DrawWireSphere(child.position, 0.5f);
+        foreach (Transform child in spawnPointsParent)
+        {
+            if (child != null)
+                Gizmos.DrawWireSphere(child.position, 0.5f);
+        }
 
-        if (Application.isPlaying)
+        if (Application.isPlaying && spawnedProps != null)
         {
             Gizmos.color = Color.red;
             foreach (var prop in spawnedProps)
             {
-                if (prop.GetComponent<PropIdentity>()?.isFake == true)
+                // ✅ Skip if destroyed
+                if (prop == null || prop.Equals(null)) continue;
+
+                var identity = prop.GetComponent<PropIdentity>();
+                if (identity != null && identity.isFake)
+                {
                     Gizmos.DrawSphere(prop.transform.position, 0.3f);
+                }
             }
         }
     }
 #endif
+
 }

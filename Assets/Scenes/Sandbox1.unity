@@ -14959,6 +14959,9 @@ GameObject:
   m_Component:
   - component: {fileID: 962220123}
   - component: {fileID: 962220124}
+  - component: {fileID: 962220125}
+  - component: {fileID: 962220126}
+  - component: {fileID: 962220127}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -15053,7 +15056,60 @@ MonoBehaviour:
   fakePropCount: 5
   minDistanceBetweenProps: 3
   preventOverlap: 1
-  propsSpawnParent: {fileID: 1972454296}
+  spawnPointsParent: {fileID: 1972454296}
+--- !u!114 &962220125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962220122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ed95b858be38d49827033620029e21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefab: {fileID: 3878651120489037043, guid: f6611e2ba640e4e45b8b26e9c7fb2b6c,
+    type: 3}
+  spawnPointsParent: {fileID: 2020832637}
+--- !u!114 &962220126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962220122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalTime: 100
+  timerText: {fileID: 1194441157}
+  timerRunning: 1
+  tickSound: {fileID: 8300000, guid: bbb7c848b236a994a835f80c489027d3, type: 3}
+  tickVolume: 1
+--- !u!114 &962220127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962220122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2169b008ae359144ca4cff41c1e16f64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalPropsToCollect: 0
+  gameTimer: {fileID: 962220126}
+  winUI: {fileID: 977753789}
+  gameOverUI: {fileID: 1774634692}
+  playerController: {fileID: 0}
+  crosshair: {fileID: 1981799373}
+  winSound: {fileID: 8300000, guid: 6618dde00549b60489d6bbcadd555662, type: 3}
+  gameOverSound: {fileID: 8300000, guid: 1d365603505a99a4bbb4fbc905712060, type: 3}
+  soundVolume: 1
 --- !u!4 &963104813 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2314720440659131352, guid: f782e17cfa8ac8d468f5789f45f3aab1,

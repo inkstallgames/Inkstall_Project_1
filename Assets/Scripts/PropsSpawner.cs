@@ -29,14 +29,14 @@ public class PropsSpawner : MonoBehaviour
 
     void Start()
     {
-        SpawnAllProps();
+        SpawnRandomProps();
     }
 
-    void SpawnAllProps()
+    void SpawnRandomProps()
     {
         if (propsPrefabs.Length == 0 || spawnPoints.Length == 0)
         {
-            Debug.LogError("❌ No prop prefabs or spawn points assigned!");
+            Debug.LogError("No prop prefabs or spawn points assigned!");
             return;
         }
 
@@ -74,7 +74,7 @@ public class PropsSpawner : MonoBehaviour
             GameManager.Instance?.RegisterCollectible();
         }
 
-        Debug.Log($"✅ Spawned {spawnedProps.Count} props: {fakePropCount} fake, {spawnedProps.Count - fakePropCount} real.");
+        Debug.Log($"Spawned {spawnedProps.Count} props: {fakePropCount} fake, {spawnedProps.Count - fakePropCount} real.");
     }
 
     void Shuffle<T>(List<T> list)

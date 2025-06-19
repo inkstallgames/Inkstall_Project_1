@@ -36640,6 +36640,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: MOD_LifeOfPigeonAssetsNewDesign
       objectReference: {fileID: 0}
+    - target: {fileID: 8307457164003456032, guid: d5f4cd949f3dcc341811a4e9332e6cb6,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8307457164003456032, guid: d5f4cd949f3dcc341811a4e9332e6cb6,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8307457164003456032, guid: d5f4cd949f3dcc341811a4e9332e6cb6,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

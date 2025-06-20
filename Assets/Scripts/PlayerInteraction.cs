@@ -27,7 +27,7 @@ public class PlayerInteraction : MonoBehaviour
                 return;
             }
 
-            // Check if it's a door
+            // Check if it's a rotating door
             DoorInteraction door = hit.collider.GetComponent<DoorInteraction>();
             if (door != null)
             {
@@ -35,7 +35,15 @@ public class PlayerInteraction : MonoBehaviour
                 return;
             }
 
-            // ✅ Check if it's a drawer
+            // Check if it's a sliding door
+            SlidingDoor sliding = hit.collider.GetComponent<SlidingDoor>();
+            if (sliding != null)
+            {
+                sliding.Interact();
+                return;
+            }
+
+            // Check if it's a drawer
             DrawerMech drawer = hit.collider.GetComponent<DrawerMech>();
             if (drawer != null)
             {

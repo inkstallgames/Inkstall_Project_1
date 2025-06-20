@@ -35,6 +35,14 @@ public class PlayerInteraction : MonoBehaviour
                 return;
             }
 
+            // ✅ Check if it's a drawer
+            DrawerMech drawer = hit.collider.GetComponent<DrawerMech>();
+            if (drawer != null)
+            {
+                drawer.Interact();
+                return;
+            }
+
             // Optional: Debug info
             Debug.Log($"🟤 No interactable found on: {hit.collider.gameObject.name}");
         }

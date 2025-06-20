@@ -3756,7 +3756,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &740891192612942431
 GameObject:
   m_ObjectHideFlags: 0
@@ -5658,7 +5658,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1091314533249049887
 GameObject:
   m_ObjectHideFlags: 0
@@ -19422,6 +19422,7 @@ GameObject:
   - component: {fileID: 1876327776277218951}
   - component: {fileID: 1791947497561129145}
   - component: {fileID: 1875161217338959213}
+  - component: {fileID: 7589896363286538994}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD
   m_TagString: Untagged
@@ -19485,6 +19486,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openRotation: {x: 0, y: 90, z: 0}
   rotationSpeed: 3
+--- !u!65 &7589896363286538994
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874447173362741691}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.18894666, y: 2.5371053, z: 1.4197755}
+  m_Center: {x: 0.013799138, y: 1.3633958, z: -0.6722043}
 --- !u!1 &1874449553719104673
 GameObject:
   m_ObjectHideFlags: 0
@@ -21785,7 +21807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161216568172315
 GameObject:
   m_ObjectHideFlags: 0
@@ -22027,7 +22049,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161216618301170
 GameObject:
   m_ObjectHideFlags: 0
@@ -22683,7 +22705,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161216698563261
 GameObject:
   m_ObjectHideFlags: 0
@@ -23299,7 +23321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161216955914627
 GameObject:
   m_ObjectHideFlags: 0
@@ -23496,7 +23518,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161216981886654
 GameObject:
   m_ObjectHideFlags: 0
@@ -23791,7 +23813,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161216999875672
 GameObject:
   m_ObjectHideFlags: 0
@@ -23905,13 +23927,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1875161217027441410}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: -0.03948309, z: 0, w: 0.99922025}
   m_LocalPosition: {x: -0.96466064, y: 0, z: 0.9517771}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1875161218463386389}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -4.526, z: 0}
 --- !u!33 &6920565281443275389
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -24074,7 +24096,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161217068126530
 GameObject:
   m_ObjectHideFlags: 0
@@ -24648,7 +24670,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161217234792969
 GameObject:
   m_ObjectHideFlags: 0
@@ -24747,7 +24769,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161217280589076
 GameObject:
   m_ObjectHideFlags: 0
@@ -25315,7 +25337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!65 &1875161217459986702
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25456,7 +25478,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161217507319754
 GameObject:
   m_ObjectHideFlags: 0
@@ -26069,7 +26091,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!65 &1875161217613356180
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26644,7 +26666,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!65 &1875161217713141268
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26893,7 +26915,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161217724365522
 GameObject:
   m_ObjectHideFlags: 0
@@ -27941,7 +27963,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!65 &1875161217834320996
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28264,7 +28286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!65 &1875161217870732289
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28505,7 +28527,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!65 &1875161217904189266
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29676,7 +29698,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!65 &1875161218229643936
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29915,7 +29937,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161218261447697
 GameObject:
   m_ObjectHideFlags: 0
@@ -30420,7 +30442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161218500020027
 GameObject:
   m_ObjectHideFlags: 0
@@ -30585,7 +30607,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161218537400584
 GameObject:
   m_ObjectHideFlags: 0
@@ -30784,7 +30806,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!65 &1875161218556285675
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -31123,7 +31145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!65 &1875161218615078716
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -31350,7 +31372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1875161218648548598
 GameObject:
   m_ObjectHideFlags: 0
@@ -31674,7 +31696,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1875259775736363093}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: 0.5007464, z: -0, w: 0.865594}
   m_LocalPosition: {x: 1.486, y: 0.955, z: 7.726}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -31683,7 +31705,7 @@ Transform:
   - {fileID: 1876529199753348251}
   - {fileID: 1879217371680049985}
   m_Father: {fileID: 1876665681830261705}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 60.099, z: 0}
 --- !u!205 &1792087478257036825
 LODGroup:
   m_ObjectHideFlags: 0
@@ -32970,7 +32992,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &1959302391148291768
 GameObject:
   m_ObjectHideFlags: 0
@@ -34938,7 +34960,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &2158082549997105467
 GameObject:
   m_ObjectHideFlags: 0
@@ -35547,7 +35569,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &2226400617189049445
 GameObject:
   m_ObjectHideFlags: 0
@@ -43199,7 +43221,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &3180297779633818699
 GameObject:
   m_ObjectHideFlags: 0
@@ -46832,7 +46854,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &3907177215083595239
 GameObject:
   m_ObjectHideFlags: 0
@@ -50213,7 +50235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &4327915683920513065
 GameObject:
   m_ObjectHideFlags: 0
@@ -54150,7 +54172,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &4896059434030516683
 GameObject:
   m_ObjectHideFlags: 0
@@ -55294,7 +55316,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &5063353980383542676
 GameObject:
   m_ObjectHideFlags: 0
@@ -56408,7 +56430,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &5206449904590748548
 GameObject:
   m_ObjectHideFlags: 0
@@ -59471,7 +59493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &5569608738691188440
 GameObject:
   m_ObjectHideFlags: 0
@@ -60621,7 +60643,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &5723383117300221737
 GameObject:
   m_ObjectHideFlags: 0
@@ -66004,7 +66026,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &6418189097835241496
 GameObject:
   m_ObjectHideFlags: 0
@@ -68236,7 +68258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &6795527038796355367
 GameObject:
   m_ObjectHideFlags: 0
@@ -68524,7 +68546,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &6851092293559158227
 GameObject:
   m_ObjectHideFlags: 0
@@ -69701,7 +69723,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &6955632265343227222
 GameObject:
   m_ObjectHideFlags: 0
@@ -70887,7 +70909,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &7110061305608387956
 GameObject:
   m_ObjectHideFlags: 0
@@ -73163,7 +73185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &7426981443021570078
 GameObject:
   m_ObjectHideFlags: 0
@@ -74421,7 +74443,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &7531760826006959842
 GameObject:
   m_ObjectHideFlags: 0
@@ -75184,7 +75206,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &7580015252176924598
 GameObject:
   m_ObjectHideFlags: 0
@@ -75816,7 +75838,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &7651521090044888913
 GameObject:
   m_ObjectHideFlags: 0
@@ -75977,7 +75999,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &7685973411781211672
 GameObject:
   m_ObjectHideFlags: 0
@@ -78008,7 +78030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &7990134465815400994
 GameObject:
   m_ObjectHideFlags: 0
@@ -79368,7 +79390,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &8199593292295766067
 GameObject:
   m_ObjectHideFlags: 0
@@ -79858,7 +79880,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &8244025271896796033
 GameObject:
   m_ObjectHideFlags: 0
@@ -81440,7 +81462,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &8439046457936978351
 GameObject:
   m_ObjectHideFlags: 0
@@ -82517,7 +82539,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &8571237632664507748
 GameObject:
   m_ObjectHideFlags: 0
@@ -84065,7 +84087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.437}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &8764263011111659943
 GameObject:
   m_ObjectHideFlags: 0
@@ -86793,7 +86815,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenPosition: {x: 0, y: 0, z: 0.35}
   ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  moveSpeed: 2
 --- !u!1 &9098844172075145232
 GameObject:
   m_ObjectHideFlags: 0

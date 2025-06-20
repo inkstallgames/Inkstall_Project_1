@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 2627911221090506164}
   - component: {fileID: 2775795122305655294}
   - component: {fileID: 7126750382242217389}
+  - component: {fileID: 7524126943478613137}
   m_Layer: 0
   m_Name: PDoor_BR
   m_TagString: Untagged
@@ -143,6 +144,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1373304180777164159, guid: 89d5e5aa92b00bf4b95e9a5b862acea5, type: 3}
+--- !u!114 &7524126943478613137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 752629832370366590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1228009165156891778
 GameObject:
   m_ObjectHideFlags: 0
@@ -241,6 +256,7 @@ GameObject:
   - component: {fileID: 13802479636582085}
   - component: {fileID: 1013790874409155816}
   - component: {fileID: 2437696861015517903}
+  - component: {fileID: 6020666616668416783}
   m_Layer: 0
   m_Name: PDoor_FR
   m_TagString: Untagged
@@ -337,6 +353,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -32641153678192773, guid: 89d5e5aa92b00bf4b95e9a5b862acea5, type: 3}
+--- !u!114 &6020666616668416783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413877534280874110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1829922410192357324
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,6 +419,7 @@ GameObject:
   - component: {fileID: 7657072547895063187}
   - component: {fileID: 1317905142063746173}
   - component: {fileID: 6745753519607813492}
+  - component: {fileID: 7644159789103769126}
   m_Layer: 0
   m_Name: PDoor_FL
   m_TagString: Untagged
@@ -485,6 +516,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -2370444176287624028, guid: 89d5e5aa92b00bf4b95e9a5b862acea5, type: 3}
+--- !u!114 &7644159789103769126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1876026157323782943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &2467819359589894816
 GameObject:
   m_ObjectHideFlags: 0
@@ -753,6 +798,7 @@ GameObject:
   - component: {fileID: 6013939445498273786}
   - component: {fileID: 7767362867968895433}
   - component: {fileID: 5654763373536472129}
+  - component: {fileID: 7914301408419970824}
   m_Layer: 0
   m_Name: PDoor_BL
   m_TagString: Untagged
@@ -849,6 +895,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -7002352034084715377, guid: 89d5e5aa92b00bf4b95e9a5b862acea5, type: 3}
+--- !u!114 &7914301408419970824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4920420155967728131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5507548024979441590
 GameObject:
   m_ObjectHideFlags: 0

@@ -209,6 +209,7 @@ GameObject:
   - component: {fileID: 6297206774216137385}
   - component: {fileID: 2982406681485724748}
   - component: {fileID: 5908068886451889352}
+  - component: {fileID: 2223567021765434504}
   m_Layer: 0
   m_Name: CDoor_BR
   m_TagString: Untagged
@@ -305,6 +306,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 6669858210342699486, guid: 2059a5b259221964bbab0a60e9695440, type: 3}
+--- !u!114 &2223567021765434504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467610242607625847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1478803868450802336
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,6 +332,7 @@ GameObject:
   - component: {fileID: 4256872615281608784}
   - component: {fileID: 8366967943632703912}
   - component: {fileID: 5299631885959776050}
+  - component: {fileID: 1409237920027707578}
   m_Layer: 0
   m_Name: CDoor_BL
   m_TagString: Untagged
@@ -413,6 +429,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5348278046087012078, guid: 2059a5b259221964bbab0a60e9695440, type: 3}
+--- !u!114 &1409237920027707578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1478803868450802336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1711109547622578662
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,6 +455,7 @@ GameObject:
   - component: {fileID: 5583180962126220328}
   - component: {fileID: 5492443232830917706}
   - component: {fileID: 2316991880582365702}
+  - component: {fileID: 2733372534667007423}
   m_Layer: 0
   m_Name: CDoor_FR
   m_TagString: Untagged
@@ -521,6 +552,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -8958003660627484555, guid: 2059a5b259221964bbab0a60e9695440, type: 3}
+--- !u!114 &2733372534667007423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1711109547622578662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &3047762182216623750
 GameObject:
   m_ObjectHideFlags: 0
@@ -913,6 +958,7 @@ GameObject:
   - component: {fileID: 3189060594174755290}
   - component: {fileID: 4270864659602505812}
   - component: {fileID: 333933608550597569}
+  - component: {fileID: 360494089543968180}
   m_Layer: 0
   m_Name: CDoor_FL
   m_TagString: Untagged
@@ -1009,6 +1055,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4567248555496173249, guid: 2059a5b259221964bbab0a60e9695440, type: 3}
+--- !u!114 &360494089543968180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5367708910492955937}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6418221964813995520
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,16 +19,24 @@ public class PlayerInteraction : MonoBehaviour
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
         {
+            // Check if it's a collectible
             CollectibleProp collectible = hit.collider.GetComponent<CollectibleProp>();
-
             if (collectible != null)
             {
                 collectible.Interact();
+                return;
             }
-            else
+
+            // Check if it's a door
+            DoorInteraction door = hit.collider.GetComponent<DoorInteraction>();
+            if (door != null)
             {
-                Debug.Log($"🟤 No collectible on: {hit.collider.gameObject.name}");
+                door.Interact();
+                return;
             }
+
+            // Optional: Debug info
+            Debug.Log($"🟤 No interactable found on: {hit.collider.gameObject.name}");
         }
     }
 }

@@ -3,7 +3,172 @@ guid: f7dcb655d91140f4eb6116f110d37175
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cereal_01
+    second: {fileID: 2100000, guid: 18dae020e2dde4240946092d32abab95, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cereal_01_1
+    second: {fileID: 2100000, guid: 79b1b520bcd2a2a4ab60d82c612ebf94, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cereal_01_2
+    second: {fileID: 2100000, guid: d238f9a763f490949837437a055c1c48, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cigarros
+    second: {fileID: 2100000, guid: aade580f4d268fa42902e89dab1df711, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cigarros_1
+    second: {fileID: 2100000, guid: ca518cd8f679bdf4ba19f9046812b88c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cigarros_2
+    second: {fileID: 2100000, guid: ec1b64aa565b08349b09feff8c2ab8a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Default_Material
+    second: {fileID: 2100000, guid: 6f95a3c55acaf894cad518318a95c1a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Dulces_1
+    second: {fileID: 2100000, guid: 9ec98d8887a75c24eb0d85129ce7dad9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Dulces_2
+    second: {fileID: 2100000, guid: dd867be6a467a074e8f10fcd1b3edd05, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Emisive
+    second: {fileID: 2100000, guid: 8464632153e7b7d42b0d678492da4d2b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Galletas
+    second: {fileID: 2100000, guid: 0b30713cc3f940549a34768c32daafaf, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Galletas_2
+    second: {fileID: 2100000, guid: 4bb7ff423092a834c9db80a729b6f3e8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Galletas_3
+    second: {fileID: 2100000, guid: bee39288e4e8b514cbd728e6b340a6ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_Refri
+    second: {fileID: 2100000, guid: 466c416a6c2e9d74d9e79b564efc63b9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_Refri_1
+    second: {fileID: 2100000, guid: 68b477c8cb4571c4d8a7a6bd99598ee8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MAT_Superior
+    second: {fileID: 2100000, guid: 07b74d35ba3b59943b02b73c10d45a9c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_Accesorios
+    second: {fileID: 2100000, guid: 82cb6e0804874d347a4e42c159adb2e0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mat_Piso
+    second: {fileID: 2100000, guid: 5b2c6f2a35277b9498c88d6836105d4c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material
+    second: {fileID: 2100000, guid: 9686d728d90d57c46b98fd1f8e299619, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_1
+    second: {fileID: 2100000, guid: a4849ce04d84f7d4fbed3f7d424e369a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Papas
+    second: {fileID: 2100000, guid: b7c31a5297d865744bd09db3064664c5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Papas_2
+    second: {fileID: 2100000, guid: 14d7240c54546f14d9e5ff84d0adac8c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Papas_3
+    second: {fileID: 2100000, guid: 70990dff4d7cb794ca6af5ab9e961bac, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Papas_4
+    second: {fileID: 2100000, guid: 43201d4906884a645ad00df0d3aa3b3c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Soda
+    second: {fileID: 2100000, guid: c559f052d0029774aacb300cab07379e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Soda_2
+    second: {fileID: 2100000, guid: cac08adc8b4b0ac4384c6f598d06a459, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Transparency
+    second: {fileID: 2100000, guid: 7622964962eca064cb0e23aab563755d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: _448128
+    second: {fileID: 2100000, guid: cf66a71cbcf5bd44ab98e60a1a432001, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: oxxo_folleto_abril_mayo
+    second: {fileID: 2100000, guid: c766b41019907654fb75d352ba4d1a37, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: oxxo_folleto_abril_mayo_1
+    second: {fileID: 2100000, guid: 55d658235b336f745ac5163a364129f2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: oxxo_ofertas_marzo_2020
+    second: {fileID: 2100000, guid: 903e98eb899e5dd42b4e420c33184807, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: oxxo_ofertas_marzo_2020_1
+    second: {fileID: 2100000, guid: d225d36a494bc5940836d9cba4c7c15c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: signs_varios
+    second: {fileID: 2100000, guid: 2f6cdee8be546194fb0fe00a13f6cb7b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

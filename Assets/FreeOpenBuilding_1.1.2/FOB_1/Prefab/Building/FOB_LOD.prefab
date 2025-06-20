@@ -1694,10 +1694,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &283884391163096946
 GameObject:
   m_ObjectHideFlags: 0
@@ -2043,10 +2041,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &348865287690571731
 GameObject:
   m_ObjectHideFlags: 0
@@ -2540,10 +2536,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &459016853550109861
 GameObject:
   m_ObjectHideFlags: 0
@@ -2684,10 +2678,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &459224560960651500
 GameObject:
   m_ObjectHideFlags: 0
@@ -5566,10 +5558,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &962253156265027739
 GameObject:
   m_ObjectHideFlags: 0
@@ -6644,10 +6634,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1182903291543472653
 GameObject:
   m_ObjectHideFlags: 0
@@ -6933,10 +6921,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1253292400269245134
 GameObject:
   m_ObjectHideFlags: 0
@@ -7265,10 +7251,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -30, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1302202939156453342
 GameObject:
   m_ObjectHideFlags: 0
@@ -8636,10 +8620,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1415736839560462635
 GameObject:
   m_ObjectHideFlags: 0
@@ -8905,10 +8887,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1499739149936159955
 GameObject:
   m_ObjectHideFlags: 0
@@ -10573,10 +10553,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1658169549481211602
 GameObject:
   m_ObjectHideFlags: 0
@@ -11178,10 +11156,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1710158473815343229
 GameObject:
   m_ObjectHideFlags: 0
@@ -11278,10 +11254,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1716451474721601484
 GameObject:
   m_ObjectHideFlags: 0
@@ -11732,10 +11706,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1764669070956054483
 GameObject:
   m_ObjectHideFlags: 0
@@ -12196,10 +12168,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1818319864856353151
 GameObject:
   m_ObjectHideFlags: 0
@@ -12441,10 +12411,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1844669754324890578
 GameObject:
   m_ObjectHideFlags: 0
@@ -13043,10 +13011,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1873542579504147305
 GameObject:
   m_ObjectHideFlags: 0
@@ -13073,7 +13039,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1873542579504147305}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0.06509899, z: -0, w: 0.9978789}
   m_LocalPosition: {x: -0.477, y: 0.955, z: 7.726}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -13082,7 +13048,7 @@ Transform:
   - {fileID: 1879615642897237723}
   - {fileID: 1876435995582657077}
   m_Father: {fileID: 1876665681830261705}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -7.465, z: 0}
 --- !u!205 &1792344704773191079
 LODGroup:
   m_ObjectHideFlags: 0
@@ -13119,10 +13085,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1873550730035657525
 GameObject:
   m_ObjectHideFlags: 0
@@ -13745,10 +13709,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1873616659463463025
 GameObject:
   m_ObjectHideFlags: 0
@@ -14451,10 +14413,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1873694547952897983
 GameObject:
   m_ObjectHideFlags: 0
@@ -14608,10 +14568,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1873727494547585209
 GameObject:
   m_ObjectHideFlags: 0
@@ -15331,10 +15289,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1873775864500735279
 GameObject:
   m_ObjectHideFlags: 0
@@ -15444,10 +15400,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1873790648367286515
 GameObject:
   m_ObjectHideFlags: 0
@@ -16233,10 +16187,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1873839048592743153
 GameObject:
   m_ObjectHideFlags: 0
@@ -16449,10 +16401,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1873906486874809889
 GameObject:
   m_ObjectHideFlags: 0
@@ -18076,10 +18026,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1874049135481242759
 GameObject:
   m_ObjectHideFlags: 0
@@ -19142,10 +19090,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1874424449844689669
 GameObject:
   m_ObjectHideFlags: 0
@@ -19393,10 +19339,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1874437463949195485
 GameObject:
   m_ObjectHideFlags: 0
@@ -19465,10 +19409,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1874447173362741691
 GameObject:
   m_ObjectHideFlags: 0
@@ -19541,10 +19483,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1874449553719104673
 GameObject:
   m_ObjectHideFlags: 0
@@ -19617,10 +19557,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1874461058169529343
 GameObject:
   m_ObjectHideFlags: 0
@@ -20246,10 +20184,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1874492632566052679
 GameObject:
   m_ObjectHideFlags: 0
@@ -21039,10 +20975,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1874588096325282425
 GameObject:
   m_ObjectHideFlags: 0
@@ -21751,10 +21685,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161216543531105
 GameObject:
   m_ObjectHideFlags: 0
@@ -21953,10 +21885,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 60, y: -90, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 2
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161216568172390
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22194,10 +22124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161216634153706
 GameObject:
   m_ObjectHideFlags: 0
@@ -22296,10 +22224,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161216634153704
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22472,10 +22398,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161216645840118
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22617,10 +22541,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 60, y: -90, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 2
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161216683499095
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22941,10 +22863,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161216711534762
 GameObject:
   m_ObjectHideFlags: 0
@@ -23181,10 +23101,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161216888580330
 GameObject:
   m_ObjectHideFlags: 0
@@ -23281,10 +23199,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161216949850601
 GameObject:
   m_ObjectHideFlags: 0
@@ -23480,10 +23396,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161216959191138
 GameObject:
   m_ObjectHideFlags: 0
@@ -23679,10 +23593,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161216984854592
 GameObject:
   m_ObjectHideFlags: 0
@@ -23779,10 +23691,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161216999317527
 GameObject:
   m_ObjectHideFlags: 0
@@ -24064,10 +23974,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161217057171233
 GameObject:
   m_ObjectHideFlags: 0
@@ -24348,10 +24256,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161217077029685
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24600,10 +24506,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161217137917187
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25093,10 +24997,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 60, y: -90, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 2
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161217324525342
 GameObject:
   m_ObjectHideFlags: 0
@@ -25653,10 +25555,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161217507319752
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25795,10 +25695,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161217537987019
 GameObject:
   m_ObjectHideFlags: 0
@@ -25895,10 +25793,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161217539050627
 GameObject:
   m_ObjectHideFlags: 0
@@ -27096,10 +26992,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161217724365520
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28189,10 +28083,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 60, y: -90, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 2
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161217838085825
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -28511,10 +28403,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161217904189268
 GameObject:
   m_ObjectHideFlags: 0
@@ -28921,10 +28811,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218000603055
 GameObject:
   m_ObjectHideFlags: 0
@@ -29021,10 +28909,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218002943246
 GameObject:
   m_ObjectHideFlags: 0
@@ -29122,10 +29008,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 60, y: -90, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 2
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218027991866
 GameObject:
   m_ObjectHideFlags: 0
@@ -29310,10 +29194,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161218048867622
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29452,10 +29334,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218126993943
 GameObject:
   m_ObjectHideFlags: 0
@@ -29552,10 +29432,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218155190686
 GameObject:
   m_ObjectHideFlags: 0
@@ -29654,10 +29532,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161218155190684
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29939,10 +29815,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218250785454
 GameObject:
   m_ObjectHideFlags: 0
@@ -30139,10 +30013,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 60, y: -90, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 2
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218273991105
 GameObject:
   m_ObjectHideFlags: 0
@@ -30241,10 +30113,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!65 &1875161218273991119
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -30450,10 +30320,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218469447326
 GameObject:
   m_ObjectHideFlags: 0
@@ -30814,10 +30682,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218556285677
 GameObject:
   m_ObjectHideFlags: 0
@@ -31057,10 +30923,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218599353548
 GameObject:
   m_ObjectHideFlags: 0
@@ -31157,10 +31021,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875161218615078718
 GameObject:
   m_ObjectHideFlags: 0
@@ -31700,10 +31562,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875209119023814267
 GameObject:
   m_ObjectHideFlags: 0
@@ -31797,7 +31657,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1876553855355030995}
   - component: {fileID: 1792087478257036825}
-  - component: {fileID: 1875161217143255992}
+  - component: {fileID: 1248273787968954181}
+  - component: {fileID: 6789705702407584371}
   m_Layer: 0
   m_Name: DoorEntry_L_LOD
   m_TagString: Untagged
@@ -31847,7 +31708,28 @@ LODGroup:
     renderers:
     - renderer: {fileID: 1897710119649851433}
   m_Enabled: 1
---- !u!114 &1875161217143255992
+--- !u!65 &1248273787968954181
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875259775736363093}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.1210887, y: 3.5150442, z: 1.730965}
+  m_Center: {x: -0.5615816, y: 1.2575226, z: 0.36548257}
+--- !u!114 &6789705702407584371
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -31859,10 +31741,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875259779132184487
 GameObject:
   m_ObjectHideFlags: 0
@@ -32206,10 +32086,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &1875283272182439885
 GameObject:
   m_ObjectHideFlags: 0
@@ -35537,10 +35415,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &2211728691713490971
 GameObject:
   m_ObjectHideFlags: 0
@@ -36370,10 +36246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &2370790151031238616
 GameObject:
   m_ObjectHideFlags: 0
@@ -38934,10 +38808,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &2707454073685904409
 GameObject:
   m_ObjectHideFlags: 0
@@ -40063,10 +39935,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &2837169897483492528
 GameObject:
   m_ObjectHideFlags: 0
@@ -40207,10 +40077,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &2841125501937385444
 GameObject:
   m_ObjectHideFlags: 0
@@ -40558,10 +40426,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -30, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &2883802506134962964
 GameObject:
   m_ObjectHideFlags: 0
@@ -40865,10 +40731,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &2945535209454153542
 GameObject:
   m_ObjectHideFlags: 0
@@ -41387,10 +41251,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &3003061524943409767
 GameObject:
   m_ObjectHideFlags: 0
@@ -42039,10 +41901,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &3047722026793721955
 GameObject:
   m_ObjectHideFlags: 0
@@ -42557,10 +42417,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &3097691375872912456
 GameObject:
   m_ObjectHideFlags: 0
@@ -42657,10 +42515,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &3098371352163946067
 GameObject:
   m_ObjectHideFlags: 0
@@ -46416,10 +46272,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &3741747724101183085
 GameObject:
   m_ObjectHideFlags: 0
@@ -48066,10 +47920,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &4052602934725297280
 GameObject:
   m_ObjectHideFlags: 0
@@ -49331,10 +49183,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &4255374262851078773
 GameObject:
   m_ObjectHideFlags: 0
@@ -49598,10 +49448,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -30, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &4261791145062922339
 GameObject:
   m_ObjectHideFlags: 0
@@ -50159,10 +50007,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &4319650946098055823
 GameObject:
   m_ObjectHideFlags: 0
@@ -52520,10 +52366,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &4633114849078523758
 GameObject:
   m_ObjectHideFlags: 0
@@ -53310,10 +53154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -30, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &4722450233689153401
 GameObject:
   m_ObjectHideFlags: 0
@@ -53619,10 +53461,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &4799506624175463953
 GameObject:
   m_ObjectHideFlags: 0
@@ -54178,10 +54018,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &4885384959737281511
 GameObject:
   m_ObjectHideFlags: 0
@@ -55128,10 +54966,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5046672362057206974
 GameObject:
   m_ObjectHideFlags: 0
@@ -55682,10 +55518,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5102383993727548064
 GameObject:
   m_ObjectHideFlags: 0
@@ -55782,10 +55616,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5117208195713468301
 GameObject:
   m_ObjectHideFlags: 0
@@ -56234,10 +56066,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5180991458267304010
 GameObject:
   m_ObjectHideFlags: 0
@@ -56863,10 +56693,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5227000762393680698
 GameObject:
   m_ObjectHideFlags: 0
@@ -57237,10 +57065,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5265312496001748841
 GameObject:
   m_ObjectHideFlags: 0
@@ -57381,10 +57207,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5277192672178643738
 GameObject:
   m_ObjectHideFlags: 0
@@ -59417,10 +59241,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5534215644606172228
 GameObject:
   m_ObjectHideFlags: 0
@@ -59549,10 +59371,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5567253054136653478
 GameObject:
   m_ObjectHideFlags: 0
@@ -59875,10 +59695,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5581100264500486560
 GameObject:
   m_ObjectHideFlags: 0
@@ -60291,10 +60109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5609991023634228385
 GameObject:
   m_ObjectHideFlags: 0
@@ -61031,10 +60847,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5754365727014869532
 GameObject:
   m_ObjectHideFlags: 0
@@ -61988,10 +61802,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5858198633940313153
 GameObject:
   m_ObjectHideFlags: 0
@@ -62766,10 +62578,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &5911387857531448144
 GameObject:
   m_ObjectHideFlags: 0
@@ -63650,10 +63460,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6062477610897851961
 GameObject:
   m_ObjectHideFlags: 0
@@ -63750,10 +63558,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6078294188574899768
 GameObject:
   m_ObjectHideFlags: 0
@@ -64751,10 +64557,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6223301632960080490
 GameObject:
   m_ObjectHideFlags: 0
@@ -65266,10 +65070,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6294532328983202146
 GameObject:
   m_ObjectHideFlags: 0
@@ -65525,10 +65327,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -30, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6317984154523651178
 GameObject:
   m_ObjectHideFlags: 0
@@ -66384,10 +66184,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6430809574661089713
 GameObject:
   m_ObjectHideFlags: 0
@@ -66891,10 +66689,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6565735631481885058
 GameObject:
   m_ObjectHideFlags: 0
@@ -67035,10 +66831,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6599456558237580048
 GameObject:
   m_ObjectHideFlags: 0
@@ -69327,10 +69121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6918784517863244008
 GameObject:
   m_ObjectHideFlags: 0
@@ -69427,10 +69219,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -30, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &6919677694044480619
 GameObject:
   m_ObjectHideFlags: 0
@@ -71540,10 +71330,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &7195506622599370963
 GameObject:
   m_ObjectHideFlags: 0
@@ -72019,10 +71807,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &7297476594563190653
 GameObject:
   m_ObjectHideFlags: 0
@@ -72278,10 +72064,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &7344322086163139969
 GameObject:
   m_ObjectHideFlags: 0
@@ -74454,10 +74238,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &7526025801346722692
 GameObject:
   m_ObjectHideFlags: 0
@@ -75748,10 +75530,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &7614184648507850628
 GameObject:
   m_ObjectHideFlags: 0
@@ -75892,10 +75672,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &7643272066330773591
 GameObject:
   m_ObjectHideFlags: 0
@@ -76379,10 +76157,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &7707186873064652781
 GameObject:
   m_ObjectHideFlags: 0
@@ -77571,10 +77347,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &7915192046056363259
 GameObject:
   m_ObjectHideFlags: 0
@@ -79040,10 +78814,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8136213259645055897
 GameObject:
   m_ObjectHideFlags: 0
@@ -79306,10 +79078,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8166089096414140631
 GameObject:
   m_ObjectHideFlags: 0
@@ -79739,10 +79509,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8224040858869179234
 GameObject:
   m_ObjectHideFlags: 0
@@ -80770,10 +80538,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 180, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8350620258572373132
 GameObject:
   m_ObjectHideFlags: 0
@@ -81227,10 +80993,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 200, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8388558729233824178
 GameObject:
   m_ObjectHideFlags: 0
@@ -81327,10 +81091,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8393010163127912409
 GameObject:
   m_ObjectHideFlags: 0
@@ -82249,10 +82011,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8486005989980949985
 GameObject:
   m_ObjectHideFlags: 0
@@ -82349,10 +82109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8497208724194322008
 GameObject:
   m_ObjectHideFlags: 0
@@ -82532,10 +82290,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8552454303331393835
 GameObject:
   m_ObjectHideFlags: 0
@@ -83159,10 +82915,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 0, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8591408598639331093
 GameObject:
   m_ObjectHideFlags: 0
@@ -83303,10 +83057,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8592103431234077858
 GameObject:
   m_ObjectHideFlags: 0
@@ -84454,10 +84206,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -180, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8771392774576899150
 GameObject:
   m_ObjectHideFlags: 0
@@ -85638,10 +85388,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -20, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8905663747505904658
 GameObject:
   m_ObjectHideFlags: 0
@@ -85904,10 +85652,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8940727724747195632
 GameObject:
   m_ObjectHideFlags: 0
@@ -86131,10 +85877,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: 10, z: 0}
-  CloseRotation: {x: 0, y: 90, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openRotation: {x: 0, y: 90, z: 0}
+  rotationSpeed: 3
 --- !u!1 &8971622970649850258
 GameObject:
   m_ObjectHideFlags: 0

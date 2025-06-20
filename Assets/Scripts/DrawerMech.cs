@@ -4,7 +4,7 @@ public class DrawerMech : MonoBehaviour
 {
     public Vector3 OpenPosition;
     public Vector3 ClosePosition;
-    public float moveSpeed = 2f;
+    public float moveSpeed = 4f;
 
     private float lerpTimer = 0f;
     private bool drawerOpen = false;

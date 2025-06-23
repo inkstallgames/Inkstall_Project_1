@@ -19525,6 +19525,7 @@ GameObject:
   - component: {fileID: 1791947497561129145}
   - component: {fileID: 1875161217338959213}
   - component: {fileID: 7589896363286538994}
+  - component: {fileID: 6836400068264351311}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD
   m_TagString: Untagged
@@ -19609,6 +19610,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.18894666, y: 2.5371053, z: 1.4197755}
   m_Center: {x: 0.013799138, y: 1.3633958, z: -0.6722043}
+--- !u!114 &6836400068264351311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874447173362741691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd378e70ad6cfa4438abf287b3576813, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  propSpawnPoints: []
+  lockableObject: {fileID: 0}
+  hasPropInside: 0
 --- !u!1 &1874449553719104673
 GameObject:
   m_ObjectHideFlags: 0

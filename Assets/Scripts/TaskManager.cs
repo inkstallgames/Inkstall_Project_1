@@ -38,4 +38,5 @@ public class TaskManager : MonoBehaviour
             currentLockable = null;
         }
     }
+
 }

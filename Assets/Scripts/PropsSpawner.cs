@@ -9,22 +9,17 @@ public class PropsSpawner : MonoBehaviour
     [Header("Assign World Spawn Points Parent")]
     [SerializeField] private Transform spawnPointsParent;
 
-    [Header("Assign Lockable Containers (Rooms, Chests, etc.)")]
-    [SerializeField] private Container[] containers;
-
     [Header("Prop Settings")]
     [Min(1)] public int totalPropsToSpawn = 15;
     [Min(1)] public int fakePropCount = 5;
     public float minDistanceBetweenProps = 3f;
     public bool preventOverlap = true;
-    [Range(0f, 1f)] public float chanceToUseContainer = 0.3f;
 
     private Transform[] spawnPoints;
     private List<GameObject> spawnedProps = new List<GameObject>();
 
     void Awake()
     {
-        // Cache all spawn point transforms from parent
         List<Transform> points = new List<Transform>();
         foreach (Transform child in spawnPointsParent)
             points.Add(child);
@@ -38,62 +33,49 @@ public class PropsSpawner : MonoBehaviour
 
     void SpawnRandomProps()
     {
-        if (propsPrefabs.Length == 0 || (spawnPoints.Length == 0 && containers.Length == 0))
+        if (propsPrefabs.Length == 0 || spawnPoints.Length == 0)
         {
-            Debug.LogError("No prop prefabs, spawn points, or containers assigned!");
+            Debug.LogError("No prop prefabs or spawn points assigned!");
             return;
         }
 
-        // Shuffle world spawn points
         List<Transform> shuffledSpawns = new List<Transform>(spawnPoints);
         Shuffle(shuffledSpawns);
 
-        int spawnCount = totalPropsToSpawn;
+        int spawnCount = Mathf.Min(totalPropsToSpawn, shuffledSpawns.Count);
         spawnedProps.Clear();
 
-        for (int i = 0; i < spawnCount; i++)
+        int spawned = 0;
+        int attempts = 0;
+
+        while (spawned < spawnCount && attempts < shuffledSpawns.Count)
         {
+            Transform spawnPoint = shuffledSpawns[attempts];
+            attempts++;
+
+            if (preventOverlap && IsTooClose(spawnPoint.position)) continue;
+
             GameObject prefab = propsPrefabs[Random.Range(0, propsPrefabs.Length)];
-            GameObject prop = null;
+            GameObject prop = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
 
-            // --- Try spawning inside a container ---
-            if (Random.value < chanceToUseContainer && containers.Length > 0)
+            // Lock associated object if this spawn point has one
+            var spData = spawnPoint.GetComponent<SpawnPointData>();
+            if (spData != null && spData.associatedLock != null)
             {
-                List<Container> available = new List<Container>();
-                foreach (var c in containers)
-                {
-                    if (!c.hasPropInside)
-                        available.Add(c);
-                }
-
-                if (available.Count > 0)
-                {
-                    Container chosen = available[Random.Range(0, available.Count)];
-                    prop = Instantiate(prefab);
-                    prop.SetActive(false); // Will be revealed when task is completed
-                    chosen.InsertProp(prop);
-                }
+                spData.isUsed = true;
+                spData.associatedLock.isLocked = true;
+                spData.associatedLock.containedObject = prop;
+                prop.SetActive(false); // Hide until task is completed
             }
 
-            // --- Fallback to world position ---
-            if (prop == null && i < shuffledSpawns.Count)
-            {
-                Vector3 spawnPos = shuffledSpawns[i].position;
-                if (preventOverlap && IsTooClose(spawnPos)) continue;
-
-                prop = Instantiate(prefab, spawnPos, shuffledSpawns[i].rotation);
-            }
-
-            if (prop == null) continue;
-
-            // Ensure prop has identity and mark as real by default
             var identity = prop.GetComponent<PropIdentity>() ?? prop.AddComponent<PropIdentity>();
             identity.isFake = false;
 
             spawnedProps.Add(prop);
+            spawned++;
         }
 
-        // --- Assign fake props ---
+        // Assign fake props
         Shuffle(spawnedProps);
         for (int i = 0; i < fakePropCount && i < spawnedProps.Count; i++)
         {

@@ -12,4 +12,5 @@ public class Task
 public class TaskDatabase : ScriptableObject
 {
     public Task[] allTasks;
+    
 }

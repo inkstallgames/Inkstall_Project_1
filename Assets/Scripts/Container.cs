@@ -13,19 +13,17 @@ public class Container : MonoBehaviour
 
     [HideInInspector] public bool hasPropInside = false;
 
-    /// <summary>
+
     /// Returns all defined spawn points inside this container.
     /// Useful if external systems want to know where this container can spawn things.
-    /// </summary>
     public List<Transform> GetSpawnPoints()
     {
         return new List<Transform>(propSpawnPoints);
     }
 
-    /// <summary>
+
     /// Inserts a prop into this container, places it at a random spawn point,
     /// hides it, and locks the linked LockableObject.
-    /// </summary>
     /// <param name="prop">The prop to insert and hide inside this container.</param>
     public void InsertProp(GameObject prop)
     {

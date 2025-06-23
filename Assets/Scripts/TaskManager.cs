@@ -17,9 +17,8 @@ public class TaskManager : MonoBehaviour
             Destroy(gameObject);
     }
 
-    /// <summary>
+
     /// Called by PlayerInteraction when interacting with a locked object.
-    /// </summary>
     public void StartTask(LockableObject target)
     {
         currentLockable = target;
@@ -27,9 +26,8 @@ public class TaskManager : MonoBehaviour
         QuizUI.Instance.ShowRandomQuestion();
     }
 
-    /// <summary>
+
     /// Called by QuizUI after player solves the task.
-    /// </summary>
     public void CompleteTask()
     {
         quizPanel.SetActive(false);

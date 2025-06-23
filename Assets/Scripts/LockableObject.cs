@@ -7,13 +7,20 @@ public class LockableObject : MonoBehaviour
     [Header("Lock Settings")]
     public bool isLocked = false;
     public ContentType contentType = ContentType.None;
-    public GameObject containedObject; // Assigned at runtime
-    public Animator animator;          // Optional animator for visual open
-    public string openTrigger = "Open"; // Animator trigger name
+
+    [Tooltip("This gets assigned at runtime when a prop is inserted into the container.")]
+    public GameObject containedObject;
+
+    [Header("Optional Animation")]
+    public Animator animator;
+    public string openTrigger = "Open"; // Animator trigger to play when unlocked
 
     private bool isOpen = false;
 
-    // Called by TaskManager when task is completed
+    /// <summary>
+    /// Called (e.g. by TaskManager) when the unlocking condition is satisfied.
+    /// Unlocks this object, plays animation, and reveals contained object.
+    /// </summary>
     public void Unlock()
     {
         if (!isLocked) return;
@@ -21,20 +28,23 @@ public class LockableObject : MonoBehaviour
         isLocked = false;
         isOpen = true;
 
-        if (animator != null)
+        if (animator != null && !string.IsNullOrEmpty(openTrigger))
         {
             animator.SetTrigger(openTrigger);
         }
 
         if (containedObject != null)
         {
-            containedObject.SetActive(true); // Reveal what's inside
+            containedObject.SetActive(true);
         }
 
-        Debug.Log($"{gameObject.name} unlocked!");
+        Debug.Log($"[{name}] Unlocked!");
     }
 
-    // Optional: for player interaction
+    /// <summary>
+    /// Used by interaction systems to check if this lockable object can be opened.
+    /// </summary>
+    /// <returns>True if locked and not already open.</returns>
     public bool CanInteract()
     {
         return isLocked && !isOpen;

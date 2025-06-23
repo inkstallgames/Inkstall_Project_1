@@ -6,11 +6,11 @@ public class PropsSpawner : MonoBehaviour
     [Header("Assign all props prefabs")]
     [SerializeField] private GameObject[] propsPrefabs;
 
-    [Header("Assign Spawn Points Parent")]
+    [Header("Assign World Spawn Points Parent")]
     [SerializeField] private Transform spawnPointsParent;
 
-    [Header("Assign Container Objects")]
-    [SerializeField] private Container[] containers; // Lockable containers
+    [Header("Assign Lockable Containers (Rooms, Chests, etc.)")]
+    [SerializeField] private Container[] containers;
 
     [Header("Prop Settings")]
     [Min(1)] public int totalPropsToSpawn = 15;
@@ -24,6 +24,7 @@ public class PropsSpawner : MonoBehaviour
 
     void Awake()
     {
+        // Cache all spawn point transforms from parent
         List<Transform> points = new List<Transform>();
         foreach (Transform child in spawnPointsParent)
             points.Add(child);
@@ -37,16 +38,17 @@ public class PropsSpawner : MonoBehaviour
 
     void SpawnRandomProps()
     {
-        if (propsPrefabs.Length == 0 || spawnPoints.Length == 0)
+        if (propsPrefabs.Length == 0 || (spawnPoints.Length == 0 && containers.Length == 0))
         {
-            Debug.LogError("No prop prefabs or spawn points assigned!");
+            Debug.LogError("No prop prefabs, spawn points, or containers assigned!");
             return;
         }
 
+        // Shuffle world spawn points
         List<Transform> shuffledSpawns = new List<Transform>(spawnPoints);
         Shuffle(shuffledSpawns);
 
-        int spawnCount = Mathf.Min(totalPropsToSpawn, shuffledSpawns.Count);
+        int spawnCount = totalPropsToSpawn;
         spawnedProps.Clear();
 
         for (int i = 0; i < spawnCount; i++)
@@ -54,25 +56,27 @@ public class PropsSpawner : MonoBehaviour
             GameObject prefab = propsPrefabs[Random.Range(0, propsPrefabs.Length)];
             GameObject prop = null;
 
-            // Try to use a container
+            // --- Try spawning inside a container ---
             if (Random.value < chanceToUseContainer && containers.Length > 0)
             {
                 List<Container> available = new List<Container>();
                 foreach (var c in containers)
+                {
                     if (!c.hasPropInside)
                         available.Add(c);
+                }
 
                 if (available.Count > 0)
                 {
                     Container chosen = available[Random.Range(0, available.Count)];
                     prop = Instantiate(prefab);
-                    prop.SetActive(false);
+                    prop.SetActive(false); // Will be revealed when task is completed
                     chosen.InsertProp(prop);
                 }
             }
 
-            // Otherwise, use world spawn
-            if (prop == null)
+            // --- Fallback to world position ---
+            if (prop == null && i < shuffledSpawns.Count)
             {
                 Vector3 spawnPos = shuffledSpawns[i].position;
                 if (preventOverlap && IsTooClose(spawnPos)) continue;
@@ -80,14 +84,17 @@ public class PropsSpawner : MonoBehaviour
                 prop = Instantiate(prefab, spawnPos, shuffledSpawns[i].rotation);
             }
 
+            if (prop == null) continue;
+
+            // Ensure prop has identity and mark as real by default
             var identity = prop.GetComponent<PropIdentity>() ?? prop.AddComponent<PropIdentity>();
             identity.isFake = false;
 
             spawnedProps.Add(prop);
         }
 
+        // --- Assign fake props ---
         Shuffle(spawnedProps);
-
         for (int i = 0; i < fakePropCount && i < spawnedProps.Count; i++)
         {
             GameObject fakeProp = spawnedProps[i];
@@ -116,6 +123,7 @@ public class PropsSpawner : MonoBehaviour
     {
         foreach (var existing in spawnedProps)
         {
+            if (existing == null) continue;
             if (Vector3.Distance(existing.transform.position, newPos) < minDistanceBetweenProps)
                 return true;
         }

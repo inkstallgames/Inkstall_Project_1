@@ -17,10 +17,9 @@ public class LockableObject : MonoBehaviour
 
     private bool isOpen = false;
 
-    /// <summary>
+
     /// Called (e.g. by TaskManager) when the unlocking condition is satisfied.
     /// Unlocks this object, plays animation, and reveals contained object.
-    /// </summary>
     public void Unlock()
     {
         if (!isLocked) return;
@@ -41,9 +40,8 @@ public class LockableObject : MonoBehaviour
         Debug.Log($"[{name}] Unlocked!");
     }
 
-    /// <summary>
+
     /// Used by interaction systems to check if this lockable object can be opened.
-    /// </summary>
     /// <returns>True if locked and not already open.</returns>
     public bool CanInteract()
     {

@@ -9,15 +9,18 @@ public class PropsSpawner : MonoBehaviour
     [Header("Assign Spawn Points Parent")]
     [SerializeField] private Transform spawnPointsParent;
 
+    [Header("Assign Container Objects")]
+    [SerializeField] private Container[] containers; // Lockable containers
+
     [Header("Prop Settings")]
     [Min(1)] public int totalPropsToSpawn = 15;
     [Min(1)] public int fakePropCount = 5;
     public float minDistanceBetweenProps = 3f;
     public bool preventOverlap = true;
+    [Range(0f, 1f)] public float chanceToUseContainer = 0.3f;
 
     private Transform[] spawnPoints;
     private List<GameObject> spawnedProps = new List<GameObject>();
-
 
     void Awake()
     {
@@ -48,11 +51,34 @@ public class PropsSpawner : MonoBehaviour
 
         for (int i = 0; i < spawnCount; i++)
         {
-            Vector3 spawnPos = shuffledSpawns[i].position;
-            if (preventOverlap && IsTooClose(spawnPos)) continue;
-
             GameObject prefab = propsPrefabs[Random.Range(0, propsPrefabs.Length)];
-            GameObject prop = Instantiate(prefab, spawnPos, shuffledSpawns[i].rotation);
+            GameObject prop = null;
+
+            // Try to use a container
+            if (Random.value < chanceToUseContainer && containers.Length > 0)
+            {
+                List<Container> available = new List<Container>();
+                foreach (var c in containers)
+                    if (!c.hasPropInside)
+                        available.Add(c);
+
+                if (available.Count > 0)
+                {
+                    Container chosen = available[Random.Range(0, available.Count)];
+                    prop = Instantiate(prefab);
+                    prop.SetActive(false);
+                    chosen.InsertProp(prop);
+                }
+            }
+
+            // Otherwise, use world spawn
+            if (prop == null)
+            {
+                Vector3 spawnPos = shuffledSpawns[i].position;
+                if (preventOverlap && IsTooClose(spawnPos)) continue;
+
+                prop = Instantiate(prefab, spawnPos, shuffledSpawns[i].rotation);
+            }
 
             var identity = prop.GetComponent<PropIdentity>() ?? prop.AddComponent<PropIdentity>();
             identity.isFake = false;
@@ -113,7 +139,6 @@ public class PropsSpawner : MonoBehaviour
             Gizmos.color = Color.red;
             foreach (var prop in spawnedProps)
             {
-                // ✅ Skip if destroyed
                 if (prop == null || prop.Equals(null)) continue;
 
                 var identity = prop.GetComponent<PropIdentity>();
@@ -125,5 +150,4 @@ public class PropsSpawner : MonoBehaviour
         }
     }
 #endif
-
 }

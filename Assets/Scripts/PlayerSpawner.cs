@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class PlayerSpawner : MonoBehaviour
 {
-    [Header("Assign the Player Prefab")]
-    [SerializeField] private GameObject playerPrefab;
+    [Header("Assign the Existing Player in Scene")]
+    [SerializeField] private GameObject player;  // Reference to the player already in the scene
 
     [Header("Assign Spawn Points Parent")]
     [SerializeField] private Transform spawnPointsParent;
@@ -12,6 +12,7 @@ public class PlayerSpawner : MonoBehaviour
 
     void Awake()
     {
+        // Cache all spawn point transforms
         spawnPoints = new Transform[spawnPointsParent.childCount];
         for (int i = 0; i < spawnPointsParent.childCount; i++)
         {
@@ -21,25 +22,24 @@ public class PlayerSpawner : MonoBehaviour
 
     void Start()
     {
-        SpawnPlayer();
+        MovePlayerToSpawn();
     }
 
-    void SpawnPlayer()
+    void MovePlayerToSpawn()
     {
-        if (playerPrefab == null || spawnPoints.Length == 0)
+        if (player == null || spawnPoints.Length == 0)
         {
-            // Error Handling
-            Debug.LogWarning("Missing player prefab or player spawn points!");
+            Debug.LogWarning("Missing player reference or spawn points!");
             return;
         }
 
         // Pick a random spawn point
         Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
-        // Instantiate player at the chosen spawn point
-        GameObject player = Instantiate(playerPrefab, spawnPoint.position, spawnPoint.rotation);
+        // Move the existing player to the spawn point
+        player.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 
-        // ✅ Assign spawned player to GameManager
+        // ✅ Assign to GameManager if needed
         if (GameManager.Instance != null)
         {
             GameManager.Instance.playerController = player;

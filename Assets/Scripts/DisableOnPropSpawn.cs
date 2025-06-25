@@ -12,6 +12,10 @@ public class DisableOnPropSpawn : MonoBehaviour
     public float checkInterval = 1f; // How often to check (seconds)
     public bool disableIfAllSpawned = false; // Disable only if ALL spawn points are filled
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip lockedSound;
+    private AudioSource audioSource;
+
     private bool hasDisabled = false;
 
     void Start()
@@ -20,6 +24,13 @@ public class DisableOnPropSpawn : MonoBehaviour
         {
             Debug.LogWarning($"[{gameObject.name}] No interaction script assigned.");
             return;
+        }
+
+        // Setup audio source
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
         }
 
         InvokeRepeating(nameof(CheckSpawnPoints), 0f, checkInterval);
@@ -60,5 +71,15 @@ public class DisableOnPropSpawn : MonoBehaviour
         interactionComponent.enabled = false;
         hasDisabled = true;
         Debug.Log($"[{gameObject.name}] Interaction disabled due to spawned prop.");
+    }
+    
+    // Public method to play locked sound when interaction is attempted
+    public void PlayLockedSound()
+    {
+        if (lockedSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(lockedSound);
+            Debug.Log($"[{gameObject.name}] Played locked sound.");
+        }
     }
 }

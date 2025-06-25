@@ -1584,8 +1584,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 99878104}
-  - component: {fileID: 99878105}
-  - component: {fileID: 99878106}
   m_Layer: 0
   m_Name: TaskManager
   m_TagString: Untagged
@@ -1608,38 +1606,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &99878105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 99878103}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e3d4497ddfb2e44e9bb254f01347030, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quizPanel: {fileID: 1784132479}
---- !u!114 &99878106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 99878103}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c50f35996f78e044db830178f83cfdf1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  questionText: {fileID: 2126602334}
-  optionButtons:
-  - {fileID: 1872176522}
-  - {fileID: 1624809918}
-  - {fileID: 1090729703}
-  - {fileID: 1453967875}
-  taskDatabase: {fileID: 11400000, guid: 715910d973995a14b944da153336e71b, type: 2}
 --- !u!1001 &100981358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8454,29 +8420,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1164474400}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &648866855 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3943683173585810696, guid: 3a62d6ac10141ce4297fac8c809c8a4b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1041139545}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &648866862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 648866855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9619b597d2ce9434d8d175e7fed8d36b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isLocked: 0
-  contentType: 0
-  containedObject: {fileID: 0}
-  animator: {fileID: 0}
-  openTrigger: Open
 --- !u!1001 &659754028
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13611,11 +13554,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3943683173585810696, guid: 3a62d6ac10141ce4297fac8c809c8a4b,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 648866862}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a62d6ac10141ce4297fac8c809c8a4b, type: 3}
 --- !u!4 &1041139546 stripped
 Transform:
@@ -31929,7 +31868,8 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3100890967424655248, guid: c6879d46b9a8fe9489d39e1e32d043de, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

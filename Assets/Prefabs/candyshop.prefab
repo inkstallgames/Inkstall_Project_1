@@ -16511,7 +16511,6 @@ GameObject:
   - component: {fileID: 5614827726270219612}
   - component: {fileID: 7222625949139039655}
   - component: {fileID: 7496258968393902790}
-  - component: {fileID: 3100890967424655248}
   m_Layer: 0
   m_Name: Door_Pivot
   m_TagString: Untagged
@@ -16574,23 +16573,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.04485144, y: 0.11623835, z: 0.008336262}
   m_Center: {x: -0.020412719, y: 0.004143238, z: -0.0010047753}
---- !u!114 &3100890967424655248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8457291952513053104}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9619b597d2ce9434d8d175e7fed8d36b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isLocked: 0
-  contentType: 0
-  containedObject: {fileID: 0}
-  animator: {fileID: 0}
-  openTrigger: Open
 --- !u!1 &8463078723809468731
 GameObject:
   m_ObjectHideFlags: 0

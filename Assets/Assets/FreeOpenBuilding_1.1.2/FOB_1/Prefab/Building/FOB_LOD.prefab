@@ -12788,11 +12788,11 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.60041606
+  - screenRelativeHeight: 0.24994253
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 1897877685945404083}
-  - screenRelativeHeight: 0.29941905
+  - screenRelativeHeight: 0.096729815
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 1896562310340094133}
@@ -13048,7 +13048,7 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.20320915
+  - screenRelativeHeight: 0.25991476
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 1896273787482459739}
@@ -21077,11 +21077,11 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.60041606
+  - screenRelativeHeight: 0.07986579
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 1897856842943693751}
-  - screenRelativeHeight: 0.29941905
+  - screenRelativeHeight: 0.050070893
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 1896377282922527045}
@@ -23529,7 +23529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openRotation: {x: 0, y: -90, z: 0}
+  openRotation: {x: 0, y: 90, z: 0}
   rotationSpeed: 3
 --- !u!65 &4211693395034648738
 BoxCollider:
@@ -24129,7 +24129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openRotation: {x: 0, y: 90, z: 0}
+  openRotation: {x: 0, y: -90, z: 0}
   rotationSpeed: 3
 --- !u!65 &3716109006037328118
 BoxCollider:
@@ -27392,12 +27392,12 @@ LODGroup:
   m_GameObject: {fileID: 1875161217831160465}
   serializedVersion: 2
   m_LocalReferencePoint: {x: 0.4850521, y: 8.110453, z: 0.1721654}
-  m_Size: 20.48573
+  m_Size: 20.48574
   m_FadeMode: 0
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.54886603
+  - screenRelativeHeight: 0.45296025
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 3528340504504319477}
@@ -27418,7 +27418,6 @@ LODGroup:
     - renderer: {fileID: 1875161217791964534}
     - renderer: {fileID: 1875161217354852963}
     - renderer: {fileID: 1875161217318005693}
-    - renderer: {fileID: 1875161218631431314}
     - renderer: {fileID: 1875161217284459996}
     - renderer: {fileID: 1875161216666732303}
     - renderer: {fileID: 1875161216943688868}
@@ -27818,7 +27817,7 @@ LODGroup:
     - renderer: {fileID: 1875161217534590704}
     - renderer: {fileID: 1875161217065745160}
     - renderer: {fileID: 1875161217433655244}
-  - screenRelativeHeight: 0.3995167
+  - screenRelativeHeight: 0.29498664
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 3580679283147039350}
@@ -28772,13 +28771,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1875161217973637568}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: 0.045215752, z: 0, w: 0.9989773}
   m_LocalPosition: {x: -0.9646631, y: 0, z: 0.9517771}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1875161217974128098}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 5.183, z: 0}
 --- !u!33 &1875161217972800960
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -31785,7 +31784,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openRotation: {x: 0, y: 90, z: 0}
+  openRotation: {x: 0, y: -90, z: 0}
   rotationSpeed: 3
 --- !u!65 &609950964613337250
 BoxCollider:
@@ -33888,7 +33887,7 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.1
+  - screenRelativeHeight: 0.15452462
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 3108896010025756943}
@@ -47634,7 +47633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openRotation: {x: 0, y: 90, z: 0}
+  openRotation: {x: 0, y: -90, z: 0}
   rotationSpeed: 3
 --- !u!1 &3973416651379492263
 GameObject:
@@ -81043,7 +81042,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openRotation: {x: 0, y: -90, z: 0}
+  openRotation: {x: 0, y: 90, z: 0}
   rotationSpeed: 3
 --- !u!65 &7930202526892736084
 BoxCollider:
@@ -82538,7 +82537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openRotation: {x: 0, y: 90, z: 0}
+  openRotation: {x: 0, y: -90, z: 0}
   rotationSpeed: 3
 --- !u!65 &5859018447925814167
 BoxCollider:
@@ -83148,7 +83147,7 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.1
+  - screenRelativeHeight: 0.14865635
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 5518586502475373474}

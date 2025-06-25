@@ -10,12 +10,18 @@ public class DisableOnPropSpawn : MonoBehaviour
 
     [Header("Check Settings")]
     public float checkInterval = 1f; // How often to check (seconds)
-    public bool disableIfAllSpawned = false; // Optional toggle: disable only if ALL points filled
+    public bool disableIfAllSpawned = false; // Disable only if ALL spawn points are filled
 
     private bool hasDisabled = false;
 
     void Start()
     {
+        if (interactionComponent == null)
+        {
+            Debug.LogWarning($"[{gameObject.name}] No interaction script assigned.");
+            return;
+        }
+
         InvokeRepeating(nameof(CheckSpawnPoints), 0f, checkInterval);
     }
 
@@ -29,7 +35,7 @@ public class DisableOnPropSpawn : MonoBehaviour
             foreach (Transform point in spawnPoints)
             {
                 if (point.childCount == 0)
-                    return; // At least one empty — exit
+                    return; // At least one spawn point is empty — don't disable yet
             }
         }
         else
@@ -53,6 +59,6 @@ public class DisableOnPropSpawn : MonoBehaviour
     {
         interactionComponent.enabled = false;
         hasDisabled = true;
-        Debug.Log($"[{gameObject.name}] Prop detected. {interactionComponent.GetType().Name} disabled.");
+        Debug.Log($"[{gameObject.name}] Interaction disabled due to spawned prop.");
     }
 }

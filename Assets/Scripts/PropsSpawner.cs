@@ -58,6 +58,12 @@ public class PropsSpawner : MonoBehaviour
             GameObject prefab = propsPrefabs[Random.Range(0, propsPrefabs.Length)];
             GameObject prop = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
 
+            // 🔧 Important line for child-based detection
+            prop.transform.SetParent(spawnPoint); // Makes prop a child of its spawn point
+
+            // Optional: Keep world position if your prefab has offsets
+            // prop.transform.SetParent(spawnPoint, worldPositionStays: true);
+
             var identity = prop.GetComponent<PropIdentity>() ?? prop.AddComponent<PropIdentity>();
             identity.isFake = false;
 

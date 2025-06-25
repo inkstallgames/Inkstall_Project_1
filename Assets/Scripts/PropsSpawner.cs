@@ -58,16 +58,6 @@ public class PropsSpawner : MonoBehaviour
             GameObject prefab = propsPrefabs[Random.Range(0, propsPrefabs.Length)];
             GameObject prop = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
 
-            // Lock associated object if this spawn point has one
-            var spData = spawnPoint.GetComponent<SpawnPointData>();
-            if (spData != null && spData.associatedLock != null)
-            {
-                spData.isUsed = true;
-                spData.associatedLock.isLocked = true;
-                spData.associatedLock.containedObject = prop;
-                prop.SetActive(false); // Hide until task is completed
-            }
-
             var identity = prop.GetComponent<PropIdentity>() ?? prop.AddComponent<PropIdentity>();
             identity.isFake = false;
 

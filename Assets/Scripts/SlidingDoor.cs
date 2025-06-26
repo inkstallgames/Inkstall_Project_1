@@ -8,6 +8,7 @@ public class SlidingDoor : MonoBehaviour
     private Vector3 closedPosition;
     private Vector3 targetPosition;
     private bool isOpen = false;
+    private Vector3 currentVelocity; // Added to use SmoothDamp instead of Lerp
 
     void Start()
     {
@@ -17,7 +18,13 @@ public class SlidingDoor : MonoBehaviour
 
     void Update()
     {
-        transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * slideSpeed);
+        // Using SmoothDamp instead of Lerp to avoid creating new Vector3 objects
+        transform.localPosition = Vector3.SmoothDamp(
+            transform.localPosition, 
+            targetPosition, 
+            ref currentVelocity, 
+            1f / slideSpeed
+        );
     }
 
     public void Interact()

@@ -12,9 +12,10 @@ public class PlayerSpawner : MonoBehaviour
 
     void Awake()
     {
-        // Cache all spawn point transforms
-        spawnPoints = new Transform[spawnPointsParent.childCount];
-        for (int i = 0; i < spawnPointsParent.childCount; i++)
+        // Pre-allocate and directly fill the array in one step
+        int childCount = spawnPointsParent.childCount;
+        spawnPoints = new Transform[childCount];
+        for (int i = 0; i < childCount; i++)
         {
             spawnPoints[i] = spawnPointsParent.GetChild(i);
         }
@@ -39,7 +40,7 @@ public class PlayerSpawner : MonoBehaviour
         // Move the existing player to the spawn point
         player.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
 
-        // ✅ Assign to GameManager if needed
+        // Assign to GameManager if needed
         if (GameManager.Instance != null)
         {
             GameManager.Instance.playerController = player;

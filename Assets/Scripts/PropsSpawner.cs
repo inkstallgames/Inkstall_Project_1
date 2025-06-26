@@ -17,13 +17,22 @@ public class PropsSpawner : MonoBehaviour
 
     private Transform[] spawnPoints;
     private List<GameObject> spawnedProps = new List<GameObject>();
+    
+    // Pre-allocate lists to avoid GC allocations
+    private List<Transform> shuffledSpawns;
 
     void Awake()
     {
-        List<Transform> points = new List<Transform>();
-        foreach (Transform child in spawnPointsParent)
-            points.Add(child);
-        spawnPoints = points.ToArray();
+        // Pre-allocate the array based on expected size
+        int childCount = spawnPointsParent.childCount;
+        spawnPoints = new Transform[childCount];
+        shuffledSpawns = new List<Transform>(childCount);
+        
+        // Directly fill the array without creating a temporary list
+        for (int i = 0; i < childCount; i++)
+        {
+            spawnPoints[i] = spawnPointsParent.GetChild(i);
+        }
     }
 
     void Start()
@@ -39,7 +48,13 @@ public class PropsSpawner : MonoBehaviour
             return;
         }
 
-        List<Transform> shuffledSpawns = new List<Transform>(spawnPoints);
+        // Clear and reuse the list instead of creating a new one
+        shuffledSpawns.Clear();
+        for (int i = 0; i < spawnPoints.Length; i++)
+        {
+            shuffledSpawns.Add(spawnPoints[i]);
+        }
+        
         Shuffle(shuffledSpawns);
 
         int spawnCount = Mathf.Min(totalPropsToSpawn, shuffledSpawns.Count);
@@ -93,7 +108,9 @@ public class PropsSpawner : MonoBehaviour
         for (int i = 0; i < list.Count; i++)
         {
             int rnd = Random.Range(i, list.Count);
-            (list[i], list[rnd]) = (list[rnd], list[i]);
+            T temp = list[i];
+            list[i] = list[rnd];
+            list[rnd] = temp;
         }
     }
 

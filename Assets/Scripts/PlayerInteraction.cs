@@ -9,6 +9,17 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioClip lockedDoorSound;
     private AudioSource audioSource;
+    
+    // Cache raycast data to prevent GC allocations
+    private Ray interactionRay;
+    private RaycastHit hitInfo;
+    
+    // Cache component references
+    private CollectibleProp cachedCollectible;
+    private DoorInteraction cachedDoor;
+    private SlidingDoor cachedSlidingDoor;
+    private DrawerMech cachedDrawer;
+    private DisableOnPropSpawn cachedDisabler;
 
     void Start()
     {
@@ -18,6 +29,9 @@ public class PlayerInteraction : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+        
+        // Initialize interactionRay
+        interactionRay = new Ray();
     }
 
     void Update()
@@ -30,29 +44,34 @@ public class PlayerInteraction : MonoBehaviour
 
     void TryInteract()
     {
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
+        // Reuse Ray object instead of creating a new one
+        interactionRay.origin = playerCamera.transform.position;
+        interactionRay.direction = playerCamera.transform.forward;
+        
+        if (Physics.Raycast(interactionRay, out hitInfo, interactDistance))
         {
+            GameObject hitObject = hitInfo.collider.gameObject;
+            
             // Check if it's a collectible
-            CollectibleProp collectible = hit.collider.GetComponent<CollectibleProp>();
-            if (collectible != null)
+            cachedCollectible = hitObject.GetComponent<CollectibleProp>();
+            if (cachedCollectible != null)
             {
-                collectible.Interact();
+                cachedCollectible.Interact();
                 return;
             }
 
             // Check if it's a rotating door
-            DoorInteraction door = hit.collider.GetComponent<DoorInteraction>();
-            if (door != null)
+            cachedDoor = hitObject.GetComponent<DoorInteraction>();
+            if (cachedDoor != null)
             {
                 // Check if the door interaction is disabled (locked)
-                if (!door.enabled)
+                if (!cachedDoor.enabled)
                 {
                     // Try to find DisableOnPropSpawn component to play locked sound
-                    DisableOnPropSpawn disabler = hit.collider.GetComponent<DisableOnPropSpawn>();
-                    if (disabler != null)
+                    cachedDisabler = hitObject.GetComponent<DisableOnPropSpawn>();
+                    if (cachedDisabler != null)
                     {
-                        disabler.PlayLockedSound();
+                        cachedDisabler.PlayLockedSound();
                     }
                     else
                     {
@@ -63,22 +82,22 @@ public class PlayerInteraction : MonoBehaviour
                     return;
                 }
                 
-                door.Interact();
+                cachedDoor.Interact();
                 return;
             }
 
             // Check if it's a sliding door
-            SlidingDoor sliding = hit.collider.GetComponent<SlidingDoor>();
-            if (sliding != null)
+            cachedSlidingDoor = hitObject.GetComponent<SlidingDoor>();
+            if (cachedSlidingDoor != null)
             {
                 // Check if the sliding door is disabled (locked)
-                if (!sliding.enabled)
+                if (!cachedSlidingDoor.enabled)
                 {
                     // Try to find DisableOnPropSpawn component to play locked sound
-                    DisableOnPropSpawn disabler = hit.collider.GetComponent<DisableOnPropSpawn>();
-                    if (disabler != null)
+                    cachedDisabler = hitObject.GetComponent<DisableOnPropSpawn>();
+                    if (cachedDisabler != null)
                     {
-                        disabler.PlayLockedSound();
+                        cachedDisabler.PlayLockedSound();
                     }
                     else
                     {
@@ -89,22 +108,22 @@ public class PlayerInteraction : MonoBehaviour
                     return;
                 }
                 
-                sliding.Interact();
+                cachedSlidingDoor.Interact();
                 return;
             }
 
             // Check if it's a drawer
-            DrawerMech drawer = hit.collider.GetComponent<DrawerMech>();
-            if (drawer != null)
+            cachedDrawer = hitObject.GetComponent<DrawerMech>();
+            if (cachedDrawer != null)
             {
                 // Check if the drawer interaction is disabled (locked)
-                if (!drawer.enabled)
+                if (!cachedDrawer.enabled)
                 {
                     // Try to find DisableOnPropSpawn component to play locked sound
-                    DisableOnPropSpawn disabler = hit.collider.GetComponent<DisableOnPropSpawn>();
-                    if (disabler != null)
+                    cachedDisabler = hitObject.GetComponent<DisableOnPropSpawn>();
+                    if (cachedDisabler != null)
                     {
-                        disabler.PlayLockedSound();
+                        cachedDisabler.PlayLockedSound();
                     }
                     else
                     {
@@ -115,12 +134,12 @@ public class PlayerInteraction : MonoBehaviour
                     return;
                 }
                 
-                drawer.Interact();
+                cachedDrawer.Interact();
                 return;
             }
 
             // Optional: Debug info
-            Debug.Log($"🟤 No interactable found on: {hit.collider.gameObject.name}");
+            Debug.Log($"🟤 No interactable found on: {hitObject.name}");
         }
     }
     

@@ -1,6 +1,6 @@
-
 using UnityEngine;
 using TMPro;
+using System.Text;
 
 public class GameTimer : MonoBehaviour
 {
@@ -12,6 +12,10 @@ public class GameTimer : MonoBehaviour
 
     private bool warningTriggered = false;
     private bool tickingStarted = false;
+    
+    // Cache for string formatting to avoid GC allocations
+    private StringBuilder timerStringBuilder;
+    private string minutesStr, secondsStr;
 
     [Header("Tick Sound Settings")]
     [SerializeField] private AudioClip tickSound;
@@ -21,6 +25,10 @@ public class GameTimer : MonoBehaviour
     void Start()
     {
         currentTime = totalTime;
+        
+        // Initialize string builder to avoid GC allocations
+        timerStringBuilder = new StringBuilder(8);
+        
         UpdateTimerUI();
 
         if (tickSound != null)
@@ -43,7 +51,7 @@ public class GameTimer : MonoBehaviour
         if (!warningTriggered && currentTime <= 60f)
         {
             warningTriggered = true;
-            Debug.Log("⚠️ Only 1 minute remaining!");
+            Debug.Log(" Only 1 minute remaining!");
         }
 
         if (!tickingStarted && currentTime <= 30f)
@@ -64,7 +72,23 @@ public class GameTimer : MonoBehaviour
     {
         int minutes = Mathf.FloorToInt(currentTime / 60f);
         int seconds = Mathf.FloorToInt(currentTime % 60f);
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        
+        // Use cached StringBuilder instead of string.Format to avoid GC allocations
+        timerStringBuilder.Clear();
+        
+        // Format minutes with leading zero if needed
+        if (minutes < 10)
+            timerStringBuilder.Append('0');
+        timerStringBuilder.Append(minutes);
+        
+        timerStringBuilder.Append(':');
+        
+        // Format seconds with leading zero if needed
+        if (seconds < 10)
+            timerStringBuilder.Append('0');
+        timerStringBuilder.Append(seconds);
+        
+        timerText.text = timerStringBuilder.ToString();
 
         if (currentTime <= 30f)
             timerText.color = Color.red;
@@ -76,7 +100,7 @@ public class GameTimer : MonoBehaviour
 
     void EndGame()
     {
-        Debug.Log("Time’s Up! Game Over.");
+        Debug.Log("Time's Up! Game Over.");
 
         if (timerText != null)
             timerText.gameObject.SetActive(false);

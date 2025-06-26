@@ -4,8 +4,8 @@ using UnityEngine;
 // Add this component to prop prefabs to define their fixed spawn locations
 public class PropFixedSpawnLocations : MonoBehaviour
 {
-    [Tooltip("Direct references to valid spawn points for this prop")]
-    public Transform[] validSpawnPoints;
+    [Tooltip("Names of valid spawn points for this prop")]
+    public string[] validSpawnPointNames;
     
     [Tooltip("Maximum number of this prop type that can spawn")]
     [Range(1, 20)]
@@ -15,26 +15,36 @@ public class PropFixedSpawnLocations : MonoBehaviour
     [Range(1, 100)]
     public int spawnWeight = 50;
     
+    // Pre-allocated list to avoid GC allocations
+    private static readonly List<Transform> tempAvailablePoints = new List<Transform>(20);
+    
     // Returns a random valid spawn point that isn't already occupied
-    public Transform GetRandomSpawnPoint()
+    public Transform GetRandomSpawnPoint(Dictionary<string, Transform> allSpawnPoints)
     {
-        if (validSpawnPoints == null || validSpawnPoints.Length == 0)
+        if (validSpawnPointNames == null || validSpawnPointNames.Length == 0 || allSpawnPoints == null)
             return null;
             
-        // Create a list of unoccupied spawn points
-        List<Transform> availablePoints = new List<Transform>();
-        foreach (var point in validSpawnPoints)
+        // Reuse the pre-allocated list instead of creating a new one
+        tempAvailablePoints.Clear();
+        
+        // Find unoccupied spawn points from our valid list
+        foreach (string pointName in validSpawnPointNames)
         {
-            if (point != null && point.childCount == 0)
+            if (string.IsNullOrEmpty(pointName)) continue;
+            
+            if (allSpawnPoints.TryGetValue(pointName, out Transform point))
             {
-                availablePoints.Add(point);
+                if (point != null && point.childCount == 0)
+                {
+                    tempAvailablePoints.Add(point);
+                }
             }
         }
         
-        if (availablePoints.Count == 0)
+        if (tempAvailablePoints.Count == 0)
             return null;
             
         // Return a random available spawn point
-        return availablePoints[Random.Range(0, availablePoints.Count)];
+        return tempAvailablePoints[Random.Range(0, tempAvailablePoints.Count)];
     }
 }

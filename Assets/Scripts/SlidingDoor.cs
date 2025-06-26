@@ -2,13 +2,32 @@ using UnityEngine;
 
 public class SlidingDoor : MonoBehaviour
 {
-    public Vector3 openOffset = new Vector3(2f, 0, 0); // How far the door slides
-    public float slideSpeed = 2f;
+    [Header("Door Settings")]
+    [SerializeField] private Vector3 openOffset = new Vector3(2f, 0, 0); // How far the door slides
+    [SerializeField] private float slideSpeed = 2f;
+    [SerializeField] private AudioClip slideSound;
 
     private Vector3 closedPosition;
     private Vector3 targetPosition;
     private bool isOpen = false;
-    private Vector3 currentVelocity; // Added to use SmoothDamp instead of Lerp
+    private Vector3 currentVelocity; // For SmoothDamp
+    private AudioSource audioSource;
+    private float smoothTime; // Cached for performance
+
+    void Awake()
+    {
+        // Cache the inverse of slideSpeed for better performance
+        smoothTime = slideSpeed > 0 ? 1f / slideSpeed : 0.5f;
+        
+        // Get or add AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null && slideSound != null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 1f; // 3D sound
+        }
+    }
 
     void Start()
     {
@@ -23,7 +42,7 @@ public class SlidingDoor : MonoBehaviour
             transform.localPosition, 
             targetPosition, 
             ref currentVelocity, 
-            1f / slideSpeed
+            smoothTime
         );
     }
 
@@ -31,5 +50,11 @@ public class SlidingDoor : MonoBehaviour
     {
         isOpen = !isOpen;
         targetPosition = isOpen ? closedPosition + openOffset : closedPosition;
+        
+        // Play sound if available
+        if (audioSource != null && slideSound != null)
+        {
+            audioSource.PlayOneShot(slideSound);
+        }
     }
 }

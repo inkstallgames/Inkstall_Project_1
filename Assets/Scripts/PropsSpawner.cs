@@ -6,7 +6,7 @@ public class PropsSpawner : MonoBehaviour
     [Header("Assign all props prefabs")]
     [SerializeField] private GameObject[] propsPrefabs;
 
-    [Header("Assign World Spawn Points Parent")]
+    [Header("Assign Spawn Points Parent")]
     [SerializeField] private Transform spawnPointsParent;
 
     [Header("Prop Settings")]
@@ -15,24 +15,17 @@ public class PropsSpawner : MonoBehaviour
     public float minDistanceBetweenProps = 3f;
     public bool preventOverlap = true;
 
-    private Transform[] spawnPoints;
     private List<GameObject> spawnedProps = new List<GameObject>();
     
     // Pre-allocate lists to avoid GC allocations
-    private List<Transform> shuffledSpawns;
+    private List<GameObject> availablePrefabs;
+    private Dictionary<GameObject, int> prefabSpawnCounts;
 
     void Awake()
     {
-        // Pre-allocate the array based on expected size
-        int childCount = spawnPointsParent.childCount;
-        spawnPoints = new Transform[childCount];
-        shuffledSpawns = new List<Transform>(childCount);
-        
-        // Directly fill the array without creating a temporary list
-        for (int i = 0; i < childCount; i++)
-        {
-            spawnPoints[i] = spawnPointsParent.GetChild(i);
-        }
+        // Initialize collections to avoid GC allocations
+        availablePrefabs = new List<GameObject>(propsPrefabs.Length);
+        prefabSpawnCounts = new Dictionary<GameObject, int>();
     }
 
     void Start()
@@ -42,53 +35,90 @@ public class PropsSpawner : MonoBehaviour
 
     void SpawnRandomProps()
     {
-        if (propsPrefabs.Length == 0 || spawnPoints.Length == 0)
+        if (propsPrefabs.Length == 0)
         {
-            Debug.LogError("No prop prefabs or spawn points assigned!");
+            Debug.LogError("No prop prefabs assigned!");
             return;
         }
 
-        // Clear and reuse the list instead of creating a new one
-        shuffledSpawns.Clear();
-        for (int i = 0; i < spawnPoints.Length; i++)
+        spawnedProps.Clear();
+        prefabSpawnCounts.Clear();
+        
+        // Create a working copy of prefabs we can modify
+        availablePrefabs.Clear();
+        foreach (var prefab in propsPrefabs)
         {
-            shuffledSpawns.Add(spawnPoints[i]);
+            if (prefab != null && prefab.GetComponent<PropFixedSpawnLocations>() != null)
+            {
+                availablePrefabs.Add(prefab);
+                prefabSpawnCounts[prefab] = 0;
+            }
         }
         
-        Shuffle(shuffledSpawns);
-
-        int spawnCount = Mathf.Min(totalPropsToSpawn, shuffledSpawns.Count);
-        spawnedProps.Clear();
-
-        int spawned = 0;
-        int attempts = 0;
-
-        while (spawned < spawnCount && attempts < shuffledSpawns.Count)
+        int totalSpawned = 0;
+        
+        // Keep spawning until we reach our target or run out of options
+        while (totalSpawned < totalPropsToSpawn && availablePrefabs.Count > 0)
         {
-            Transform spawnPoint = shuffledSpawns[attempts];
-            attempts++;
-
-            if (preventOverlap && IsTooClose(spawnPoint.position)) continue;
-
-            GameObject prefab = propsPrefabs[Random.Range(0, propsPrefabs.Length)];
-            GameObject prop = Instantiate(prefab, spawnPoint.position, spawnPoint.rotation);
-
-            // 🔧 Important line for child-based detection
-            prop.transform.SetParent(spawnPoint); // Makes prop a child of its spawn point
-
-            // Optional: Keep world position if your prefab has offsets
-            // prop.transform.SetParent(spawnPoint, worldPositionStays: true);
-
+            // Select a random prefab
+            int randomIndex = Random.Range(0, availablePrefabs.Count);
+            GameObject selectedPrefab = availablePrefabs[randomIndex];
+            
+            // Get the prop's spawn config
+            PropFixedSpawnLocations config = selectedPrefab.GetComponent<PropFixedSpawnLocations>();
+            
+            // Let the prop decide where it should spawn
+            Transform spawnPoint = config.GetRandomSpawnPoint();
+            
+            // If no valid spawn point found, remove this prefab and continue
+            if (spawnPoint == null)
+            {
+                availablePrefabs.RemoveAt(randomIndex);
+                continue;
+            }
+            
+            // Check if too close to another prop
+            if (preventOverlap && IsTooClose(spawnPoint.position))
+            {
+                // Try again with the same prefab next iteration
+                continue;
+            }
+            
+            // Spawn the prop
+            GameObject prop = Instantiate(selectedPrefab, spawnPoint.position, spawnPoint.rotation);
+            prop.transform.SetParent(spawnPoint);
+            
             var identity = prop.GetComponent<PropIdentity>() ?? prop.AddComponent<PropIdentity>();
             identity.isFake = false;
-
+            
             spawnedProps.Add(prop);
-            spawned++;
+            totalSpawned++;
+            
+            // Increment the spawn count for this prefab
+            prefabSpawnCounts[selectedPrefab]++;
+            
+            // If we've reached the max count for this prefab, remove it
+            if (prefabSpawnCounts[selectedPrefab] >= config.maxSpawnCount)
+            {
+                availablePrefabs.Remove(selectedPrefab);
+            }
         }
-
+        
         // Assign fake props
+        AssignFakeProps();
+        
+        Debug.Log($"Spawned {spawnedProps.Count} props: {fakePropCount} fake, {spawnedProps.Count - fakePropCount} real.");
+    }
+    
+    private void AssignFakeProps()
+    {
+        // Shuffle the props to randomize which ones are fake
         Shuffle(spawnedProps);
-        for (int i = 0; i < fakePropCount && i < spawnedProps.Count; i++)
+        
+        // Limit fake props to the specified count or available props
+        int fakesToAssign = Mathf.Min(fakePropCount, spawnedProps.Count);
+        
+        for (int i = 0; i < fakesToAssign; i++)
         {
             GameObject fakeProp = spawnedProps[i];
             var identity = fakeProp.GetComponent<PropIdentity>();
@@ -128,17 +158,38 @@ public class PropsSpawner : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if (spawnPointsParent == null) return;
-
-        Gizmos.color = Color.cyan;
-        foreach (Transform child in spawnPointsParent)
+        if (!Application.isPlaying && propsPrefabs != null)
         {
-            if (child != null)
-                Gizmos.DrawWireSphere(child.position, 0.5f);
+            // Draw lines from prefabs to their valid spawn points in edit mode
+            foreach (var prefab in propsPrefabs)
+            {
+                if (prefab == null) continue;
+                
+                PropFixedSpawnLocations config = prefab.GetComponent<PropFixedSpawnLocations>();
+                if (config == null || config.validSpawnPoints == null) continue;
+                
+                // Generate a consistent color for this prefab
+                int hash = prefab.name.GetHashCode();
+                float r = (hash & 0xFF) / 255f;
+                float g = ((hash >> 8) & 0xFF) / 255f;
+                float b = ((hash >> 16) & 0xFF) / 255f;
+                Gizmos.color = new Color(r, g, b, 0.8f);
+                
+                // Draw spheres at each valid spawn point
+                foreach (var spawnPoint in config.validSpawnPoints)
+                {
+                    if (spawnPoint == null) continue;
+                    
+                    Gizmos.DrawWireSphere(spawnPoint.position, 0.5f);
+                    
+                    // Draw prefab name above spawn point
+                    UnityEditor.Handles.Label(spawnPoint.position + Vector3.up * 0.7f, prefab.name);
+                }
+            }
         }
-
-        if (Application.isPlaying && spawnedProps != null)
+        else if (Application.isPlaying && spawnedProps != null)
         {
+            // In play mode, show fake props
             Gizmos.color = Color.red;
             foreach (var prop in spawnedProps)
             {

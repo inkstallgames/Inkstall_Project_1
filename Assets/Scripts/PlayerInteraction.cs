@@ -13,6 +13,8 @@ public class PlayerInteraction : MonoBehaviour
     
     // Cache raycast hit to avoid GC allocations
     private RaycastHit hitInfo;
+    // Cache ray to avoid GC allocations in Update
+    private Ray interactionRay;
     
     // Cache components to avoid repeated GetComponent calls
     private DisableOnPropSpawn cachedDisabler;
@@ -49,8 +51,11 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (playerCamera == null) return;
         
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        if (Physics.Raycast(ray, out hitInfo, interactDistance))
+        // Use cached ray instead of creating a new one
+        interactionRay.origin = playerCamera.transform.position;
+        interactionRay.direction = playerCamera.transform.forward;
+        
+        if (Physics.Raycast(interactionRay, out hitInfo, interactDistance))
         {
             GameObject hitObject = hitInfo.collider.gameObject;
             

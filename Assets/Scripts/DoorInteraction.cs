@@ -9,11 +9,17 @@ public class DoorInteraction : MonoBehaviour
     private Quaternion closedRotation;
     private Quaternion targetRotation;
     private bool isOpen = false;
+    
+    // Cache the open rotation quaternion to avoid creating it every time
+    private Quaternion openRotationQuaternion;
 
     void Start()
     {
         closedRotation = transform.rotation;
         targetRotation = closedRotation;
+        
+        // Pre-calculate the open rotation quaternion
+        openRotationQuaternion = Quaternion.Euler(transform.eulerAngles + openRotation);
     }
 
     void Update()
@@ -27,7 +33,7 @@ public class DoorInteraction : MonoBehaviour
     {
         isOpen = !isOpen;
         targetRotation = isOpen
-            ? Quaternion.Euler(transform.eulerAngles + openRotation)
+            ? openRotationQuaternion
             : closedRotation;
     }
 }

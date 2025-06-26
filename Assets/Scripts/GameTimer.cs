@@ -15,12 +15,22 @@ public class GameTimer : MonoBehaviour
     
     // Cache for string formatting to avoid GC allocations
     private StringBuilder timerStringBuilder;
-    private string minutesStr, secondsStr;
+    // Pre-cached strings for digits to avoid string allocations
+    private string[] digitStrings = new string[60]; // For 0-59 seconds/minutes
+    
+    // Cache colors to avoid GC allocations
+    private readonly Color normalColor = Color.white;
+    private readonly Color warningColor = Color.yellow;
+    private readonly Color dangerColor = Color.red;
 
     [Header("Tick Sound Settings")]
     [SerializeField] private AudioClip tickSound;
     [SerializeField] private float tickVolume = 1f;
     private AudioSource tickSource;
+    
+    // Track last displayed time to avoid unnecessary UI updates
+    private int lastDisplayedMinutes = -1;
+    private int lastDisplayedSeconds = -1;
 
     void Start()
     {
@@ -28,6 +38,12 @@ public class GameTimer : MonoBehaviour
         
         // Initialize string builder to avoid GC allocations
         timerStringBuilder = new StringBuilder(8);
+        
+        // Pre-cache all possible digit strings (0-59)
+        for (int i = 0; i < 60; i++)
+        {
+            digitStrings[i] = i < 10 ? "0" + i : i.ToString();
+        }
         
         UpdateTimerUI();
 
@@ -43,10 +59,20 @@ public class GameTimer : MonoBehaviour
 
     void Update()
     {
-        if (!timerRunning || currentTime <= 0f) return;
+        // Only return if timer is not running, but still process if currentTime <= 0
+        // to ensure EndGame gets called
+        if (!timerRunning) return;
 
         currentTime -= Time.deltaTime;
-        UpdateTimerUI();
+        
+        // Only update UI when the displayed time would change
+        int minutes = Mathf.FloorToInt(currentTime / 60f);
+        int seconds = Mathf.FloorToInt(currentTime % 60f);
+        
+        if (minutes != lastDisplayedMinutes || seconds != lastDisplayedSeconds)
+        {
+            UpdateTimerUI();
+        }
 
         if (!warningTriggered && currentTime <= 60f)
         {
@@ -59,8 +85,10 @@ public class GameTimer : MonoBehaviour
             StartTicking();
         }
 
+        // Moved outside the main timer logic to ensure it always gets checked
         if (currentTime <= 0f)
         {
+            Debug.Log("Timer reached zero, triggering EndGame");
             currentTime = 0f;
             timerRunning = false;
             StopTicking();
@@ -73,29 +101,25 @@ public class GameTimer : MonoBehaviour
         int minutes = Mathf.FloorToInt(currentTime / 60f);
         int seconds = Mathf.FloorToInt(currentTime % 60f);
         
-        // Use cached StringBuilder instead of string.Format to avoid GC allocations
+        // Store current values to avoid redundant updates
+        lastDisplayedMinutes = minutes;
+        lastDisplayedSeconds = seconds;
+        
+        // Use cached StringBuilder and pre-cached strings to avoid GC allocations
         timerStringBuilder.Clear();
-        
-        // Format minutes with leading zero if needed
-        if (minutes < 10)
-            timerStringBuilder.Append('0');
-        timerStringBuilder.Append(minutes);
-        
+        timerStringBuilder.Append(digitStrings[Mathf.Min(minutes, 59)]);
         timerStringBuilder.Append(':');
-        
-        // Format seconds with leading zero if needed
-        if (seconds < 10)
-            timerStringBuilder.Append('0');
-        timerStringBuilder.Append(seconds);
+        timerStringBuilder.Append(digitStrings[seconds]);
         
         timerText.text = timerStringBuilder.ToString();
 
+        // Use cached colors to avoid GC allocations
         if (currentTime <= 30f)
-            timerText.color = Color.red;
+            timerText.color = dangerColor;
         else if (currentTime <= 60f)
-            timerText.color = Color.yellow;
+            timerText.color = warningColor;
         else
-            timerText.color = Color.white;
+            timerText.color = normalColor;
     }
 
     void EndGame()
@@ -105,8 +129,16 @@ public class GameTimer : MonoBehaviour
         if (timerText != null)
             timerText.gameObject.SetActive(false);
 
+        // Ensure GameManager exists and call GameOver with proper error handling
         if (GameManager.Instance != null)
+        {
+            Debug.Log("Calling GameManager.GameOver() from GameTimer.EndGame()");
             GameManager.Instance.GameOver();
+        }
+        else
+        {
+            Debug.LogError("GameManager.Instance is null in GameTimer.EndGame()! Cannot call GameOver(). Make sure GameManager exists in the scene.");
+        }
     }
 
     void StartTicking()

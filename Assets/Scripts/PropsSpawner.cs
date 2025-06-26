@@ -14,15 +14,28 @@ public class PropsSpawner : MonoBehaviour
     [Min(1)] public int fakePropCount = 5;
     public float minDistanceBetweenProps = 3f;
     public bool preventOverlap = true;
+    
+    [Header("Pool Settings")]
+    [SerializeField] private int initialPoolSize = 30; // Larger initial pool to avoid runtime instantiation
 
     private Transform[] spawnPoints;
-    private List<GameObject> spawnedProps = new List<GameObject>();
-    private List<Transform> tempSpawnList = new List<Transform>();
+    private List<GameObject> spawnedProps;
+    private List<Transform> tempSpawnList;
 
-    private Dictionary<GameObject, List<GameObject>> propPools = new Dictionary<GameObject, List<GameObject>>();
+    private Dictionary<GameObject, List<GameObject>> propPools;
+    
+    // Cache for component lookups
+    private PropIdentity tempIdentity;
+    private CollectibleProp tempCollectible;
 
     void Awake()
     {
+        // Pre-allocate collections to avoid GC allocations
+        spawnedProps = new List<GameObject>(totalPropsToSpawn);
+        tempSpawnList = new List<Transform>(50); // Reasonable capacity based on expected use
+        propPools = new Dictionary<GameObject, List<GameObject>>(propsPrefabs.Length);
+        
+        // Cache spawn points
         int childCount = spawnPointsParent.childCount;
         spawnPoints = new Transform[childCount];
         for (int i = 0; i < childCount; i++)
@@ -40,16 +53,20 @@ public class PropsSpawner : MonoBehaviour
 
     void InitializePools()
     {
+        // Use larger initial pool size to avoid runtime instantiation
+        int poolSize = Mathf.Max(initialPoolSize, totalPropsToSpawn);
+        
         foreach (var prefab in propsPrefabs)
         {
-            if (!propPools.ContainsKey(prefab))
-                propPools[prefab] = new List<GameObject>();
+            // Pre-allocate list with capacity to avoid resizing
+            List<GameObject> pool = new List<GameObject>(poolSize);
+            propPools[prefab] = pool;
 
-            for (int i = 0; i < totalPropsToSpawn; i++)
+            for (int i = 0; i < poolSize; i++)
             {
                 GameObject obj = Instantiate(prefab);
                 obj.SetActive(false);
-                propPools[prefab].Add(obj);
+                pool.Add(obj);
             }
         }
     }
@@ -63,7 +80,11 @@ public class PropsSpawner : MonoBehaviour
         }
 
         tempSpawnList.Clear();
-        tempSpawnList.AddRange(spawnPoints);
+        // Use AddRange with capacity already set to avoid resizing
+        for (int i = 0; i < spawnPoints.Length; i++)
+        {
+            tempSpawnList.Add(spawnPoints[i]);
+        }
         Shuffle(tempSpawnList);
 
         int spawnCount = Mathf.Min(totalPropsToSpawn, tempSpawnList.Count);
@@ -88,9 +109,10 @@ public class PropsSpawner : MonoBehaviour
             prop.transform.SetParent(spawnPoint);
             prop.SetActive(true);
 
-            PropIdentity identity = prop.GetComponent<PropIdentity>();
-            if (identity == null) identity = prop.AddComponent<PropIdentity>();
-            identity.isFake = false;
+            // Cache component lookup
+            tempIdentity = prop.GetComponent<PropIdentity>();
+            if (tempIdentity == null) tempIdentity = prop.AddComponent<PropIdentity>();
+            tempIdentity.isFake = false;
 
             spawnedProps.Add(prop);
             spawned++;
@@ -104,13 +126,15 @@ public class PropsSpawner : MonoBehaviour
             GameObject fakeProp = spawnedProps[i];
             if (fakeProp == null) continue;
 
-            PropIdentity identity = fakeProp.GetComponent<PropIdentity>();
-            if (identity != null)
+            // Reuse cached component reference
+            tempIdentity = fakeProp.GetComponent<PropIdentity>();
+            if (tempIdentity != null)
             {
-                identity.isFake = true;
+                tempIdentity.isFake = true;
 
-                CollectibleProp collectible = fakeProp.GetComponent<CollectibleProp>();
-                if (collectible == null)
+                // Cache component lookup
+                tempCollectible = fakeProp.GetComponent<CollectibleProp>();
+                if (tempCollectible == null)
                 {
                     fakeProp.AddComponent<CollectibleProp>();
                 }
@@ -129,19 +153,19 @@ public class PropsSpawner : MonoBehaviour
     {
         if (!propPools.ContainsKey(prefab)) return null;
 
-        foreach (var obj in propPools[prefab])
+        List<GameObject> pool = propPools[prefab];
+        for (int i = 0; i < pool.Count; i++)
         {
+            GameObject obj = pool[i];
             if (!obj.activeInHierarchy)
             {
                 return obj;
             }
         }
 
-        // Optional: expand pool if none available
-        GameObject newObj = Instantiate(prefab);
-        newObj.SetActive(false);
-        propPools[prefab].Add(newObj);
-        return newObj;
+        // If we get here, the pool is exhausted - we should never need to expand if initial pool size is adequate
+        Debug.LogWarning($"Object pool for {prefab.name} was exhausted. Consider increasing initialPoolSize.");
+        return null;
     }
 
     void Shuffle<T>(List<T> list)
@@ -158,8 +182,9 @@ public class PropsSpawner : MonoBehaviour
 
     bool IsTooClose(Vector3 newPos)
     {
-        foreach (var existing in spawnedProps)
+        for (int i = 0; i < spawnedProps.Count; i++)
         {
+            GameObject existing = spawnedProps[i];
             if (existing == null) continue;
             if (Vector3.Distance(existing.transform.position, newPos) < minDistanceBetweenProps)
                 return true;

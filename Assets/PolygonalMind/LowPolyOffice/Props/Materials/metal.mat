@@ -199,7 +199,7 @@ Material:
     m_Colors:
     - _AlbedoColor: {r: 0.7352941, g: 0.7352941, b: 0.7352941, a: 1}
     - _BaseColor: {r: 0.55595803, g: 0.5789237, b: 0.6691177, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.555958, g: 0.5789237, b: 0.6691177, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _HColor: {r: 0.7794118, g: 0.7794118, b: 0.7794118, a: 1}
     - _RimLightColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}

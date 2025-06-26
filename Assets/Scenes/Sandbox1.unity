@@ -12513,7 +12513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalTime: 300
+  totalTime: 40
   timerText: {fileID: 1194441157}
   timerRunning: 1
   tickSound: {fileID: 8300000, guid: bbb7c848b236a994a835f80c489027d3, type: 3}
@@ -31674,6 +31674,7 @@ MonoBehaviour:
   interactDistance: 3
   playerCamera: {fileID: 853274705947014384}
   interactKey: 101
+  lockedDoorSound: {fileID: 0}
 --- !u!114 &4907471645594461581
 MonoBehaviour:
   m_ObjectHideFlags: 0

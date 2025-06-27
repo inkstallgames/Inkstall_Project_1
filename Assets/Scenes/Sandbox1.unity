@@ -24164,6 +24164,8 @@ MonoBehaviour:
   questionBank: {fileID: 11400000, guid: 855f51d5f395d7d4fa1554e5e1a167df, type: 2}
   correctSFX: {fileID: 8300000, guid: 3d792153997c99946bc76c74a890661b, type: 3}
   wrongSFX: {fileID: 8300000, guid: f716b60fcecf89a46920ea8aec1d683a, type: 3}
+  playerTag: Player
+  freezePlayerDuringQuiz: 1
 --- !u!82 &1784132484
 AudioSource:
   m_ObjectHideFlags: 0
@@ -33050,7 +33052,7 @@ MonoBehaviour:
   playerCamera: {fileID: 853274705947014384}
   interactKey: 101
   lockedDoorSound: {fileID: 0}
-  pickupSound: {fileID: 0}
+  pickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
 --- !u!114 &4907471645594461581
 MonoBehaviour:
   m_ObjectHideFlags: 0

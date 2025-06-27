@@ -17,12 +17,20 @@ public class QuizManager : MonoBehaviour
     public AudioClip correctSFX;
     public AudioClip wrongSFX;
 
+    [Header("Player Control")]
+    [SerializeField] private string playerTag = "Player"; // Tag of the player GameObject
+    [SerializeField] private bool freezePlayerDuringQuiz = true; // Option to enable/disable player freezing
+
     private QuestionData currentQuestion;
     private bool hasAnswered = false;
     private Color defaultButtonColor;
     private AudioSource audioSource;
     private QuizTrigger quizTriggerReference;
     private bool quizResult = false;
+    
+    // Cache references to player components
+    private MonoBehaviour[] playerScripts;
+    private GameObject playerObject;
 
     void Start()
     {
@@ -47,11 +55,100 @@ public class QuizManager : MonoBehaviour
         if (quitButton != null)
             quitButton.onClick.AddListener(QuitQuiz);
 
-
         // This component should start disabled
         gameObject.SetActive(false);
+        
+        // Find player object
+        FindPlayerObject();
     }
     
+    // Find and cache the player object and its components
+    private void FindPlayerObject()
+    {
+        playerObject = GameObject.FindWithTag(playerTag);
+        if (playerObject != null)
+        {
+            // Cache all MonoBehaviour scripts on the player that might handle movement or input
+            playerScripts = playerObject.GetComponentsInChildren<MonoBehaviour>();
+            Debug.Log($"Found player object with {playerScripts.Length} scripts");
+        }
+        else
+        {
+            Debug.LogWarning("Could not find player object with tag: " + playerTag);
+        }
+    }
+    
+    // Disable player movement and input scripts
+    private void FreezePlayer()
+    {
+        if (!freezePlayerDuringQuiz || playerObject == null) return;
+        
+        Debug.Log("Freezing player movement for quiz");
+        
+        // Disable all MonoBehaviour scripts on the player except for essential ones
+        if (playerScripts != null)
+        {
+            foreach (MonoBehaviour script in playerScripts)
+            {
+                // Skip null references and this script
+                if (script == null) continue;
+                
+                // Skip essential scripts that should remain active
+                string scriptName = script.GetType().Name;
+                if (scriptName == "AudioListener" || 
+                    scriptName == "Camera" || 
+                    scriptName == "AudioSource" ||
+                    scriptName == "Transform")
+                {
+                    continue;
+                }
+                
+                // Store the original enabled state and disable the script
+                script.enabled = false;
+            }
+        }
+        
+        // Lock the cursor for UI interaction
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+    
+    // Re-enable player movement and input scripts
+    private void UnfreezePlayer()
+    {
+        if (!freezePlayerDuringQuiz || playerObject == null) return;
+        
+        Debug.Log("Unfreezing player movement after quiz");
+        
+        // Re-enable all MonoBehaviour scripts on the player
+        if (playerScripts != null)
+        {
+            foreach (MonoBehaviour script in playerScripts)
+            {
+                // Skip null references
+                if (script == null) continue;
+                
+                // Skip scripts that should remain in their current state
+                string scriptName = script.GetType().Name;
+                if (scriptName == "AudioListener" || 
+                    scriptName == "Camera" || 
+                    scriptName == "AudioSource" ||
+                    scriptName == "Transform")
+                {
+                    continue;
+                }
+                
+                // Re-enable the script
+                script.enabled = true;
+            }
+        }
+        
+        // Reset cursor state based on game needs
+        // This might need to be adjusted based on your game's cursor handling
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     private void OnEnable()
     {
         PickRandomQuestion();
@@ -60,12 +157,15 @@ public class QuizManager : MonoBehaviour
         // Make sure cursor is visible for UI interaction
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        
+        // Freeze player when quiz panel is enabled
+        FreezePlayer();
     }
-
-    void PickRandomQuestion()
+    
+    private void OnDisable()
     {
-        int randomIndex = Random.Range(0, questionBank.questions.Count);
-        currentQuestion = questionBank.questions[randomIndex];
+        // Unfreeze player when quiz panel is disabled
+        UnfreezePlayer();
     }
 
     void ShowQuestion()
@@ -122,12 +222,6 @@ public class QuizManager : MonoBehaviour
         StartCoroutine(QuitAfterDelay(3f));
     }
 
-    IEnumerator QuitAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        QuitQuiz();
-    }
-
     void QuitQuiz()
     {
         // Notify the quiz trigger about quiz result before hiding panel
@@ -136,9 +230,24 @@ public class QuizManager : MonoBehaviour
             quizTriggerReference.OnQuizCompleted(quizResult);
         }
         
+        // Unfreeze player before hiding the quiz panel
+        UnfreezePlayer();
+        
         gameObject.SetActive(false);
     }
-    
+
+    IEnumerator QuitAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        QuitQuiz();
+    }
+
+    void PickRandomQuestion()
+    {
+        int randomIndex = Random.Range(0, questionBank.questions.Count);
+        currentQuestion = questionBank.questions[randomIndex];
+    }
+
     // Set reference to the quiz trigger that triggered this quiz
     public void SetQuizTriggerReference(QuizTrigger quizTrigger)
     {
@@ -186,6 +295,9 @@ public class QuizManager : MonoBehaviour
         // Show cursor for quiz interaction
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        
+        // Freeze player movement
+        FreezePlayer();
         
         Debug.Log($"Quiz initialized with question: {currentQuestion.questionText}");
     }

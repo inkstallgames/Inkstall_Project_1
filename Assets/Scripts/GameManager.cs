@@ -1,5 +1,7 @@
 using UnityEngine;
 using StarterAssets; // Needed for FirstPersonController
+using System.Collections;
+using System.Text;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,9 +22,13 @@ public class GameManager : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioClip winSound;
     [SerializeField] private AudioClip gameOverSound;
+    [SerializeField] private float winDelay = 0.5f; // Delay in seconds before triggering win condition
     
     // Audio sources pool to avoid GC allocations from PlayClipAtPoint
     private AudioSource effectsAudioSource;
+    
+    // Cache for string operations to reduce GC allocations
+    private StringBuilder stringBuilder = new StringBuilder(128);
 
     void Awake()
     {
@@ -31,11 +37,15 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // Keep GameManager between scene loads
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.Log("GameManager initialized as singleton");
+#endif
         }
         else
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.LogWarning("Multiple GameManager instances detected. Destroying duplicate.");
+#endif
             Destroy(gameObject);
             return;
         }
@@ -58,23 +68,64 @@ public class GameManager : MonoBehaviour
     public void CollectProp()
     {
         propsCollected++;
-        Debug.Log($"Collected {propsCollected}/{totalPropsToCollect}");
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        stringBuilder.Clear();
+        stringBuilder.Append("Collected ");
+        stringBuilder.Append(propsCollected);
+        stringBuilder.Append('/');
+        stringBuilder.Append(totalPropsToCollect);
+        Debug.Log(stringBuilder.ToString());
+#endif
 
         if (!gameEnded && propsCollected == totalPropsToCollect)
         {
-            GameWin();
+            // Immediately disable player movement when last prop is collected
+            DisablePlayerMovement();
+            
+            // Start the delayed win coroutine for UI and sound effects
+            StartCoroutine(DelayedWin());
         }
+    }
+    
+    // Coroutine to delay the win condition
+    private IEnumerator DelayedWin()
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        stringBuilder.Clear();
+        stringBuilder.Append("All props collected! Game will end in ");
+        stringBuilder.Append(winDelay);
+        stringBuilder.Append(" seconds");
+        Debug.Log(stringBuilder.ToString());
+#endif
+        
+        // Wait for the specified delay
+        yield return new WaitForSeconds(winDelay);
+        
+        // Trigger the win condition (without disabling player movement again)
+        GameWin(false);
     }
 
     public void GameWin()
     {
+        GameWin(true);
+    }
+
+    private void GameWin(bool disableMovement)
+    {
         if (gameEnded) return;
         gameEnded = true;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         Debug.Log("Game Win! All props collected.");
         
         // Log UI and component state for debugging
-        Debug.Log($"WinUI is {(winUI != null ? "assigned" : "null")}, GameTimer is {(gameTimer != null ? "assigned" : "null")}");
+        stringBuilder.Clear();
+        stringBuilder.Append("WinUI is ");
+        stringBuilder.Append(winUI != null ? "assigned" : "null");
+        stringBuilder.Append(", GameTimer is ");
+        stringBuilder.Append(gameTimer != null ? "assigned" : "null");
+        Debug.Log(stringBuilder.ToString());
+#endif
         
         if (gameTimer != null) gameTimer.PauseTimer();
         if (winUI != null) winUI.SetActive(true);
@@ -88,39 +139,60 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.LogWarning("Win sound or audio source is missing");
+#endif
         }
 
-        DisablePlayerMovement();
+        // Only disable player movement if requested (not needed if already disabled)
+        if (disableMovement)
+        {
+            DisablePlayerMovement();
+        }
     }
 
     public void GameOver()
     {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         Debug.Log("GameOver method called in GameManager");
+#endif
         
         // Check if game is already ended to avoid duplicate calls
         if (gameEnded)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.Log("Game already ended, ignoring duplicate GameOver call");
+#endif
             return;
         }
         
         gameEnded = true;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         Debug.Log("Game Over! Time's up.");
         
         // Log UI and component state for debugging
-        Debug.Log($"GameOverUI is {(gameOverUI != null ? "assigned" : "null")}, GameTimer is {(gameTimer != null ? "assigned" : "null")}");
+        stringBuilder.Clear();
+        stringBuilder.Append("GameOverUI is ");
+        stringBuilder.Append(gameOverUI != null ? "assigned" : "null");
+        stringBuilder.Append(", GameTimer is ");
+        stringBuilder.Append(gameTimer != null ? "assigned" : "null");
+        Debug.Log(stringBuilder.ToString());
+#endif
         
         if (gameTimer != null) gameTimer.PauseTimer();
         if (gameOverUI != null) 
         {
             gameOverUI.SetActive(true);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.Log("Game Over UI activated");
+#endif
         }
         else
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.LogError("GameOverUI is not assigned in the inspector!");
+#endif
         }
         
         if (crosshair != null) crosshair.SetActive(false); // Hide crosshair
@@ -133,7 +205,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.LogWarning("Game over sound or audio source is missing");
+#endif
         }
 
         DisablePlayerMovement();
@@ -156,7 +230,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.LogWarning("PlayerController not assigned in GameManager.");
+#endif
         }
     }
 }

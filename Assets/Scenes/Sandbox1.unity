@@ -11627,6 +11627,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4833791875222552214, guid: 0148aa0426b75d349b22ade9954024b9,
         type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4833791875222552214, guid: 0148aa0426b75d349b22ade9954024b9,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -12488,7 +12493,6 @@ MonoBehaviour:
   playerController: {fileID: 0}
   winSound: {fileID: 8300000, guid: 6618dde00549b60489d6bbcadd555662, type: 3}
   gameOverSound: {fileID: 8300000, guid: 1d365603505a99a4bbb4fbc905712060, type: 3}
-  soundVolume: 1
 --- !u!114 &962220128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32963,6 +32967,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: CandyShop
+      objectReference: {fileID: 0}
+    - target: {fileID: 6500602409812049495, guid: c6879d46b9a8fe9489d39e1e32d043de,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8921432829746749058, guid: c6879d46b9a8fe9489d39e1e32d043de,
         type: 3}

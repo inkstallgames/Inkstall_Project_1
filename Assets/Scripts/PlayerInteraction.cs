@@ -20,6 +20,9 @@ public class PlayerInteraction : MonoBehaviour
     private DisableOnPropSpawn cachedDisabler;
     private QuizTrigger cachedQuizTrigger;
 
+    // Object pool for component lookups to avoid GC allocations
+    private Component[] componentCache = new Component[4];
+
     void Start()
     {
         // Get or add audio source component
@@ -35,7 +38,9 @@ public class PlayerInteraction : MonoBehaviour
             playerCamera = Camera.main;
             if (playerCamera == null)
             {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                 Debug.LogError("No camera assigned to PlayerInteraction and no Camera.main found!");
+#endif
             }
         }
     }
@@ -61,7 +66,7 @@ public class PlayerInteraction : MonoBehaviour
             GameObject hitObject = hitInfo.collider.gameObject;
             
             // First check if it's a collectible
-            CollectibleProp collectible = hitInfo.collider.GetComponent<CollectibleProp>();
+            CollectibleProp collectible = hitObject.GetComponent<CollectibleProp>();
             if (collectible != null)
             {
                 // Play pickup sound if available
@@ -84,7 +89,9 @@ public class PlayerInteraction : MonoBehaviour
                     // Get the QuizTrigger component - important to get it here instead of caching earlier
                     cachedQuizTrigger = hitObject.GetComponent<QuizTrigger>();
                     
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                     Debug.Log($"Door is locked. QuizTrigger present: {(cachedQuizTrigger != null)}");
+#endif
                     
                     // If there's a QuizTrigger, use it
                     if (cachedQuizTrigger != null)
@@ -112,7 +119,9 @@ public class PlayerInteraction : MonoBehaviour
                     // Get the QuizTrigger component - important to get it here instead of caching earlier
                     cachedQuizTrigger = hitObject.GetComponent<QuizTrigger>();
                     
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
                     Debug.Log($"Drawer is locked. QuizTrigger present: {(cachedQuizTrigger != null)}");
+#endif
                     
                     // If there's a QuizTrigger, use it
                     if (cachedQuizTrigger != null)

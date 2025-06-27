@@ -20,7 +20,6 @@ public class GameManager : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioClip winSound;
     [SerializeField] private AudioClip gameOverSound;
-    [SerializeField] private float soundVolume = 1f;
     
     // Audio sources pool to avoid GC allocations from PlayClipAtPoint
     private AudioSource effectsAudioSource;
@@ -48,7 +47,7 @@ public class GameManager : MonoBehaviour
         // Create reusable audio source for sound effects
         effectsAudioSource = gameObject.AddComponent<AudioSource>();
         effectsAudioSource.playOnAwake = false;
-        effectsAudioSource.spatialBlend = 1.0f; // Make it 3D sound
+        // effectsAudioSource.spatialBlend = 1.0f; // Make it 3D sound
     }
 
     public void RegisterCollectible()
@@ -85,7 +84,6 @@ public class GameManager : MonoBehaviour
         if (winSound != null && effectsAudioSource != null)
         {
             effectsAudioSource.clip = winSound;
-            effectsAudioSource.volume = soundVolume;
             effectsAudioSource.Play();
         }
         else
@@ -131,7 +129,6 @@ public class GameManager : MonoBehaviour
         if (gameOverSound != null && effectsAudioSource != null)
         {
             effectsAudioSource.clip = gameOverSound;
-            effectsAudioSource.volume = soundVolume;
             effectsAudioSource.Play();
         }
         else

@@ -219,7 +219,7 @@ public class QuizManager : MonoBehaviour
         }
 
         // Quit after delay
-        StartCoroutine(QuitAfterDelay(2f));
+        StartCoroutine(QuitAfterDelay(1.2f));
     }
 
     void QuitQuiz()

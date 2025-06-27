@@ -32900,6 +32900,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: IMS_Garage_SKFB
       objectReference: {fileID: 0}
+    - target: {fileID: 469437361290760360, guid: 3820e967adf505743868f44d47078585,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1939044651962093728, guid: 3820e967adf505743868f44d47078585,
         type: 3}
       propertyPath: m_LocalPosition.x

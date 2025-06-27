@@ -17,7 +17,7 @@ public class CollectibleProp : MonoBehaviour
         identity = GetComponent<PropIdentity>();
         if (identity == null)
         {
-            Debug.LogError("❌ CollectibleProp requires PropIdentity component.");
+            Debug.LogError("CollectibleProp requires PropIdentity component.");
             enabled = false;
         }
     }
@@ -42,7 +42,7 @@ public class CollectibleProp : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("⚠️ GameManager instance not found when collecting prop.");
+                Debug.LogWarning("GameManager instance not found when collecting prop.");
             }
 
             Destroy(gameObject);

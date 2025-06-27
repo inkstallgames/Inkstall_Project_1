@@ -14,10 +14,11 @@ public class PlayerInteraction : MonoBehaviour
     // Cache raycast hit to avoid GC allocations
     private RaycastHit hitInfo;
     // Cache ray to avoid GC allocations in Update
-    private Ray interactionRay;
+    private Ray interactionRay = new Ray(); // Initialize to prevent null reference
     
     // Cache components to avoid repeated GetComponent calls
     private DisableOnPropSpawn cachedDisabler;
+    private QuizTrigger cachedQuizTrigger;
 
     void Start()
     {
@@ -59,7 +60,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             GameObject hitObject = hitInfo.collider.gameObject;
             
-            // Check if it's a collectible
+            // First check if it's a collectible
             CollectibleProp collectible = hitInfo.collider.GetComponent<CollectibleProp>();
             if (collectible != null)
             {
@@ -73,44 +74,75 @@ public class PlayerInteraction : MonoBehaviour
                 return;
             }
 
-            // Check if it's a rotating door
-            DoorInteraction door = hitInfo.collider.GetComponent<DoorInteraction>();
+            // Check if it's a door
+            DoorInteraction door = hitObject.GetComponent<DoorInteraction>();
             if (door != null)
             {
                 // Check if the door interaction is disabled (locked)
                 if (!door.enabled)
                 {
-                    HandleLockedInteraction(hitInfo.collider);
-                    Debug.Log("This door is locked!");
+                    // Get the QuizTrigger component - important to get it here instead of caching earlier
+                    cachedQuizTrigger = hitObject.GetComponent<QuizTrigger>();
+                    
+                    Debug.Log($"Door is locked. QuizTrigger present: {(cachedQuizTrigger != null)}");
+                    
+                    // If there's a QuizTrigger, use it
+                    if (cachedQuizTrigger != null)
+                    {
+                        cachedQuizTrigger.TriggerQuiz();
+                    }
+                    else
+                    {
+                        // Fall back to the old behavior
+                        HandleLockedInteraction(hitInfo.collider);
+                    }
                     return;
                 }               
                 door.Interact();
                 return;
-            }                
-            // Optional: Debug info
-            Debug.Log($"🟤 No interactable found on: {hitObject.name}");
+            }
+            
+            // Check if it's a drawer or other interactable
+            DrawerMech drawer = hitObject.GetComponent<DrawerMech>();
+            if (drawer != null)
+            {
+                // Check if the drawer interaction is disabled (locked)
+                if (!drawer.enabled)
+                {
+                    // Get the QuizTrigger component - important to get it here instead of caching earlier
+                    cachedQuizTrigger = hitObject.GetComponent<QuizTrigger>();
+                    
+                    Debug.Log($"Drawer is locked. QuizTrigger present: {(cachedQuizTrigger != null)}");
+                    
+                    // If there's a QuizTrigger, use it
+                    if (cachedQuizTrigger != null)
+                    {
+                        cachedQuizTrigger.TriggerQuiz();
+                    }
+                    else
+                    {
+                        // Fall back to the old behavior
+                        HandleLockedInteraction(hitInfo.collider);
+                    }
+                    return;
+                }
+                drawer.Interact();
+                return;
+            }
         }
     }
     
-    // Handle locked interaction with proper sound
-    private void HandleLockedInteraction(Collider collider)
+    void HandleLockedInteraction(Collider collider)
     {
-        // Reuse cached disabler if possible
+        // Check if there's a DisableOnPropSpawn component
         cachedDisabler = collider.GetComponent<DisableOnPropSpawn>();
         if (cachedDisabler != null)
         {
             cachedDisabler.PlayLockedSound();
         }
-        else
+        else if (audioSource != null && lockedDoorSound != null)
         {
-            PlayLockedDoorSound();
-        }
-    }
-    
-    private void PlayLockedDoorSound()
-    {
-        if (lockedDoorSound != null && audioSource != null)
-        {
+            // Fall back to playing the locked sound directly
             audioSource.PlayOneShot(lockedDoorSound);
         }
     }

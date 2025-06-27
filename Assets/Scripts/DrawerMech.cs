@@ -2,23 +2,81 @@
 
 public class DrawerMech : MonoBehaviour
 {
-    public Vector3 OpenPosition;
-    public Vector3 ClosePosition;
-    public float moveSpeed = 4f;
+    [Header("Drawer Settings")]
+    [SerializeField] private Vector3 openPosition = new Vector3(0, 0, 0.5f);
+    [SerializeField] private float drawerSpeed = 2f;
+    [SerializeField] private AudioClip drawerOpenSound;
+    [SerializeField] private AudioClip drawerCloseSound;
 
-    private float lerpTimer = 0f;
-    private bool drawerOpen = false;
+    private bool isDrawerOpen = false;
+    private bool isDrawerMoving = false;
+    private Vector3 closedPosition;
+    private AudioSource audioSource;
 
-    void Update()
+    private void Start()
     {
-        // Smoothly move the drawer based on state
-        float direction = drawerOpen ? 1f : -1f;
-        lerpTimer = Mathf.Clamp01(lerpTimer + Time.deltaTime * direction * moveSpeed);
-        transform.localPosition = Vector3.Lerp(ClosePosition, OpenPosition, lerpTimer);
+        // Get or add audio source
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // Store initial position as closed position
+        closedPosition = transform.localPosition;
     }
 
+    private void Update()
+    {
+        // Drawer movement animation
+        if (isDrawerMoving)
+        {
+            AnimateDrawer();
+        }
+    }
+
+    // This is the method called by PlayerInteraction script
     public void Interact()
     {
-        drawerOpen = !drawerOpen;
+        // Toggle drawer open/close
+        ToggleDrawer();
+    }
+
+    private void ToggleDrawer()
+    {
+        if (isDrawerMoving) return;
+
+        isDrawerOpen = !isDrawerOpen;
+        isDrawerMoving = true;
+
+        // Play appropriate sound
+        if (audioSource != null)
+        {
+            AudioClip clip = isDrawerOpen ? drawerOpenSound : drawerCloseSound;
+            if (clip != null)
+            {
+                audioSource.PlayOneShot(clip);
+            }
+        }
+    }
+
+    private void AnimateDrawer()
+    {
+        // Calculate target position
+        Vector3 targetPosition = isDrawerOpen ? closedPosition + openPosition : closedPosition;
+        
+        // Smoothly move to target
+        transform.localPosition = Vector3.MoveTowards(
+            transform.localPosition, 
+            targetPosition, 
+            drawerSpeed * Time.deltaTime
+        );
+        
+        // Check if drawer reached target position
+        if (Vector3.Distance(transform.localPosition, targetPosition) < 0.001f)
+        {
+            transform.localPosition = targetPosition; // Snap to exact position
+            isDrawerMoving = false;
+        }
     }
 }

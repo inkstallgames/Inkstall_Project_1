@@ -2,38 +2,80 @@
 
 public class DoorInteraction : MonoBehaviour
 {
-    [Header("Rotation Settings")]
-    public Vector3 openRotation = new Vector3(0, 90, 0);
-    public float rotationSpeed = 3f;
+    [Header("Door Settings")]
+    [SerializeField] private float openAngle = 90f;
+    [SerializeField] private float doorSpeed = 2f;
+    [SerializeField] private AudioClip doorOpenSound;
+    [SerializeField] private AudioClip doorCloseSound;
 
+    private bool isDoorOpen = false;
+    private bool isDoorMoving = false;
     private Quaternion closedRotation;
-    private Quaternion targetRotation;
-    private bool isOpen = false;
-    
-    // Cache the open rotation quaternion to avoid creating it every time
-    private Quaternion openRotationQuaternion;
+    private Quaternion openRotation;
+    private AudioSource audioSource;
 
-    void Start()
+    private void Start()
     {
-        closedRotation = transform.rotation;
-        targetRotation = closedRotation;
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
         
-        // Pre-calculate the open rotation quaternion
-        openRotationQuaternion = Quaternion.Euler(transform.eulerAngles + openRotation);
+        // Store the initial rotation as closed rotation
+        closedRotation = transform.rotation;
+        
+        // Calculate the open rotation based on the openAngle
+        openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(0, openAngle, 0));
     }
 
-    void Update()
+    private void Update()
     {
-        // Smooth rotation
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+        // Door movement animation
+        if (isDoorMoving)
+        {
+            AnimateDoor();
+        }
     }
 
-    // Called by the player when interacting
+    // This is the method called by PlayerInteraction script
     public void Interact()
     {
-        isOpen = !isOpen;
-        targetRotation = isOpen
-            ? openRotationQuaternion
-            : closedRotation;
+        // Toggle door open/close
+        ToggleDoor();
+    }
+
+    private void ToggleDoor()
+    {
+        if (isDoorMoving) return;
+
+        isDoorOpen = !isDoorOpen;
+        isDoorMoving = true;
+
+        // Play appropriate sound
+        if (audioSource != null)
+        {
+            AudioClip clip = isDoorOpen ? doorOpenSound : doorCloseSound;
+            if (clip != null)
+            {
+                audioSource.PlayOneShot(clip);
+            }
+        }
+    }
+
+    private void AnimateDoor()
+    {
+        // Get target rotation based on door state
+        Quaternion targetRotation = isDoorOpen ? openRotation : closedRotation;
+        
+        // Smoothly rotate to target
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, doorSpeed * Time.deltaTime);
+        
+        // Check if door reached target position (within a small threshold)
+        if (Quaternion.Angle(transform.rotation, targetRotation) < 0.1f)
+        {
+            transform.rotation = targetRotation; // Snap to exact position
+            isDoorMoving = false;
+        }
     }
 }

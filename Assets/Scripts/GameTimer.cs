@@ -12,12 +12,12 @@ public class GameTimer : MonoBehaviour
 
     private bool warningTriggered = false;
     private bool tickingStarted = false;
-    
+
     // Cache for string formatting to avoid GC allocations
     private StringBuilder timerStringBuilder;
     // Pre-cached strings for digits to avoid string allocations
     private string[] digitStrings = new string[60]; // For 0-59 seconds/minutes
-    
+
     // Cache colors to avoid GC allocations
     private readonly Color normalColor = Color.white;
     private readonly Color warningColor = Color.yellow;
@@ -27,7 +27,7 @@ public class GameTimer : MonoBehaviour
     [SerializeField] private AudioClip tickSound;
     [SerializeField] private float tickVolume = 1f;
     private AudioSource tickSource;
-    
+
     // Track last displayed time to avoid unnecessary UI updates
     private int lastDisplayedMinutes = -1;
     private int lastDisplayedSeconds = -1;
@@ -35,16 +35,16 @@ public class GameTimer : MonoBehaviour
     void Start()
     {
         currentTime = totalTime;
-        
+
         // Initialize string builder to avoid GC allocations
         timerStringBuilder = new StringBuilder(8);
-        
+
         // Pre-cache all possible digit strings (0-59)
         for (int i = 0; i < 60; i++)
         {
             digitStrings[i] = i < 10 ? "0" + i : i.ToString();
         }
-        
+
         UpdateTimerUI();
 
         if (tickSound != null)
@@ -64,11 +64,11 @@ public class GameTimer : MonoBehaviour
         if (!timerRunning) return;
 
         currentTime -= Time.deltaTime;
-        
+
         // Only update UI when the displayed time would change
         int minutes = Mathf.FloorToInt(currentTime / 60f);
         int seconds = Mathf.FloorToInt(currentTime % 60f);
-        
+
         if (minutes != lastDisplayedMinutes || seconds != lastDisplayedSeconds)
         {
             UpdateTimerUI();
@@ -104,17 +104,17 @@ public class GameTimer : MonoBehaviour
     {
         int minutes = Mathf.FloorToInt(currentTime / 60f);
         int seconds = Mathf.FloorToInt(currentTime % 60f);
-        
+
         // Store current values to avoid redundant updates
         lastDisplayedMinutes = minutes;
         lastDisplayedSeconds = seconds;
-        
+
         // Use cached StringBuilder and pre-cached strings to avoid GC allocations
         timerStringBuilder.Clear();
-        timerStringBuilder.Append(digitStrings[Mathf.Min(minutes, 59)]);
+        timerStringBuilder.Append(digitStrings[Mathf.Clamp(minutes, 0, 59)]);
         timerStringBuilder.Append(':');
-        timerStringBuilder.Append(digitStrings[seconds]);
-        
+        timerStringBuilder.Append(digitStrings[Mathf.Clamp(seconds, 0, 59)]);
+
         timerText.text = timerStringBuilder.ToString();
 
         // Use cached colors to avoid GC allocations

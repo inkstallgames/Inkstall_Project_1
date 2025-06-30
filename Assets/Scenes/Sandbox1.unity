@@ -763,33 +763,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 35865934}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &39280545 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1875279496517820723, guid: 2f9ac039a10be514dbfc03631d59a9c0,
-    type: 3}
-  m_PrefabInstance: {fileID: 1912773998}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &39280552
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 39280545}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.35632306, y: 3.1448982, z: 1.5857415}
-  m_Center: {x: 0.057780817, y: 1.0724493, z: -0.6994483}
 --- !u!4 &45497096 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6014839741905807505, guid: ba7c89ce77605ca469e269f2fa82ea79,
@@ -22539,11 +22512,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1050592512289333919, guid: 2f9ac039a10be514dbfc03631d59a9c0,
-        type: 3}
-      propertyPath: quizPanel
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 1705380792444347428, guid: 2f9ac039a10be514dbfc03631d59a9c0,
         type: 3}
       propertyPath: spawnPoints.Array.data[0]
@@ -22614,20 +22582,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1050592512289333919, guid: 2f9ac039a10be514dbfc03631d59a9c0, type: 3}
-    - {fileID: 5702839356694018383, guid: 2f9ac039a10be514dbfc03631d59a9c0, type: 3}
-    - {fileID: 4900353780088689474, guid: 2f9ac039a10be514dbfc03631d59a9c0, type: 3}
-    - {fileID: 7153795261052078602, guid: 2f9ac039a10be514dbfc03631d59a9c0, type: 3}
-    - {fileID: 746160157391052398, guid: 2f9ac039a10be514dbfc03631d59a9c0, type: 3}
-    - {fileID: 4636869456843300801, guid: 2f9ac039a10be514dbfc03631d59a9c0, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1875279496517820723, guid: 2f9ac039a10be514dbfc03631d59a9c0,
-        type: 3}
-      insertIndex: 2
-      addedObject: {fileID: 39280552}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2f9ac039a10be514dbfc03631d59a9c0, type: 3}
 --- !u!1001 &1915346076
 PrefabInstance:

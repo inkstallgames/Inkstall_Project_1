@@ -43,6 +43,16 @@ namespace StarterAssets
 		[Tooltip("What layers the character uses as ground")]
 		public LayerMask GroundLayers;
 
+		[Header("Animation")]
+		[Tooltip("Reference to the character's Animator component")]
+		public Animator characterAnimator;
+		[Tooltip("Parameter name for idle state in the Animator")]
+		public string animIdleParam = "IsIdle";
+		[Tooltip("Parameter name for walking state in the Animator")]
+		public string animWalkParam = "IsWalking";
+		[Tooltip("Parameter name for running state in the Animator")]
+		public string animRunParam = "IsRunning";
+
 		[Header("Cinemachine")]
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
 		public GameObject CinemachineCameraTarget;
@@ -115,6 +125,7 @@ namespace StarterAssets
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
+			UpdateAnimation();
 		}
 
 		private void LateUpdate()
@@ -244,6 +255,24 @@ namespace StarterAssets
 			{
 				_verticalVelocity += Gravity * Time.deltaTime;
 			}
+		}
+
+		private void UpdateAnimation()
+		{
+			// Skip if no animator is assigned
+			if (characterAnimator == null)
+				return;
+
+			// Determine movement state
+			bool isMoving = _speed > 0.1f;
+			bool isRunning = _input.sprint && isMoving;
+			bool isWalking = isMoving && !isRunning;
+			bool isIdle = !isMoving;
+
+			// Update animation parameters
+			characterAnimator.SetBool(animIdleParam, isIdle);
+			characterAnimator.SetBool(animWalkParam, isWalking);
+			characterAnimator.SetBool(animRunParam, isRunning);
 		}
 
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)

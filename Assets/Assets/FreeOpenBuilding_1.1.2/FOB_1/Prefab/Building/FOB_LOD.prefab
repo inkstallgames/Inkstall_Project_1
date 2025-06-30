@@ -11948,7 +11948,6 @@ GameObject:
   - component: {fileID: 1876630032493376175}
   - component: {fileID: 1791959189054040123}
   - component: {fileID: 1875161218246072202}
-  - component: {fileID: 9049456908265649582}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (3)
   m_TagString: Untagged
@@ -12014,25 +12013,6 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
---- !u!114 &9049456908265649582
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873769202101906537}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fa105dda0ca7804b9e3944c7c76df9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPoints: []
-  interactionComponents: []
-  checkInterval: 1
-  disableIfAllSpawned: 0
-  checkOnStart: 1
-  stopCheckingAfterQuiz: 1
-  lockedSound: {fileID: 0}
 --- !u!1 &1873775864500735279
 GameObject:
   m_ObjectHideFlags: 0
@@ -13104,7 +13084,6 @@ GameObject:
   - component: {fileID: 1879614730801555319}
   - component: {fileID: 1792285144238962665}
   - component: {fileID: 1875161218521917545}
-  - component: {fileID: 9129803096209409142}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (4)
   m_TagString: Untagged
@@ -13170,25 +13149,6 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
---- !u!114 &9129803096209409142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873888421992294273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fa105dda0ca7804b9e3944c7c76df9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPoints: []
-  interactionComponents: []
-  checkInterval: 1
-  disableIfAllSpawned: 0
-  checkOnStart: 1
-  stopCheckingAfterQuiz: 1
-  lockedSound: {fileID: 0}
 --- !u!1 &1873906486874809889
 GameObject:
   m_ObjectHideFlags: 0
@@ -15838,7 +15798,6 @@ GameObject:
   - component: {fileID: 1876455094614462031}
   - component: {fileID: 1792040301433328985}
   - component: {fileID: 1875161218595718691}
-  - component: {fileID: 4007822134322603003}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (2)
   m_TagString: Untagged
@@ -15904,25 +15863,6 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
---- !u!114 &4007822134322603003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874423991053781801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fa105dda0ca7804b9e3944c7c76df9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPoints: []
-  interactionComponents: []
-  checkInterval: 1
-  disableIfAllSpawned: 0
-  checkOnStart: 1
-  stopCheckingAfterQuiz: 1
-  lockedSound: {fileID: 0}
 --- !u!1 &1874424449844689669
 GameObject:
   m_ObjectHideFlags: 0
@@ -16280,7 +16220,6 @@ GameObject:
   - component: {fileID: 1791947497561129145}
   - component: {fileID: 5248679428148604436}
   - component: {fileID: 3190459194918307331}
-  - component: {fileID: 1705380792444347428}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD
   m_TagString: Untagged
@@ -16367,28 +16306,6 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
---- !u!114 &1705380792444347428
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874447173362741691}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fa105dda0ca7804b9e3944c7c76df9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  interactionComponents: []
-  checkInterval: 1
-  disableIfAllSpawned: 0
-  checkOnStart: 1
-  stopCheckingAfterQuiz: 1
-  lockedSound: {fileID: 0}
 --- !u!1 &1874449553719104673
 GameObject:
   m_ObjectHideFlags: 0
@@ -17031,7 +16948,6 @@ GameObject:
   - component: {fileID: 1876394149232612637}
   - component: {fileID: 1791663756687366069}
   - component: {fileID: 1875161216652426387}
-  - component: {fileID: 6210016466025005263}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (1)
   m_TagString: Untagged
@@ -17097,25 +17013,6 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
---- !u!114 &6210016466025005263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874491472620457497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fa105dda0ca7804b9e3944c7c76df9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPoints: []
-  interactionComponents: []
-  checkInterval: 1
-  disableIfAllSpawned: 0
-  checkOnStart: 1
-  stopCheckingAfterQuiz: 1
-  lockedSound: {fileID: 0}
 --- !u!1 &1874492632566052679
 GameObject:
   m_ObjectHideFlags: 0
@@ -28949,7 +28846,6 @@ GameObject:
   - component: {fileID: 1792075731848818691}
   - component: {fileID: 1994951601311786374}
   - component: {fileID: 6096234472362980197}
-  - component: {fileID: 5588266238726963704}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (5)
   m_TagString: Untagged
@@ -29036,25 +28932,6 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
---- !u!114 &5588266238726963704
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1875279496517820723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fa105dda0ca7804b9e3944c7c76df9d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPoints: []
-  interactionComponents: []
-  checkInterval: 1
-  disableIfAllSpawned: 0
-  checkOnStart: 1
-  stopCheckingAfterQuiz: 1
-  lockedSound: {fileID: 0}
 --- !u!1 &1875283272182439885
 GameObject:
   m_ObjectHideFlags: 0

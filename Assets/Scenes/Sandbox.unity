@@ -22685,7 +22685,13 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: -0.699448
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 4972927522679742429, guid: 2f9ac039a10be514dbfc03631d59a9c0,
+        type: 3}
+      propertyPath: openAngle
+      value: -90
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1940400611583191581, guid: 2f9ac039a10be514dbfc03631d59a9c0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

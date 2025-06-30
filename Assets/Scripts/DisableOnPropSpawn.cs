@@ -20,7 +20,6 @@ public class DisableOnPropSpawn : MonoBehaviour
     private AudioSource audioSource;
 
     private bool hasDisabled = false;
-    private QuizTrigger quizTrigger;
     private bool quizCompleted = false; // Track if quiz has been completed
 
     void Start()
@@ -31,9 +30,6 @@ public class DisableOnPropSpawn : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
-        
-        // Find QuizTrigger component if it exists
-        quizTrigger = GetComponent<QuizTrigger>();
         
         // Validate interaction components
         if (interactionComponents == null || interactionComponents.Length == 0)

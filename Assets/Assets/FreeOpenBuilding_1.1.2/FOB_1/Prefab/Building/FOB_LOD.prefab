@@ -12159,7 +12159,6 @@ GameObject:
   - component: {fileID: 1791959189054040123}
   - component: {fileID: 1875161218246072202}
   - component: {fileID: 9049456908265649582}
-  - component: {fileID: 7153795261052078602}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (3)
   m_TagString: Untagged
@@ -12244,23 +12243,6 @@ MonoBehaviour:
   checkOnStart: 1
   stopCheckingAfterQuiz: 1
   lockedSound: {fileID: 0}
---- !u!114 &7153795261052078602
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873769202101906537}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b826dbd9ddeffec45b327d1425c34e9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quizPanel: {fileID: 0}
-  targetInteractionComponent: {fileID: 0}
-  lockedSound: {fileID: 0}
-  unlockedSound: {fileID: 0}
-  unlockSoundDelay: 2
 --- !u!1 &1873775864500735279
 GameObject:
   m_ObjectHideFlags: 0
@@ -13333,7 +13315,6 @@ GameObject:
   - component: {fileID: 1792285144238962665}
   - component: {fileID: 1875161218521917545}
   - component: {fileID: 9129803096209409142}
-  - component: {fileID: 746160157391052398}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (4)
   m_TagString: Untagged
@@ -13418,23 +13399,6 @@ MonoBehaviour:
   checkOnStart: 1
   stopCheckingAfterQuiz: 1
   lockedSound: {fileID: 0}
---- !u!114 &746160157391052398
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873888421992294273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b826dbd9ddeffec45b327d1425c34e9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quizPanel: {fileID: 0}
-  targetInteractionComponent: {fileID: 0}
-  lockedSound: {fileID: 0}
-  unlockedSound: {fileID: 0}
-  unlockSoundDelay: 2
 --- !u!1 &1873906486874809889
 GameObject:
   m_ObjectHideFlags: 0
@@ -16085,7 +16049,6 @@ GameObject:
   - component: {fileID: 1792040301433328985}
   - component: {fileID: 1875161218595718691}
   - component: {fileID: 4007822134322603003}
-  - component: {fileID: 4900353780088689474}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (2)
   m_TagString: Untagged
@@ -16170,23 +16133,6 @@ MonoBehaviour:
   checkOnStart: 1
   stopCheckingAfterQuiz: 1
   lockedSound: {fileID: 0}
---- !u!114 &4900353780088689474
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874423991053781801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b826dbd9ddeffec45b327d1425c34e9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quizPanel: {fileID: 0}
-  targetInteractionComponent: {fileID: 0}
-  lockedSound: {fileID: 0}
-  unlockedSound: {fileID: 0}
-  unlockSoundDelay: 2
 --- !u!1 &1874424449844689669
 GameObject:
   m_ObjectHideFlags: 0
@@ -16545,7 +16491,6 @@ GameObject:
   - component: {fileID: 5248679428148604436}
   - component: {fileID: 3190459194918307331}
   - component: {fileID: 1705380792444347428}
-  - component: {fileID: 1050592512289333919}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD
   m_TagString: Untagged
@@ -16654,23 +16599,6 @@ MonoBehaviour:
   checkOnStart: 1
   stopCheckingAfterQuiz: 1
   lockedSound: {fileID: 0}
---- !u!114 &1050592512289333919
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874447173362741691}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b826dbd9ddeffec45b327d1425c34e9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quizPanel: {fileID: 0}
-  targetInteractionComponent: {fileID: 3190459194918307331}
-  lockedSound: {fileID: 8300000, guid: 6e2e79e9469b3b741892af8e01d4e10b, type: 3}
-  unlockedSound: {fileID: 0}
-  unlockSoundDelay: 2
 --- !u!1 &1874449553719104673
 GameObject:
   m_ObjectHideFlags: 0
@@ -17314,7 +17242,6 @@ GameObject:
   - component: {fileID: 1791663756687366069}
   - component: {fileID: 1875161216652426387}
   - component: {fileID: 6210016466025005263}
-  - component: {fileID: 5702839356694018383}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (1)
   m_TagString: Untagged
@@ -17399,23 +17326,6 @@ MonoBehaviour:
   checkOnStart: 1
   stopCheckingAfterQuiz: 1
   lockedSound: {fileID: 0}
---- !u!114 &5702839356694018383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874491472620457497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b826dbd9ddeffec45b327d1425c34e9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quizPanel: {fileID: 0}
-  targetInteractionComponent: {fileID: 0}
-  lockedSound: {fileID: 0}
-  unlockedSound: {fileID: 0}
-  unlockSoundDelay: 2
 --- !u!1 &1874492632566052679
 GameObject:
   m_ObjectHideFlags: 0
@@ -29253,7 +29163,6 @@ GameObject:
   - component: {fileID: 1792075731848818691}
   - component: {fileID: 6096234472362980197}
   - component: {fileID: 5588266238726963704}
-  - component: {fileID: 4636869456843300801}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (5)
   m_TagString: Untagged
@@ -29338,23 +29247,6 @@ MonoBehaviour:
   checkOnStart: 1
   stopCheckingAfterQuiz: 1
   lockedSound: {fileID: 0}
---- !u!114 &4636869456843300801
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1875279496517820723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b826dbd9ddeffec45b327d1425c34e9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  quizPanel: {fileID: 0}
-  targetInteractionComponent: {fileID: 0}
-  lockedSound: {fileID: 0}
-  unlockedSound: {fileID: 0}
-  unlockSoundDelay: 2
 --- !u!1 &1875283272182439885
 GameObject:
   m_ObjectHideFlags: 0

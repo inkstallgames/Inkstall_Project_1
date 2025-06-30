@@ -18,7 +18,7 @@ public class PlayerInteraction : MonoBehaviour
     
     // Cache components to avoid repeated GetComponent calls
     private DisableOnPropSpawn cachedDisabler;
-    private QuizTrigger cachedQuizTrigger;
+
 
     // Object pool for component lookups to avoid GC allocations
     private Component[] componentCache = new Component[4];
@@ -85,25 +85,8 @@ public class PlayerInteraction : MonoBehaviour
             {
                 // Check if the door interaction is disabled (locked)
                 if (!door.enabled)
-                {
-                    // Get the QuizTrigger component - important to get it here instead of caching earlier
-                    cachedQuizTrigger = hitObject.GetComponent<QuizTrigger>();
-                    
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                    Debug.Log($"Door is locked. QuizTrigger present: {(cachedQuizTrigger != null)}");
-#endif
-                    
-                    // If there's a QuizTrigger, use it
-                    if (cachedQuizTrigger != null)
-                    {
-                        cachedQuizTrigger.TriggerQuiz();
-                    }
-                    else
-                    {
-                        // Fall back to the old behavior
-                        HandleLockedInteraction(hitInfo.collider);
-                    }
-                    return;
+                {    
+
                 }               
                 door.Interact();
                 return;
@@ -116,20 +99,7 @@ public class PlayerInteraction : MonoBehaviour
                 // Check if the drawer interaction is disabled (locked)
                 if (!drawer.enabled)
                 {
-                    // Get the QuizTrigger component - important to get it here instead of caching earlier
-                    cachedQuizTrigger = hitObject.GetComponent<QuizTrigger>();
-                    
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-                    Debug.Log($"Drawer is locked. QuizTrigger present: {(cachedQuizTrigger != null)}");
-#endif
-                    
-                    // If there's a QuizTrigger, use it
-                    if (cachedQuizTrigger != null)
-                    {
-                        cachedQuizTrigger.TriggerQuiz();
-                    }
-                    else
-                    {
+                {
                         // Fall back to the old behavior
                         HandleLockedInteraction(hitInfo.collider);
                     }

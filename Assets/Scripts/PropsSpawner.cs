@@ -1,224 +1,102 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PropsSpawner : MonoBehaviour
 {
-    [Header("Assign all props prefabs")]
-    [SerializeField] private GameObject[] propsPrefabs;
+    [Header("All Prop Prefabs with Their Spawn Points")]
+    [SerializeField] private List<PropData> allProps;
 
-    [Header("Assign World Spawn Points Parent")]
-    [SerializeField] private Transform spawnPointsParent;
+    [Header("Fake Version of a Prop (Alien Disguised)")]
+    [SerializeField] private GameObject fakePropPrefab;
 
-    [Header("Prop Settings")]
-    [Min(1)] public int totalPropsToSpawn = 15;
-    [Min(1)] public int fakePropCount = 5;
-    public float minDistanceBetweenProps = 3f;
-    public bool preventOverlap = true;
-    
-    [Header("Pool Settings")]
-    [SerializeField] private int initialPoolSize = 30; // Larger initial pool to avoid runtime instantiation
+    [Header("Spawning Settings")]
+    [SerializeField] private int totalPropsToSpawn = 10;
+    [SerializeField] private int totalFakeProps = 3;
 
-    private Transform[] spawnPoints;
-    private List<GameObject> spawnedProps;
-    private List<Transform> tempSpawnList;
-
-    private Dictionary<GameObject, List<GameObject>> propPools;
-    
-    // Cache for component lookups
-    private PropIdentity tempIdentity;
-    private CollectibleProp tempCollectible;
-
-    void Awake()
-    {
-        // Pre-allocate collections to avoid GC allocations
-        spawnedProps = new List<GameObject>(totalPropsToSpawn);
-        tempSpawnList = new List<Transform>(50); // Reasonable capacity based on expected use
-        propPools = new Dictionary<GameObject, List<GameObject>>(propsPrefabs.Length);
-        
-        // Cache spawn points
-        int childCount = spawnPointsParent.childCount;
-        spawnPoints = new Transform[childCount];
-        for (int i = 0; i < childCount; i++)
-        {
-            spawnPoints[i] = spawnPointsParent.GetChild(i);
-        }
-
-        InitializePools();
-    }
+    private List<Transform> usedSpawnPoints = new List<Transform>();
 
     void Start()
     {
-        SpawnRandomProps();
+        SpawnProps();
     }
 
-    void InitializePools()
+    void SpawnProps()
     {
-        // Use larger initial pool size to avoid runtime instantiation
-        int poolSize = Mathf.Max(initialPoolSize, totalPropsToSpawn);
-        
-        foreach (var prefab in propsPrefabs)
+        if (totalFakeProps > totalPropsToSpawn)
         {
-            // Pre-allocate list with capacity to avoid resizing
-            List<GameObject> pool = new List<GameObject>(poolSize);
-            propPools[prefab] = pool;
-
-            for (int i = 0; i < poolSize; i++)
-            {
-                GameObject obj = Instantiate(prefab);
-                obj.SetActive(false);
-                pool.Add(obj);
-            }
-        }
-    }
-
-    void SpawnRandomProps()
-    {
-        if (propsPrefabs.Length == 0 || spawnPoints.Length == 0)
-        {
-            Debug.LogError("No prop prefabs or spawn points assigned!");
+            Debug.LogError("Fake props can't exceed total props to spawn.");
             return;
         }
 
-        tempSpawnList.Clear();
-        // Use AddRange with capacity already set to avoid resizing
-        for (int i = 0; i < spawnPoints.Length; i++)
+        // 1. Randomly pick N unique props
+        List<PropData> selectedProps = GetRandomProps(allProps, totalPropsToSpawn);
+
+        // 2. Randomly choose K props out of selected as fake
+        List<int> fakeIndexes = GetRandomIndexes(totalPropsToSpawn, totalFakeProps);
+
+        for (int i = 0; i < selectedProps.Count; i++)
         {
-            tempSpawnList.Add(spawnPoints[i]);
-        }
-        Shuffle(tempSpawnList);
+            PropData prop = selectedProps[i];
 
-        int spawnCount = Mathf.Min(totalPropsToSpawn, tempSpawnList.Count);
-        spawnedProps.Clear();
-
-        int spawned = 0;
-        int attempts = 0;
-
-        while (spawned < spawnCount && attempts < tempSpawnList.Count)
-        {
-            Transform spawnPoint = tempSpawnList[attempts];
-            attempts++;
-
-            if (preventOverlap && IsTooClose(spawnPoint.position)) continue;
-
-            GameObject prefab = propsPrefabs[Random.Range(0, propsPrefabs.Length)];
-            GameObject prop = GetFromPool(prefab);
-            if (prop == null) continue;
-
-            prop.transform.position = spawnPoint.position;
-            prop.transform.rotation = spawnPoint.rotation;
-            prop.transform.SetParent(spawnPoint);
-            prop.SetActive(true);
-
-            // Cache component lookup
-            tempIdentity = prop.GetComponent<PropIdentity>();
-            if (tempIdentity == null) tempIdentity = prop.AddComponent<PropIdentity>();
-            tempIdentity.isFake = false;
-
-            spawnedProps.Add(prop);
-            spawned++;
-        }
-
-        // Assign fake props
-        Shuffle(spawnedProps);
-        int fakesToAssign = Mathf.Min(fakePropCount, spawnedProps.Count);
-        for (int i = 0; i < fakesToAssign; i++)
-        {
-            GameObject fakeProp = spawnedProps[i];
-            if (fakeProp == null) continue;
-
-            // Reuse cached component reference
-            tempIdentity = fakeProp.GetComponent<PropIdentity>();
-            if (tempIdentity != null)
+            // 3. Choose one random unused spawn point for this prop
+            List<Transform> validSpawnPoints = new List<Transform>();
+            foreach (var point in prop.spawnPoints)
             {
-                tempIdentity.isFake = true;
-
-                // Cache component lookup
-                tempCollectible = fakeProp.GetComponent<CollectibleProp>();
-                if (tempCollectible == null)
-                {
-                    fakeProp.AddComponent<CollectibleProp>();
-                }
-
-                if (GameManager.Instance != null)
-                {
-                    GameManager.Instance.RegisterCollectible();
-                }
+                if (!usedSpawnPoints.Contains(point))
+                    validSpawnPoints.Add(point);
             }
-        }
 
-        Debug.Log($"Spawned {spawnedProps.Count} props: {fakesToAssign} fake, {spawnedProps.Count - fakesToAssign} real.");
+            if (validSpawnPoints.Count == 0)
+            {
+                Debug.LogWarning($"No available spawn points for prop: {prop.propName}");
+                continue;
+            }
+
+            Transform chosenPoint = validSpawnPoints[Random.Range(0, validSpawnPoints.Count)];
+            usedSpawnPoints.Add(chosenPoint);
+
+            // 4. Decide whether this prop is fake or real
+            bool isFake = fakeIndexes.Contains(i);
+
+            GameObject prefabToSpawn = isFake ? fakePropPrefab : prop.prefab;
+
+            GameObject spawned = Instantiate(prefabToSpawn, chosenPoint.position, chosenPoint.rotation);
+
+            // 5. Optional Tagging
+            spawned.name = isFake ? prop.propName + "_FAKE" : prop.propName + "_REAL";
+            spawned.tag = isFake ? "FakeProp" : "RealProp";
+        }
     }
 
-    GameObject GetFromPool(GameObject prefab)
+    // Get N unique props randomly from the list
+    List<PropData> GetRandomProps(List<PropData> sourceList, int count)
     {
-        if (!propPools.ContainsKey(prefab)) return null;
+        List<PropData> copy = new List<PropData>(sourceList);
+        Shuffle(copy);
+        return copy.GetRange(0, Mathf.Min(count, copy.Count));
+    }
 
-        List<GameObject> pool = propPools[prefab];
-        for (int i = 0; i < pool.Count; i++)
+    // Get K unique random indices in [0, total)
+    List<int> GetRandomIndexes(int total, int count)
+    {
+        List<int> indices = new List<int>();
+        while (indices.Count < count)
         {
-            GameObject obj = pool[i];
-            if (!obj.activeInHierarchy)
-            {
-                return obj;
-            }
+            int r = Random.Range(0, total);
+            if (!indices.Contains(r))
+                indices.Add(r);
         }
-
-        // If we get here, the pool is exhausted - we should never need to expand if initial pool size is adequate
-        Debug.LogWarning($"Object pool for {prefab.name} was exhausted. Consider increasing initialPoolSize.");
-        return null;
+        return indices;
     }
 
     void Shuffle<T>(List<T> list)
     {
-        int n = list.Count;
-        for (int i = 0; i < n - 1; i++)
+        for (int i = 0; i < list.Count; i++)
         {
-            int rnd = Random.Range(i, n);
+            int rand = Random.Range(i, list.Count);
             T temp = list[i];
-            list[i] = list[rnd];
-            list[rnd] = temp;
+            list[i] = list[rand];
+            list[rand] = temp;
         }
     }
-
-    bool IsTooClose(Vector3 newPos)
-    {
-        for (int i = 0; i < spawnedProps.Count; i++)
-        {
-            GameObject existing = spawnedProps[i];
-            if (existing == null) continue;
-            if (Vector3.Distance(existing.transform.position, newPos) < minDistanceBetweenProps)
-                return true;
-        }
-        return false;
-    }
-
-#if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        if (spawnPointsParent == null) return;
-
-        Gizmos.color = Color.cyan;
-        foreach (Transform child in spawnPointsParent)
-        {
-            if (child != null)
-                Gizmos.DrawWireSphere(child.position, 0.5f);
-        }
-
-        if (Application.isPlaying && spawnedProps != null)
-        {
-            Gizmos.color = Color.red;
-            foreach (var prop in spawnedProps)
-            {
-                if (prop == null) continue;
-
-                PropIdentity identity = prop.GetComponent<PropIdentity>();
-                if (identity != null && identity.isFake)
-                {
-                    Gizmos.DrawSphere(prop.transform.position, 0.3f);
-                    UnityEditor.Handles.Label(prop.transform.position + Vector3.up * 0.5f, "Fake Prop");
-                }
-            }
-        }
-    }
-#endif
 }

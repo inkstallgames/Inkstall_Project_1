@@ -16,9 +16,6 @@ public class PlayerInteraction : MonoBehaviour
     // Cache ray to avoid GC allocations in Update
     private Ray interactionRay = new Ray(); // Initialize to prevent null reference
     
-    // Cache components to avoid repeated GetComponent calls
-    private DisableOnPropSpawn cachedDisabler;
-
 
     // Object pool for component lookups to avoid GC allocations
     private Component[] componentCache = new Component[4];
@@ -96,33 +93,10 @@ public class PlayerInteraction : MonoBehaviour
             DrawerMech drawer = hitObject.GetComponent<DrawerMech>();
             if (drawer != null)
             {
-                // Check if the drawer interaction is disabled (locked)
-                if (!drawer.enabled)
-                {
-                {
-                        // Fall back to the old behavior
-                        HandleLockedInteraction(hitInfo.collider);
-                    }
-                    return;
-                }
                 drawer.Interact();
                 return;
             }
         }
     }
     
-    void HandleLockedInteraction(Collider collider)
-    {
-        // Check if there's a DisableOnPropSpawn component
-        cachedDisabler = collider.GetComponent<DisableOnPropSpawn>();
-        if (cachedDisabler != null)
-        {
-            cachedDisabler.PlayLockedSound();
-        }
-        else if (audioSource != null && lockedDoorSound != null)
-        {
-            // Fall back to playing the locked sound directly
-            audioSource.PlayOneShot(lockedDoorSound);
-        }
-    }
 }

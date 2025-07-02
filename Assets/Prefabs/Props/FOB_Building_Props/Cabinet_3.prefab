@@ -12,12 +12,13 @@ GameObject:
   - component: {fileID: 33428126356163012}
   - component: {fileID: 23420934668648184}
   - component: {fileID: 114785540159343076}
+  - component: {fileID: 1800921234675628998}
   m_Layer: 0
   m_Name: Cabinet3_Drawer_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 65
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4129545067772692
 Transform:
@@ -100,6 +101,28 @@ MonoBehaviour:
   drawerSpeed: 2
   drawerOpenSound: {fileID: 0}
   drawerCloseSound: {fileID: 0}
+--- !u!64 &1800921234675628998
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007683784285360}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300006, guid: c103acdf14664cc4e826a7b6de5711cd, type: 3}
 --- !u!1 &1189680318001556
 GameObject:
   m_ObjectHideFlags: 0
@@ -111,12 +134,13 @@ GameObject:
   - component: {fileID: 4134699323623626}
   - component: {fileID: 33190591985092198}
   - component: {fileID: 23849971614638696}
+  - component: {fileID: 178970873740842801}
   m_Layer: 0
   m_Name: Cabinet_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4134699323623626
 Transform:
@@ -126,9 +150,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1189680318001556}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.871, y: 1.0326097, z: 1.136}
-  m_LocalScale: {x: 1, y: 1, z: 0.82290727}
+  m_LocalScale: {x: 1, y: 1, z: 0.7883716}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4771358374643432}
@@ -186,6 +210,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &178970873740842801
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189680318001556}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: c103acdf14664cc4e826a7b6de5711cd, type: 3}
 --- !u!1 &1576429470864110
 GameObject:
   m_ObjectHideFlags: 0
@@ -198,12 +244,13 @@ GameObject:
   - component: {fileID: 33164111176874282}
   - component: {fileID: 23050603629520656}
   - component: {fileID: 114735950387043822}
+  - component: {fileID: 2000669298256703060}
   m_Layer: 0
   m_Name: Cabinet3_Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 65
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4771358374643432
 Transform:
@@ -286,6 +333,27 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+--- !u!65 &2000669298256703060
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576429470864110}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9376234, y: 2.2162824, z: 0.073754005}
+  m_Center: {x: 0.4823315, y: 1.1081412, z: 0.036875088}
 --- !u!1 &1634985576499460
 GameObject:
   m_ObjectHideFlags: 0
@@ -362,6 +430,7 @@ GameObject:
   - component: {fileID: 33453902627627846}
   - component: {fileID: 23353392394713226}
   - component: {fileID: 114057320868870652}
+  - component: {fileID: 7044477323457896091}
   m_Layer: 0
   m_Name: Cabinet3_Drawer_2
   m_TagString: Untagged
@@ -450,3 +519,25 @@ MonoBehaviour:
   drawerSpeed: 2
   drawerOpenSound: {fileID: 0}
   drawerCloseSound: {fileID: 0}
+--- !u!64 &7044477323457896091
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981499815155522}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300004, guid: c103acdf14664cc4e826a7b6de5711cd, type: 3}

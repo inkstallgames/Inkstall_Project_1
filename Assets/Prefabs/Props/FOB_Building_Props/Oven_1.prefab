@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4654624483710892}
   - component: {fileID: 33537683153205146}
   - component: {fileID: 23644772765667736}
+  - component: {fileID: 7752204172153969289}
   m_Layer: 0
   m_Name: Oven_1
   m_TagString: Untagged
@@ -84,6 +85,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7752204172153969289
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1371724373281570}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 396f5bf6c7247954cb702e9b2e201f0a, type: 3}
 --- !u!1 &1875554041279698
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,6 +202,7 @@ GameObject:
   - component: {fileID: 33187977678865314}
   - component: {fileID: 23781587173736794}
   - component: {fileID: 114328286526553892}
+  - component: {fileID: 5643371440803668714}
   m_Layer: 0
   m_Name: Oven_1_Door
   m_TagString: Untagged
@@ -268,3 +292,24 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+--- !u!65 &5643371440803668714
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1937917351076174}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.98956287, y: 0.8385665, z: 0.07783961}
+  m_Center: {x: 0.022360204, y: 0.41928318, z: 0.03892076}

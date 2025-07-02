@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4328488083210199873}
   - component: {fileID: 4328488083213591393}
   - component: {fileID: 4328488083212493217}
+  - component: {fileID: 2519684382039496831}
   m_Layer: 0
   m_Name: Cabinet_2_BathRoom_Sink_Door
   m_TagString: Untagged
@@ -83,6 +84,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2519684382039496831
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4328488083210567521}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.964661, y: 0.93529546, z: 0.07754048}
+  m_Center: {x: 0.4823267, y: 0.46764767, z: 0.038768332}
 --- !u!1 &4328488083210567523
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,6 +116,7 @@ GameObject:
   - component: {fileID: 4328488083210199875}
   - component: {fileID: 4328488083213591395}
   - component: {fileID: 4328488083212493219}
+  - component: {fileID: 5240850952478253533}
   m_Layer: 0
   m_Name: Cabinet_1_BathRoom_Sink
   m_TagString: Untagged
@@ -167,3 +190,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5240850952478253533
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4328488083210567523}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: a79449b1cdbffcf4e8e98414c80a1e6f, type: 3}

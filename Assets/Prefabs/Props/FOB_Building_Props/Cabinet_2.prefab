@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33703210238001190}
   - component: {fileID: 23546199921830310}
   - component: {fileID: 114381149644289860}
+  - component: {fileID: 7898500069566655940}
   m_Layer: 0
   m_Name: Cabinet2_Drawer
   m_TagString: Untagged
@@ -96,9 +97,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 357d07ab073a44b49a1e234fb56ae132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenPosition: {x: 0, y: 0, z: 0.437}
-  ClosePosition: {x: 0, y: 0, z: 0}
-  drawerBool: 0
+  openPosition: {x: 0, y: 0, z: 0.5}
+  drawerSpeed: 2
+  drawerOpenSound: {fileID: 0}
+  drawerCloseSound: {fileID: 0}
+--- !u!64 &7898500069566655940
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1529412923199490}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300004, guid: 72922a9b9662c8a4593a788990aa2334, type: 3}
 --- !u!1 &1608004519724090
 GameObject:
   m_ObjectHideFlags: 0
@@ -111,6 +135,7 @@ GameObject:
   - component: {fileID: 33189509108172198}
   - component: {fileID: 23375918357791008}
   - component: {fileID: 114097176944761904}
+  - component: {fileID: 1479050811754322433}
   m_Layer: 0
   m_Name: Cabinet2_Door
   m_TagString: Untagged
@@ -195,10 +220,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -70, z: 0}
-  CloseRotation: {x: 0, y: 0, z: 0}
-  rotSpeed: 1
-  doorBool: 0
+  openAngle: 90
+  doorSpeed: 2
+  doorOpenSound: {fileID: 0}
+  doorCloseSound: {fileID: 0}
+--- !u!65 &1479050811754322433
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1608004519724090}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9376234, y: 0.7945526, z: 0.07375403}
+  m_Center: {x: 0.48233056, y: 0.3972763, z: 0.03687892}
 --- !u!1 &1677145780291700
 GameObject:
   m_ObjectHideFlags: 0

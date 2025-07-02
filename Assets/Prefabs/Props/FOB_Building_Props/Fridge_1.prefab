@@ -12,12 +12,13 @@ GameObject:
   - component: {fileID: 33506992065065874}
   - component: {fileID: 23149672436203634}
   - component: {fileID: 114824586577753486}
+  - component: {fileID: 1331914476446630254}
   m_Layer: 0
   m_Name: Fridge_1_Door_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 65
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4811357419381660
 Transform:
@@ -96,10 +97,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openAngle: 90
+  doorSpeed: 2
+  doorOpenSound: {fileID: 0}
+  doorCloseSound: {fileID: 0}
+--- !u!65 &1331914476446630254
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1351087311286238}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9376237, y: 1.8795888, z: 0.09009974}
+  m_Center: {x: 0.46853104, y: 0.9397943, z: 0.045050822}
 --- !u!1 &1790755073740054
 GameObject:
   m_ObjectHideFlags: 0
@@ -111,12 +133,13 @@ GameObject:
   - component: {fileID: 4526664636313418}
   - component: {fileID: 33566792232845730}
   - component: {fileID: 23413534225647686}
+  - component: {fileID: 6526733598675126280}
   m_Layer: 0
   m_Name: Fridge_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4526664636313418
 Transform:
@@ -185,6 +208,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6526733598675126280
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790755073740054}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 1d9e4436ca133864785176ae12e27ac2, type: 3}
 --- !u!1 &1860466841465400
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,12 +242,13 @@ GameObject:
   - component: {fileID: 33171305666835442}
   - component: {fileID: 23856461503608618}
   - component: {fileID: 114649972994238284}
+  - component: {fileID: 5598597858036303735}
   m_Layer: 0
   m_Name: Fridge_1_Door_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 65
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4295067708743848
 Transform:
@@ -281,7 +327,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OpenRotation: {x: 0, y: -170, z: 0}
-  CloseRotation: {x: 0, y: -90, z: 0}
-  rotSpeed: 1
-  doorBool: 1
+  openAngle: 90
+  doorSpeed: 2
+  doorOpenSound: {fileID: 0}
+  doorCloseSound: {fileID: 0}
+--- !u!65 &5598597858036303735
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1860466841465400}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9376237, y: 0.6866989, z: 0.09009974}
+  m_Center: {x: 0.46852913, y: 0.34334943, z: 0.045050822}

@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 4358557218598632}
   - component: {fileID: 33607573486741204}
   - component: {fileID: 23691534687758998}
+  - component: {fileID: 6512415758628041015}
   m_Layer: 0
   m_Name: Toilet_1
   m_TagString: Untagged
@@ -167,3 +168,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6512415758628041015
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412157406293010}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 0632bfaa10c23b446908268ef8dd86b4, type: 3}

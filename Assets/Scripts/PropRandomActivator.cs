@@ -29,4 +29,19 @@ public class PropRandomActivator : MonoBehaviour
         transform.rotation = chosen.rotation;
         gameObject.SetActive(true);
     }
+
+    private void OnEnable()
+    {
+        if (Random.value > activationChance) return;
+
+        if (spawnPoints == null || spawnPoints.Count == 0)
+        {
+            Debug.LogWarning($"{name} has no spawn points assigned.");
+            return;
+        }
+
+        Transform chosen = spawnPoints[Random.Range(0, spawnPoints.Count)];
+        transform.position = chosen.position;
+        transform.rotation = chosen.rotation;
+    }
 }

@@ -22,16 +22,24 @@ public class CollectibleProp : MonoBehaviour
         }
     }
 
-    public void Interact()
+    public bool Interact()
     {
-        if (identity == null) return;
+        if (identity == null) return false;
+
+        // 🔍 Log whether the prop is fake or real
+        Debug.Log($"[Prop Check] {gameObject.name} is {(identity.isFake ? "FAKE" : "REAL")}");
 
         if (identity.isFake)
         {
-            if (isCollected) return;
+            if (isCollected)
+            {
+                Debug.Log($"[Already Collected] {gameObject.name} was already collected.");
+                return false;
+            }
+
             isCollected = true;
 
-            Debug.Log($"✅ Collected fake prop: {gameObject.name}");
+            Debug.Log($"✅ Collected FAKE prop: {gameObject.name}");
 
             if (fakePickupSound != null)
                 AudioSource.PlayClipAtPoint(fakePickupSound, transform.position, soundVolume);
@@ -46,13 +54,16 @@ public class CollectibleProp : MonoBehaviour
             }
 
             Destroy(gameObject);
+            return true;
         }
         else
         {
-            Debug.Log($"🟤 Interacted with real prop: {gameObject.name}");
+            Debug.Log($"🟤 Interacted with REAL prop: {gameObject.name}");
 
             if (realInteractSound != null)
                 AudioSource.PlayClipAtPoint(realInteractSound, transform.position, soundVolume);
+
+            return false;
         }
     }
 }

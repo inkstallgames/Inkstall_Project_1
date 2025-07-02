@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5982957726450860541}
   - component: {fileID: 8422658275460822327}
   - component: {fileID: 6820784556035438484}
+  - component: {fileID: 6064582966817627474}
   m_Layer: 0
   m_Name: Prop_ToyTrain_05
   m_TagString: Untagged
@@ -105,3 +106,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.37610725, y: 0.23572874, z: 0.2681727}
   m_Center: {x: 0.0022275597, y: 0.118435085, z: 0}
+--- !u!114 &6064582966817627474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8062489396906497250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a00c660a06c6558409881ca30be91691, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isFake: 0

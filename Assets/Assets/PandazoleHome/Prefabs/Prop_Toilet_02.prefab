@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7199923062986862152}
   - component: {fileID: 4904337156793277058}
   - component: {fileID: 4543431221097275958}
+  - component: {fileID: 3335893597286940666}
   m_Layer: 0
   m_Name: Prop_Toilet_02
   m_TagString: Untagged
@@ -105,3 +106,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.4369684, y: 0.70069426, z: 0.6700255}
   m_Center: {x: 0, y: 0.35034713, z: 0.0028307736}
+--- !u!114 &3335893597286940666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6849773654558260055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a00c660a06c6558409881ca30be91691, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isFake: 0

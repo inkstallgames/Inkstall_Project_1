@@ -117,6 +117,7 @@ GameObject:
   - component: {fileID: 4328488083213591395}
   - component: {fileID: 4328488083212493219}
   - component: {fileID: 5240850952478253533}
+  - component: {fileID: 8498474896438413878}
   m_Layer: 0
   m_Name: Cabinet_1_BathRoom_Sink
   m_TagString: Untagged
@@ -212,3 +213,16 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: a79449b1cdbffcf4e8e98414c80a1e6f, type: 3}
+--- !u!114 &8498474896438413878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4328488083210567523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a00c660a06c6558409881ca30be91691, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isFake: 0

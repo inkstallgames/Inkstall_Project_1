@@ -47,8 +47,7 @@ public class DoorInteraction : MonoBehaviour
 
     private void ToggleDoor()
     {
-        if (isDoorMoving) return;
-
+        // Toggle the door state immediately
         isDoorOpen = !isDoorOpen;
         isDoorMoving = true;
 
@@ -68,10 +67,10 @@ public class DoorInteraction : MonoBehaviour
         // Get target rotation based on door state
         Quaternion targetRotation = isDoorOpen ? openRotation : closedRotation;
         
-        // Smoothly rotate to target
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, doorSpeed * Time.deltaTime);
+        // Use MoveTowards for a more direct rotation without smooth ending
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, doorSpeed * 100 * Time.deltaTime);
         
-        // Check if door reached target position (within a small threshold)
+        // Check if door reached target position
         if (Quaternion.Angle(transform.rotation, targetRotation) < 0.1f)
         {
             transform.rotation = targetRotation; // Snap to exact position

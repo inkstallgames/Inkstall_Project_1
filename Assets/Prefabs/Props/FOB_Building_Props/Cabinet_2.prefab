@@ -220,7 +220,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openAngle: -90
+  XAngle: 0
+  YAngle: -90
+  ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
@@ -289,6 +291,7 @@ GameObject:
   - component: {fileID: 33779564995884104}
   - component: {fileID: 23866872942467282}
   - component: {fileID: 992973049149110368}
+  - component: {fileID: 7232697963552053662}
   m_Layer: 0
   m_Name: Cabinet_2
   m_TagString: Untagged
@@ -376,3 +379,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFake: 0
+--- !u!64 &7232697963552053662
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766323525299762}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 72922a9b9662c8a4593a788990aa2334, type: 3}

@@ -7,13 +7,13 @@ public class PropFakeMarker : MonoBehaviour
     public List<PropIdentity> allProps = new List<PropIdentity>();
     public Transform propsParent; // optional: auto-collect from parent
 
-    [Header("Fake Prop Settings")]
+    [Header("Prop Settings")]
     public int fakeCount = 2;
 
     void Start()
     {
         AutoFillIfEmpty();
-        AssignFakeProps();
+        AssignPropTypes();
     }
 
     void AutoFillIfEmpty()
@@ -26,17 +26,18 @@ public class PropFakeMarker : MonoBehaviour
 
         if (allProps == null || allProps.Count == 0)
         {
-            Debug.LogWarning("❌ No props found for fake selection.");
+            Debug.LogWarning("❌ No props found for assignment.");
         }
     }
 
-    public void AssignFakeProps()
+    public void AssignPropTypes()
     {
         if (allProps.Count == 0) return;
 
+        // Ensure we don't try to assign more props than available
         fakeCount = Mathf.Clamp(fakeCount, 0, allProps.Count);
 
-        // Reset all
+        // Reset all props
         foreach (var prop in allProps)
         {
             prop.isFake = false;
@@ -46,15 +47,21 @@ public class PropFakeMarker : MonoBehaviour
         List<PropIdentity> shuffled = new List<PropIdentity>(allProps);
         ShuffleList(shuffled);
 
-        // Assign fake
+        // Assign fake props
         for (int i = 0; i < fakeCount; i++)
         {
             shuffled[i].isFake = true;
             Debug.Log($"✅ Marked {shuffled[i].name} as FAKE");
+            
+            // Register fake prop with GameManager
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.RegisterFakeProp();
+            }
         }
 
         // Optional log
-        Debug.Log($"Fake Props Assigned: {fakeCount}/{allProps.Count}");
+        Debug.Log($"Props Assigned: {fakeCount} fake, {allProps.Count - fakeCount} real out of {allProps.Count} total");
     }
 
     private void ShuffleList<T>(List<T> list)

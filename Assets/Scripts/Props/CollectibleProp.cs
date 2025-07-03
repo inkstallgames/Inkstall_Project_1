@@ -9,7 +9,7 @@ public class CollectibleProp : MonoBehaviour
     
     private AudioSource audioSource;
     private bool isCollected = false;
-    private bool isFake;
+    private PropIdentity propIdentity;
 
     private void Awake()
     {
@@ -21,16 +21,16 @@ public class CollectibleProp : MonoBehaviour
             audioSource.spatialBlend = 1f; // 3D sound
             audioSource.volume = soundVolume;
         }
-    }
-
-    public void SetAsFake(bool fake)
-    {
-        isFake = fake;
+        
+        // Get PropIdentity component if available
+        propIdentity = GetComponent<PropIdentity>();
     }
 
     public bool Interact()
     {
         if (isCollected) return false;
+        
+        bool isFake = propIdentity != null && propIdentity.isFake;
 
         if (isFake)
         {

@@ -3,7 +3,9 @@
 public class DoorInteraction : MonoBehaviour
 {
     [Header("Door Settings")]
-    [SerializeField] private float openAngle = 90f;
+    [SerializeField] private float XAngle = 0f;
+    [SerializeField] private float YAngle = 90f;
+    [SerializeField] private float ZAngle = 0f;
     [SerializeField] private float doorSpeed = 2f;
     [SerializeField] private AudioClip doorOpenSound;
     [SerializeField] private AudioClip doorCloseSound;
@@ -26,7 +28,7 @@ public class DoorInteraction : MonoBehaviour
         closedRotation = transform.rotation;
         
         // Calculate the open rotation based on the openAngle
-        openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(0, openAngle, 0));
+        openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(XAngle, YAngle, ZAngle));
     }
 
     private void Update()

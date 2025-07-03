@@ -9,6 +9,11 @@ public class GameManager : MonoBehaviour
 
     public int totalPropsToCollect = 0;
     private int propsCollected = 0;
+    
+    // Track fake props specifically
+    private int totalFakeProps = 0;
+    private int fakePropsCollected = 0;
+    
     private bool gameEnded = false;
 
     [Header("References")]
@@ -52,6 +57,8 @@ public class GameManager : MonoBehaviour
 
         totalPropsToCollect = 0;
         propsCollected = 0;
+        totalFakeProps = 0;
+        fakePropsCollected = 0;
         gameEnded = false;
         
         // Create reusable audio source for sound effects
@@ -63,6 +70,15 @@ public class GameManager : MonoBehaviour
     public void RegisterCollectible()
     {
         totalPropsToCollect++;
+    }
+    
+    // Register a fake prop
+    public void RegisterFakeProp()
+    {
+        totalFakeProps++;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        Debug.Log($"Registered fake prop. Total fake props: {totalFakeProps}");
+#endif
     }
 
     public void CollectProp()
@@ -80,6 +96,27 @@ public class GameManager : MonoBehaviour
         if (!gameEnded && propsCollected == totalPropsToCollect)
         {
             // Immediately disable player movement when last prop is collected
+            DisablePlayerMovement();
+            
+            // Start the delayed win coroutine for UI and sound effects
+            StartCoroutine(DelayedWin());
+        }
+    }
+    
+    // Collect a fake prop
+    public void CollectFakeProp()
+    {
+        fakePropsCollected++;
+        CollectProp(); // Also increment the total props collected
+        
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        Debug.Log($"Collected fake prop {fakePropsCollected}/{totalFakeProps}");
+#endif
+
+        // Check if all fake props have been collected
+        if (!gameEnded && fakePropsCollected == totalFakeProps && totalFakeProps > 0)
+        {
+            // Immediately disable player movement when last fake prop is collected
             DisablePlayerMovement();
             
             // Start the delayed win coroutine for UI and sound effects
@@ -216,6 +253,11 @@ public class GameManager : MonoBehaviour
     public int PropsLeft()
     {
         return totalPropsToCollect - propsCollected;
+    }
+    
+    public int FakePropsLeft()
+    {
+        return totalFakeProps - fakePropsCollected;
     }
 
     private void DisablePlayerMovement()

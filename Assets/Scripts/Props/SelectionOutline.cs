@@ -2,29 +2,19 @@ using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// Creates an outline effect similar to the Unity Scene view selection highlight
+/// Creates an outline effect that highlights only the edges of objects
 /// </summary>
 public class SelectionOutline : MonoBehaviour
 {
     [SerializeField] private Color outlineColor = Color.white;
-    [SerializeField] private float outlineWidth = 2.0f;
+    [SerializeField] private float outlineWidth = 3.0f;
     
-    private List<Renderer> renderers = new List<Renderer>();
-    private Dictionary<Renderer, Material[]> originalMaterials = new Dictionary<Renderer, Material[]>();
+    private GameObject outlineObject;
     private Material outlineMaterial;
     private bool isOutlineEnabled = false;
     
     private void Awake()
     {
-        // Find all renderers in this object and its children
-        renderers.AddRange(GetComponentsInChildren<Renderer>());
-        
-        // Store original materials
-        foreach (Renderer renderer in renderers)
-        {
-            originalMaterials[renderer] = renderer.sharedMaterials;
-        }
-        
         // Create outline material
         CreateOutlineMaterial();
     }
@@ -81,51 +71,95 @@ public class SelectionOutline : MonoBehaviour
         
         if (enable)
         {
-            ApplyOutlineMaterial();
+            CreateOutlineObject();
         }
         else
         {
-            RestoreOriginalMaterials();
+            DestroyOutlineObject();
         }
     }
     
-    private void ApplyOutlineMaterial()
+    private void CreateOutlineObject()
     {
-        foreach (Renderer renderer in renderers)
+        // Destroy any existing outline object
+        DestroyOutlineObject();
+        
+        // Create a new outline object
+        outlineObject = new GameObject(gameObject.name + "_Outline");
+        outlineObject.transform.SetParent(transform);
+        outlineObject.transform.localPosition = Vector3.zero;
+        outlineObject.transform.localRotation = Quaternion.identity;
+        outlineObject.transform.localScale = Vector3.one;
+        
+        // Copy all mesh renderers and mesh filters from original object
+        CopyMeshes(GetComponentsInChildren<MeshFilter>());
+        CopySkinnedMeshes(GetComponentsInChildren<SkinnedMeshRenderer>());
+    }
+    
+    private void CopyMeshes(MeshFilter[] meshFilters)
+    {
+        foreach (MeshFilter originalMeshFilter in meshFilters)
         {
-            // Create a new array with one extra slot for the outline material
-            Material[] originalMats = originalMaterials[renderer];
-            Material[] newMaterials = new Material[originalMats.Length + 1];
+            if (originalMeshFilter.sharedMesh == null) continue;
             
-            // Copy the original materials
-            for (int i = 0; i < originalMats.Length; i++)
-            {
-                newMaterials[i] = originalMats[i];
-            }
+            // Create child object with same hierarchy
+            GameObject outlineChild = new GameObject(originalMeshFilter.gameObject.name + "_Outline");
+            outlineChild.transform.SetParent(outlineObject.transform);
+            outlineChild.transform.position = originalMeshFilter.transform.position;
+            outlineChild.transform.rotation = originalMeshFilter.transform.rotation;
+            outlineChild.transform.localScale = originalMeshFilter.transform.localScale;
             
-            // Add the outline material at the end
-            newMaterials[originalMats.Length] = outlineMaterial;
+            // Add mesh filter and renderer
+            MeshFilter meshFilter = outlineChild.AddComponent<MeshFilter>();
+            meshFilter.sharedMesh = originalMeshFilter.sharedMesh;
             
-            // Apply the new materials array
-            renderer.materials = newMaterials;
+            MeshRenderer meshRenderer = outlineChild.AddComponent<MeshRenderer>();
+            meshRenderer.sharedMaterial = outlineMaterial;
         }
     }
     
-    private void RestoreOriginalMaterials()
+    private void CopySkinnedMeshes(SkinnedMeshRenderer[] skinnedMeshRenderers)
     {
-        foreach (Renderer renderer in renderers)
+        foreach (SkinnedMeshRenderer originalRenderer in skinnedMeshRenderers)
         {
-            if (originalMaterials.ContainsKey(renderer))
+            if (originalRenderer.sharedMesh == null) continue;
+            
+            // Create child object with same hierarchy
+            GameObject outlineChild = new GameObject(originalRenderer.gameObject.name + "_Outline");
+            outlineChild.transform.SetParent(outlineObject.transform);
+            outlineChild.transform.position = originalRenderer.transform.position;
+            outlineChild.transform.rotation = originalRenderer.transform.rotation;
+            outlineChild.transform.localScale = originalRenderer.transform.localScale;
+            
+            // Add skinned mesh renderer
+            SkinnedMeshRenderer renderer = outlineChild.AddComponent<SkinnedMeshRenderer>();
+            renderer.sharedMesh = originalRenderer.sharedMesh;
+            renderer.sharedMaterial = outlineMaterial;
+            renderer.bones = originalRenderer.bones;
+            renderer.rootBone = originalRenderer.rootBone;
+        }
+    }
+    
+    private void DestroyOutlineObject()
+    {
+        if (outlineObject != null)
+        {
+            if (Application.isPlaying)
             {
-                renderer.materials = originalMaterials[renderer];
+                Destroy(outlineObject);
             }
+            else
+            {
+                DestroyImmediate(outlineObject);
+            }
+            outlineObject = null;
         }
     }
     
     private void OnDestroy()
     {
-        // Restore original materials before destroying
-        RestoreOriginalMaterials();
+        // Clean up outline object
+        DestroyOutlineObject();
         
         // Clean up created material
         if (outlineMaterial != null)

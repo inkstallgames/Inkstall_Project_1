@@ -5,7 +5,7 @@ using UnityEngine;
 /// This is a performance-friendly alternative that works with standard materials
 /// </summary>
 [RequireComponent(typeof(Renderer))]
-public class SimpleHighlighter : MonoBehaviour, IHighlightable
+public class SimpleHighlighter : MonoBehaviour
 {
     [Header("Highlight Settings")]
     [SerializeField] private Color highlightColor = Color.white;

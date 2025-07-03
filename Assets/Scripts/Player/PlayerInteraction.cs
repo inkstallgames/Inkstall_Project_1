@@ -8,11 +8,29 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private KeyCode interactKey = KeyCode.E;
 
     [Header("Highlight Settings")]
-    [SerializeField] private float highlightCheckFrequency = 0.1f; // How often to check for highlightable objects
     [SerializeField] private LayerMask highlightableLayers = -1; // Default to everything
+    [SerializeField] private Color highlightColor = Color.white;
+    [SerializeField] private float highlightCheckFrequency = 0.1f;
 
     private GameObject currentHighlightedObject;
     private float highlightTimer;
+
+    private void Start()
+    {
+        // Validate camera reference
+        if (playerCamera == null)
+        {
+            playerCamera = Camera.main;
+            Debug.Log("PlayerCamera not assigned, using Camera.main");
+
+            if (playerCamera == null)
+            {
+                Debug.LogError("No camera found! Please assign a camera to PlayerInteraction.");
+                enabled = false;
+                return;
+            }
+        }
+    }
 
     private void Update()
     {
@@ -41,12 +59,12 @@ public class PlayerInteraction : MonoBehaviour
         {
             GameObject hitObject = hit.collider.gameObject;
 
-            // Check if object has any highlightable component
-            if (hitObject.GetComponent<IHighlightable>() != null ||
-                hitObject.GetComponent<CollectibleProp>() != null ||
-                hitObject.GetComponent<PropIdentity>() != null ||
-                hitObject.GetComponent<DoorInteraction>() != null ||
-                hitObject.GetComponent<DrawerMech>() != null)
+            // Check if it's a prop we want to highlight
+            bool isHighlightable = hitObject.CompareTag("Prop") ||
+                                  hitObject.GetComponent<CollectibleProp>() != null ||
+                                  hitObject.GetComponent<PropIdentity>() != null;
+
+            if (isHighlightable)
             {
                 // If it's not the same object we're already highlighting
                 if (currentHighlightedObject != hitObject)
@@ -76,42 +94,27 @@ public class PlayerInteraction : MonoBehaviour
     {
         if (obj == null) return;
 
-        // Try to use IHighlightable interface if implemented
-        IHighlightable highlightable = obj.GetComponent<IHighlightable>();
-        if (highlightable != null)
+        // Add the SelectionOutline component if it doesn't exist
+        SelectionOutline outline = obj.GetComponent<SelectionOutline>();
+        if (outline == null)
         {
-            highlightable.Highlight();
-            return;
+            outline = obj.AddComponent<SelectionOutline>();
         }
 
-        // Otherwise use the PropHighlighter component if it exists
-        PropHighlighter highlighter = obj.GetComponent<PropHighlighter>();
-        if (highlighter == null)
-        {
-            // Add highlighter component if it doesn't exist
-            highlighter = obj.AddComponent<PropHighlighter>();
-        }
-        highlighter.Highlight();
+        // Set the highlight color and enable it
+        outline.OutlineColor = highlightColor;
+        outline.EnableOutline(true);
     }
 
     private void UnhighlightCurrentObject()
     {
         if (currentHighlightedObject == null) return;
 
-        // Try to use IHighlightable interface if implemented
-        IHighlightable highlightable = currentHighlightedObject.GetComponent<IHighlightable>();
-        if (highlightable != null)
+        // Disable the outline if it exists
+        SelectionOutline outline = currentHighlightedObject.GetComponent<SelectionOutline>();
+        if (outline != null)
         {
-            highlightable.Unhighlight();
-        }
-        else
-        {
-            // Otherwise use the PropHighlighter component if it exists
-            PropHighlighter highlighter = currentHighlightedObject.GetComponent<PropHighlighter>();
-            if (highlighter != null)
-            {
-                highlighter.Unhighlight();
-            }
+            outline.EnableOutline(false);
         }
 
         currentHighlightedObject = null;

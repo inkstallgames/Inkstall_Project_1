@@ -4,7 +4,7 @@ public class DoorInteraction : MonoBehaviour
 {
     [Header("Door Settings")]
     [SerializeField] private float XAngle = 0f;
-    [SerializeField] private float YAngle = 90f;
+    [SerializeField] private float YAngle = -90f;
     [SerializeField] private float ZAngle = 0f;
     [SerializeField] private float doorSpeed = 2f;
     [SerializeField] private AudioClip doorOpenSound;

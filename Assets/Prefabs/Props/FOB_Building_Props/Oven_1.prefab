@@ -13,12 +13,13 @@ GameObject:
   - component: {fileID: 23644772765667736}
   - component: {fileID: 7752204172153969289}
   - component: {fileID: 5292555159975940937}
+  - component: {fileID: 8058768335995626864}
   m_Layer: 0
   m_Name: Oven_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &4654624483710892
 Transform:
@@ -121,6 +122,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isFake: 0
+--- !u!114 &8058768335995626864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1371724373281570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91acacdd6e2bcbf4cbb872181ba058d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 25994d1516f3d7e47af56984d092eafb, type: 3}
+  soundVolume: 1
 --- !u!1 &1875554041279698
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,7 +153,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 65
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4176970315234942
 Transform:
@@ -222,7 +238,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 65
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4981144841336212
 Transform:

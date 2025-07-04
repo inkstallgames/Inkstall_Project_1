@@ -10,11 +10,15 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private AudioClip doorOpenSound;
     [SerializeField] private AudioClip doorCloseSound;
 
+    [Header("Timer Settings")]
+    [SerializeField] private bool shouldStartTimer = false; // Unchecked by default
+
     private bool isDoorOpen = false;
     private bool isDoorMoving = false;
     private Quaternion closedRotation;
     private Quaternion openRotation;
     private AudioSource audioSource;
+    private GameTimer attachedTimer; // Reference to the timer attached to this door
 
     private void Start()
     {
@@ -29,6 +33,24 @@ public class DoorInteraction : MonoBehaviour
         
         // Calculate the open rotation based on the openAngle
         openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(XAngle, YAngle, ZAngle));
+        
+        // Get the GameTimer component attached to this door
+        attachedTimer = GetComponent<GameTimer>();
+        
+        // Log warning if timer should start but no GameTimer is attached
+        if (shouldStartTimer && attachedTimer == null)
+        {
+            Debug.LogWarning("DoorInteraction is set to start timer, but no GameTimer component is attached to this door. Add a GameTimer component to this door object.");
+        }
+    }
+
+    private void OnEnable()
+    {
+        // When this script is enabled, make sure we have a reference to the timer
+        if (attachedTimer == null)
+        {
+            attachedTimer = GetComponent<GameTimer>();
+        }
     }
 
     private void Update()
@@ -45,6 +67,13 @@ public class DoorInteraction : MonoBehaviour
     {
         // Toggle door open/close
         ToggleDoor();
+        
+        // Start the timer if it's not already running and we should start it
+        if (shouldStartTimer && attachedTimer != null && !attachedTimer.IsRunning())
+        {
+            attachedTimer.ResumeTimer();
+            Debug.Log("Door interaction started the timer!");
+        }
     }
 
     private void ToggleDoor()

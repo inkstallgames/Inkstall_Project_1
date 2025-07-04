@@ -99,8 +99,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   openPosition: {x: 0, y: 0, z: 0.5}
   drawerSpeed: 2
-  drawerOpenSound: {fileID: 0}
-  drawerCloseSound: {fileID: 0}
+  drawerOpenSound: {fileID: 8300000, guid: 14371aebf01a6814b9cbcff0db8ee672, type: 3}
+  drawerCloseSound: {fileID: 8300000, guid: e6cf98a7d10705e43baec30dfe4bc1e6, type: 3}
 --- !u!64 &2850685095835707525
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -343,10 +343,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openAngle: -90
+  XAngle: 0
+  YAngle: -90
+  ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  shouldStartTimer: 0
 --- !u!65 &1735302622636673225
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -497,10 +500,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openAngle: 90
+  XAngle: 0
+  YAngle: -90
+  ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  shouldStartTimer: 0
 --- !u!65 &2159552457111155154
 BoxCollider:
   m_ObjectHideFlags: 0

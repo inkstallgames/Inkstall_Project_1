@@ -8,10 +8,11 @@ public class GameTimer : MonoBehaviour
     public float totalTime = 180f;
     private float currentTime;
     public TextMeshProUGUI timerText;
-    public bool timerRunning = true;
+    public bool timerRunning = false; // Changed to false so timer doesn't start automatically
 
     private bool warningTriggered = false;
     private bool tickingStarted = false;
+    private bool hasBeenTriggered = false; // Track if timer has been triggered at least once
 
     // Cache for string formatting to avoid GC allocations
     private StringBuilder timerStringBuilder;
@@ -34,6 +35,7 @@ public class GameTimer : MonoBehaviour
 
     void Start()
     {
+        // Initialize timer values but don't start running
         currentTime = totalTime;
 
         // Initialize string builder to avoid GC allocations
@@ -45,8 +47,13 @@ public class GameTimer : MonoBehaviour
             digitStrings[i] = i < 10 ? "0" + i : i.ToString();
         }
 
-        UpdateTimerUI();
+        // Hide timer UI until it's triggered
+        if (timerText != null)
+        {
+            timerText.gameObject.SetActive(false);
+        }
 
+        // Setup audio but don't play yet
         if (tickSound != null)
         {
             tickSource = gameObject.AddComponent<AudioSource>();
@@ -59,8 +66,7 @@ public class GameTimer : MonoBehaviour
 
     void Update()
     {
-        // Only return if timer is not running, but still process if currentTime <= 0
-        // to ensure EndGame gets called
+        // Only update if timer is running
         if (!timerRunning) return;
 
         currentTime -= Time.deltaTime;
@@ -87,7 +93,7 @@ public class GameTimer : MonoBehaviour
             StartTicking();
         }
 
-        // Moved outside the main timer logic to ensure it always gets checked
+        // Check if timer reached zero
         if (currentTime <= 0f)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -102,6 +108,9 @@ public class GameTimer : MonoBehaviour
 
     void UpdateTimerUI()
     {
+        // Only update UI if timer text exists
+        if (timerText == null) return;
+        
         int minutes = Mathf.FloorToInt(currentTime / 60f);
         int seconds = Mathf.FloorToInt(currentTime % 60f);
 
@@ -174,13 +183,34 @@ public class GameTimer : MonoBehaviour
         StopTicking();
     }
 
+    // Modified to only allow starting the timer once and show UI when started
     public void ResumeTimer()
     {
-        timerRunning = true;
-
-        if (currentTime <= 30f && !tickingStarted)
+        // Only start the timer if it hasn't been triggered before
+        if (!hasBeenTriggered)
         {
-            StartTicking();
+            // Show the timer UI
+            if (timerText != null)
+            {
+                timerText.gameObject.SetActive(true);
+            }
+            
+            timerRunning = true;
+            hasBeenTriggered = true;
+            
+            // Update UI immediately
+            UpdateTimerUI();
+            
+            Debug.Log("Timer started for the first time!");
+
+            if (currentTime <= 30f && !tickingStarted)
+            {
+                StartTicking();
+            }
+        }
+        else
+        {
+            Debug.Log("Timer has already been triggered once, ignoring additional start attempts.");
         }
     }
 
@@ -192,4 +222,5 @@ public class GameTimer : MonoBehaviour
 
     public bool IsRunning() => timerRunning;
     public float GetRemainingTime() => currentTime;
+    public bool HasBeenTriggered() => hasBeenTriggered; // New method to check if timer has been triggered
 }

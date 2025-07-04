@@ -2,6 +2,7 @@ using UnityEngine;
 using StarterAssets; // Needed for FirstPersonController
 using System.Collections;
 using System.Text;
+using TMPro; // For TextMeshProUGUI
 
 public class GameManager : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class GameManager : MonoBehaviour
     private int totalFakeProps = 0;
     private int fakePropsCollected = 0;
     
+    // Limited chances system
+    [Header("Chances Settings")]
+    [SerializeField] private int maxChances = 3; // Maximum number of wrong guesses allowed
+    private int chancesRemaining;
+    
     private bool gameEnded = false;
 
     [Header("References")]
@@ -23,10 +29,17 @@ public class GameManager : MonoBehaviour
     public GameObject crosshair;        // Reference to crosshair UI
     [Tooltip("Assigned automatically at runtime when player is spawned")]
     public GameObject playerController; // Assigned at runtime when player is spawned
+    public TextMeshProUGUI chancesText; // UI text to display remaining chances
+
+    [Header("Feedback Text")]
+    public TextMeshProUGUI fakeFoundText; // Text that shows when a fake prop is found
+    public TextMeshProUGUI wrongGuessText; // Text that shows when a real prop is guessed
+    [SerializeField] private float feedbackTextDuration = 2.0f; // How long the feedback text stays visible
 
     [Header("Audio")]
     [SerializeField] private AudioClip winSound;
     [SerializeField] private AudioClip gameOverSound;
+    [SerializeField] private AudioClip wrongGuessSound; // Sound for wrong guesses
     [SerializeField] private float winDelay = 0.5f; // Delay in seconds before triggering win condition
     
     // Audio sources pool to avoid GC allocations from PlayClipAtPoint
@@ -34,6 +47,10 @@ public class GameManager : MonoBehaviour
     
     // Cache for string operations to reduce GC allocations
     private StringBuilder stringBuilder = new StringBuilder(128);
+    
+    // Coroutines for text feedback
+    private Coroutine fakeFoundCoroutine;
+    private Coroutine wrongGuessCoroutine;
 
     void Awake()
     {
@@ -59,12 +76,20 @@ public class GameManager : MonoBehaviour
         propsCollected = 0;
         totalFakeProps = 0;
         fakePropsCollected = 0;
+        chancesRemaining = maxChances;
         gameEnded = false;
         
         // Create reusable audio source for sound effects
         effectsAudioSource = gameObject.AddComponent<AudioSource>();
         effectsAudioSource.playOnAwake = false;
         // effectsAudioSource.spatialBlend = 1.0f; // Make it 3D sound
+        
+        // Update the chances UI if available
+        UpdateChancesUI();
+        
+        // Hide feedback texts initially
+        if (fakeFoundText != null) fakeFoundText.gameObject.SetActive(false);
+        if (wrongGuessText != null) wrongGuessText.gameObject.SetActive(false);
     }
 
     public void RegisterCollectible()
@@ -109,6 +134,9 @@ public class GameManager : MonoBehaviour
         fakePropsCollected++;
         CollectProp(); // Also increment the total props collected
         
+        // Show the "Fake Prop Found!" text
+        ShowFakeFoundText();
+        
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         Debug.Log($"Collected fake prop {fakePropsCollected}/{totalFakeProps}");
 #endif
@@ -124,6 +152,93 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    // Handle wrong guess (real prop interaction)
+    public bool HandleWrongGuess(Vector3 position)
+    {
+        chancesRemaining--;
+        UpdateChancesUI();
+        
+        // Show the "Wrong Guess!" text
+        ShowWrongGuessText();
+        
+        // Play wrong guess sound
+        if (wrongGuessSound != null && effectsAudioSource != null)
+        {
+            AudioSource.PlayClipAtPoint(wrongGuessSound, position, 1.0f);
+        }
+        
+        Debug.Log($"Wrong guess! Chances remaining: {chancesRemaining}");
+        
+        // Check if out of chances
+        if (chancesRemaining <= 0)
+        {
+            Debug.Log("Out of chances! Game over.");
+            GameOver();
+            return true; // Game ended
+        }
+        
+        return false; // Game continues
+    }
+    
+    // Show the "Fake Prop Found!" text for a limited time
+    private void ShowFakeFoundText()
+    {
+        if (fakeFoundText != null)
+        {
+            // Stop any existing coroutines to avoid conflicts
+            if (fakeFoundCoroutine != null)
+            {
+                StopCoroutine(fakeFoundCoroutine);
+            }
+            if (wrongGuessCoroutine != null)
+            {
+                StopCoroutine(wrongGuessCoroutine);
+                wrongGuessText.gameObject.SetActive(false); // Immediately hide the other text
+            }
+            
+            // Start new coroutine to show and hide the text
+            fakeFoundCoroutine = StartCoroutine(ShowTextTemporarily(fakeFoundText, feedbackTextDuration));
+        }
+    }
+    
+    // Show the "Wrong Guess!" text for a limited time
+    private void ShowWrongGuessText()
+    {
+        if (wrongGuessText != null)
+        {
+            // Stop any existing coroutines to avoid conflicts
+            if (wrongGuessCoroutine != null)
+            {
+                StopCoroutine(wrongGuessCoroutine);
+            }
+            if (fakeFoundCoroutine != null)
+            {
+                StopCoroutine(fakeFoundCoroutine);
+                fakeFoundText.gameObject.SetActive(false); // Immediately hide the other text
+            }
+            
+            // Start new coroutine to show and hide the text
+            wrongGuessCoroutine = StartCoroutine(ShowTextTemporarily(wrongGuessText, feedbackTextDuration));
+        }
+    }
+    
+    // Coroutine to show text temporarily
+    private IEnumerator ShowTextTemporarily(TextMeshProUGUI text, float duration)
+    {
+        text.gameObject.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        text.gameObject.SetActive(false);
+    }
+    
+    // Update the UI showing remaining chances
+    private void UpdateChancesUI()
+    {
+        if (chancesText != null)
+        {
+            chancesText.text = $"Chances: {chancesRemaining}";
+        }
+    }
+
     // Coroutine to delay the win condition
     private IEnumerator DelayedWin()
     {
@@ -167,6 +282,10 @@ public class GameManager : MonoBehaviour
         if (gameTimer != null) gameTimer.PauseTimer();
         if (winUI != null) winUI.SetActive(true);
         if (crosshair != null) crosshair.SetActive(false); // Hide crosshair
+        
+        // Hide any feedback texts that might be showing
+        if (fakeFoundText != null) fakeFoundText.gameObject.SetActive(false);
+        if (wrongGuessText != null) wrongGuessText.gameObject.SetActive(false);
 
         // Play win sound using pooled audio source instead of PlayClipAtPoint
         if (winSound != null && effectsAudioSource != null)
@@ -206,7 +325,7 @@ public class GameManager : MonoBehaviour
         gameEnded = true;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        Debug.Log("Game Over! Time's up.");
+        Debug.Log("Game Over! Time's up or out of chances.");
         
         // Log UI and component state for debugging
         stringBuilder.Clear();
@@ -233,6 +352,10 @@ public class GameManager : MonoBehaviour
         }
         
         if (crosshair != null) crosshair.SetActive(false); // Hide crosshair
+        
+        // Hide any feedback texts that might be showing
+        if (fakeFoundText != null) fakeFoundText.gameObject.SetActive(false);
+        if (wrongGuessText != null) wrongGuessText.gameObject.SetActive(false);
 
         // Play game over sound using pooled audio source instead of PlayClipAtPoint
         if (gameOverSound != null && effectsAudioSource != null)
@@ -258,6 +381,11 @@ public class GameManager : MonoBehaviour
     public int FakePropsLeft()
     {
         return totalFakeProps - fakePropsCollected;
+    }
+    
+    public int GetChancesRemaining()
+    {
+        return chancesRemaining;
     }
 
     private void DisablePlayerMovement()

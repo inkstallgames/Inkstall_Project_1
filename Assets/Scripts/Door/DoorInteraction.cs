@@ -19,6 +19,7 @@ public class DoorInteraction : MonoBehaviour
     private Quaternion openRotation;
     private AudioSource audioSource;
     private GameTimer attachedTimer; // Reference to the timer attached to this door
+    private bool isEnabled = false; // Track if this script is enabled
 
     private void Start()
     {
@@ -42,6 +43,9 @@ public class DoorInteraction : MonoBehaviour
         {
             Debug.LogWarning("DoorInteraction is set to start timer, but no GameTimer component is attached to this door. Add a GameTimer component to this door object.");
         }
+        
+        // Set the enabled flag
+        isEnabled = enabled;
     }
 
     private void OnEnable()
@@ -51,6 +55,13 @@ public class DoorInteraction : MonoBehaviour
         {
             attachedTimer = GetComponent<GameTimer>();
         }
+        
+        isEnabled = true;
+    }
+    
+    private void OnDisable()
+    {
+        isEnabled = false;
     }
 
     private void Update()
@@ -68,11 +79,15 @@ public class DoorInteraction : MonoBehaviour
         // Toggle door open/close
         ToggleDoor();
         
-        // Start the timer if it's not already running and we should start it
-        if (shouldStartTimer && attachedTimer != null && !attachedTimer.IsRunning())
+        // Start the timer if:
+        // 1. We should start the timer (flag is checked)
+        // 2. The script is enabled
+        // 3. We have a valid timer reference
+        // 4. The timer hasn't been triggered before
+        if (shouldStartTimer && isEnabled && attachedTimer != null && !attachedTimer.HasBeenTriggered())
         {
             attachedTimer.ResumeTimer();
-            Debug.Log("Door interaction started the timer!");
+            Debug.Log("Door interaction started the timer for the first time!");
         }
     }
 

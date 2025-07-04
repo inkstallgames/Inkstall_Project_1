@@ -1,4 +1,5 @@
 using UnityEngine;
+using StarterAssets; // Add this for FirstPersonController reference
 
 public class CollectibleProp : MonoBehaviour
 {
@@ -41,14 +42,48 @@ public class CollectibleProp : MonoBehaviour
                 AudioSource.PlayClipAtPoint(fakePickupSound, transform.position, soundVolume);
             }
             
-            // Notify GameManager
+            // Notify GameManager that a fake prop was collected
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.CollectProp();
+                GameManager.Instance.CollectFakeProp();
+                
+                // Check if all fake props have been collected for immediate win feedback
+                if (GameManager.Instance.FakePropsLeft() == 0)
+                {
+                    Debug.Log("All fake props collected! Game win condition met.");
+                    
+                    // Make sure the timer stops immediately
+                    if (GameManager.Instance.gameTimer != null)
+                    {
+                        GameManager.Instance.gameTimer.PauseTimer();
+                        Debug.Log("Timer paused due to game win condition!");
+                    }
+                    else
+                    {
+                        // Find and stop any active GameTimer in the scene if not assigned in GameManager
+                        GameTimer[] timers = FindObjectsOfType<GameTimer>();
+                        if (timers.Length > 0)
+                        {
+                            foreach (GameTimer timer in timers)
+                            {
+                                timer.PauseTimer();
+                                Debug.Log("Found and paused timer via scene search!");
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning("No GameTimer found to pause on win condition!");
+                        }
+                    }
+                    
+                    // Find and disable the player controller directly
+                    DisablePlayerMovementDirectly();
+                    Debug.Log("Player movement disabled due to game win!");
+                }
             }
             else
             {
-                Debug.LogWarning("GameManager instance not found when collecting prop.");
+                Debug.LogWarning("GameManager instance not found when collecting fake prop.");
             }
             
             gameObject.SetActive(false);
@@ -56,12 +91,48 @@ public class CollectibleProp : MonoBehaviour
         }
         else
         {
-            // For real props, just play the sound
+            // For real props, play the sound and reduce chances
             if (realInteractSound != null)
             {
                 AudioSource.PlayClipAtPoint(realInteractSound, transform.position, soundVolume);
             }
+            
+            // Handle wrong guess with the GameManager
+            if (GameManager.Instance != null)
+            {
+                bool gameEnded = GameManager.Instance.HandleWrongGuess(transform.position);
+                
+                // If out of chances, disable this prop
+                if (gameEnded)
+                {
+                    isCollected = true;
+                    gameObject.SetActive(false);
+                    
+                    // Find and disable the player controller directly as a backup
+                    DisablePlayerMovementDirectly();
+                }
+            }
+            
             return false;
+        }
+    }
+    
+    // Helper method to directly disable player movement
+    private void DisablePlayerMovementDirectly()
+    {
+        // Try to find the player controller in the scene
+        FirstPersonController[] controllers = FindObjectsOfType<FirstPersonController>();
+        if (controllers.Length > 0)
+        {
+            foreach (FirstPersonController controller in controllers)
+            {
+                controller.enabled = false;
+                Debug.Log("Directly disabled player controller: " + controller.gameObject.name);
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No FirstPersonController found in the scene to disable!");
         }
     }
 }

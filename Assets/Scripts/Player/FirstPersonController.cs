@@ -259,20 +259,29 @@ namespace StarterAssets
 
 		private void UpdateAnimation()
 		{
-			// Skip if no animator is assigned
 			if (characterAnimator == null)
+			{
+				Debug.LogError("characterAnimator is not assigned!");
 				return;
+			}
 
-			// Determine movement state
-			bool isMoving = _speed > 0.1f;
-			bool isRunning = _input.sprint && isMoving;
-			bool isWalking = isMoving && !isRunning;
-			bool isIdle = !isMoving;
-
-			// Update animation parameters
-			characterAnimator.SetBool(animIdleParam, isIdle);
-			characterAnimator.SetBool(animWalkParam, isWalking);
-			characterAnimator.SetBool(animRunParam, isRunning);
+			bool isMoving = _input.move.magnitude > 0.1f;
+			
+			// Debug logs to check values
+			Debug.Log($"Is Moving: {isMoving}, Move Input: {_input.move}");
+			
+			// Set animation parameters
+			characterAnimator.SetBool(animIdleParam, !isMoving);
+			characterAnimator.SetBool(animRunParam, isMoving);
+			
+			// Debug log to check parameter values
+			Debug.Log($"{animIdleParam}: {!isMoving}, {animRunParam}: {isMoving}");
+			
+			// Make sure walk parameter is always false since we're not using it
+			if (!string.IsNullOrEmpty(animWalkParam))
+			{
+				characterAnimator.SetBool(animWalkParam, false);
+			}
 		}
 
 		private static float ClampAngle(float lfAngle, float lfMin, float lfMax)

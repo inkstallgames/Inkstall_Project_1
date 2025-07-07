@@ -4187,6 +4187,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1223660702}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1223660704 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 4bc28a7ca83b52443826effa3c90725c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1223660702}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1236287189 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6961233565070228966, guid: 57df82bc3ccfe344499a13dc4400ac61,
@@ -29382,8 +29388,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55919ac34a26952479f3fc91f777b2fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 6
-  SprintSpeed: 6
+  MoveSpeed: 2
+  SprintSpeed: 2
   RotationSpeed: 4
   SpeedChangeRate: 10
   JumpHeight: 1.2
@@ -29396,7 +29402,7 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 1
-  characterAnimator: {fileID: 0}
+  characterAnimator: {fileID: 1223660704}
   animIdleParam: IsIdle
   animWalkParam: IsWalking
   animRunParam: IsRunning

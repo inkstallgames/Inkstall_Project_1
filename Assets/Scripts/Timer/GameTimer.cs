@@ -83,9 +83,6 @@ public class GameTimer : MonoBehaviour
         if (!warningTriggered && currentTime <= 60f)
         {
             warningTriggered = true;
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log("Only 1 minute remaining!");
-#endif
         }
 
         if (!tickingStarted && currentTime <= 30f)
@@ -96,9 +93,6 @@ public class GameTimer : MonoBehaviour
         // Check if timer reached zero
         if (currentTime <= 0f)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log("Timer reached zero, triggering EndGame");
-#endif
             currentTime = 0f;
             timerRunning = false;
             StopTicking();
@@ -137,26 +131,13 @@ public class GameTimer : MonoBehaviour
 
     void EndGame()
     {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        Debug.Log("Time's Up! Game Over.");
-#endif
-
         if (timerText != null)
             timerText.gameObject.SetActive(false);
 
         // Ensure GameManager exists and call GameOver with proper error handling
         if (GameManager.Instance != null)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.Log("Calling GameManager.GameOver() from GameTimer.EndGame()");
-#endif
             GameManager.Instance.GameOver();
-        }
-        else
-        {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            Debug.LogError("GameManager.Instance is null in GameTimer.EndGame()! Cannot call GameOver(). Make sure GameManager exists in the scene.");
-#endif
         }
     }
 
@@ -200,13 +181,6 @@ public class GameTimer : MonoBehaviour
             
             // Update UI immediately
             UpdateTimerUI();
-            
-            Debug.Log("Timer started for the first time!");
-
-            if (currentTime <= 30f && !tickingStarted)
-            {
-                StartTicking();
-            }
         }
         else
         {

@@ -18,7 +18,6 @@ public class PlayerInteraction : MonoBehaviour
             playerCamera = Camera.main;
             if (playerCamera == null)
             {
-                Debug.LogError("No camera found! Assign one to PlayerInteraction.");
                 enabled = false;
                 return;
             }

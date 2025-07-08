@@ -7,7 +7,7 @@ public class KeySystem : MonoBehaviour
     public static KeySystem Instance;
     
     [Header("Key Settings")]
-    [SerializeField] private int startingKeys = 3;
+    [SerializeField] private int startingKeys = 0;
     private int currentKeys;
     
     [Header("UI References")]
@@ -97,7 +97,7 @@ public class KeySystem : MonoBehaviour
             }
             else
             {
-                doorPromptText.text = "Door is locked. No keys available!";
+                doorPromptText.text = "Door is locked. Press F to use a key.";
             }
             
             doorPromptText.gameObject.SetActive(true);

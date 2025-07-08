@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -74,7 +75,12 @@ namespace StarterAssets
 		private float _jumpTimeoutDelta;
 		private float _fallTimeoutDelta;
 
-	
+		// touch input
+		private Vector2 touchStartPos;
+		private bool isTouching = false;
+		public float minTouchDelta = 10f;
+		public float touchSensitivity = 0.1f;
+
 #if ENABLE_INPUT_SYSTEM
 		private PlayerInput _playerInput;
 #endif
@@ -126,6 +132,7 @@ namespace StarterAssets
 			GroundedCheck();
 			Move();
 			UpdateAnimation();
+			HandleMobileInput();
 		}
 
 		private void LateUpdate()
@@ -261,26 +268,63 @@ namespace StarterAssets
 		{
 			if (characterAnimator == null)
 			{
-				// Removed debug log error
 				return;
 			}
 
-			bool isMoving = _input.move.magnitude > 0.1f;
+			// Calculate if the player is moving
+			bool isMoving = _input.move != Vector2.zero;
+			bool isRunning = isMoving && _input.sprint;
+			bool isJumping = !Grounded;
 			
-			// Debug logs to check values
-			Debug.Log($"Is Moving: {isMoving}, Move Input: {_input.move}");
+			// Set animation parameters based on your animator controller
+			characterAnimator.SetBool("IsRunning", isRunning);
+			characterAnimator.SetBool("IsWalking", isMoving && !isRunning);
+			characterAnimator.SetBool("IsJumping", isJumping);
 			
-			// Set animation parameters
-			characterAnimator.SetBool(animIdleParam, !isMoving);
-			characterAnimator.SetBool(animRunParam, isMoving);
-			
-			// Debug log to check parameter values
-			Debug.Log($"{animIdleParam}: {!isMoving}, {animRunParam}: {isMoving}");
-			
-			// Make sure walk parameter is always false since we're not using it
-			if (!string.IsNullOrEmpty(animWalkParam))
+			// Idle is the default state when not moving, walking, running or jumping
+			// No need to set it explicitly as the animator transitions will handle it
+		}
+
+		private void HandleMobileInput()
+		{
+			// Handle touch input for camera look
+			if (Input.touchCount > 0)
 			{
-				characterAnimator.SetBool(animWalkParam, false);
+				UnityEngine.Touch touch = Input.GetTouch(0);
+				
+				// Check if touch is over UI
+				if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+					return;
+
+				switch (touch.phase)
+				{
+					case UnityEngine.TouchPhase.Began:
+						touchStartPos = touch.position;
+						isTouching = true;
+						break;
+
+					case UnityEngine.TouchPhase.Moved:
+						if (isTouching)
+						{
+							Vector2 delta = touch.position - touchStartPos;
+							
+							// Only process if movement exceeds minimum delta
+							if (delta.magnitude > minTouchDelta)
+							{
+								// Use touch delta for camera movement
+								_input.look = delta * touchSensitivity * Time.deltaTime;
+								// Update start position to prevent huge jumps
+								touchStartPos = touch.position;
+							}
+						}
+						break;
+
+					case UnityEngine.TouchPhase.Ended:
+					case UnityEngine.TouchPhase.Canceled:
+						isTouching = false;
+						_input.look = Vector2.zero;
+						break;
+				}
 			}
 		}
 

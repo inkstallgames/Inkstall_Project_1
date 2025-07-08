@@ -1,5 +1,4 @@
 using UnityEngine;
-using StarterAssets;
 using System.Collections;
 using TMPro;
 
@@ -26,8 +25,6 @@ public class GameManager : MonoBehaviour
     public GameObject winUI;           
     public GameObject gameOverUI;      
     public GameObject crosshair;
-    [Tooltip("Assigned automatically at runtime when player is spawned")]
-    public GameObject playerController;
     public TextMeshProUGUI chancesText;
 
     [Header("Feedback Text")]

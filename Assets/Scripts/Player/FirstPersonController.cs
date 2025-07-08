@@ -45,14 +45,11 @@ namespace StarterAssets
 		public LayerMask GroundLayers;
 
 		[Header("Animation")]
-		[Tooltip("Reference to the character's Animator component")]
 		public Animator characterAnimator;
-		[Tooltip("Parameter name for idle state in the Animator")]
-		public string animIdleParam = "IsIdle";
-		[Tooltip("Parameter name for walking state in the Animator")]
-		public string animWalkParam = "IsWalking";
-		[Tooltip("Parameter name for running state in the Animator")]
-		public string animRunParam = "IsRunning";
+		public string animIdleParam = "IsIdle"; 
+		public string animWalkParam = "IsWalking"; 
+		public string animRunParam = "IsRunning"; 
+		public string animJumpParam = "IsJumping"; 
 
 		[Header("Cinemachine")]
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
@@ -272,17 +269,16 @@ namespace StarterAssets
 			}
 
 			// Calculate if the player is moving
-			bool isMoving = _input.move != Vector2.zero;
+			bool isMoving = _input.move.sqrMagnitude > 0.1f; 
 			bool isRunning = isMoving && _input.sprint;
+			bool isWalking = isMoving && !isRunning;
 			bool isJumping = !Grounded;
 			
 			// Set animation parameters based on your animator controller
-			characterAnimator.SetBool("IsRunning", isRunning);
-			characterAnimator.SetBool("IsWalking", isMoving && !isRunning);
-			characterAnimator.SetBool("IsJumping", isJumping);
-			
-			// Idle is the default state when not moving, walking, running or jumping
-			// No need to set it explicitly as the animator transitions will handle it
+			characterAnimator.SetBool(animRunParam, isRunning);
+			characterAnimator.SetBool(animWalkParam, isWalking);
+			characterAnimator.SetBool(animJumpParam, isJumping);
+			characterAnimator.SetBool(animIdleParam, !isMoving && !isJumping);
 		}
 
 		private void HandleMobileInput()

@@ -77,6 +77,8 @@ namespace StarterAssets
 		private bool isTouching = false;
 		public float minTouchDelta = 10f;
 		public float touchSensitivity = 0.1f;
+		[Tooltip("Whether to use screen split for touch controls (left: movement, right: camera)")]
+		public bool useSplitScreenTouch = true;
 
 #if ENABLE_INPUT_SYSTEM
 		private PlayerInput _playerInput;
@@ -286,39 +288,52 @@ namespace StarterAssets
 			// Handle touch input for camera look
 			if (Input.touchCount > 0)
 			{
-				UnityEngine.Touch touch = Input.GetTouch(0);
-				
-				// Check if touch is over UI
-				if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
-					return;
-
-				switch (touch.phase)
+				// Process only touches on the right side of the screen for camera control
+				for (int i = 0; i < Input.touchCount; i++)
 				{
-					case UnityEngine.TouchPhase.Began:
-						touchStartPos = touch.position;
-						isTouching = true;
-						break;
+					UnityEngine.Touch touch = Input.GetTouch(i);
+					
+					// Check if touch is over UI
+					if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+						continue;
+					
+					// If using split screen, only use right side for camera rotation
+					bool isRightSide = touch.position.x > Screen.width / 2;
+					if (useSplitScreenTouch && !isRightSide)
+						continue; // Skip left side touches when using split screen
+					
+					switch (touch.phase)
+					{
+						case UnityEngine.TouchPhase.Began:
+							touchStartPos = touch.position;
+							isTouching = true;
+							break;
 
-					case UnityEngine.TouchPhase.Moved:
-						if (isTouching)
-						{
-							Vector2 delta = touch.position - touchStartPos;
-							
-							// Only process if movement exceeds minimum delta
-							if (delta.magnitude > minTouchDelta)
+						case UnityEngine.TouchPhase.Moved:
+							if (isTouching)
 							{
-								// Use touch delta for camera movement
-								_input.look = delta * touchSensitivity * Time.deltaTime;
-								// Update start position to prevent huge jumps
-								touchStartPos = touch.position;
+								Vector2 delta = touch.position - touchStartPos;
+								
+								// Only process if movement exceeds minimum delta
+								if (delta.magnitude > minTouchDelta)
+								{
+									// Use touch delta for camera movement
+									_input.look = delta * touchSensitivity * Time.deltaTime;
+									// Update start position to prevent huge jumps
+									touchStartPos = touch.position;
+								}
 							}
-						}
-						break;
+							break;
 
-					case UnityEngine.TouchPhase.Ended:
-					case UnityEngine.TouchPhase.Canceled:
-						isTouching = false;
-						_input.look = Vector2.zero;
+						case UnityEngine.TouchPhase.Ended:
+						case UnityEngine.TouchPhase.Canceled:
+							isTouching = false;
+							_input.look = Vector2.zero;
+							break;
+					}
+					
+					// We only need one touch for camera control, so break after processing the first valid touch
+					if (isTouching)
 						break;
 				}
 			}

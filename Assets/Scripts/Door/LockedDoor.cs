@@ -9,7 +9,7 @@ public class LockedDoor : MonoBehaviour
     [SerializeField] private DoorInteraction doorInteraction;
     [SerializeField] private BoxCollider triggerZone;
     
-    [Header("Audio")]
+    [Header("Audio Settings")]
     [SerializeField] private AudioClip unlockSound;
     [SerializeField] private AudioClip lockedSound;
     [Range(0f, 1f)] [SerializeField] private float soundVolume = 0.7f;
@@ -104,13 +104,21 @@ public class LockedDoor : MonoBehaviour
         return isLocked;
     }
     
-    // Play the locked sound (when player tries to open without a key)
+    // Play the locked door sound
     public void PlayLockedSound()
     {
-        if (lockedSound != null)
+        if (isLocked && lockedSound != null && audioSource != null)
         {
-            audioSource.clip = lockedSound;
-            audioSource.Play();
+            audioSource.PlayOneShot(lockedSound);
+        }
+    }
+
+    // Called when the player tries to interact with a locked door
+    public void OnInteractAttempt()
+    {
+        if (isLocked)
+        {
+            PlayLockedSound();
         }
     }
 }

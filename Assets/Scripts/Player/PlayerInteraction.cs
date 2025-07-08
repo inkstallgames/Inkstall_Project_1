@@ -11,8 +11,6 @@ public class PlayerInteraction : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI interactionPromptText;
     
-    private GameObject lastHitObject = null;
-
     private void Start()
     {
         if (playerCamera == null)
@@ -53,23 +51,27 @@ public class PlayerInteraction : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
         {
             GameObject hitObject = hit.collider.gameObject;
-            
-            // Check if we're looking at an interactable object
             bool isInteractable = false;
-            string promptText = "Press E to open";
             
             // Check for door
-            if (hitObject.TryGetComponent<DoorInteraction>(out var door))
+            if (hitObject.TryGetComponent<LockedDoor>(out var lockedDoor))
             {
-                // Only show prompt if DoorInteraction is enabled
-                if (door.enabled)
+                if (!lockedDoor.IsLocked() && hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled)
                 {
-                    // Check if we're close enough to the door
                     float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                     if (distanceToObject <= interactDistance)
                     {
                         isInteractable = true;
                     }
+                }
+            }
+            // Handle regular doors
+            else if (hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled)
+            {
+                float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
+                if (distanceToObject <= interactDistance)
+                {
+                    isInteractable = true;
                 }
             }
             // Check for drawer
@@ -94,27 +96,15 @@ public class PlayerInteraction : MonoBehaviour
                 if (distanceToObject <= interactDistance)
                 {
                     isInteractable = true;
-                    promptText = "Press E to interact";
                 }
             }
             
-            // Show or hide prompt based on what we're looking at
-            if (isInteractable)
-            {
-                interactionPromptText.text = promptText;
-                interactionPromptText.gameObject.SetActive(true);
-                lastHitObject = hitObject;
-            }
-            else if (lastHitObject != hitObject)
-            {
-                interactionPromptText.gameObject.SetActive(false);
-                lastHitObject = null;
-            }
+            // Update UI
+            interactionPromptText.gameObject.SetActive(isInteractable);
         }
-        else if (interactionPromptText.gameObject.activeSelf)
+        else
         {
             interactionPromptText.gameObject.SetActive(false);
-            lastHitObject = null;
         }
     }
 
@@ -125,22 +115,31 @@ public class PlayerInteraction : MonoBehaviour
         {
             GameObject hitObject = hit.collider.gameObject;
 
-            if (hitObject.TryGetComponent<CollectibleProp>(out var collectible))
+            // First check for LockedDoor
+            if (hitObject.TryGetComponent<LockedDoor>(out var lockedDoor))
             {
-                collectible.Interact();
-                return;
-            }
-
-            if (hitObject.TryGetComponent<DoorInteraction>(out var door))
-            {
-                if (door.enabled)
+                if (lockedDoor.IsLocked())
+                {
+                    lockedDoor.OnInteractAttempt();
+                }
+                // If door is unlocked, let the DoorInteraction handle it
+                else if (hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled)
                 {
                     door.Interact();
                 }
-                else if (hitObject.TryGetComponent<DoorStateHandler>(out var doorState))
-                {
-                    doorState.PlayLockedSound();
-                }
+                return;
+            }
+
+            // Handle regular doors (without LockedDoor component)
+            if (hitObject.TryGetComponent<DoorInteraction>(out var regularDoor) && regularDoor.enabled)
+            {
+                regularDoor.Interact();
+                return;
+            }
+
+            if (hitObject.TryGetComponent<CollectibleProp>(out var collectible))
+            {
+                collectible.Interact();
                 return;
             }
 

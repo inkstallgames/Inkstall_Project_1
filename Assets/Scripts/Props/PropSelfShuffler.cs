@@ -13,7 +13,7 @@ public class PropSelfShuffler : MonoBehaviour
     {
         List<Transform> availablePoints = new List<Transform>();
 
-        // ✅ Option 1: Use children of parent
+        // Option 1: Use children of parent
         if (spawnPointsParent != null)
         {
             foreach (Transform child in spawnPointsParent)
@@ -23,7 +23,7 @@ public class PropSelfShuffler : MonoBehaviour
             }
         }
 
-        // ✅ Option 2: Use manually assigned list
+        // Option 2: Use manually assigned list
         if (availablePoints.Count == 0 && spawnPoints != null && spawnPoints.Count > 0)
         {
             availablePoints.AddRange(spawnPoints);
@@ -31,7 +31,6 @@ public class PropSelfShuffler : MonoBehaviour
 
         if (availablePoints.Count == 0)
         {
-            Debug.LogWarning($"{name} has no spawn points assigned.");
             return;
         }
 

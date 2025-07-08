@@ -20,7 +20,6 @@ public class PropRandomActivator : MonoBehaviour
 
         if (spawnPoints == null || spawnPoints.Count == 0)
         {
-            Debug.LogWarning($"{name} has no spawn points assigned.");
             return;
         }
 

@@ -89,7 +89,6 @@ public class LockedDoor : MonoBehaviour
             if (doorInteraction != null)
             {
                 doorInteraction.enabled = true;
-                Debug.Log("Door unlocked! DoorInteraction script enabled.");
             }
             else
             {

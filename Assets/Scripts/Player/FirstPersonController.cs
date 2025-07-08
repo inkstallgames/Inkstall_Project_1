@@ -112,7 +112,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
 			_playerInput = GetComponent<PlayerInput>();
 #else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
+			// Removed debug log error
 #endif
 
 			// reset our timeouts on start
@@ -261,7 +261,7 @@ namespace StarterAssets
 		{
 			if (characterAnimator == null)
 			{
-				Debug.LogError("characterAnimator is not assigned!");
+				// Removed debug log error
 				return;
 			}
 

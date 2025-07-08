@@ -21,13 +21,9 @@ public class PropFakeMarker : MonoBehaviour
         if ((allProps == null || allProps.Count == 0) && propsParent != null)
         {
             allProps = new List<PropIdentity>(propsParent.GetComponentsInChildren<PropIdentity>());
-            Debug.Log($"🔁 Auto-filled {allProps.Count} props from {propsParent.name}");
         }
 
-        if (allProps == null || allProps.Count == 0)
-        {
-            Debug.LogWarning("❌ No props found for assignment.");
-        }
+        // No props found for assignment, but we'll continue anyway
     }
 
     public void AssignPropTypes()

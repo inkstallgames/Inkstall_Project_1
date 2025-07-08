@@ -50,13 +50,10 @@ public class CollectibleProp : MonoBehaviour
                 // Check if all fake props have been collected for immediate win feedback
                 if (GameManager.Instance.FakePropsLeft() == 0)
                 {
-                    Debug.Log("All fake props collected! Game win condition met.");
-                    
                     // Make sure the timer stops immediately
                     if (GameManager.Instance.gameTimer != null)
                     {
                         GameManager.Instance.gameTimer.PauseTimer();
-                        Debug.Log("Timer paused due to game win condition!");
                     }
                     else
                     {
@@ -67,23 +64,17 @@ public class CollectibleProp : MonoBehaviour
                             foreach (GameTimer timer in timers)
                             {
                                 timer.PauseTimer();
-                                Debug.Log("Found and paused timer via scene search!");
                             }
-                        }
-                        else
-                        {
-                            Debug.LogWarning("No GameTimer found to pause on win condition!");
                         }
                     }
                     
                     // Find and disable the player controller directly
                     DisablePlayerMovementDirectly();
-                    Debug.Log("Player movement disabled due to game win!");
                 }
             }
             else
             {
-                Debug.LogWarning("GameManager instance not found when collecting fake prop.");
+                // GameManager instance not found when collecting fake prop
             }
             
             gameObject.SetActive(false);
@@ -127,12 +118,7 @@ public class CollectibleProp : MonoBehaviour
             foreach (FirstPersonController controller in controllers)
             {
                 controller.enabled = false;
-                Debug.Log("Directly disabled player controller: " + controller.gameObject.name);
             }
-        }
-        else
-        {
-            Debug.LogWarning("No FirstPersonController found in the scene to disable!");
         }
     }
 }

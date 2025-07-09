@@ -2459,6 +2459,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalPropsToCollect: 2
   maxChances: 6
+  resetDelay: 3
+  playerStartPosition: {fileID: 8609563893896047690}
   gameTimer: {fileID: 0}
   winUI: {fileID: 977753789}
   gameOverUI: {fileID: 1774634692}

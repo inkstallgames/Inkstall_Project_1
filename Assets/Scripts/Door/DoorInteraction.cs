@@ -108,6 +108,23 @@ public class DoorInteraction : MonoBehaviour
             // We'll show the chances text in the AnimateDoor method after the door has opened
         }
     }
+    
+    // Method to reset the door to closed state
+    public void ResetDoor()
+    {
+        // Only do something if the door is open
+        if (isDoorOpen)
+        {
+            isDoorOpen = false;
+            isDoorMoving = true;
+            
+            // Play door close sound
+            if (audioSource != null && doorCloseSound != null)
+            {
+                audioSource.PlayOneShot(doorCloseSound);
+            }
+        }
+    }
 
     private void ToggleDoor()
     {

@@ -18,6 +18,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int maxChances = 3;
     private int chancesRemaining;
     
+    // Room management system
+    [Header("Room Management")]
+    private bool isRoomActive = false;
+    private GameObject currentActiveRoom;
+    [SerializeField] private float resetDelay = 3.0f;
+    [SerializeField] private Transform playerStartPosition;
+    
     private bool gameEnded = false;
 
     [Header("References")]
@@ -41,10 +48,6 @@ public class GameManager : MonoBehaviour
     private AudioSource effectsAudioSource;
     private Coroutine fakeFoundCoroutine;
     private Coroutine wrongGuessCoroutine;
-
-    // Room management variables
-    private bool isRoomActive = false;
-    private GameObject currentActiveRoom;
 
     void Awake()
     {
@@ -294,5 +297,79 @@ public class GameManager : MonoBehaviour
     public bool IsRoomActive()
     {
         return isRoomActive;
+    }
+
+    private IEnumerator ResetGame()
+    {
+        yield return new WaitForSeconds(resetDelay);
+        
+        // First reset all game state that might affect movement
+        gameEnded = false;
+        
+        // Reset player position and re-enable movement
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null && playerStartPosition != null)
+        {
+            // Get the CharacterController or Rigidbody component to reset velocity
+            CharacterController characterController = player.GetComponent<CharacterController>();
+            if (characterController != null)
+            {
+                characterController.enabled = false; // Disable to allow position change
+                player.transform.position = playerStartPosition.position;
+                player.transform.rotation = playerStartPosition.rotation;
+                characterController.enabled = true; // Re-enable
+            }
+            else
+            {
+                Rigidbody rb = player.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.velocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                }
+                player.transform.position = playerStartPosition.position;
+                player.transform.rotation = playerStartPosition.rotation;
+            }
+        }
+        else if (playerStartPosition == null)
+        {
+            Debug.LogWarning("Player start position not set in GameManager!");
+        }
+        
+        // Reset all doors
+        DoorInteraction[] allDoors = FindObjectsOfType<DoorInteraction>();
+        foreach (DoorInteraction door in allDoors)
+        {
+            door.ResetDoor();
+        }
+        
+        // Reset room management
+        CompleteRoom();
+        
+        // Reset game state
+        totalPropsToCollect = 0;
+        propsCollected = 0;
+        totalFakeProps = 0;
+        fakePropsCollected = 0;
+        chancesRemaining = maxChances;
+        
+        // Reset UI
+        if (winUI != null) winUI.SetActive(false);
+        if (gameOverUI != null) gameOverUI.SetActive(false);
+        if (crosshair != null) crosshair.SetActive(true);
+        
+        // Enable chances text at the start of the game
+        if (chancesText != null) chancesText.gameObject.SetActive(false);
+        
+        if (fakeFoundText != null) fakeFoundText.gameObject.SetActive(false);
+        if (wrongGuessText != null) wrongGuessText.gameObject.SetActive(false);
+        
+        // Reset timers
+        if (gameTimer != null)
+        {
+            gameTimer.StopTimer();
+        }
+        
+        UpdateChancesUI();
     }
 }

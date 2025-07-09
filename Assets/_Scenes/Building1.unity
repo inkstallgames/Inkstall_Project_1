@@ -1432,7 +1432,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 262.3126, y: 50}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &437521041
 MonoBehaviour:
@@ -1757,7 +1757,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!1 &575563911
 GameObject:
@@ -1975,7 +1975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!1 &708511222
 GameObject:
@@ -2212,7 +2212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!1 &776522120
 GameObject:
@@ -2530,7 +2530,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Game Won
+  m_text: Mission Completed!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2677,7 +2677,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!54 &1052067773
 Rigidbody:
@@ -3291,7 +3291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!54 &1081622642
 Rigidbody:
@@ -4244,7 +4244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!1 &1245760201
 GameObject:
@@ -4454,7 +4454,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!1 &1324293215 stripped
 GameObject:
@@ -4665,7 +4665,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!54 &1422244179
 Rigidbody:
@@ -5124,7 +5124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!1001 &1581681639
 PrefabInstance:
@@ -5442,7 +5442,7 @@ PrefabInstance:
         type: 3}
       propertyPath: realInteractSound
       value: 
-      objectReference: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+      objectReference: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5922,7 +5922,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Game Over
+  m_text: Mission Failed!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6069,7 +6069,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!54 &1857171375
 Rigidbody:
@@ -6341,7 +6341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!54 &1904817724
 Rigidbody:
@@ -6434,7 +6434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!54 &1914743390
 Rigidbody:
@@ -6801,7 +6801,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!1001 &2106195319
 PrefabInstance:
@@ -15207,7 +15207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!4 &1875161216579497317 stripped
 Transform:
@@ -15234,7 +15234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!23 &1875161216580347028 stripped
 MeshRenderer:
@@ -15538,7 +15538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!114 &1875161216681000373
 MonoBehaviour:
@@ -15836,7 +15836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!4 &1875161216794708494
 Transform:
@@ -16026,7 +16026,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!4 &1875161216934841792
 Transform:
@@ -16208,7 +16208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!4 &1875161217053615524
 Transform:
@@ -16698,7 +16698,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!4 &1875161217518314153
 Transform:
@@ -16743,7 +16743,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!4 &1875161217537759246
 Transform:
@@ -17363,7 +17363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!4 &1875161217708082474
 Transform:
@@ -17601,7 +17601,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!114 &1875161217842615759
 MonoBehaviour:
@@ -17641,7 +17641,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!4 &1875161217875363635
 Transform:
@@ -17872,7 +17872,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!1 &1875161218096118384
 GameObject:
@@ -17957,7 +17957,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!1 &1875161218121732012
 GameObject:
@@ -18090,7 +18090,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!4 &1875161218206037485
 Transform:
@@ -18314,7 +18314,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!23 &1875161218325417116 stripped
 MeshRenderer:
@@ -41353,7 +41353,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 953d0919829a7034390df8a014b9f56c, type: 3}
+  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
 --- !u!114 &6941002240414471615
 MonoBehaviour:

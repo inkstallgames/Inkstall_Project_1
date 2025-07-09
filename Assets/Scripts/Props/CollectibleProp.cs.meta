@@ -3,7 +3,9 @@ guid: 91acacdd6e2bcbf4cbb872181ba058d7
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - fakePickupSound: {fileID: 8300000, guid: 66652e3f960c835499cb63484aa976b6, type: 3}
+  - realInteractSound: {fileID: 8300000, guid: 66652e3f960c835499cb63484aa976b6, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

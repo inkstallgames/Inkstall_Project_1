@@ -1,10 +1,11 @@
 fileFormatVersion: 2
 guid: 357d07ab073a44b49a1e234fb56ae132
-timeCreated: 1624493828
-licenseType: Store
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - drawerOpenSound: {fileID: 8300000, guid: 14371aebf01a6814b9cbcff0db8ee672, type: 3}
+  - drawerCloseSound: {fileID: 8300000, guid: e6cf98a7d10705e43baec30dfe4bc1e6, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

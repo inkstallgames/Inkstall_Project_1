@@ -180,7 +180,7 @@ public class GameManager : MonoBehaviour
     {
         if (chancesText != null)
         {
-            chancesText.text = $"Chances: {chancesRemaining}";
+            chancesText.text = $"Bullets Left: {chancesRemaining}";
         }
     }
     

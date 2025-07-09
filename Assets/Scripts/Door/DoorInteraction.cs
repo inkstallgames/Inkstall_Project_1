@@ -76,6 +76,16 @@ public class DoorInteraction : MonoBehaviour
     // This is the method called by PlayerInteraction script
     public void Interact()
     {
+        // Check with GameManager if this door can be opened
+        if (GameManager.Instance != null && !GameManager.Instance.CanOpenDoor(gameObject))
+        {
+            // Door cannot be opened because another room is active
+            Debug.Log("Cannot open this door until current room is completed");
+            
+            // You could play a sound or show a message to the player here
+            return;
+        }
+        
         // Toggle door open/close
         ToggleDoor();
         
@@ -86,6 +96,12 @@ public class DoorInteraction : MonoBehaviour
         // 4. The timer hasn't been triggered before
         if (shouldStartTimer && isEnabled && attachedTimer != null && !attachedTimer.HasBeenTriggered())
         {
+            // Activate this room in the GameManager
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.ActivateRoom(gameObject);
+            }
+            
             attachedTimer.ResumeTimer();
             Debug.Log("Door interaction started the timer for the first time!");
             

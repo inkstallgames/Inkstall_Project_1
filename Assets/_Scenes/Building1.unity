@@ -2324,7 +2324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b69e6ad7256afd4fbc5f83c157141af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingKeys: 1
+  startingKeys: 3
   keyCountText: {fileID: 1695526414}
   doorPromptText: {fileID: 1088018378}
   promptDuration: 2
@@ -18972,8 +18972,11 @@ GameObject:
   - component: {fileID: 1876565983423246349}
   - component: {fileID: 1792075733157342573}
   - component: {fileID: 1994951600003332328}
-  - component: {fileID: 6096234473738546699}
   - component: {fileID: 6096234473738546701}
+  - component: {fileID: 6096234473738546704}
+  - component: {fileID: 6096234473738546703}
+  - component: {fileID: 6096234473738546702}
+  - component: {fileID: 6096234473738546705}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (5)
   m_TagString: Untagged
@@ -38139,25 +38142,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1875161217343531640}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6096234473738546699
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1875279496819915869}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  shouldStartTimer: 1
 --- !u!82 &6096234473738546701
 AudioSource:
   m_ObjectHideFlags: 0
@@ -38254,6 +38238,81 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6096234473738546702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875279496819915869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2def19cba721c1429368e205b9b45ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLocked: 1
+  doorInteraction: {fileID: 6096234473738546704}
+  triggerZone: {fileID: 5248679429457064830}
+  unlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
+  lockedSound: {fileID: 8300000, guid: 6e2e79e9469b3b741892af8e01d4e10b, type: 3}
+  soundVolume: 1
+--- !u!114 &6096234473738546703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875279496819915869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalTime: 50
+  timerText: {fileID: 1194441157}
+  timerRunning: 0
+  tickSound: {fileID: 0}
+  tickVolume: 1
+--- !u!114 &6096234473738546704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875279496819915869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  XAngle: 0
+  YAngle: 90
+  ZAngle: 0
+  doorSpeed: 2
+  doorOpenSound: {fileID: 8300000, guid: eb3ab17d45f83e44d86a2ce34408745a, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  shouldStartTimer: 1
+--- !u!65 &6096234473738546705
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875279496819915869}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.2845185, y: 1.7566341, z: 1.9281089}
+  m_Center: {x: 0.6781074, y: 0.3783167, z: -0.6779882}
 --- !u!4 &6102755163780793243
 Transform:
   m_ObjectHideFlags: 0

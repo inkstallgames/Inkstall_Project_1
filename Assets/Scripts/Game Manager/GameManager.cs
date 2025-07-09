@@ -42,6 +42,10 @@ public class GameManager : MonoBehaviour
     private Coroutine fakeFoundCoroutine;
     private Coroutine wrongGuessCoroutine;
 
+    // Room management variables
+    private bool isRoomActive = false;
+    private GameObject currentActiveRoom;
+
     void Awake()
     {
         if (Instance == null)
@@ -250,4 +254,45 @@ public class GameManager : MonoBehaviour
     public int PropsLeft() => totalPropsToCollect - propsCollected;
     public int FakePropsLeft() => totalFakeProps - fakePropsCollected;
     public int GetChancesRemaining() => chancesRemaining;
+
+    // Room management methods
+    
+    // Call this method to check if a door can be opened
+    public bool CanOpenDoor(GameObject doorObject)
+    {
+        // If no room is active, any door can be opened
+        if (!isRoomActive)
+        {
+            return true;
+        }
+        
+        // If a room is active, only allow opening the door of the current active room
+        return doorObject == currentActiveRoom;
+    }
+    
+    // Call this method when a door is opened to activate a room
+    public void ActivateRoom(GameObject doorObject)
+    {
+        // Only activate if no other room is active
+        if (!isRoomActive)
+        {
+            isRoomActive = true;
+            currentActiveRoom = doorObject;
+            Debug.Log($"Room activated: {doorObject.name}");
+        }
+    }
+    
+    // Call this method when a room is completed (all props collected or timer/chances ended)
+    public void CompleteRoom()
+    {
+        isRoomActive = false;
+        currentActiveRoom = null;
+        Debug.Log("Room completed, player can now open other doors");
+    }
+    
+    // Check if there's an active room
+    public bool IsRoomActive()
+    {
+        return isRoomActive;
+    }
 }

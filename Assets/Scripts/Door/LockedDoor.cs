@@ -8,6 +8,7 @@ public class LockedDoor : MonoBehaviour
     [Header("References")]
     [SerializeField] private DoorInteraction doorInteraction;
     [SerializeField] private BoxCollider triggerZone;
+    [SerializeField] private Animator doorAnimator; // Reference to the Animator component
     
     [Header("Audio Settings")]
     [SerializeField] private AudioClip unlockSound;
@@ -26,6 +27,16 @@ public class LockedDoor : MonoBehaviour
             audioSource.playOnAwake = false;
             audioSource.spatialBlend = 1f; // 3D sound
             audioSource.volume = soundVolume;
+        }
+        
+        // Get the Animator component if not assigned
+        if (doorAnimator == null)
+        {
+            doorAnimator = GetComponent<Animator>();
+            if (doorAnimator == null)
+            {
+                Debug.LogWarning("No Animator component found on " + gameObject.name);
+            }
         }
         
         // Make sure the trigger zone has the right settings
@@ -118,6 +129,24 @@ public class LockedDoor : MonoBehaviour
         if (isLocked)
         {
             PlayLockedSound();
+            
+            // Trigger the locked door animation
+            if (doorAnimator != null)
+            {
+                doorAnimator.SetBool("DoorInteractionEnable", true);
+                // Optional: Reset the parameter after a short delay if needed
+                // This ensures the animation can be triggered again
+                Invoke(nameof(ResetAnimationTrigger), 0.5f);
+            }
+        }
+    }
+    
+    // Helper method to reset the animation trigger
+    private void ResetAnimationTrigger()
+    {
+        if (doorAnimator != null)
+        {
+            doorAnimator.SetBool("DoorInteractionEnable", false);
         }
     }
 }

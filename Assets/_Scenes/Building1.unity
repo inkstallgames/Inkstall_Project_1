@@ -14600,6 +14600,7 @@ GameObject:
   - component: {fileID: 5248679429457064829}
   - component: {fileID: 5248679429457064831}
   - component: {fileID: 5248679429457064830}
+  - component: {fileID: 5248679429457064832}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD
   m_TagString: Untagged
@@ -19803,6 +19804,7 @@ MonoBehaviour:
   isLocked: 1
   doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
+  doorAnimator: {fileID: 0}
   unlockSound: {fileID: 0}
   lockedSound: {fileID: 0}
   soundVolume: 0.7
@@ -21000,6 +21002,7 @@ MonoBehaviour:
   isLocked: 1
   doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
+  doorAnimator: {fileID: 0}
   unlockSound: {fileID: 0}
   lockedSound: {fileID: 0}
   soundVolume: 0.7
@@ -35803,9 +35806,31 @@ MonoBehaviour:
   isLocked: 1
   doorInteraction: {fileID: 3190459193542744941}
   triggerZone: {fileID: 5248679429457064830}
+  doorAnimator: {fileID: 5248679429457064832}
   unlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
-  lockedSound: {fileID: 8300000, guid: 6e2e79e9469b3b741892af8e01d4e10b, type: 3}
+  lockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   soundVolume: 1
+--- !u!95 &5248679429457064832
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874447172524043477}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9ba340b0bab1d8c40b32719d424d6455, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &5251353936471029689
 Transform:
   m_ObjectHideFlags: 0
@@ -36424,6 +36449,7 @@ MonoBehaviour:
   isLocked: 1
   doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
+  doorAnimator: {fileID: 0}
   unlockSound: {fileID: 0}
   lockedSound: {fileID: 0}
   soundVolume: 0.7
@@ -38377,6 +38403,7 @@ MonoBehaviour:
   isLocked: 1
   doorInteraction: {fileID: 6096234473738546704}
   triggerZone: {fileID: 5248679429457064830}
+  doorAnimator: {fileID: 0}
   unlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   lockedSound: {fileID: 8300000, guid: 6e2e79e9469b3b741892af8e01d4e10b, type: 3}
   soundVolume: 1
@@ -45711,6 +45738,7 @@ MonoBehaviour:
   isLocked: 1
   doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
+  doorAnimator: {fileID: 0}
   unlockSound: {fileID: 0}
   lockedSound: {fileID: 0}
   soundVolume: 0.7

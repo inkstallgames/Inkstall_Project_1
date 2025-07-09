@@ -1414,7 +1414,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &437521040
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2463,7 +2463,6 @@ MonoBehaviour:
   winUI: {fileID: 977753789}
   gameOverUI: {fileID: 1774634692}
   crosshair: {fileID: 1981799373}
-  playerController: {fileID: 0}
   chancesText: {fileID: 437521041}
   fakeFoundText: {fileID: 1117337192}
   wrongGuessText: {fileID: 2058612319}
@@ -29386,9 +29385,13 @@ MonoBehaviour:
   animIdleParam: IsIdle
   animWalkParam: IsWalking
   animRunParam: IsRunning
+  animJumpParam: IsJumping
   CinemachineCameraTarget: {fileID: 7353431617957508646}
   TopClamp: 89
   BottomClamp: -89
+  minTouchDelta: 10
+  touchSensitivity: 0.1
+  useSplitScreenTouch: 1
 --- !u!1 &2952875011243659133
 GameObject:
   m_ObjectHideFlags: 0

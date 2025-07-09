@@ -88,6 +88,8 @@ public class DoorInteraction : MonoBehaviour
         {
             attachedTimer.ResumeTimer();
             Debug.Log("Door interaction started the timer for the first time!");
+            
+            // We'll show the chances text in the AnimateDoor method after the door has opened
         }
     }
 
@@ -121,6 +123,15 @@ public class DoorInteraction : MonoBehaviour
         {
             transform.rotation = targetRotation; // Snap to exact position
             isDoorMoving = false;
+            
+            // Show chances text when the door has finished opening (not closing)
+            if (isDoorOpen && shouldStartTimer && attachedTimer != null && attachedTimer.HasBeenTriggered())
+            {
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.ShowChancesText();
+                }
+            }
         }
     }
 }

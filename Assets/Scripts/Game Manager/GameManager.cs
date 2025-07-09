@@ -67,6 +67,9 @@ public class GameManager : MonoBehaviour
         
         UpdateChancesUI();
         
+        // Disable chances text at the start of the game
+        if (chancesText != null) chancesText.gameObject.SetActive(false);
+        
         if (fakeFoundText != null) fakeFoundText.gameObject.SetActive(false);
         if (wrongGuessText != null) wrongGuessText.gameObject.SetActive(false);
     }
@@ -173,6 +176,19 @@ public class GameManager : MonoBehaviour
             chancesText.text = $"Chances: {chancesRemaining}";
         }
     }
+    
+    // Method to show the chances text temporarily when the player first interacts with a door
+    public void ShowChancesText()
+    {
+        if (chancesText != null)
+        {
+            // Make sure the chances text is updated first
+            UpdateChancesUI();
+            
+            // Enable the chances text and keep it visible (not temporary)
+            chancesText.gameObject.SetActive(true);
+        }
+    }
 
     private IEnumerator DelayedWin()
     {
@@ -194,6 +210,8 @@ public class GameManager : MonoBehaviour
         if (winUI != null) winUI.SetActive(true);
         if (crosshair != null) crosshair.SetActive(false);
         
+        // Disable all UI feedback texts
+        if (chancesText != null) chancesText.gameObject.SetActive(false);
         if (fakeFoundText != null) fakeFoundText.gameObject.SetActive(false);
         if (wrongGuessText != null) wrongGuessText.gameObject.SetActive(false);
 
@@ -217,6 +235,8 @@ public class GameManager : MonoBehaviour
         
         if (crosshair != null) crosshair.SetActive(false);
         
+        // Disable all UI feedback texts
+        if (chancesText != null) chancesText.gameObject.SetActive(false);
         if (fakeFoundText != null) fakeFoundText.gameObject.SetActive(false);
         if (wrongGuessText != null) wrongGuessText.gameObject.SetActive(false);
 

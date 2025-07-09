@@ -19,7 +19,6 @@ public class LockedDoor : MonoBehaviour
     
     private void Awake()
     {
-        // Get or create audio source
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
         {
@@ -29,7 +28,6 @@ public class LockedDoor : MonoBehaviour
             audioSource.volume = soundVolume;
         }
         
-        // Get the Animator component if not assigned
         if (doorAnimator == null)
         {
             doorAnimator = GetComponent<Animator>();
@@ -38,6 +36,7 @@ public class LockedDoor : MonoBehaviour
                 Debug.LogWarning("No Animator component found on " + gameObject.name);
             }
         }
+        
         
         // Make sure the trigger zone has the right settings
         if (triggerZone != null)
@@ -58,7 +57,6 @@ public class LockedDoor : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        // Check if the player entered the trigger zone
         if (other.CompareTag("Player") && isLocked)
         {
             // Notify the KeySystem that the player is near this door
@@ -68,10 +66,10 @@ public class LockedDoor : MonoBehaviour
             }
         }
     }
+
     
     private void OnTriggerExit(Collider other)
     {
-        // Check if the player exited the trigger zone
         if (other.CompareTag("Player") && isLocked)
         {
             // Notify the KeySystem that the player left this door
@@ -136,13 +134,13 @@ public class LockedDoor : MonoBehaviour
                 doorAnimator.SetBool("DoorInteractionEnable", true);
                 // Optional: Reset the parameter after a short delay if needed
                 // This ensures the animation can be triggered again
-                Invoke(nameof(ResetAnimationTrigger), 0.5f);
+                Invoke("DisableDoorInteraction", 1f);
             }
         }
     }
     
     // Helper method to reset the animation trigger
-    private void ResetAnimationTrigger()
+    private void DisableDoorInteraction()
     {
         if (doorAnimator != null)
         {

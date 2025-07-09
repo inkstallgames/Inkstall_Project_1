@@ -97,7 +97,7 @@ public class KeySystem : MonoBehaviour
             }
             else
             {
-                doorPromptText.text = "Door is locked. Press F to use a key.";
+                doorPromptText.text = "Not enough keys.";
             }
             
             doorPromptText.gameObject.SetActive(true);

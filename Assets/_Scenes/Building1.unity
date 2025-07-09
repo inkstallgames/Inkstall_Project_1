@@ -1073,10 +1073,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 628ed149618a81b429d98cfa83aa6270, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allProps:
-  - {fileID: 1875161218662911435}
-  - {fileID: 0}
-  - {fileID: 0}
+  allProps: []
   propsParent: {fileID: 0}
   fakeCount: 2
 --- !u!1001 &352363808

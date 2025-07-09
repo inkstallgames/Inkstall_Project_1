@@ -1,10 +1,11 @@
 fileFormatVersion: 2
 guid: bd6de038802b5c743bdd6aec2153b03e
-timeCreated: 1624493828
-licenseType: Store
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  - doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

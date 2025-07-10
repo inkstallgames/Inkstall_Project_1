@@ -9,7 +9,7 @@ public class LoadBuildingScene : MonoBehaviour
    {
         if (other.tag == "Player")
         {
-            Invoke("LoadNextScene", 1f);
+            Invoke("LoadNextScene", 0.5f);
         }
    }
 

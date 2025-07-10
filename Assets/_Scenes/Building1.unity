@@ -5285,6 +5285,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 23385877906056582, guid: f052b5a392205224da8e029e1f7fed3e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d12d7f3e1c844be4a9cf8b8be038f795, type: 2}
     - target: {fileID: 8058768335995626864, guid: f052b5a392205224da8e029e1f7fed3e,
         type: 3}
       propertyPath: realInteractSound
@@ -6612,6 +6617,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 23413534225647686, guid: aa950a0fff2eccd408b3447dcb8b7f21,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7ac047e1b4168b7489bab58ed4930324, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

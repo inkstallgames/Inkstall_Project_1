@@ -2404,12 +2404,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   totalPropsToCollect: 2
   maxChances: 6
-  resetDelay: 3
-  playerStartPosition: {fileID: 0}
   gameTimer: {fileID: 0}
   winUI: {fileID: 977753789}
   gameOverUI: {fileID: 1774634692}
   crosshair: {fileID: 1981799373}
+  playerController: {fileID: 0}
   chancesText: {fileID: 437521041}
   fakeFoundText: {fileID: 1117337192}
   wrongGuessText: {fileID: 2058612319}
@@ -17082,7 +17081,7 @@ GameObject:
   - component: {fileID: 1875161217596607455}
   - component: {fileID: 6272603240298900609}
   m_Layer: 0
-  m_Name: FOB_Building3
+  m_Name: FOB_Building
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29370,13 +29369,9 @@ MonoBehaviour:
   animIdleParam: IsIdle
   animWalkParam: IsWalking
   animRunParam: IsRunning
-  animJumpParam: IsJumping
   CinemachineCameraTarget: {fileID: 7353431617957508646}
   TopClamp: 89
   BottomClamp: -89
-  minTouchDelta: 10
-  touchSensitivity: 0.1
-  useSplitScreenTouch: 1
 --- !u!1 &2952875011243659133
 GameObject:
   m_ObjectHideFlags: 0
@@ -35730,7 +35725,6 @@ MonoBehaviour:
   isLocked: 1
   doorInteraction: {fileID: 3190459193542744941}
   triggerZone: {fileID: 5248679429457064830}
-  doorAnimator: {fileID: 0}
   unlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   lockedSound: {fileID: 0}
   soundVolume: 1

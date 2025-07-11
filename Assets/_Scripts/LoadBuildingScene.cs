@@ -12,7 +12,7 @@ public class LoadBuildingScene : MonoBehaviour
             Invoke("LoadNextScene", 0.2f);
         }
    }
-
+   
    private void LoadNextScene()
    {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);

@@ -317,6 +317,8 @@ namespace StarterAssets
 								// Only process if movement exceeds minimum delta
 								if (delta.magnitude > minTouchDelta)
 								{
+									// Invert the Y-axis to fix the up/down movement
+									delta.y = -delta.y;
 									// Use touch delta for camera movement
 									_input.look = delta * touchSensitivity * Time.deltaTime;
 									// Update start position to prevent huge jumps

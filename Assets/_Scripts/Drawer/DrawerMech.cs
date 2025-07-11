@@ -64,14 +64,14 @@ public class DrawerMech : MonoBehaviour
     {
         // Calculate target position
         Vector3 targetPosition = isDrawerOpen ? closedPosition + openPosition : closedPosition;
-        
+
         // Smoothly move to target
         transform.localPosition = Vector3.MoveTowards(
-            transform.localPosition, 
-            targetPosition, 
+            transform.localPosition,
+            targetPosition,
             drawerSpeed * Time.deltaTime
         );
-        
+
         // Check if drawer reached target position
         if (Vector3.Distance(transform.localPosition, targetPosition) < 0.001f)
         {

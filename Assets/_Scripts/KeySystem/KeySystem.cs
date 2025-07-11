@@ -5,20 +5,20 @@ using System.Collections;
 public class KeySystem : MonoBehaviour
 {
     public static KeySystem Instance;
-    
+
     [Header("Key Settings")]
     [SerializeField] private int startingKeys = 0;
     private int currentKeys;
-    
+
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI keyCountText;
     [SerializeField] private TextMeshProUGUI doorPromptText;
     [SerializeField] private float promptDuration = 2.0f;
-    
+
     // Keep track of the door the player is currently near
     private LockedDoor currentNearbyDoor;
     private Coroutine promptCoroutine;
-    
+
     private void Awake()
     {
         // Singleton pattern
@@ -32,18 +32,18 @@ public class KeySystem : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        
+
         // Initialize keys
         currentKeys = startingKeys;
         UpdateKeyCountUI();
-        
+
         // Hide door prompt initially
         if (doorPromptText != null)
         {
             doorPromptText.gameObject.SetActive(false);
         }
     }
-    
+
     private void Update()
     {
         // Check for key press when near a locked door
@@ -52,7 +52,7 @@ public class KeySystem : MonoBehaviour
             UnlockDoor(currentNearbyDoor);
         }
     }
-    
+
     // Update the key count UI
     private void UpdateKeyCountUI()
     {
@@ -61,14 +61,14 @@ public class KeySystem : MonoBehaviour
             keyCountText.text = $"Keys: {currentKeys}";
         }
     }
-    
+
     // Called when player enters the trigger zone of a locked door
     public void PlayerNearDoor(LockedDoor door)
     {
         currentNearbyDoor = door;
         ShowDoorPrompt(door);
     }
-    
+
     // Called when player exits the trigger zone of a locked door
     public void PlayerLeftDoor(LockedDoor door)
     {
@@ -78,7 +78,7 @@ public class KeySystem : MonoBehaviour
             HideDoorPrompt();
         }
     }
-    
+
     // Show the door prompt UI
     private void ShowDoorPrompt(LockedDoor door)
     {
@@ -89,7 +89,7 @@ public class KeySystem : MonoBehaviour
             {
                 StopCoroutine(promptCoroutine);
             }
-            
+
             // Show appropriate message based on whether we have keys
             if (currentKeys > 0)
             {
@@ -99,11 +99,11 @@ public class KeySystem : MonoBehaviour
             {
                 doorPromptText.text = "Not enough keys.";
             }
-            
+
             doorPromptText.gameObject.SetActive(true);
         }
     }
-    
+
     // Hide the door prompt UI
     private void HideDoorPrompt()
     {
@@ -114,11 +114,11 @@ public class KeySystem : MonoBehaviour
             {
                 StopCoroutine(promptCoroutine);
             }
-            
+
             doorPromptText.gameObject.SetActive(false);
         }
     }
-    
+
     // Show a temporary message
     public void ShowTemporaryMessage(string message)
     {
@@ -129,22 +129,22 @@ public class KeySystem : MonoBehaviour
             {
                 StopCoroutine(promptCoroutine);
             }
-            
+
             doorPromptText.text = message;
             doorPromptText.gameObject.SetActive(true);
-            
+
             // Start coroutine to hide the message after a delay
             promptCoroutine = StartCoroutine(HidePromptAfterDelay());
         }
     }
-    
+
     // Coroutine to hide the prompt after a delay
     private IEnumerator HidePromptAfterDelay()
     {
         yield return new WaitForSeconds(promptDuration);
         doorPromptText.gameObject.SetActive(false);
     }
-    
+
     // Try to unlock the door
     private void UnlockDoor(LockedDoor door)
     {
@@ -153,13 +153,13 @@ public class KeySystem : MonoBehaviour
             // Decrease key count
             currentKeys--;
             UpdateKeyCountUI();
-            
+
             // Unlock the door
             door.Unlock();
-            
+
             // Show success message
             ShowTemporaryMessage("Door unlocked!");
-            
+
             // Clear the current nearby door reference
             currentNearbyDoor = null;
         }
@@ -169,7 +169,7 @@ public class KeySystem : MonoBehaviour
             ShowTemporaryMessage("No keys available!");
         }
     }
-    
+
     // Add keys to the player's inventory
     public void AddKeys(int amount)
     {
@@ -177,7 +177,7 @@ public class KeySystem : MonoBehaviour
         UpdateKeyCountUI();
         ShowTemporaryMessage($"Gained {amount} key" + (amount > 1 ? "s" : "") + "!");
     }
-    
+
     // Get the current number of keys
     public int GetKeyCount()
     {

@@ -7,10 +7,10 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private float interactDistance = 3f;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private KeyCode interactKey = KeyCode.E;
-    
+
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI interactionPromptText;
-    
+
     private void Start()
     {
         if (playerCamera == null)
@@ -22,7 +22,7 @@ public class PlayerInteraction : MonoBehaviour
                 return;
             }
         }
-        
+
         // Hide the prompt initially
         if (interactionPromptText != null)
         {
@@ -37,21 +37,21 @@ public class PlayerInteraction : MonoBehaviour
         {
             TryInteract();
         }
-        
+
         // Update interaction prompt
         UpdateInteractionPrompt();
     }
-    
+
     private void UpdateInteractionPrompt()
     {
         if (interactionPromptText == null) return;
-        
+
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
         {
             GameObject hitObject = hit.collider.gameObject;
             bool isInteractable = false;
-            
+
             // Check for door
             if (hitObject.TryGetComponent<LockedDoor>(out var lockedDoor))
             {
@@ -97,7 +97,7 @@ public class PlayerInteraction : MonoBehaviour
                     isInteractable = true;
                 }
             }
-            
+
             // Update UI
             interactionPromptText.gameObject.SetActive(isInteractable);
         }

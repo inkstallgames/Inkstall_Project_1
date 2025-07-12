@@ -46,10 +46,10 @@ namespace StarterAssets
 
 		[Header("Animation")]
 		public Animator characterAnimator;
-		public string animIdleParam = "IsIdle"; 
-		public string animWalkParam = "IsWalking"; 
-		public string animRunParam = "IsRunning"; 
-		public string animJumpParam = "IsJumping"; 
+		public string animIdleParam = "IsIdle";
+		public string animWalkParam = "IsWalking";
+		public string animRunParam = "IsRunning";
+		public string animJumpParam = "IsJumping";
 
 		[Header("Cinemachine")]
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
@@ -93,11 +93,11 @@ namespace StarterAssets
 		{
 			get
 			{
-				#if ENABLE_INPUT_SYSTEM
+#if ENABLE_INPUT_SYSTEM
 				return _playerInput.currentControlScheme == "KeyboardMouse";
-				#else
+#else
 				return false;
-				#endif
+#endif
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace StarterAssets
 			{
 				//Don't multiply mouse input by Time.deltaTime
 				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-				
+
 				_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
 				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
 
@@ -271,11 +271,11 @@ namespace StarterAssets
 			}
 
 			// Calculate if the player is moving
-			bool isMoving = _input.move.sqrMagnitude > 0.1f; 
+			bool isMoving = _input.move.sqrMagnitude > 0.1f;
 			bool isRunning = isMoving && _input.sprint;
 			bool isWalking = isMoving && !isRunning;
 			bool isJumping = !Grounded;
-			
+
 			// Set animation parameters based on your animator controller
 			characterAnimator.SetBool(animRunParam, isRunning);
 			characterAnimator.SetBool(animWalkParam, isWalking);
@@ -292,16 +292,16 @@ namespace StarterAssets
 				for (int i = 0; i < Input.touchCount; i++)
 				{
 					UnityEngine.Touch touch = Input.GetTouch(i);
-					
+
 					// Check if touch is over UI
 					if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
 						continue;
-					
+
 					// If using split screen, only use right side for camera rotation
 					bool isRightSide = touch.position.x > Screen.width / 2;
 					if (useSplitScreenTouch && !isRightSide)
 						continue; // Skip left side touches when using split screen
-					
+
 					switch (touch.phase)
 					{
 						case UnityEngine.TouchPhase.Began:
@@ -313,10 +313,12 @@ namespace StarterAssets
 							if (isTouching)
 							{
 								Vector2 delta = touch.position - touchStartPos;
-								
+
 								// Only process if movement exceeds minimum delta
 								if (delta.magnitude > minTouchDelta)
 								{
+									// Invert the Y-axis to fix the up/down movement
+									delta.y = -delta.y;
 									// Use touch delta for camera movement
 									_input.look = delta * touchSensitivity * Time.deltaTime;
 									// Update start position to prevent huge jumps
@@ -331,7 +333,7 @@ namespace StarterAssets
 							_input.look = Vector2.zero;
 							break;
 					}
-					
+
 					// We only need one touch for camera control, so break after processing the first valid touch
 					if (isTouching)
 						break;

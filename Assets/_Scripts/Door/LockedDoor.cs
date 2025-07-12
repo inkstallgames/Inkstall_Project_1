@@ -4,19 +4,19 @@ public class LockedDoor : MonoBehaviour
 {
     [Header("Door Settings")]
     [SerializeField] private bool isLocked = true;
-    
+
     [Header("References")]
     [SerializeField] private DoorInteraction doorInteraction;
     [SerializeField] private BoxCollider triggerZone;
     [SerializeField] private Animator doorAnimator; // Reference to the Animator component
-    
+
     [Header("Audio Settings")]
     [SerializeField] private AudioClip unlockSound;
     [SerializeField] private AudioClip lockedSound;
-    [Range(0f, 1f)] [SerializeField] private float soundVolume = 0.7f;
-    
+    [Range(0f, 1f)][SerializeField] private float soundVolume = 0.7f;
+
     private AudioSource audioSource;
-    
+
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
@@ -27,7 +27,7 @@ public class LockedDoor : MonoBehaviour
             audioSource.spatialBlend = 1f; // 3D sound
             audioSource.volume = soundVolume;
         }
-        
+
         if (doorAnimator == null)
         {
             doorAnimator = GetComponent<Animator>();
@@ -36,8 +36,8 @@ public class LockedDoor : MonoBehaviour
                 Debug.LogWarning("No Animator component found on " + gameObject.name);
             }
         }
-        
-        
+
+
         // Make sure the trigger zone has the right settings
         if (triggerZone != null)
         {
@@ -47,14 +47,14 @@ public class LockedDoor : MonoBehaviour
         {
             Debug.LogWarning("No trigger zone assigned to LockedDoor. Player won't be able to interact with it.");
         }
-        
+
         // Disable the door interaction script if the door is locked
         if (doorInteraction != null && isLocked)
         {
             doorInteraction.enabled = false;
         }
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player") && isLocked)
@@ -67,7 +67,7 @@ public class LockedDoor : MonoBehaviour
         }
     }
 
-    
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player") && isLocked)
@@ -79,21 +79,21 @@ public class LockedDoor : MonoBehaviour
             }
         }
     }
-    
+
     // Called by the KeySystem when the player uses a key to unlock this door
     public void Unlock()
     {
         if (isLocked)
         {
             isLocked = false;
-            
+
             // Play unlock sound
             if (unlockSound != null)
             {
                 audioSource.clip = unlockSound;
                 audioSource.Play();
             }
-            
+
             // Enable the door interaction script
             if (doorInteraction != null)
             {
@@ -105,13 +105,13 @@ public class LockedDoor : MonoBehaviour
             }
         }
     }
-    
+
     // Check if the door is currently locked
     public bool IsLocked()
     {
         return isLocked;
     }
-    
+
     // Play the locked door sound
     public void PlayLockedSound()
     {
@@ -127,7 +127,7 @@ public class LockedDoor : MonoBehaviour
         if (isLocked)
         {
             PlayLockedSound();
-            
+
             // Trigger the locked door animation
             if (doorAnimator != null)
             {
@@ -138,7 +138,7 @@ public class LockedDoor : MonoBehaviour
             }
         }
     }
-    
+
     // Helper method to reset the animation trigger
     private void DisableDoorInteraction()
     {

@@ -104,7 +104,7 @@ public class GameTimer : MonoBehaviour
     {
         // Only update UI if timer text exists
         if (timerText == null) return;
-        
+
         int minutes = Mathf.FloorToInt(currentTime / 60f);
         int seconds = Mathf.FloorToInt(currentTime % 60f);
 
@@ -175,10 +175,10 @@ public class GameTimer : MonoBehaviour
             {
                 timerText.gameObject.SetActive(true);
             }
-            
+
             timerRunning = true;
             hasBeenTriggered = true;
-            
+
             // Update UI immediately
             UpdateTimerUI();
         }

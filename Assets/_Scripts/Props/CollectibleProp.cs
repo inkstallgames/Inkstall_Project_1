@@ -6,8 +6,8 @@ public class CollectibleProp : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioClip fakePickupSound;
     [SerializeField] private AudioClip realInteractSound;
-    [Range(0f, 1f)] [SerializeField] private float soundVolume = 0.7f;
-    
+    [Range(0f, 1f)][SerializeField] private float soundVolume = 0.7f;
+
     private AudioSource audioSource;
     private bool isCollected = false;
     private PropIdentity propIdentity;
@@ -22,7 +22,7 @@ public class CollectibleProp : MonoBehaviour
             audioSource.spatialBlend = 1f; // 3D sound
             audioSource.volume = soundVolume;
         }
-        
+
         // Get PropIdentity component if available
         propIdentity = GetComponent<PropIdentity>();
     }
@@ -30,7 +30,7 @@ public class CollectibleProp : MonoBehaviour
     public bool Interact()
     {
         if (isCollected) return false;
-        
+
         bool isFake = propIdentity != null && propIdentity.isFake;
 
         if (isFake)
@@ -41,12 +41,12 @@ public class CollectibleProp : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(fakePickupSound, transform.position, soundVolume);
             }
-            
+
             // Notify GameManager that a fake prop was collected
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.CollectFakeProp();
-                
+
                 // Check if all fake props have been collected for immediate win feedback
                 if (GameManager.Instance.FakePropsLeft() == 0)
                 {
@@ -67,7 +67,7 @@ public class CollectibleProp : MonoBehaviour
                             }
                         }
                     }
-                    
+
                     // Find and disable the player controller directly
                     DisablePlayerMovementDirectly();
                 }
@@ -76,7 +76,7 @@ public class CollectibleProp : MonoBehaviour
             {
                 // GameManager instance not found when collecting fake prop
             }
-            
+
             gameObject.SetActive(false);
             return true;
         }
@@ -87,27 +87,27 @@ public class CollectibleProp : MonoBehaviour
             {
                 AudioSource.PlayClipAtPoint(realInteractSound, transform.position, soundVolume);
             }
-            
+
             // Handle wrong guess with the GameManager
             if (GameManager.Instance != null)
             {
                 bool gameEnded = GameManager.Instance.HandleWrongGuess(transform.position);
-                
+
                 // If out of chances, disable this prop
                 if (gameEnded)
                 {
                     isCollected = true;
                     gameObject.SetActive(false);
-                    
+
                     // Find and disable the player controller directly as a backup
                     DisablePlayerMovementDirectly();
                 }
             }
-            
+
             return false;
         }
     }
-    
+
     // Helper method to directly disable player movement
     private void DisablePlayerMovementDirectly()
     {

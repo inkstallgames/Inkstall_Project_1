@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;    
 
 public class LockedDoor : MonoBehaviour
 {
@@ -9,6 +10,13 @@ public class LockedDoor : MonoBehaviour
     [SerializeField] private DoorInteraction doorInteraction;
     [SerializeField] private BoxCollider triggerZone;
     [SerializeField] private Animator doorAnimator; // Reference to the Animator component
+    [SerializeField] private TextMeshProUGUI doorPromptText;
+
+    // Keep track of the door the player is currently near
+    private LockedDoor currentNearbyDoor;
+    private Coroutine promptCoroutine;
+    [SerializeField] private float promptDuration = 2.0f;
+
 
     [Header("Audio Settings")]
     [SerializeField] private AudioClip unlockSound;
@@ -23,11 +31,9 @@ public class LockedDoor : MonoBehaviour
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
-            audioSource.playOnAwake = false;
-            audioSource.spatialBlend = 1f; // 3D sound
-            audioSource.volume = soundVolume;
         }
 
+        
         if (doorAnimator == null)
         {
             doorAnimator = GetComponent<Animator>();
@@ -52,6 +58,21 @@ public class LockedDoor : MonoBehaviour
         if (doorInteraction != null && isLocked)
         {
             doorInteraction.enabled = false;
+        }
+
+        // Hide door prompt initially
+        if (doorPromptText != null)
+        {
+            doorPromptText.gameObject.SetActive(false);
+        }
+    }
+
+    private void Update()
+    {
+       // Check for key press when near a locked door
+        if (currentNearbyDoor != null && Input.GetKeyDown(KeyCode.F))
+        {
+            UnlockDoor(currentNearbyDoor);
         }
     }
 
@@ -151,6 +172,142 @@ public class LockedDoor : MonoBehaviour
         if (doorAnimator != null)
         {
             doorAnimator.SetBool("DoorInteractionEnable", false);
+        }
+    }
+
+    // Try to unlock the door
+    private void UnlockDoor(LockedDoor door)
+    {
+        if (currentKeys > 0)
+        {
+            // Decrease key count
+            currentKeys--;
+            UpdateKeyCountUI();
+
+            // Unlock the door
+            door.Unlock();
+
+            // Show success message
+            ShowTemporaryMessage("Door unlocked!");
+
+            // Clear the current nearby door reference
+            currentNearbyDoor = null;
+        }
+        else
+        {
+            // Show no keys message
+            ShowTemporaryMessage("No keys available!");
+        }
+
+
+    }
+
+    // Show a temporary message
+    public void ShowTemporaryMessage(string message)
+    {
+        if (doorPromptText != null)
+        {
+            // Cancel any existing coroutine
+            if (promptCoroutine != null)
+            {
+                StopCoroutine(promptCoroutine);
+            }
+
+            doorPromptText.text = message;
+            doorPromptText.gameObject.SetActive(true);
+
+            // Start coroutine to hide the message after a delay
+            promptCoroutine = StartCoroutine(HidePromptAfterDelay());
+        }
+    }
+
+    // Called when player enters the trigger zone of a locked door
+    public void PlayerNearDoor(LockedDoor door)
+    {
+        currentNearbyDoor = door;
+        ShowDoorPrompt(door);
+    }
+
+    // Called when player exits the trigger zone of a locked door
+    public void PlayerLeftDoor(LockedDoor door)
+    {
+        if (currentNearbyDoor == door)
+        {
+            currentNearbyDoor = null;
+            HideDoorPrompt();
+        }
+    }
+
+    // Show the door prompt UI
+    private void ShowDoorPrompt(LockedDoor door)
+    {
+        if (doorPromptText != null)
+        {
+            // Cancel any existing coroutine
+            if (promptCoroutine != null)
+            {
+                StopCoroutine(promptCoroutine);
+            }
+
+            // Show appropriate message based on whether we have keys
+            if (currentKeys > 0)
+            {
+                doorPromptText.text = "Door is locked. Press F to use a key.";
+            }
+            else
+            {
+                doorPromptText.text = "Not enough keys.";
+            }
+
+            doorPromptText.gameObject.SetActive(true);
+        }
+    }
+
+    // Hide the door prompt UI
+    private void HideDoorPrompt()
+    {
+        if (doorPromptText != null)
+        {
+            // Cancel any existing coroutine
+            if (promptCoroutine != null)
+            {
+                StopCoroutine(promptCoroutine);
+            }
+
+            doorPromptText.gameObject.SetActive(false);
+        }
+    }
+
+
+    // Coroutine to hide the prompt after a delay
+    private IEnumerator HidePromptAfterDelay()
+    {
+        yield return new WaitForSeconds(promptDuration);
+        doorPromptText.gameObject.SetActive(false);
+    }
+
+    // Try to unlock the door
+    private void UnlockDoor(LockedDoor door)
+    {
+        if (currentKeys > 0)
+        {
+            // Decrease key count
+            currentKeys--;
+            UpdateKeyCountUI();
+
+            // Unlock the door
+            door.Unlock();
+
+            // Show success message
+            ShowTemporaryMessage("Door unlocked!");
+
+            // Clear the current nearby door reference
+            currentNearbyDoor = null;
+        }
+        else
+        {
+            // Show no keys message
+            ShowTemporaryMessage("No keys available!");
         }
     }
 }

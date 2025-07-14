@@ -60,9 +60,9 @@ public class LockedDoor : MonoBehaviour
         if (other.CompareTag("Player") && isLocked)
         {
             // Notify the KeySystem that the player is near this door
-            if (KeySystem.Instance != null)
+            if (KeyManager.Instance != null)
             {
-                KeySystem.Instance.PlayerNearDoor(this);
+                KeyManager.Instance.PlayerNearDoor(this);
             }
         }
     }
@@ -73,9 +73,9 @@ public class LockedDoor : MonoBehaviour
         if (other.CompareTag("Player") && isLocked)
         {
             // Notify the KeySystem that the player left this door
-            if (KeySystem.Instance != null)
+            if (KeyManager.Instance != null)
             {
-                KeySystem.Instance.PlayerLeftDoor(this);
+                KeyManager.Instance.PlayerLeftDoor(this);
             }
         }
     }

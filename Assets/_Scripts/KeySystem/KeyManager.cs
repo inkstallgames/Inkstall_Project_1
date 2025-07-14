@@ -2,9 +2,9 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
-public class KeySystem : MonoBehaviour
+public class KeyManager : MonoBehaviour
 {
-    public static KeySystem Instance;
+    public static KeyManager Instance;
 
     [Header("Key Settings")]
     [SerializeField] private int startingKeys = 0;

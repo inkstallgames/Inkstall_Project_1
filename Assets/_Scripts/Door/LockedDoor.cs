@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using TMPro;    
 
 public class LockedDoor : MonoBehaviour
@@ -66,8 +67,6 @@ public class LockedDoor : MonoBehaviour
         {
             doorPromptText.gameObject.SetActive(false);
         }
-
-        currentkeys = KeyManager.Instance.GetKeyCount();
     }
 
     private void Update()
@@ -94,6 +93,13 @@ public class LockedDoor : MonoBehaviour
         {
             PlayerLeftDoor(this);
         }
+    }
+
+    // Called when player enters the trigger zone of a locked door
+    private void PlayerNearDoor(LockedDoor door)
+    {
+        currentNearbyDoor = door;
+        ShowDoorPrompt();
     }
 
     // Called by the KeySystem when the player uses a key to unlock this door
@@ -173,11 +179,8 @@ public class LockedDoor : MonoBehaviour
     // Try to unlock the door
     private void UnlockDoor(LockedDoor door)
     {
-        if (currentKeys > 0)
+        if (KeyManager.Instance.UseKey())
         {
-            // Decrease key count
-            currentKeys--;
-
             // Unlock the door
             door.Unlock();
 
@@ -192,8 +195,6 @@ public class LockedDoor : MonoBehaviour
             // Show no keys message
             ShowTemporaryMessage("No keys available!");
         }
-
-
     }
 
     // Show a temporary message
@@ -238,7 +239,7 @@ public class LockedDoor : MonoBehaviour
             }
 
             // Show appropriate message based on whether we have keys
-            if (currentKeys > 0)
+            if (KeyManager.Instance.GetKeyCount() > 0)
             {
                 doorPromptText.text = "Door is locked. Press F to use a key.";
             }
@@ -266,36 +267,10 @@ public class LockedDoor : MonoBehaviour
         }
     }
 
-
     // Coroutine to hide the prompt after a delay
     private IEnumerator HidePromptAfterDelay()
     {
         yield return new WaitForSeconds(promptDuration);
         doorPromptText.gameObject.SetActive(false);
-    }
-
-    // Try to unlock the door
-    private void UnlockDoor(LockedDoor door)
-    {
-        if (currentKeys > 0)
-        {
-            // Decrease key count
-            currentKeys--;
-            UpdateKeyCountUI();
-
-            // Unlock the door
-            door.Unlock();
-
-            // Show success message
-            ShowTemporaryMessage("Door unlocked!");
-
-            // Clear the current nearby door reference
-            currentNearbyDoor = null;
-        }
-        else
-        {
-            // Show no keys message
-            ShowTemporaryMessage("No keys available!");
-        }
     }
 }

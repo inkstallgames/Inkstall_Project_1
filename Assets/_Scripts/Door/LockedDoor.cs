@@ -24,6 +24,7 @@ public class LockedDoor : MonoBehaviour
     [Range(0f, 1f)][SerializeField] private float soundVolume = 0.7f;
 
     private AudioSource audioSource;
+    private int currentkeys;
 
     private void Awake()
     {
@@ -33,7 +34,7 @@ public class LockedDoor : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        
+
         if (doorAnimator == null)
         {
             doorAnimator = GetComponent<Animator>();
@@ -65,6 +66,8 @@ public class LockedDoor : MonoBehaviour
         {
             doorPromptText.gameObject.SetActive(false);
         }
+
+        currentkeys = KeyManager.Instance.GetKeyCount();
     }
 
     private void Update()
@@ -80,11 +83,7 @@ public class LockedDoor : MonoBehaviour
     {
         if (other.CompareTag("Player") && isLocked)
         {
-            // Notify the KeySystem that the player is near this door
-            if (KeyManager.Instance != null)
-            {
-                KeyManager.Instance.PlayerNearDoor(this);
-            }
+            PlayerNearDoor(this);
         }
     }
 
@@ -93,11 +92,7 @@ public class LockedDoor : MonoBehaviour
     {
         if (other.CompareTag("Player") && isLocked)
         {
-            // Notify the KeySystem that the player left this door
-            if (KeyManager.Instance != null)
-            {
-                KeyManager.Instance.PlayerLeftDoor(this);
-            }
+            PlayerLeftDoor(this);
         }
     }
 
@@ -182,7 +177,6 @@ public class LockedDoor : MonoBehaviour
         {
             // Decrease key count
             currentKeys--;
-            UpdateKeyCountUI();
 
             // Unlock the door
             door.Unlock();
@@ -221,12 +215,6 @@ public class LockedDoor : MonoBehaviour
         }
     }
 
-    // Called when player enters the trigger zone of a locked door
-    public void PlayerNearDoor(LockedDoor door)
-    {
-        currentNearbyDoor = door;
-        ShowDoorPrompt(door);
-    }
 
     // Called when player exits the trigger zone of a locked door
     public void PlayerLeftDoor(LockedDoor door)
@@ -239,7 +227,7 @@ public class LockedDoor : MonoBehaviour
     }
 
     // Show the door prompt UI
-    private void ShowDoorPrompt(LockedDoor door)
+    private void ShowDoorPrompt()
     {
         if (doorPromptText != null)
         {

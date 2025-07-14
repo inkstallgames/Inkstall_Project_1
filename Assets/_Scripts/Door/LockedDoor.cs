@@ -103,6 +103,12 @@ public class LockedDoor : MonoBehaviour
             {
                 Debug.LogError("No DoorInteraction component assigned to this LockedDoor!");
             }
+
+            // Disable Animator
+            if (doorAnimator != null)
+            {
+                doorAnimator.enabled = false;
+            }
         }
     }
 

@@ -59,16 +59,6 @@ namespace StarterAssets
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
 
-		[Header("Mobile Input")]
-		[Tooltip("Joystick magnitude threshold to start running")]
-		public float joystickRunThreshold = 0.8f;
-		[Tooltip("Whether to use joystick magnitude for speed control")]
-		public bool useJoystickMagnitudeForSpeed = true;
-		[Tooltip("Sensitivity for right side screen touch rotation")]
-		public float rightSideTouchSensitivity = 1.0f;
-		[Tooltip("Whether to use right side of screen for rotation")]
-		public bool useRightSideForRotation = true;
-
 		// cinemachine
 		private float _cinemachineTargetPitch;
 
@@ -298,7 +288,7 @@ namespace StarterAssets
 			// Handle touch input for camera look
 			if (Input.touchCount > 0)
 			{
-				// Process touches
+				// Process only touches on the right side of the screen for camera control
 				for (int i = 0; i < Input.touchCount; i++)
 				{
 					UnityEngine.Touch touch = Input.GetTouch(i);
@@ -307,15 +297,10 @@ namespace StarterAssets
 					if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
 						continue;
 
-					// If using split screen, determine which side of the screen was touched
+					// If using split screen, only use right side for camera rotation
 					bool isRightSide = touch.position.x > Screen.width / 2;
-					
-					// Only use right side for camera rotation if enabled
-					if (useRightSideForRotation && !isRightSide && useSplitScreenTouch)
-						continue; // Skip left side touches when using right side for rotation
-					
-					// Only use left side for movement if we're using a virtual joystick
-					// The joystick script will handle this separately
+					if (useSplitScreenTouch && !isRightSide)
+						continue; // Skip left side touches when using split screen
 
 					switch (touch.phase)
 					{
@@ -332,19 +317,10 @@ namespace StarterAssets
 								// Only process if movement exceeds minimum delta
 								if (delta.magnitude > minTouchDelta)
 								{
-									if (isRightSide && useRightSideForRotation)
-									{
-										// Apply different sensitivity for right side rotation
-										delta.y = -delta.y; // Invert Y-axis for natural camera control
-										_input.look = delta * rightSideTouchSensitivity * Time.deltaTime;
-									}
-									else if (!useSplitScreenTouch)
-									{
-										// If not using split screen, any touch can control the camera
-										delta.y = -delta.y;
-										_input.look = delta * touchSensitivity * Time.deltaTime;
-									}
-									
+									// Invert the Y-axis to fix the up/down movement
+									delta.y = -delta.y;
+									// Use touch delta for camera movement
+									_input.look = delta * touchSensitivity * Time.deltaTime;
 									// Update start position to prevent huge jumps
 									touchStartPos = touch.position;
 								}
@@ -353,13 +329,14 @@ namespace StarterAssets
 
 						case UnityEngine.TouchPhase.Ended:
 						case UnityEngine.TouchPhase.Canceled:
-							if (isRightSide && useRightSideForRotation || !useSplitScreenTouch)
-							{
-								isTouching = false;
-								_input.look = Vector2.zero;
-							}
+							isTouching = false;
+							_input.look = Vector2.zero;
 							break;
 					}
+
+					// We only need one touch for camera control, so break after processing the first valid touch
+					if (isTouching)
+						break;
 				}
 			}
 		}

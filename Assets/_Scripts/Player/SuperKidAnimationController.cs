@@ -127,9 +127,9 @@ public class SuperKidAnimationController : MonoBehaviour
                 if (showDebugLogs) Debug.Log($"Animation State: Walking Right Forward");
             }
         }
-        else if (angle >= 80f && angle <= 100f)
+        else if (angle >= 70f && angle <= 110f)
         {
-            // Forward (80-100 degrees)
+            // Forward (70-110 degrees)
             if (isRunning)
             {
                 // Running Forward
@@ -143,12 +143,12 @@ public class SuperKidAnimationController : MonoBehaviour
                 if (showDebugLogs) Debug.Log($"Animation State: Walking Forward");
             }
         }
-        else if (angle > 100f && angle < 170f)
+        else if (angle > 110f && angle < 170f)
         {
-            // Left-Forward (100-150 degrees)
-            if (isRunning && angle >= 100f && angle <= 150f)
+            // Left-Forward (110-150 degrees)
+            if (isRunning && angle >= 110f && angle <= 150f)
             {
-                // Running Left-Forward (100-150 degrees with high magnitude)
+                // Running Left-Forward (110-150 degrees with high magnitude)
                 animator.SetBool(runningLeftForwardParam, true);
                 if (showDebugLogs) Debug.Log($"Animation State: Running Left Forward");
             }

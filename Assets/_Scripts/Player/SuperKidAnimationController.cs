@@ -111,12 +111,12 @@ public class SuperKidAnimationController : MonoBehaviour
             animator.SetBool(walkingRightParam, true);
             if (showDebugLogs) Debug.Log($"Animation State: Walking Right");
         }
-        else if (angle >= 10f && angle < 80f)
+        else if (angle >= 10f && angle < 70f)
         {
-            // Right-Forward (10-80 degrees)
-            if (isRunning && angle >= 30f && angle < 80f)
+            // Right-Forward (10-70 degrees)
+            if (isRunning && angle >= 30f && angle < 70f)
             {
-                // Running Right-Forward (30-80 degrees with high magnitude)
+                // Running Right-Forward (30-70 degrees with high magnitude)
                 animator.SetBool(runningRightForwardParam, true);
                 if (showDebugLogs) Debug.Log($"Animation State: Running Right Forward");
             }

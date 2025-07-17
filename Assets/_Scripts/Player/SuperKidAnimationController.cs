@@ -101,8 +101,8 @@ public class SuperKidAnimationController : MonoBehaviour
         
         if (showDebugLogs) Debug.Log($"Move Input: {moveInput}, Magnitude: {magnitude}, Angle: {angle}");
 
-        // Check if we're in the forward quadrant (45-135 degrees) for running
-        bool isInForwardRunningQuadrant = angle >= 45f && angle <= 135f;
+        // Check if we're in the forward quadrant (30-150 degrees) for running
+        bool isInForwardRunningQuadrant = angle >= 30f && angle <= 150f;
         
         // Apply animations based on the specified angle ranges
         if (angle >= 350f || angle < 10f)
@@ -116,7 +116,7 @@ public class SuperKidAnimationController : MonoBehaviour
             // Right-Forward (10-80 degrees)
             if (isRunning && angle >= 30f && angle < 80f)
             {
-                // Running Right-Forward (45-80 degrees with high magnitude)
+                // Running Right-Forward (30-80 degrees with high magnitude)
                 animator.SetBool(runningRightForwardParam, true);
                 if (showDebugLogs) Debug.Log($"Animation State: Running Right Forward");
             }
@@ -145,10 +145,10 @@ public class SuperKidAnimationController : MonoBehaviour
         }
         else if (angle > 100f && angle < 170f)
         {
-            // Left-Forward (100-170 degrees)
+            // Left-Forward (100-150 degrees)
             if (isRunning && angle >= 100f && angle <= 150f)
             {
-                // Running Left-Forward (100-135 degrees with high magnitude)
+                // Running Left-Forward (100-150 degrees with high magnitude)
                 animator.SetBool(runningLeftForwardParam, true);
                 if (showDebugLogs) Debug.Log($"Animation State: Running Left Forward");
             }

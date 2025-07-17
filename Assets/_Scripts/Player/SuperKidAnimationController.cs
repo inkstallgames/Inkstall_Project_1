@@ -19,8 +19,8 @@ public class SuperKidAnimationController : MonoBehaviour
     [SerializeField] private string jumpingParam = "IsJumping";
 
     [Header("Movement Settings")]
-    [SerializeField] private float runThreshold = 0.7f; // Joystick magnitude threshold for running
-    [SerializeField] private float directionThreshold = 0.3f; // Threshold for determining direction
+    [SerializeField] private float runThreshold = 0.1f; // Joystick magnitude threshold for running
+    [SerializeField] private float directionThreshold = 0.1f; // Threshold for determining direction - lowered to match FirstPersonController
 
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
@@ -69,7 +69,8 @@ public class SuperKidAnimationController : MonoBehaviour
         
         // Calculate magnitude of movement
         float magnitude = moveInput.magnitude;
-        bool isMoving = magnitude > 0.1f;
+        // Use Vector2.zero check to match FirstPersonController's movement detection
+        bool isMoving = moveInput != Vector2.zero;
         bool isRunning = magnitude > runThreshold;
         
         // Reset all animation states
@@ -91,85 +92,96 @@ public class SuperKidAnimationController : MonoBehaviour
             return;
         }
         
-        // Normalize the input for direction calculation
-        Vector2 normalizedInput = moveInput.normalized;
-        
         // Calculate the movement direction angle
-        float angle = Mathf.Atan2(normalizedInput.x, normalizedInput.y) * Mathf.Rad2Deg;
+        // Using Atan2(y, x) for standard mathematical angle calculation
+        float angle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
         
         // Make sure angle is between 0 and 360
         if (angle < 0) angle += 360f;
         
         if (showDebugLogs) Debug.Log($"Move Input: {moveInput}, Magnitude: {magnitude}, Angle: {angle}");
+
+        // Check if we're in the forward quadrant (45-135 degrees) for running
+        bool isInForwardRunningQuadrant = angle >= 45f && angle <= 135f;
         
-        // Determine direction based on angle
-        if (isRunning)
+        // Apply animations based on the specified angle ranges
+        if (angle >= 350f || angle < 10f)
         {
-            // Running animations - we have fewer running animations, so use broader angle ranges
-            if (angle >= 315 || angle < 45) // Forward
+            // Walking Right (350-10 degrees)
+            animator.SetBool(walkingRightParam, true);
+            if (showDebugLogs) Debug.Log($"Animation State: Walking Right");
+        }
+        else if (angle >= 10f && angle < 80f)
+        {
+            // Right-Forward (10-80 degrees)
+            if (isRunning)
             {
-                animator.SetBool(runningParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Running Forward");
-            }
-            else if (angle >= 45 && angle < 135) // Right
-            {
+                // Running Right-Forward (10-80 degrees with high magnitude)
                 animator.SetBool(runningRightForwardParam, true);
                 if (showDebugLogs) Debug.Log($"Animation State: Running Right Forward");
             }
-            else if (angle >= 225 && angle < 315) // Left
+            else
             {
-                animator.SetBool(runningLeftForwardParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Running Left Forward");
-            }
-            else // Backward - use walking backward since we don't have running backward
-            {
-                animator.SetBool(walkingBackwardParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Walking Backward (No Running Backward)");
-            }
-        }
-        else
-        {
-            // Walking animations - more precise angle ranges for 8-direction movement
-            if (angle >= 337.5 || angle < 22.5) // Forward
-            {
-                animator.SetBool(walkingParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Walking Forward");
-            }
-            else if (angle >= 22.5 && angle < 67.5) // Forward-Right
-            {
+                // Walking Right-Forward
                 animator.SetBool(walkingRightForwardParam, true);
                 if (showDebugLogs) Debug.Log($"Animation State: Walking Right Forward");
             }
-            else if (angle >= 67.5 && angle < 112.5) // Right
+        }
+        else if (angle >= 80f && angle <= 100f)
+        {
+            // Forward (80-100 degrees)
+            if (isRunning)
             {
-                animator.SetBool(walkingRightParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Walking Right");
+                // Running Forward
+                animator.SetBool(runningParam, true);
+                if (showDebugLogs) Debug.Log($"Animation State: Running Forward");
             }
-            else if (angle >= 112.5 && angle < 157.5) // Backward-Right
+            else
             {
-                animator.SetBool(walkingRightBackwardParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Walking Right Backward");
+                // Walking Forward
+                animator.SetBool(walkingParam, true);
+                if (showDebugLogs) Debug.Log($"Animation State: Walking Forward");
             }
-            else if (angle >= 157.5 && angle < 202.5) // Backward
+        }
+        else if (angle > 100f && angle < 170f)
+        {
+            // Left-Forward (100-170 degrees)
+            if (isRunning)
             {
-                animator.SetBool(walkingBackwardParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Walking Backward");
+                // Running Left-Forward (100-170 degrees with high magnitude)
+                animator.SetBool(runningLeftForwardParam, true);
+                if (showDebugLogs) Debug.Log($"Animation State: Running Left Forward");
             }
-            else if (angle >= 202.5 && angle < 247.5) // Backward-Left
+            else
             {
-                animator.SetBool(walkingLeftBackwardParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Walking Left Backward");
-            }
-            else if (angle >= 247.5 && angle < 292.5) // Left
-            {
-                animator.SetBool(walkingLeftParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Walking Left");
-            }
-            else if (angle >= 292.5 && angle < 337.5) // Forward-Left
-            {
+                // Walking Left-Forward
                 animator.SetBool(walkingLeftForwardParam, true);
                 if (showDebugLogs) Debug.Log($"Animation State: Walking Left Forward");
             }
+        }
+        else if (angle >= 170f && angle < 190f)
+        {
+            // Walking Left (170-190 degrees)
+            animator.SetBool(walkingLeftParam, true);
+            if (showDebugLogs) Debug.Log($"Animation State: Walking Left");
+        }
+        else if (angle >= 190f && angle < 260f)
+        {
+            // Walking Left-Backward (190-260 degrees)
+            animator.SetBool(walkingLeftBackwardParam, true);
+            if (showDebugLogs) Debug.Log($"Animation State: Walking Left Backward");
+        }
+        else if (angle >= 260f && angle < 280f)
+        {
+            // Walking Backward (260-280 degrees)
+            animator.SetBool(walkingBackwardParam, true);
+            if (showDebugLogs) Debug.Log($"Animation State: Walking Backward");
+        }
+        else if (angle >= 280f && angle < 350f)
+        {
+            // Walking Right-Backward (280-350 degrees)
+            animator.SetBool(walkingRightBackwardParam, true);
+            if (showDebugLogs) Debug.Log($"Animation State: Walking Right Backward");
         }
     }
     

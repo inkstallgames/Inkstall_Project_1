@@ -1,5 +1,6 @@
 using UnityEngine;
 using StarterAssets;
+using UnityEngine.EventSystems;
 
 public class MobileControlsConnector : MonoBehaviour
 {
@@ -16,6 +17,13 @@ public class MobileControlsConnector : MonoBehaviour
     [Header("Joystick Settings")]
     [SerializeField] private float runThreshold = 0.7f;
     [SerializeField] private bool autoSprintWhenJoystickPushedFar = true;
+
+    [Header("Camera Control Settings")]
+    [SerializeField] private float touchSensitivity = 1.0f;
+    [SerializeField] private float minSwipeDelta = 5f;
+    
+    private Vector2 touchStartPos;
+    private bool isTouchingRightSide = false;
 
     private void Awake()
     {
@@ -82,6 +90,74 @@ public class MobileControlsConnector : MonoBehaviour
         if (firstPersonController != null)
         {
             runThreshold = firstPersonController.runThreshold;
+            
+            // Sync camera control settings if available
+            touchSensitivity = firstPersonController.touchSensitivity;
+            minSwipeDelta = firstPersonController.minTouchDelta;
+        }
+    }
+
+    private void Update()
+    {
+        HandleCameraControl();
+    }
+
+    private void HandleCameraControl()
+    {
+        if (starterAssetsInputs == null) return;
+
+        // Handle touch input for camera look
+        if (Input.touchCount > 0)
+        {
+            for (int i = 0; i < Input.touchCount; i++)
+            {
+                Touch touch = Input.GetTouch(i);
+
+                // Check if touch is over UI (ignore if it's over UI elements)
+                if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+                    continue;
+
+                // Only process touches on the right side of the screen
+                bool isRightSide = touch.position.x > Screen.width / 2;
+                if (!isRightSide) continue;
+
+                switch (touch.phase)
+                {
+                    case TouchPhase.Began:
+                        touchStartPos = touch.position;
+                        isTouchingRightSide = true;
+                        break;
+
+                    case TouchPhase.Moved:
+                        if (isTouchingRightSide)
+                        {
+                            Vector2 delta = touch.position - touchStartPos;
+
+                            // Only process if movement exceeds minimum delta
+                            if (delta.magnitude > minSwipeDelta)
+                            {
+                                // Invert the Y-axis for natural camera control
+                                delta.y = -delta.y;
+                                
+                                // Pass the look input to the StarterAssetsInputs
+                                starterAssetsInputs.LookInput(delta * touchSensitivity * Time.deltaTime);
+                                
+                                // Update start position to prevent huge jumps
+                                touchStartPos = touch.position;
+                            }
+                        }
+                        break;
+
+                    case TouchPhase.Ended:
+                    case TouchPhase.Canceled:
+                        isTouchingRightSide = false;
+                        starterAssetsInputs.LookInput(Vector2.zero);
+                        break;
+                }
+
+                // We only need one touch for camera control
+                if (isTouchingRightSide) break;
+            }
         }
     }
 

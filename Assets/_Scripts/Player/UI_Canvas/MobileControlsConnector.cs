@@ -19,7 +19,7 @@ public class MobileControlsConnector : MonoBehaviour
     [SerializeField] private bool autoSprintWhenJoystickPushedFar = true;
 
     [Header("Camera Control Settings")]
-    [SerializeField] private float touchSensitivity = 1.0f;
+    [SerializeField] private float touchSensitivity = 5f;
     [SerializeField] private float minSwipeDelta = 5f;
     
     private Vector2 touchStartPos;

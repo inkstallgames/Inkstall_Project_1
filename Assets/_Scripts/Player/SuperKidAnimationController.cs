@@ -114,7 +114,7 @@ public class SuperKidAnimationController : MonoBehaviour
         else if (angle >= 10f && angle < 70f)
         {
             // Right-Forward (10-70 degrees)
-            if (isRunning && angle >= 30f && angle < 70f)
+            if (isRunning && angle >= 40f && angle < 70f)
             {
                 // Running Right-Forward (30-70 degrees with high magnitude)
                 animator.SetBool(runningRightForwardParam, true);
@@ -146,7 +146,7 @@ public class SuperKidAnimationController : MonoBehaviour
         else if (angle > 110f && angle < 170f)
         {
             // Left-Forward (110-150 degrees)
-            if (isRunning && angle >= 110f && angle <= 150f)
+            if (isRunning && angle >= 110f && angle <= 140f)
             {
                 // Running Left-Forward (110-150 degrees with high magnitude)
                 animator.SetBool(runningLeftForwardParam, true);

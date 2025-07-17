@@ -178,7 +178,7 @@ namespace StarterAssets
 			}
 			
 			// Check if movement is in the forward quadrant (between 30 and 150 degrees)
-			bool isMovingForward = movementAngle >= 30f && movementAngle <= 150f;
+			bool isMovingForward = movementAngle >= 40f && movementAngle <= 140f;
 			
 			// Only apply sprint speed when moving in the forward quadrant
 			if ((_input.sprint || _input.move.magnitude > runThreshold) && isMovingForward)

@@ -168,8 +168,20 @@ namespace StarterAssets
 			// set target speed based on move speed, sprint speed and if sprint is pressed
 			float targetSpeed = MoveSpeed;
 			
-			// For mobile, use joystick magnitude to determine if running
-			if (_input.sprint || _input.move.magnitude > runThreshold)
+			// Calculate movement direction angle in degrees (0 = right, 90 = forward, 180 = left, 270 = backward)
+			float movementAngle = 0;
+			if (_input.move != Vector2.zero)
+			{
+				movementAngle = Mathf.Atan2(_input.move.y, _input.move.x) * Mathf.Rad2Deg;
+				// Convert to 0-360 range
+				if (movementAngle < 0) movementAngle += 360f;
+			}
+			
+			// Check if movement is in the forward quadrant (between 45 and 135 degrees)
+			bool isMovingForward = movementAngle >= 45f && movementAngle <= 135f;
+			
+			// Only apply sprint speed when moving in the forward quadrant
+			if ((_input.sprint || _input.move.magnitude > runThreshold) && isMovingForward)
 			{
 				targetSpeed = SprintSpeed;
 			}

@@ -71,6 +71,7 @@ namespace StarterAssets
 
 		// touch input
 		private Vector2 touchStartPos;
+		private Vector2 previousTouchPos;
 		private bool isTouching = false;
 		public float minTouchDelta = 10f;
 		public float touchSensitivity = 0.1f;
@@ -278,6 +279,9 @@ namespace StarterAssets
 
 		private void HandleMobileInput()
 		{
+			// Reset look input at the beginning of the frame
+			_input.look = Vector2.zero;
+			
 			// Handle touch input for camera look
 			if (Input.touchCount > 0)
 			{
@@ -299,31 +303,37 @@ namespace StarterAssets
 					{
 						case UnityEngine.TouchPhase.Began:
 							touchStartPos = touch.position;
+							previousTouchPos = touch.position;
 							isTouching = true;
 							break;
 
 						case UnityEngine.TouchPhase.Moved:
 							if (isTouching)
 							{
-								Vector2 delta = touch.position - touchStartPos;
+								// Calculate delta from previous frame position, not from start position
+								Vector2 delta = touch.position - previousTouchPos;
 
 								// Only process if movement exceeds minimum delta
-								if (delta.magnitude > minTouchDelta)
+								if (delta.magnitude > 0)
 								{
 									// Invert the Y-axis to fix the up/down movement
 									delta.y = -delta.y;
 									// Use touch delta for camera movement
 									_input.look = delta * touchSensitivity * Time.deltaTime;
-									// Update start position to prevent huge jumps
-									touchStartPos = touch.position;
 								}
+								
+								// Always update previous position
+								previousTouchPos = touch.position;
 							}
+							break;
+
+						case UnityEngine.TouchPhase.Stationary:
+							// No movement, so no camera rotation
 							break;
 
 						case UnityEngine.TouchPhase.Ended:
 						case UnityEngine.TouchPhase.Canceled:
 							isTouching = false;
-							_input.look = Vector2.zero;
 							break;
 					}
 

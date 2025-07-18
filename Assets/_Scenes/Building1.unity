@@ -1727,6 +1727,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1875161217596607455}
     m_Modifications:
+    - target: {fileID: 883613485747621303, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 1.3798199
+      objectReference: {fileID: 0}
+    - target: {fileID: 883613485747621303, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0.7001951
+      objectReference: {fileID: 0}
+    - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: isEntrance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: targetSceneIndex
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4347093295648580978, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
       propertyPath: m_Name
@@ -4235,12 +4255,6 @@ PrefabInstance:
 --- !u!4 &1223660703 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4bc28a7ca83b52443826effa3c90725c,
-    type: 3}
-  m_PrefabInstance: {fileID: 1223660702}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1223660704 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 4bc28a7ca83b52443826effa3c90725c,
     type: 3}
   m_PrefabInstance: {fileID: 1223660702}
   m_PrefabAsset: {fileID: 0}
@@ -19773,6 +19787,8 @@ MonoBehaviour:
   doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
   doorAnimator: {fileID: 0}
+  doorPromptText: {fileID: 0}
+  promptDuration: 2
   unlockSound: {fileID: 0}
   lockedSound: {fileID: 0}
   soundVolume: 0.7
@@ -20971,6 +20987,8 @@ MonoBehaviour:
   doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
   doorAnimator: {fileID: 0}
+  doorPromptText: {fileID: 0}
+  promptDuration: 2
   unlockSound: {fileID: 0}
   lockedSound: {fileID: 0}
   soundVolume: 0.7
@@ -29446,11 +29464,7 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 1
-  characterAnimator: {fileID: 1223660704}
-  animIdleParam: IsIdle
-  animWalkParam: IsWalking
-  animRunParam: IsRunning
-  animJumpParam: IsJumping
+  runThreshold: 0.7
   CinemachineCameraTarget: {fileID: 7353431617957508646}
   TopClamp: 89
   BottomClamp: -89
@@ -35798,6 +35812,8 @@ MonoBehaviour:
   doorInteraction: {fileID: 3190459193542744941}
   triggerZone: {fileID: 5248679429457064830}
   doorAnimator: {fileID: 5248679429457064832}
+  doorPromptText: {fileID: 0}
+  promptDuration: 2
   unlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   lockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   soundVolume: 1
@@ -36441,6 +36457,8 @@ MonoBehaviour:
   doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
   doorAnimator: {fileID: 0}
+  doorPromptText: {fileID: 0}
+  promptDuration: 2
   unlockSound: {fileID: 0}
   lockedSound: {fileID: 0}
   soundVolume: 0.7
@@ -38395,6 +38413,8 @@ MonoBehaviour:
   doorInteraction: {fileID: 6096234473738546704}
   triggerZone: {fileID: 5248679429457064830}
   doorAnimator: {fileID: 0}
+  doorPromptText: {fileID: 0}
+  promptDuration: 2
   unlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   lockedSound: {fileID: 8300000, guid: 6e2e79e9469b3b741892af8e01d4e10b, type: 3}
   soundVolume: 1
@@ -45730,6 +45750,8 @@ MonoBehaviour:
   doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
   doorAnimator: {fileID: 0}
+  doorPromptText: {fileID: 0}
+  promptDuration: 2
   unlockSound: {fileID: 0}
   lockedSound: {fileID: 0}
   soundVolume: 0.7

@@ -259,6 +259,74 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1363951566}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &156190821
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4347093295648580978, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_Name
+      value: FX_Blue_Flipbook
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9.208314
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.2847587
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 8.714478
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 107fa3d92c897f5449055027e7664f03, type: 3}
 --- !u!1001 &158252843
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2270,9 +2338,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingKeys: 3
-  keyCountText: {fileID: 1695526414}
-  doorPromptText: {fileID: 1088018378}
-  promptDuration: 2
 --- !u!1 &793750267 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1411180530148116, guid: 9fca9fb036f984445927918582183eac,
@@ -29366,11 +29431,7 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 1
-  characterAnimator: {fileID: 0}
-  animIdleParam: IsIdle
-  animWalkParam: IsWalking
-  animRunParam: IsRunning
-  animJumpParam: IsJumping
+  runThreshold: 0.7
   CinemachineCameraTarget: {fileID: 7353431617957508646}
   TopClamp: 89
   BottomClamp: -89
@@ -35731,6 +35792,8 @@ MonoBehaviour:
   doorInteraction: {fileID: 3190459193542744941}
   triggerZone: {fileID: 5248679429457064830}
   doorAnimator: {fileID: 0}
+  doorPromptText: {fileID: 0}
+  promptDuration: 2
   unlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   lockedSound: {fileID: 0}
   soundVolume: 1
@@ -36800,7 +36863,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 571873c1dccc652499437296e27eb97b, type: 2}
+  - {fileID: 2100000, guid: c4b8cc852baa1ef4cb4bf7bd3b8e7a85, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -48657,3 +48720,4 @@ SceneRoots:
   - {fileID: 2020832637}
   - {fileID: 1217582467}
   - {fileID: 575563914}
+  - {fileID: 156190821}

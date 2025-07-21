@@ -8,28 +8,9 @@ public class KeyManager : MonoBehaviour
     [SerializeField] private int startingKeys = 0;
     private int currentKeys;
 
-
-    private void Awake()
-    {
-        // Singleton pattern
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        // Initialize keys
-        currentKeys = startingKeys;
-    }
-
     private void Start()
     {
-        
+        currentKeys = startingKeys;
     }
 
     // Get the current number of keys

@@ -8,7 +8,7 @@ public class KeyManager : MonoBehaviour
     public static KeyManager Instance;
 
     [Header("Key Settings")]
-    [SerializeField] private int keysCount = 4;
+    [SerializeField] private int keysCount = 0;
     [SerializeField] private TextMeshProUGUI keyText;
     [SerializeField] private string apiUrl = "https://your-api.com/keys/player123";
 

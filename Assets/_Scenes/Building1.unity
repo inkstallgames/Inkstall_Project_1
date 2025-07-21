@@ -4173,7 +4173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b69e6ad7256afd4fbc5f83c157141af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keysCount: 2
+  keysCount: 3
   keyText: {fileID: 1695526414}
   apiUrl: https://your-api.com/keys/player123
 --- !u!1 &1236287189 stripped
@@ -5199,8 +5199,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 962220123}
   - {fileID: 1228881206}
+  - {fileID: 962220123}
   - {fileID: 1093428159}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

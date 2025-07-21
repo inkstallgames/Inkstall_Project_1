@@ -10,16 +10,42 @@ public class KeyManager : MonoBehaviour
 
     private void Start()
     {
-        currentKeys = startingKeys;
+        FetchDBKeyCount();
+        UpdateUIKeyCount();
     }
 
-    // Get the current number of keys
-    public int GetKeyCount()
+    private void FetchDBKeyCount()
     {
-        return currentKeys;
+        
+    }
+
+    private void UseKey()
+    {
+        UpdateUIKeyCount();
+        UpdateDBKeyCount();
+    }
+
+    private void UpdateUIKeyCount()
+    {
+        
+    }
+
+    private void UpdateDBKeyCount()
+    {
+        
     }
     
     
+
+    
+    
+
+
+
+
+
+
+
     // Use a key (called by LockedDoor when unlocking)
     public bool UseKey()
     {

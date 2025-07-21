@@ -239,7 +239,7 @@ public class LockedDoor : MonoBehaviour
             }
 
             // Show appropriate message based on whether we have keys
-            if (KeyManager.Instance.GetKeyCount() > 0)
+            if (KeyManager.Instance.FetchDBKeyCount() > 0)
             {
                 doorPromptText.text = "Door is locked. Press F to use a key.";
             }

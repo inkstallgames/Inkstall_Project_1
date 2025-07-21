@@ -18,15 +18,22 @@ public class KeyManager : MonoBehaviour
         UpdateUIKeyCount();
     }
 
-    private void FetchDBKeyCount()
+    public int FetchDBKeyCount()
     {
-        
+        return keysCount;
     }
 
-    public void UseKey()
+    // Use a key (called by LockedDoor when unlocking)
+    public bool UseKey()
     {
-        UpdateUIKeyCount();
-        UpdateDBKeyCount();
+        if (keysCount > 0)
+        {
+            keysCount--;
+            UpdateDBKeyCount();
+            UpdateUIKeyCount();
+            return true;
+        }
+        return false;
     }
 
     private void UpdateUIKeyCount()
@@ -38,33 +45,5 @@ public class KeyManager : MonoBehaviour
     {
         
     }
-    
-    
 
-    
-    
-
-
-
-
-
-
-
-    // Use a key (called by LockedDoor when unlocking)
-    public bool UseKey()
-    {
-        if (currentKeys > 0)
-        {
-            currentKeys--;
-            UpdateDBKeyCount();
-            return true;
-        }
-        return false;
-    }
-
-    public void UpdateDBKeyCount()
-    {
-        
-    }
-   
 }

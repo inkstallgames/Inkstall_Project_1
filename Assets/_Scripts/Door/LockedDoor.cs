@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using TMPro;    
+using TMPro;
 
 public class LockedDoor : MonoBehaviour
 {
@@ -71,7 +71,7 @@ public class LockedDoor : MonoBehaviour
 
     private void Update()
     {
-       // Check for key press when near a locked door
+        // Check for key press when near a locked door
         if (currentNearbyDoor != null && Input.GetKeyDown(KeyCode.F))
         {
             UnlockDoor(currentNearbyDoor);
@@ -239,7 +239,7 @@ public class LockedDoor : MonoBehaviour
             }
 
             // Show appropriate message based on whether we have keys
-            if (KeyManager.Instance.FetchDBKeyCount() > 0)
+            if (KeyManager.Instance.GetCurrentKeyCount() > 0)
             {
                 doorPromptText.text = "Door is locked. Press F to use a key.";
             }

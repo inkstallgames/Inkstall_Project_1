@@ -5,8 +5,12 @@ public class KeyManager : MonoBehaviour
     public static KeyManager Instance;
 
     [Header("Key Settings")]
-    [SerializeField] private int startingKeys = 0;
-    private int currentKeys;
+    [SerializeField] private int keysCount = 0;
+
+    void Awake()
+    {
+        Instance = this; // No DontDestroyOnLoad here
+    }
 
     private void Start()
     {
@@ -19,7 +23,7 @@ public class KeyManager : MonoBehaviour
         
     }
 
-    private void UseKey()
+    public void UseKey()
     {
         UpdateUIKeyCount();
         UpdateDBKeyCount();

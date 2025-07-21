@@ -2269,10 +2269,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b69e6ad7256afd4fbc5f83c157141af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingKeys: 3
-  keyCountText: {fileID: 1695526414}
-  doorPromptText: {fileID: 1088018378}
-  promptDuration: 2
+  keysCount: 0
+  keyText: {fileID: 0}
+  apiUrl: https://your-api.com/keys/player123
 --- !u!1 &793750267 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1411180530148116, guid: 9fca9fb036f984445927918582183eac,
@@ -29366,11 +29365,7 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 1
-  characterAnimator: {fileID: 0}
-  animIdleParam: IsIdle
-  animWalkParam: IsWalking
-  animRunParam: IsRunning
-  animJumpParam: IsJumping
+  runThreshold: 0.7
   CinemachineCameraTarget: {fileID: 7353431617957508646}
   TopClamp: 89
   BottomClamp: -89
@@ -35731,6 +35726,8 @@ MonoBehaviour:
   doorInteraction: {fileID: 3190459193542744941}
   triggerZone: {fileID: 5248679429457064830}
   doorAnimator: {fileID: 0}
+  doorPromptText: {fileID: 0}
+  promptDuration: 2
   unlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   lockedSound: {fileID: 0}
   soundVolume: 1
@@ -36800,7 +36797,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 571873c1dccc652499437296e27eb97b, type: 2}
+  - {fileID: 2100000, guid: 7ac047e1b4168b7489bab58ed4930324, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

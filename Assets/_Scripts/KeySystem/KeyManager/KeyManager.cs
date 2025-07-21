@@ -22,7 +22,7 @@ public class KeyManager : MonoBehaviour
         StartCoroutine(FetchDBKeyCount());
     }
 
-
+    // Fetch the key count from the API
     public IEnumerator FetchDBKeyCount()
     {
         UnityWebRequest www = UnityWebRequest.Get(apiUrl);
@@ -40,7 +40,6 @@ public class KeyManager : MonoBehaviour
             Debug.LogError("Error fetching keys: " + www.error);
         }
     }
-
 
     // Returns the current key count as an integer
     public int GetCurrentKeyCount()
@@ -61,12 +60,14 @@ public class KeyManager : MonoBehaviour
         return false;
     }
 
+    // Update the UI to show the current key count
     private void UpdateUIKeyCount()
     {
-        keyText.text = keysCount.ToString();
+        keyText.text = $"Keys: {keysCount}";
         Debug.Log("Keys: " + keysCount);
     }
 
+    // Update the database with the current key count
     private void UpdateDBKeyCount()
     {
         StartCoroutine(SendKeyUpdateToDB());
@@ -92,6 +93,7 @@ public class KeyManager : MonoBehaviour
         }
     }
 
+    // Class to hold the key count response from the API
     [System.Serializable]
     public class KeyResponse
     {

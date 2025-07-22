@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 using UnityEngine.Networking;
 using System.Collections;
 
@@ -7,9 +7,9 @@ public class CoinsManager : MonoBehaviour
 {
     public static CoinsManager Instance;
 
-    public Text coinText; // Assign in Inspector
-    public string playerId;
-    public int currentCoins;
+    public TextMeshProUGUI coinText; // Assign in Inspector
+    private string playerId;
+    private int currentCoins;
 
     private string getCoinsURL = "https://yourwebsite.com/api/get-coins/";
     private string spendCoinsURL = "https://yourwebsite.com/api/spend-coins";

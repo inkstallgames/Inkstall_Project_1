@@ -5,20 +5,40 @@ using System.Collections;
 
 public class CoinsManager : MonoBehaviour
 {
-    public static CoinsManager Instance; // Singleton for global access
+    public static CoinsManager Instance;
 
-    public Text coinText;              // Assigned in Inspector
-    public string playerId = "abc123"; // Set from login if needed
+    public Text coinText; // Assign in Inspector
+    public string playerId;
     public int currentCoins;
-    private string getCoinsURL = "https://yourdomain.com/api/get-coins/";
-    private string spendCoinsURL = "https://yourdomain.com/api/spend-coins";
+
+    private string getCoinsURL = "https://yourwebsite.com/api/get-coins/";
+    private string spendCoinsURL = "https://yourwebsite.com/api/spend-coins";
 
     void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+            DontDestroyOnLoad(gameObject); // persist if needed
+        }
         else
+        {
             Destroy(gameObject);
+        }
+    }
+
+    void Start()
+    {
+        // Auto-login using saved ID
+        if (PlayerPrefs.HasKey("studentId"))
+        {
+            playerId = PlayerPrefs.GetString("studentId");
+            FetchCoins();
+        }
+        else
+        {
+            Debug.LogWarning("No studentId found");
+        }
     }
 
     public void FetchCoins()
@@ -36,7 +56,7 @@ public class CoinsManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Not enough coins");
+            Debug.Log("Not enough coins.");
         }
     }
 
@@ -67,6 +87,7 @@ public class CoinsManager : MonoBehaviour
     {
         CoinSpendRequest body = new CoinSpendRequest { playerId = playerId, amount = amount };
         string json = JsonUtility.ToJson(body);
+
         UnityWebRequest request = new UnityWebRequest(spendCoinsURL, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -78,7 +99,7 @@ public class CoinsManager : MonoBehaviour
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("Spend failed: " + request.error);
-            // Optionally refund coins here if failed
+            // Optionally refund coins here
         }
     }
 

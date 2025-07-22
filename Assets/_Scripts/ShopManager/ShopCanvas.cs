@@ -6,7 +6,6 @@ public class ShopCanvas : MonoBehaviour
 {
   private void OnEnable()
   {
-    CoinsManager.Instance.FetchCoins();
     CoinsManager.Instance.UpdateCoinUI();
   }
 }

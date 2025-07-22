@@ -19,7 +19,7 @@ public class KeyManager : MonoBehaviour
 
     private void Start()
     {
-        keyText.text = $"Keys: {keysCount}";
+        keyText.text = {keysCount};
         StartCoroutine(FetchDBKeyCount());
     }
 

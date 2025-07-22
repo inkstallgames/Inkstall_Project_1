@@ -19,7 +19,7 @@ public class KeyManager : MonoBehaviour
 
     private void Start()
     {
-        keyText.text = {keysCount};
+        keyText.text = keysCount.ToString();
         StartCoroutine(FetchDBKeyCount());
     }
 
@@ -64,7 +64,7 @@ public class KeyManager : MonoBehaviour
     // Update the UI to show the current key count
     private void UpdateUIKeyCount()
     {
-        keyText.text = $"Keys: {keysCount}";
+        keyText.text = keysCount.ToString();
         Debug.Log("Keys: " + keysCount);
     }
 

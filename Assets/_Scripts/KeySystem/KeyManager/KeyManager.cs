@@ -19,8 +19,8 @@ public class KeyManager : MonoBehaviour
 
     private void Start()
     {
-        keyText.text = keysCount.ToString();
         StartCoroutine(FetchDBKeyCount());
+        keyText.text = keysCount.ToString();
     }
 
     // Fetch the key count from the API

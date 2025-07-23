@@ -1,13 +1,13 @@
 mergeInto(LibraryManager.library, {
 
-  GetStudentId: function() {
-    var studentId = localStorage.getItem('studentId');
-    if (studentId === null) {
-        console.error('studentId not found in localStorage.');
+  GetUserId: function() {
+    var userId = localStorage.getItem('userId');
+    if (userId === null) {
+        console.error('user Id not found in localStorage.');
         return "";
     }
-    var buffer = _malloc(studentId.length + 1);
-    stringToUTF8(studentId, buffer, studentId.length + 1);
+    var buffer = _malloc(userId.length + 1);
+    stringToUTF8(userId, buffer, userId.length + 1);
     return buffer;
   },
 

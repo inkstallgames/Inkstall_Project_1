@@ -13,7 +13,7 @@ public class KeyManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI keyText;
     [SerializeField] private string apiBaseUrl = "http://localhost:4000/api/slot/get-keys/";
 
-    private string studentId = "default_player";
+    private string userId = "default_player";
 
     // Import the JavaScript function to get studentId from localStorage
     [DllImport("__Internal")]
@@ -28,20 +28,20 @@ public class KeyManager : MonoBehaviour
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
         // Get studentId from localStorage in WebGL builds
-        studentId = GetStudentId();
-        if (string.IsNullOrEmpty(studentId))
+        userId = GetStudentId();
+        if (string.IsNullOrEmpty(userId))
         {
             Debug.LogWarning("No student ID found in localStorage, using default");
-            studentId = "default_player";
+            userId = "default_player";
         }
         else
         {
-            Debug.Log("Retrieved Student ID from localStorage: " + studentId);
+            Debug.Log("Retrieved Student ID from localStorage: " + userId);
         }
 #else
         // Use a test ID when running in the Unity Editor
-        studentId = "test_student_id";
-        Debug.Log("Running in Editor with test Student ID: " + studentId);
+        userId = "test_student_id";
+        Debug.Log("Running in Editor with test Student ID: " + userId);
 #endif
 
         StartCoroutine(FetchDBKeyCount());
@@ -51,7 +51,7 @@ public class KeyManager : MonoBehaviour
     // Fetch the key count from the API
     public IEnumerator FetchDBKeyCount()
     {
-        string url = apiBaseUrl + studentId;
+        string url = apiBaseUrl + userId;
         UnityWebRequest www = UnityWebRequest.Get(url);
         yield return www.SendWebRequest();
 
@@ -106,7 +106,7 @@ public class KeyManager : MonoBehaviour
         keyData.keys = keysCount;
 
         string jsonData = JsonUtility.ToJson(keyData);
-        string url = apiBaseUrl + studentId;
+        string url = apiBaseUrl + userId;
         UnityWebRequest www = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         www.uploadHandler = new UploadHandlerRaw(bodyRaw);

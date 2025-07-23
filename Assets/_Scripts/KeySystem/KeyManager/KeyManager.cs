@@ -11,7 +11,7 @@ public class KeyManager : MonoBehaviour
     [Header("Key Settings")]
     [SerializeField] private int keysCount = 0;
     [SerializeField] private TextMeshProUGUI keyText;
-    [SerializeField] private string apiBaseUrl = "https://your-api.com/keys/";
+    [SerializeField] private string apiBaseUrl = "http://localhost:4000/api/slot/get-keys/";
 
     private string studentId = "default_player";
 

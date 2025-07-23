@@ -6,8 +6,8 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Interaction Settings")]
     [SerializeField] private float interactDistance = 3f;
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private KeyCode interactKey = KeyCode.E;
-
+    
+    
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI interactionPromptText;
 
@@ -32,11 +32,11 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
-        // Check for interaction
-        if (Input.GetKeyDown(interactKey))
-        {
-            TryInteract();
-        }
+        // Check for interaction - Commented out for mobile controls
+        // if (Input.GetKeyDown(interactKey))
+        // {
+        //     TryInteract();
+        // }
 
         // Update interaction prompt
         UpdateInteractionPrompt();
@@ -105,6 +105,11 @@ public class PlayerInteraction : MonoBehaviour
         {
             interactionPromptText.gameObject.SetActive(false);
         }
+    }
+
+    public void Interact() // Public method for UI button
+    {
+        TryInteract();
     }
 
     private void TryInteract()

@@ -6,13 +6,13 @@ public class ShopManager : MonoBehaviour
 {
     public GameObject shopCanvas;
     public GameObject mobileControlsCanvas;
-    
+
     public void EnableShopCanvas()
     {
         // Toggle the active state
         shopCanvas.SetActive(true);
-            Time.timeScale = 0f; // Pause the game
-            mobileControlsCanvas.SetActive(false); // Hide the mobile controls UI
+        Time.timeScale = 0f; // Pause the game
+        mobileControlsCanvas.SetActive(false); // Hide the mobile controls UI
     }
 
     public void CloseShopCanvas()

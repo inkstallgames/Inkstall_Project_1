@@ -6,8 +6,8 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Interaction Settings")]
     [SerializeField] private float interactDistance = 3f;
     [SerializeField] private Camera playerCamera;
-    
-    
+
+
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI interactionPromptText;
 

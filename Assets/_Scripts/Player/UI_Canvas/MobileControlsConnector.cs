@@ -21,7 +21,7 @@ public class MobileControlsConnector : MonoBehaviour
     [Header("Camera Control Settings")]
     [SerializeField] private float touchSensitivity = 5f;
     [SerializeField] private float minSwipeDelta = 5f;
-    
+
     private Vector2 touchStartPos;
     private bool isTouchingRightSide = false;
 
@@ -58,7 +58,7 @@ public class MobileControlsConnector : MonoBehaviour
         {
             starterAssetsInputs = playerCapsule.GetComponent<StarterAssetsInputs>();
             firstPersonController = playerCapsule.GetComponent<FirstPersonController>();
-            
+
             // Find the Super_Kid child object
             Transform superKid = playerCapsule.Find("Super_Kid");
             if (superKid != null)
@@ -90,7 +90,7 @@ public class MobileControlsConnector : MonoBehaviour
         if (firstPersonController != null)
         {
             runThreshold = firstPersonController.runThreshold;
-            
+
             // Sync camera control settings if available
             touchSensitivity = firstPersonController.touchSensitivity;
             minSwipeDelta = firstPersonController.minTouchDelta;
@@ -138,10 +138,10 @@ public class MobileControlsConnector : MonoBehaviour
                             {
                                 // Invert the Y-axis for natural camera control
                                 delta.y = -delta.y;
-                                
+
                                 // Pass the look input to the StarterAssetsInputs
                                 starterAssetsInputs.LookInput(delta * touchSensitivity * Time.deltaTime);
-                                
+
                                 // Update start position to prevent huge jumps
                                 touchStartPos = touch.position;
                             }

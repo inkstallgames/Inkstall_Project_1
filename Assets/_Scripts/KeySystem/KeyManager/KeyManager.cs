@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using TMPro;
+using System.Runtime.InteropServices;
 
 public class KeyManager : MonoBehaviour
 {
@@ -10,7 +11,13 @@ public class KeyManager : MonoBehaviour
     [Header("Key Settings")]
     [SerializeField] private int keysCount = 0;
     [SerializeField] private TextMeshProUGUI keyText;
-    [SerializeField] private string apiUrl = "https://your-api.com/keys/player123";
+    [SerializeField] private string apiBaseUrl = "https://your-api.com/keys/";
+
+    private string studentId = "default_player";
+
+    // Import the JavaScript function to get studentId from localStorage
+    [DllImport("__Internal")]
+    private static extern string GetStudentId();
 
     void Awake()
     {
@@ -19,6 +26,24 @@ public class KeyManager : MonoBehaviour
 
     private void Start()
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // Get studentId from localStorage in WebGL builds
+        studentId = GetStudentId();
+        if (string.IsNullOrEmpty(studentId))
+        {
+            Debug.LogWarning("No student ID found in localStorage, using default");
+            studentId = "default_player";
+        }
+        else
+        {
+            Debug.Log("Retrieved Student ID from localStorage: " + studentId);
+        }
+#else
+        // Use a test ID when running in the Unity Editor
+        studentId = "test_student_id";
+        Debug.Log("Running in Editor with test Student ID: " + studentId);
+#endif
+
         StartCoroutine(FetchDBKeyCount());
         keyText.text = keysCount.ToString();
     }
@@ -26,7 +51,8 @@ public class KeyManager : MonoBehaviour
     // Fetch the key count from the API
     public IEnumerator FetchDBKeyCount()
     {
-        UnityWebRequest www = UnityWebRequest.Get(apiUrl);
+        string url = apiBaseUrl + studentId;
+        UnityWebRequest www = UnityWebRequest.Get(url);
         yield return www.SendWebRequest();
 
         if (www.result == UnityWebRequest.Result.Success)
@@ -80,7 +106,8 @@ public class KeyManager : MonoBehaviour
         keyData.keys = keysCount;
 
         string jsonData = JsonUtility.ToJson(keyData);
-        UnityWebRequest www = new UnityWebRequest(apiUrl, "POST");
+        string url = apiBaseUrl + studentId;
+        UnityWebRequest www = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
         www.uploadHandler = new UploadHandlerRaw(bodyRaw);
         www.downloadHandler = new DownloadHandlerBuffer();

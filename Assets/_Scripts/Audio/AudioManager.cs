@@ -9,11 +9,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Audio Sources")]
     public AudioClip musicSource;
-    public AudioClip sfxSource;
 
-    [Header("Audio Settings")]
-    [Range(0f, 1f)] public float musicVolume = 1f;
-    [Range(0f, 1f)] public float sfxVolume = 1f;
 
     private void Awake()
     {
@@ -36,32 +32,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic()
     {
-        audioSource.PlayOneShot(musicSource, musicVolume);
+        audioSource.PlayOneShot(musicSource);
     }
 
-    public void PlaySFX(AudioClip clip)
-    {
-        audioSource.PlayOneShot(clip, sfxVolume);
-    }
-
-    public void SetMusicVolume(float volume)
-    {
-        musicVolume = volume;
-        audioSource.volume = musicVolume;
-    }
-
-    public void SetSFXVolume(float volume)
-    {
-        sfxVolume = volume;
-    }
-
-    public void ToggleMusic(bool isOn)
-    {
-        audioSource.mute = !isOn;
-    }
-
-    private void ApplyVolumeSettings()
-    {
-        audioSource.volume = musicVolume;
-    }
 }

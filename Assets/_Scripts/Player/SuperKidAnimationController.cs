@@ -33,7 +33,7 @@ public class SuperKidAnimationController : MonoBehaviour
     private void Awake()
     {
         animator = GetComponent<Animator>();
-        
+
         // Get references from parent (PlayerCapsule)
         Transform parent = transform.parent;
         if (parent != null)
@@ -41,12 +41,12 @@ public class SuperKidAnimationController : MonoBehaviour
             starterAssetsInputs = parent.GetComponent<StarterAssetsInputs>();
             firstPersonController = parent.GetComponent<FirstPersonController>();
         }
-        
+
         if (starterAssetsInputs == null)
         {
             Debug.LogError("StarterAssetsInputs not found on parent!");
         }
-        
+
         if (firstPersonController == null)
         {
             Debug.LogError("FirstPersonController not found on parent!");
@@ -66,16 +66,16 @@ public class SuperKidAnimationController : MonoBehaviour
         // Get input values
         Vector2 moveInput = starterAssetsInputs.move;
         bool isJumping = !firstPersonController.Grounded;
-        
+
         // Calculate magnitude of movement
         float magnitude = moveInput.magnitude;
         // Use Vector2.zero check to match FirstPersonController's movement detection
         bool isMoving = moveInput != Vector2.zero;
         bool isRunning = magnitude > runThreshold;
-        
+
         // Reset all animation states
         ResetAllAnimationStates();
-        
+
         // Set jumping state first (highest priority)
         if (isJumping)
         {
@@ -83,7 +83,7 @@ public class SuperKidAnimationController : MonoBehaviour
             if (showDebugLogs) Debug.Log($"Animation State: Jumping");
             return;
         }
-        
+
         // If not moving, set to idle
         if (!isMoving)
         {
@@ -91,19 +91,19 @@ public class SuperKidAnimationController : MonoBehaviour
             if (showDebugLogs) Debug.Log($"Animation State: Idle");
             return;
         }
-        
+
         // Calculate the movement direction angle
         // Using Atan2(y, x) for standard mathematical angle calculation
         float angle = Mathf.Atan2(moveInput.y, moveInput.x) * Mathf.Rad2Deg;
-        
+
         // Make sure angle is between 0 and 360
         if (angle < 0) angle += 360f;
-        
+
         if (showDebugLogs) Debug.Log($"Move Input: {moveInput}, Magnitude: {magnitude}, Angle: {angle}");
 
         // Check if we're in the forward quadrant (30-150 degrees) for running
         bool isInForwardRunningQuadrant = angle >= 30f && angle <= 150f;
-        
+
         // Apply animations based on the specified angle ranges
         if (angle >= 350f || angle < 10f)
         {
@@ -184,7 +184,7 @@ public class SuperKidAnimationController : MonoBehaviour
             if (showDebugLogs) Debug.Log($"Animation State: Walking Right Backward");
         }
     }
-    
+
     private void ResetAllAnimationStates()
     {
         animator.SetBool(idleParam, false);

@@ -43,7 +43,7 @@ namespace StarterAssets
 		public float GroundedRadius = 0.5f;
 		[Tooltip("What layers the character uses as ground")]
 		public LayerMask GroundLayers;
-		
+
 		[Header("Mobile Controls")]
 		[Tooltip("Joystick magnitude threshold for running")]
 		public float runThreshold = 0.7f;
@@ -149,7 +149,7 @@ namespace StarterAssets
 			if (_input.look.sqrMagnitude >= _threshold)
 			{
 				float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-				
+
 				_cinemachineTargetPitch += _input.look.y * RotationSpeed * deltaTimeMultiplier;
 				_rotationVelocity = _input.look.x * RotationSpeed * deltaTimeMultiplier;
 
@@ -168,7 +168,7 @@ namespace StarterAssets
 		{
 			// set target speed based on move speed, sprint speed and if sprint is pressed
 			float targetSpeed = MoveSpeed;
-			
+
 			// Calculate movement direction angle in degrees (0 = right, 90 = forward, 180 = left, 270 = backward)
 			float movementAngle = 0;
 			if (_input.move != Vector2.zero)
@@ -177,10 +177,10 @@ namespace StarterAssets
 				// Convert to 0-360 range
 				if (movementAngle < 0) movementAngle += 360f;
 			}
-			
+
 			// Check if movement is in the forward quadrant (between 30 and 150 degrees)
 			bool isMovingForward = movementAngle >= 40f && movementAngle <= 140f;
-			
+
 			// Only apply sprint speed when moving in the forward quadrant
 			if ((_input.sprint || _input.move.magnitude > runThreshold) && isMovingForward)
 			{
@@ -281,7 +281,7 @@ namespace StarterAssets
 		{
 			// Reset look input at the beginning of the frame
 			_input.look = Vector2.zero;
-			
+
 			// Handle touch input for camera look
 			if (Input.touchCount > 0)
 			{
@@ -321,7 +321,7 @@ namespace StarterAssets
 									// Use touch delta for camera movement
 									_input.look = delta * touchSensitivity * Time.deltaTime;
 								}
-								
+
 								// Always update previous position
 								previousTouchPos = touch.position;
 							}

@@ -9906,7 +9906,7 @@ GameObject:
   - component: {fileID: 8465586440583838569}
   - component: {fileID: 6399728575911777819}
   m_Layer: 5
-  m_Name: UI_Virtual_Button_Jump
+  m_Name: Jump_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33189,7 +33189,7 @@ GameObject:
   - component: {fileID: 506029147849317601}
   - component: {fileID: 2244530513345574471}
   m_Layer: 5
-  m_Name: UI_Virtual_Joystick_Move
+  m_Name: Joystick_Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

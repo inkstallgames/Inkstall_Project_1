@@ -2,7 +2,12 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using TMPro;
-using System.Runtime.InteropServices;
+
+[System.Serializable]
+public class KeyResponse
+{
+    public int keys;
+}
 
 public class KeyManager : MonoBehaviour
 {
@@ -13,39 +18,38 @@ public class KeyManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI keyText;
     [SerializeField] private string apiBaseUrl = "http://localhost:4000/api/slot/get-keys/";
 
-    private string userId = "default_player";
+    public string userId;
 
-    // Import the JavaScript function to get studentId from localStorage
-    [DllImport("__Internal")]
-    private static extern string GetStudentId();
-
-    void Awake()
+    private void Awake()
     {
-        Instance = this;  // No DontDestroyOnLoad here
+        // Set up singleton
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void Start()
     {
-#if UNITY_WEBGL && !UNITY_EDITOR
-        // Get studentId from localStorage in WebGL builds
-        userId = GetStudentId();
-        if (string.IsNullOrEmpty(userId))
+        // Only initialize the UI, don't fetch keys yet
+        keyText.text = keysCount.ToString();
+    }
+
+    // This will be called by UserIDBridge after it sets userId
+    public void FetchKeysForUser()
+    {
+        if (!string.IsNullOrEmpty(userId))
         {
-            Debug.LogWarning("No student ID found in localStorage, using default");
-            userId = "default_player";
+            StartCoroutine(FetchDBKeyCount());
         }
         else
         {
-            Debug.Log("Retrieved Student ID from localStorage: " + userId);
+            Debug.LogError("Cannot fetch keys: userId is empty");
         }
-#else
-        // Use a test ID when running in the Unity Editor
-        userId = "test_student_id";
-        Debug.Log("Running in Editor with test Student ID: " + userId);
-#endif
-
-        StartCoroutine(FetchDBKeyCount());
-        keyText.text = keysCount.ToString();
     }
 
     // Fetch the key count from the API
@@ -87,13 +91,6 @@ public class KeyManager : MonoBehaviour
         return false;
     }
 
-    // Update the UI to show the current key count
-    private void UpdateUIKeyCount()
-    {
-        keyText.text = keysCount.ToString();
-        Debug.Log("Keys: " + keysCount);
-    }
-
     // Update the database with the current key count
     private void UpdateDBKeyCount()
     {
@@ -121,10 +118,10 @@ public class KeyManager : MonoBehaviour
         }
     }
 
-    // Class to hold the key count response from the API
-    [System.Serializable]
-    public class KeyResponse
+    // Update the UI to show the current key count
+    private void UpdateUIKeyCount()
     {
-        public int keys;
+        keyText.text = keysCount.ToString();
+        Debug.Log("Keys: " + keysCount);
     }
 }

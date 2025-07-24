@@ -337,8 +337,8 @@ public class GameManager : MonoBehaviour
         }
 
         // Reset all doors
-        DoorInteraction[] allDoors = FindObjectsOfType<DoorInteraction>();
-        foreach (DoorInteraction door in allDoors)
+        DoorOpen[] allDoors = FindObjectsOfType<DoorOpen>();
+        foreach (DoorOpen door in allDoors)
         {
             door.ResetDoor();
         }

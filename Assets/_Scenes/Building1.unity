@@ -29558,7 +29558,6 @@ GameObject:
   - component: {fileID: 7073285073233051805}
   - component: {fileID: 3391761977474097052}
   - component: {fileID: 4340876133002544118}
-  - component: {fileID: 8352091734690248172}
   m_Layer: 5
   m_Name: Canvas_MobileControls
   m_TagString: Untagged
@@ -49774,31 +49773,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 287530793}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8352091734690248172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2121465414623763718}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9289df58e6e07a74dbb7ddd5623e1dca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveJoystick: {fileID: 3187339192436127327}
-  jumpButton: {fileID: 3038347485838375234}
-  canvasInput: {fileID: 4340876133002544118}
-  playerTransform: {fileID: 2009061896037783243}
-  starterAssetsInputs: {fileID: 0}
-  firstPersonController: {fileID: 0}
-  animationController: {fileID: 0}
-  runThreshold: 5
-  autoSprintWhenJoystickPushedFar: 1
-  touchSensitivity: 5
-  minSwipeDelta: 5
-  touchStartPos: {x: 0, y: 0}
-  isTouchingRightSide: 0
 --- !u!4 &8353693605275232795
 Transform:
   m_ObjectHideFlags: 0

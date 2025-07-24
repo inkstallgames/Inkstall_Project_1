@@ -40,7 +40,7 @@ public class KeyManager : MonoBehaviour
     }
 
     // This will be called by UserIDBridge after it sets userId
-    public void FetchKeysForUser()
+    public void FetchKeysFromDB()
     {
         if (!string.IsNullOrEmpty(userId))
         {

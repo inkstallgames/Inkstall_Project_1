@@ -16,6 +16,7 @@ public class UserIDBridge : MonoBehaviour
         #endif
     }
 
+    
     // This will be called from JS
     public void ReceiveUserId(string id)
     {
@@ -30,7 +31,7 @@ public class UserIDBridge : MonoBehaviour
         {
             KeyManager.Instance.userId = userId;
             // Call the new method to fetch keys after setting the userId
-            KeyManager.Instance.FetchKeysForUser();
+            KeyManager.Instance.FetchKeysFromDB();
         }
         else
         {

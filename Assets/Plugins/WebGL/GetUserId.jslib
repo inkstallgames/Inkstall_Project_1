@@ -7,7 +7,7 @@ mergeInto(LibraryManager.library,
     {
       // Send the found userId to the UserIDBridge script in unity
       // SendMessage('GameObjectName', 'MethodName', 'parameter');
-      SendMessage("GameManager", "ReceiveUserId", userId)
+      SendMessage("UserKeysManager", "ReceiveUserId", userId)
     }
     else 
     {

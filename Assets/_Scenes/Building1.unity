@@ -5668,9 +5668,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1228881206}
+  - component: {fileID: 1228881208}
   - component: {fileID: 1228881207}
   m_Layer: 0
-  m_Name: KeyManager
+  m_Name: UserKeysManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5707,6 +5708,18 @@ MonoBehaviour:
   keyText: {fileID: 3130298712862170198}
   apiBaseUrl: http://localhost:4000/api/slot/get-keys/
   userId: 
+--- !u!114 &1228881208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1228881205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 476ff80bc75ed6c4180bb3d8957c0fce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1236287189 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6961233565070228966, guid: 57df82bc3ccfe344499a13dc4400ac61,

@@ -4185,7 +4185,6 @@ GameObject:
   m_Component:
   - component: {fileID: 962220123}
   - component: {fileID: 962220127}
-  - component: {fileID: 962220128}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4236,18 +4235,6 @@ MonoBehaviour:
   gameOverSound: {fileID: 8300000, guid: 1d365603505a99a4bbb4fbc905712060, type: 3}
   wrongGuessSound: {fileID: 0}
   winDelay: 0.5
---- !u!114 &962220128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962220122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 476ff80bc75ed6c4180bb3d8957c0fce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &977753789
 GameObject:
   m_ObjectHideFlags: 0
@@ -5432,7 +5419,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -109.69891, y: -56.113647}
+  m_AnchoredPosition: {x: -109.69873, y: -56.11377}
   m_SizeDelta: {x: 219.3992, y: 112.227}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1194441157
@@ -5719,6 +5706,7 @@ MonoBehaviour:
   keysCount: 3
   keyText: {fileID: 3130298712862170198}
   apiBaseUrl: http://localhost:4000/api/slot/get-keys/
+  userId: 
 --- !u!1 &1236287189 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6961233565070228966, guid: 57df82bc3ccfe344499a13dc4400ac61,

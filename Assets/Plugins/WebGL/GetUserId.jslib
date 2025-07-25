@@ -11,7 +11,7 @@ mergeInto(LibraryManager.library,
     }
     else 
     {
-        console.error('user Id not found in localStorage.');
+        console.error('userId not found in localStorage.');
     }
-  },  
+  },  `
 });

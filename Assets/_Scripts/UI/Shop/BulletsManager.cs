@@ -13,9 +13,6 @@ public class BulletShop : MonoBehaviour
     public TextMeshProUGUI coinText;
     public TextMeshProUGUI bulletAmountText;
     public TextMeshProUGUI totalCostText;
-    public TextMeshProUGUI plusButton;
-    public TextMeshProUGUI minusButton;
-    public TextMeshProUGUI buyButton;
 
     void Start()
     {
@@ -63,9 +60,5 @@ public class BulletShop : MonoBehaviour
         coinText.text = coinCount.ToString();
         bulletAmountText.text = bulletsToBuy.ToString();
         totalCostText.text = (bulletsToBuy * costPerBullet).ToString();
-
-        plusButton.text = "+";
-        minusButton.text = "-";
-        buyButton.text = "Buy";
     }
 }

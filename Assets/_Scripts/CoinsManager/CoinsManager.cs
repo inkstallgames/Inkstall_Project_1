@@ -11,8 +11,8 @@ public class CoinsManager : MonoBehaviour
     private string playerId;
     private int currentCoins;
 
-    private string getCoinsURL = "https://yourwebsite.com/api/get-coins/";
-    private string spendCoinsURL = "https://yourwebsite.com/api/spend-coins";
+    private string getCoinsURL = "http://localhost:4000/api/slot/get-keys";
+    private string spendCoinsURL = "http://localhost:4000/api/slot/spend-keys";
 
     void Awake()
     {

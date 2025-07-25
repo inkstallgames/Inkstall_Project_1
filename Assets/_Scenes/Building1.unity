@@ -543,7 +543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shopCanvas: {fileID: 90827211}
-  mobileControlsCanvas: {fileID: 0}
+  mobileControlsCanvas: {fileID: 2121465414623763718}
 --- !u!1 &97805815
 GameObject:
   m_ObjectHideFlags: 0
@@ -22272,7 +22272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLocked: 1
-  doorOpen: {fileID: 0}
+  doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
   doorAnimator: {fileID: 0}
   doorPromptText: {fileID: 0}
@@ -23472,7 +23472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLocked: 1
-  doorOpen: {fileID: 0}
+  doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
   doorAnimator: {fileID: 0}
   doorPromptText: {fileID: 0}
@@ -31874,7 +31874,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 90827216}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
         m_MethodName: EnableShopCanvas
         m_Mode: 1
@@ -36853,7 +36853,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactDistance: 3
   playerCamera: {fileID: 0}
-  interactionPromptText: {fileID: 0}
 --- !u!23 &4638681773428525511
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -38776,7 +38775,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLocked: 1
-  doorOpen: {fileID: 0}
+  doorInteraction: {fileID: 0}
   triggerZone: {fileID: 5248679429457064830}
   doorAnimator: {fileID: 5248679429457064832}
   doorPromptText: {fileID: 0}
@@ -39440,7 +39439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLocked: 1
-  doorOpen: {fileID: 0}
+  doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
   doorAnimator: {fileID: 0}
   doorPromptText: {fileID: 0}
@@ -41578,7 +41577,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLocked: 1
-  doorOpen: {fileID: 0}
+  doorInteraction: {fileID: 0}
   triggerZone: {fileID: 5248679429457064830}
   doorAnimator: {fileID: 0}
   doorPromptText: {fileID: 0}
@@ -49216,7 +49215,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isLocked: 1
-  doorOpen: {fileID: 0}
+  doorInteraction: {fileID: 0}
   triggerZone: {fileID: 0}
   doorAnimator: {fileID: 0}
   doorPromptText: {fileID: 0}

@@ -7,10 +7,6 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private float interactDistance = 3f;
     [SerializeField] private Camera playerCamera;
 
-
-    [Header("UI")]
-    [SerializeField] private TextMeshProUGUI interactionPromptText;
-
     private void Start()
     {
         if (playerCamera == null)
@@ -22,12 +18,6 @@ public class PlayerInteraction : MonoBehaviour
                 return;
             }
         }
-
-        // Hide the prompt initially
-        if (interactionPromptText != null)
-        {
-            interactionPromptText.gameObject.SetActive(false);
-        }
     }
 
     private void Update()
@@ -38,8 +28,6 @@ public class PlayerInteraction : MonoBehaviour
 
     private void UpdateInteractionPrompt()
     {
-        if (interactionPromptText == null) return;
-
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
         {
@@ -49,7 +37,7 @@ public class PlayerInteraction : MonoBehaviour
             // Check for door
             if (hitObject.TryGetComponent<LockedDoor>(out var lockedDoor))
             {
-                if (!lockedDoor.IsLocked() && hitObject.TryGetComponent<DoorOpen>(out var door) && door.enabled)
+                if (!lockedDoor.IsLocked() && hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled)
                 {
                     float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                     if (distanceToObject <= interactDistance)
@@ -59,7 +47,7 @@ public class PlayerInteraction : MonoBehaviour
                 }
             }
             // Handle regular doors
-            else if (hitObject.TryGetComponent<DoorOpen>(out var door) && door.enabled)
+            else if (hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled)
             {
                 float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                 if (distanceToObject <= interactDistance)
@@ -91,13 +79,6 @@ public class PlayerInteraction : MonoBehaviour
                     isInteractable = true;
                 }
             }
-
-            // Update UI
-            interactionPromptText.gameObject.SetActive(isInteractable);
-        }
-        else
-        {
-            interactionPromptText.gameObject.SetActive(false);
         }
     }
 
@@ -121,7 +102,7 @@ public class PlayerInteraction : MonoBehaviour
                     lockedDoor.OnInteractAttempt();
                 }
                 // If door is unlocked, let the DoorInteraction handle it
-                else if (hitObject.TryGetComponent<DoorOpen>(out var door) && door.enabled)
+                else if (hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled)
                 {
                     door.Interact();
                 }
@@ -129,7 +110,7 @@ public class PlayerInteraction : MonoBehaviour
             }
 
             // Handle regular doors (without LockedDoor component)
-            if (hitObject.TryGetComponent<DoorOpen>(out var regularDoor) && regularDoor.enabled)
+            if (hitObject.TryGetComponent<DoorInteraction>(out var regularDoor) && regularDoor.enabled)
             {
                 regularDoor.Interact();
                 return;

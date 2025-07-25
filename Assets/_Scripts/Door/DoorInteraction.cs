@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class DoorOpen : MonoBehaviour
+public class DoorInteraction : MonoBehaviour
 {
     [Header("Door Settings")]
     [SerializeField] private float XAngle = 0f;

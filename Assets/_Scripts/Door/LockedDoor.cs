@@ -8,7 +8,7 @@ public class LockedDoor : MonoBehaviour
     [SerializeField] private bool isLocked = true;
 
     [Header("References")]
-    [SerializeField] private DoorOpen doorOpen;
+    [SerializeField] private DoorInteraction doorInteraction;
     [SerializeField] private BoxCollider triggerZone;
     [SerializeField] private Animator doorAnimator; // Reference to the Animator component
     [SerializeField] private TextMeshProUGUI doorPromptText;
@@ -57,9 +57,9 @@ public class LockedDoor : MonoBehaviour
         }
 
         // Disable the door interaction script if the door is locked
-        if (doorOpen != null && isLocked)
+        if (doorInteraction != null && isLocked)
         {
-            doorOpen.enabled = false;
+            doorInteraction.enabled = false;
         }
 
         // Hide door prompt initially
@@ -117,9 +117,9 @@ public class LockedDoor : MonoBehaviour
             }
 
             // Enable the door interaction script
-            if (doorOpen != null)
+            if (doorInteraction != null)
             {
-                doorOpen.enabled = true;
+                doorInteraction.enabled = true;
             }
             else
             {

@@ -43,8 +43,9 @@ public class PlayerInteraction : MonoBehaviour
                     float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                     if (distanceToObject <= interactDistance)
                     {
-                        currentDoor = lockedDoor;
+                        Debug.Log(distanceToObject + " and " + interactDistance);
                         openCloseButton.SetActive(true);
+                        currentDoor = lockedDoor;
                     }
                 }
 

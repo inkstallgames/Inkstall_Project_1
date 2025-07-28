@@ -38202,7 +38202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3821e1b739673c45992e6fb9573fa63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactDistance: 2
+  interactDistance: 1.5
   playerMainCamera: {fileID: 853274705947014384}
   openCloseButton: {fileID: 4370096595425205733}
 --- !u!23 &4638681773428525511

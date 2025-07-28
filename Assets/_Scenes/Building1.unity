@@ -14164,11 +14164,11 @@ GameObject:
   - component: {fileID: 2009061896037783243}
   - component: {fileID: 5560096995031357569}
   - component: {fileID: 8151242471524730583}
+  - component: {fileID: 4628546542220467733}
   - component: {fileID: 8649458493798016474}
   - component: {fileID: 1182015227228628117}
   - component: {fileID: 6724874773471162586}
   - component: {fileID: 1300885779137542919}
-  - component: {fileID: 4628546542220467733}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -16990,7 +16990,6 @@ GameObject:
   - component: {fileID: 8128831679578322674}
   - component: {fileID: 8128831679578322676}
   - component: {fileID: 8128831679578322679}
-  - component: {fileID: 8128831679578322678}
   - component: {fileID: 8128831679578322677}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (2)
@@ -17090,7 +17089,7 @@ GameObject:
   - component: {fileID: 5248679429457064827}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -38203,9 +38202,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3821e1b739673c45992e6fb9573fa63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactDistance: 3
-  playerCamera: {fileID: 853274705947014384}
-  interactButton: {fileID: 37316258384756432}
+  interactDistance: 2
+  playerMainCamera: {fileID: 853274705947014384}
+  openCloseButton: {fileID: 4370096595425205733}
 --- !u!23 &4638681773428525511
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -50994,27 +50993,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7242894, y: 1.7566341, z: 1.9281089}
   m_Center: {x: -0.85539484, y: 0.3783167, z: -0.6779882}
---- !u!114 &8128831679578322678
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874423990281934407}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2def19cba721c1429368e205b9b45ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isLocked: 1
-  doorInteraction: {fileID: 0}
-  triggerZone: {fileID: 0}
-  doorAnimator: {fileID: 0}
-  doorPromptText: {fileID: 0}
-  promptDuration: 2
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
-  soundVolume: 0.7
 --- !u!114 &8128831679578322679
 MonoBehaviour:
   m_ObjectHideFlags: 0

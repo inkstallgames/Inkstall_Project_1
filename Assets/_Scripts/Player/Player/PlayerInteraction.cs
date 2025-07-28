@@ -1,11 +1,15 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Interaction Settings")]
     [SerializeField] private float interactDistance = 3f;
     [SerializeField] private Camera playerCamera;
+    [SerializeField] private Button interactButton; // Reference to the UI button
+
+    private DoorInteraction currentDoor; // Track which door we're looking at
 
     private void Start()
     {
@@ -18,6 +22,12 @@ public class PlayerInteraction : MonoBehaviour
                 return;
             }
         }
+
+        // Hide the button by default
+        if (interactButton != null)
+        {
+            interactButton.gameObject.SetActive(false);
+        }
     }
 
     private void Update()
@@ -28,11 +38,13 @@ public class PlayerInteraction : MonoBehaviour
 
     private void UpdateInteractionPrompt()
     {
+        bool showButton = false;
+        
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
         {
             GameObject hitObject = hit.collider.gameObject;
-            bool isInteractable = false;
+            currentDoor = null;
 
             // Check for door
             if (hitObject.TryGetComponent<LockedDoor>(out var lockedDoor))
@@ -42,7 +54,8 @@ public class PlayerInteraction : MonoBehaviour
                     float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                     if (distanceToObject <= interactDistance)
                     {
-                        isInteractable = true;
+                        currentDoor = door;
+                        showButton = true;
                     }
                 }
             }
@@ -52,7 +65,8 @@ public class PlayerInteraction : MonoBehaviour
                 float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                 if (distanceToObject <= interactDistance)
                 {
-                    isInteractable = true;
+                    currentDoor = door;
+                    showButton = true;
                 }
             }
             // Check for drawer
@@ -65,7 +79,7 @@ public class PlayerInteraction : MonoBehaviour
                     float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                     if (distanceToObject <= interactDistance)
                     {
-                        isInteractable = true;
+                        showButton = true;
                     }
                 }
             }
@@ -76,9 +90,23 @@ public class PlayerInteraction : MonoBehaviour
                 float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                 if (distanceToObject <= interactDistance)
                 {
-                    isInteractable = true;
+                    showButton = true;
                 }
             }
+        }
+
+        // Update button visibility
+        if (interactButton != null && interactButton.gameObject.activeSelf != showButton)
+        {
+            interactButton.gameObject.SetActive(showButton);
+        }
+    }
+
+    public void OnInteractButtonClicked()
+    {
+        if (currentDoor != null)
+        {
+            currentDoor.Interact();
         }
     }
 

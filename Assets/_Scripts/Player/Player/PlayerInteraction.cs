@@ -6,17 +6,17 @@ public class PlayerInteraction : MonoBehaviour
 {
     [Header("Interaction Settings")]
     [SerializeField] private float interactDistance = 3f;
-    [SerializeField] private Camera playerCamera;
-    [SerializeField] private Button interactButton; // Reference to the UI button
+    [SerializeField] private Camera playerMainCamera;
+    [SerializeField] private Button openCloseButton;
 
-    private DoorInteraction currentDoor; // Track which door we're looking at
+    private DoorInteraction currentDoor;   // Track which door we're looking at
 
     private void Start()
     {
-        if (playerCamera == null)
+        if (playerMainCamera == null)
         {
-            playerCamera = Camera.main;
-            if (playerCamera == null)
+            playerMainCamera = Camera.main;
+            if (playerMainCamera == null)
             {
                 enabled = false;
                 return;
@@ -24,52 +24,66 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         // Hide the button by default
-        if (interactButton != null)
+        if (openCloseButton != null)
         {
-            interactButton.gameObject.SetActive(false);
+            openCloseButton.gameObject.SetActive(false);
         }
     }
 
     private void Update()
     {
-        // Update interaction prompt
-        UpdateInteractionPrompt();
+        CheckRaycastInteraction();
     }
 
-    private void UpdateInteractionPrompt()
+    private void CheckRaycastInteraction()
     {
-        bool showButton = false;
-        
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        bool showOpenCloseButton = false;
+
+        if (showOpenCloseButton)
+        {
+            openCloseButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            openCloseButton.gameObject.SetActive(false);
+        }   
+
+        Ray ray = new Ray(playerMainCamera.transform.position, playerMainCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
         {
             GameObject hitObject = hit.collider.gameObject;
             currentDoor = null;
 
-            // Check for door
-            if (hitObject.TryGetComponent<LockedDoor>(out var lockedDoor))
+            //Check for door
+            if (hitObject.tag == "Door")
             {
-                if (!lockedDoor.IsLocked() && hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled)
+                // Check for Locked door
+                if (hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled && door.IsLocked())
                 {
                     float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                     if (distanceToObject <= interactDistance)
                     {
                         currentDoor = door;
-                        showButton = true;
+                        showOpenCloseButton = true;
+                    }
+                }
+
+                // Handle regular doors
+                else if (hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled && !door.IsLocked())
+                {
+                    float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
+                    if (distanceToObject <= interactDistance)
+                    {
+                        currentDoor = door;
+                        showOpenCloseButton = true;
                     }
                 }
             }
-            // Handle regular doors
-            else if (hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled)
-            {
-                float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
-                if (distanceToObject <= interactDistance)
-                {
-                    currentDoor = door;
-                    showButton = true;
-                }
-            }
             // Check for drawer
+            else if (hitObject.tag == "Drawer")
+            {
+                
+            }
             else if (hitObject.TryGetComponent<DrawerMech>(out var drawer))
             {
                 // Only show prompt if DrawerMech is enabled
@@ -79,7 +93,7 @@ public class PlayerInteraction : MonoBehaviour
                     float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                     if (distanceToObject <= interactDistance)
                     {
-                        showButton = true;
+                        showOpenCloseButton = true;
                     }
                 }
             }
@@ -90,71 +104,11 @@ public class PlayerInteraction : MonoBehaviour
                 float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                 if (distanceToObject <= interactDistance)
                 {
-                    showButton = true;
+                    showOpenCloseButton = true;
                 }
             }
         }
-
-        // Update button visibility
-        if (interactButton != null && interactButton.gameObject.activeSelf != showButton)
-        {
-            interactButton.gameObject.SetActive(showButton);
-        }
     }
 
-    public void OnInteractButtonClicked()
-    {
-        if (currentDoor != null)
-        {
-            currentDoor.Interact();
-        }
-    }
 
-    public void Interact() // Public method for UI button
-    {
-        TryInteract();
-    }
-
-    private void TryInteract()
-    {
-        Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
-        {
-            GameObject hitObject = hit.collider.gameObject;
-
-            // First check for LockedDoor
-            if (hitObject.TryGetComponent<LockedDoor>(out var lockedDoor))
-            {
-                if (lockedDoor.IsLocked())
-                {
-                    lockedDoor.OnInteractAttempt();
-                }
-                // If door is unlocked, let the DoorInteraction handle it
-                else if (hitObject.TryGetComponent<DoorInteraction>(out var door) && door.enabled)
-                {
-                    door.Interact();
-                }
-                return;
-            }
-
-            // Handle regular doors (without LockedDoor component)
-            if (hitObject.TryGetComponent<DoorInteraction>(out var regularDoor) && regularDoor.enabled)
-            {
-                regularDoor.Interact();
-                return;
-            }
-
-            if (hitObject.TryGetComponent<CollectibleProp>(out var collectible))
-            {
-                collectible.Interact();
-                return;
-            }
-
-            if (hitObject.TryGetComponent<DrawerMech>(out var drawer))
-            {
-                drawer.Interact();
-                return;
-            }
-        }
-    }
 }

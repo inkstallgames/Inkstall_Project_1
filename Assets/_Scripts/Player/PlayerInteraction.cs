@@ -34,7 +34,6 @@ public class PlayerInteraction : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
         {
             GameObject hitObject = hit.collider.gameObject;
-            Debug.Log(hitObject.name);
             currentDoor = null;
 
             //Check for Locked door
@@ -43,7 +42,6 @@ public class PlayerInteraction : MonoBehaviour
                     float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                     if (distanceToObject <= interactDistance)
                     {
-                        Debug.Log(distanceToObject + " and " + interactDistance);
                         openCloseButton.SetActive(true);
                         currentDoor = lockedDoor;
                     }

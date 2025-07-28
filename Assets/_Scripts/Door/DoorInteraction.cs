@@ -59,8 +59,10 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-
-
+    public void OpenDoor()
+    {
+        Debug.Log("Button Pressed");
+    }
     public void Interact()
     {
         if (isLocked)

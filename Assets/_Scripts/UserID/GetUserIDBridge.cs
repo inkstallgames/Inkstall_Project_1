@@ -52,5 +52,5 @@ public class GetUserIDBridge : MonoBehaviour
             Debug.LogError("CoinsManager instance not found! Make sure it exists in the scene.");
         }
     }
-    }
+}
 

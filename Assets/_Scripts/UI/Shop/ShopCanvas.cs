@@ -6,7 +6,7 @@ using TMPro;
 
 public class ShopCanvas : MonoBehaviour
 {
-    public GameObject shopCanvas;
+    public GameObject bulletsShopCanvas;
     public GameObject mobileControlsCanvas;
 
     [Header("Coins")]
@@ -71,14 +71,14 @@ public class ShopCanvas : MonoBehaviour
         UpdateBulletUI();
         
         // Show shop UI
-        shopCanvas.SetActive(true);
+        bulletsShopCanvas.SetActive(true);
         Time.timeScale = 0f; // Pause the game
         mobileControlsCanvas.SetActive(false); // Hide the mobile controls UI
     }
 
     public void CloseShopCanvas()
     {
-        shopCanvas.SetActive(false); // Hide the shop UI
+        bulletsShopCanvas.SetActive(false); // Hide the shop UI
         mobileControlsCanvas.SetActive(true); // Show the mobile controls UI
         Time.timeScale = 1f; // Resume the game
     }

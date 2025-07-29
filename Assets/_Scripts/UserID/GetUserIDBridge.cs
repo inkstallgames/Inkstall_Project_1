@@ -25,7 +25,7 @@ public class GetUserIDBridge : MonoBehaviour
         SendUserIdToCoinsManager();
     }
 
-    private void SendUserIdToKeyManager()
+    public void SendUserIdToKeyManager()
     {
         if (KeyManager.Instance != null)
         {
@@ -39,13 +39,13 @@ public class GetUserIDBridge : MonoBehaviour
         }
     }
 
-    private void SendUserIdToCoinsManager()
+    public void SendUserIdToCoinsManager()
     {
         if (CoinsManager.Instance != null)
         {
-            CoinsManager.Instance.playerId = userId;
+            CoinsManager.Instance.userId = userId;
             // Call the new method to fetch coins after setting the userId
-            CoinsManager.Instance.FetchCoinsFromServer();
+            CoinsManager.Instance.FetchCoins();
         }
         else
         {

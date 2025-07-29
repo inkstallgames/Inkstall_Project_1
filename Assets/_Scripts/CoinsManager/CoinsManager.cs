@@ -8,7 +8,7 @@ public class CoinsManager : MonoBehaviour
     public static CoinsManager Instance;
 
     public TextMeshProUGUI coinText; // Assign in Inspector
-    private string userId;
+    public string userId;
     private int currentCoins;
 
     private string getCoinsURL = "http://localhost:4000/api/slot/get-keys";
@@ -88,7 +88,7 @@ public class CoinsManager : MonoBehaviour
 
     IEnumerator SendSpendRequest(int amount, System.Action<bool> onComplete)
     {
-        CoinSpendRequest body = new CoinSpendRequest {  = , amount = amount };
+        CoinSpendRequest body = new CoinSpendRequest { userId = userId, amount = amount };
         string json = JsonUtility.ToJson(body);
 
         UnityWebRequest request = new UnityWebRequest(spendCoinsURL, "POST");
@@ -115,7 +115,7 @@ public class CoinsManager : MonoBehaviour
     [System.Serializable]
     public class CoinSpendRequest
     {
-        public string ;
+        public string userId;
         public int amount;
     }
 }

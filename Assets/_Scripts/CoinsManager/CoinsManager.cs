@@ -46,17 +46,29 @@ public class CoinsManager : MonoBehaviour
         StartCoroutine(FetchCoinsFromServer());
     }
 
-    public void SpendCoins(int amount)
+    public void SpendCoins(int amount, System.Action<bool> onComplete = null)
     {
         if (currentCoins >= amount)
         {
+            // First, update the UI immediately for better responsiveness
             currentCoins -= amount;
             UpdateCoinUI();
-            StartCoroutine(SendSpendRequest(amount));
+            
+            // Then start the server request
+            StartCoroutine(SendSpendRequest(amount, (success) => {
+                if (!success)
+                {
+                    // If server request failed, revert the local changes
+                    currentCoins += amount;
+                    UpdateCoinUI();
+                }
+                onComplete?.Invoke(success);
+            }));
         }
         else
         {
             Debug.Log("Not enough coins.");
+            onComplete?.Invoke(false);
         }
     }
 
@@ -83,7 +95,7 @@ public class CoinsManager : MonoBehaviour
         }
     }
 
-    IEnumerator SendSpendRequest(int amount)
+    IEnumerator SendSpendRequest(int amount, System.Action<bool> onComplete)
     {
         CoinSpendRequest body = new CoinSpendRequest { playerId = playerId, amount = amount };
         string json = JsonUtility.ToJson(body);
@@ -99,8 +111,11 @@ public class CoinsManager : MonoBehaviour
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("Spend failed: " + request.error);
-            // Optionally refund coins here
+            onComplete?.Invoke(false);
+            yield break;
         }
+        
+        onComplete?.Invoke(true);
     }
 
     [System.Serializable]

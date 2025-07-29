@@ -446,7 +446,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &90827212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -544,6 +544,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shopCanvas: {fileID: 90827211}
   mobileControlsCanvas: {fileID: 2121465414623763718}
+  bullet1Image: {fileID: 145262172}
+  bullet2Image: {fileID: 512662898}
+  bullet3Image: {fileID: 1625536004}
+  plusButton: {fileID: 920148262}
+  minusButton: {fileID: 277526321}
+  bulletCountText: {fileID: 133234665}
+  totalCostText: {fileID: 607017296}
 --- !u!1 &97805815
 GameObject:
   m_ObjectHideFlags: 0
@@ -817,10 +824,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 902840097}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 200, y: -40}
-  m_SizeDelta: {x: 100, y: 60}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &145262174
 MonoBehaviour:
@@ -6553,7 +6560,7 @@ GameObject:
   - component: {fileID: 1505732596}
   - component: {fileID: 1505732595}
   m_Layer: 5
-  m_Name: Coins_Points_Text
+  m_Name: Coins_Count_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32802,7 +32809,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 90827216}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
         m_MethodName: EnableShopCanvas
         m_Mode: 1
         m_Arguments:

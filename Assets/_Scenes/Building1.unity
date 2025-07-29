@@ -3698,8 +3698,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
+      - m_Target: {fileID: 90827216}
+        m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
         m_MethodName: CloseShopCanvas
         m_Mode: 1
         m_Arguments:

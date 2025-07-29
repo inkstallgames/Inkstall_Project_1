@@ -48,17 +48,17 @@ public class ShopCanvas : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (coinsCount.text.ToInt() >= (bulletCount * COST_PER_BULLET))
-        {
-            canBuyBullets = true;
-        }
-        else if (coinsCount.text.ToInt() < (bulletCount * COST_PER_BULLET))
-        {
-            canBuyBullets = false;
-        }
-    }
+    // void Update()
+    // {
+    //     if (coinsCount.text.ToInt() >= (bulletCount * COST_PER_BULLET))
+    //     {
+    //         canBuyBullets = true;
+    //     }
+    //     else if (coinsCount.text.ToInt() < (bulletCount * COST_PER_BULLET))
+    //     {
+    //         canBuyBullets = false;
+    //     }
+    // }
 
 
 

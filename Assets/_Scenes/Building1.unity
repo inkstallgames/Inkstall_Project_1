@@ -439,7 +439,6 @@ GameObject:
   - component: {fileID: 90827214}
   - component: {fileID: 90827213}
   - component: {fileID: 90827212}
-  - component: {fileID: 90827216}
   m_Layer: 5
   m_Name: Canvas_BulletsShop
   m_TagString: Untagged
@@ -530,27 +529,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &90827216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 90827211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75176106433747d43bab5e841cad3a46, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shopCanvas: {fileID: 90827211}
-  mobileControlsCanvas: {fileID: 2121465414623763718}
-  bullet1Image: {fileID: 145262172}
-  bullet2Image: {fileID: 512662898}
-  bullet3Image: {fileID: 1625536004}
-  plusButton: {fileID: 920148262}
-  minusButton: {fileID: 277526321}
-  bulletCountText: {fileID: 133234665}
-  totalCostText: {fileID: 607017296}
 --- !u!1 &97805815
 GameObject:
   m_ObjectHideFlags: 0
@@ -3695,7 +3673,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 90827216}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ShopManager, Assembly-CSharp
         m_MethodName: CloseShopCanvas
         m_Mode: 1
@@ -32827,7 +32805,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 90827216}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
         m_MethodName: EnableShopCanvas
         m_Mode: 1

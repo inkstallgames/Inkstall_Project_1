@@ -8,7 +8,7 @@ public class CoinsManager : MonoBehaviour
     public static CoinsManager Instance;
 
     public TextMeshProUGUI coinText; // Assign in Inspector
-    private string playerId;
+    private string userId;
     private int currentCoins;
 
     private string getCoinsURL = "http://localhost:4000/api/slot/get-keys";
@@ -29,16 +29,7 @@ public class CoinsManager : MonoBehaviour
 
     void Start()
     {
-        // Auto-login using saved ID
-        if (PlayerPrefs.HasKey("studentId"))
-        {
-            playerId = PlayerPrefs.GetString("studentId");
-            FetchCoins();
-        }
-        else
-        {
-            Debug.LogWarning("No studentId found");
-        }
+        FetchCoins();
     }
 
     public void FetchCoins()
@@ -48,7 +39,7 @@ public class CoinsManager : MonoBehaviour
 
     IEnumerator FetchCoinsFromServer()
     {
-        UnityWebRequest request = UnityWebRequest.Get(getCoinsURL + playerId);
+        UnityWebRequest request = UnityWebRequest.Get(getCoinsURL + userId);
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
@@ -97,7 +88,7 @@ public class CoinsManager : MonoBehaviour
 
     IEnumerator SendSpendRequest(int amount, System.Action<bool> onComplete)
     {
-        CoinSpendRequest body = new CoinSpendRequest { playerId = playerId, amount = amount };
+        CoinSpendRequest body = new CoinSpendRequest {  = , amount = amount };
         string json = JsonUtility.ToJson(body);
 
         UnityWebRequest request = new UnityWebRequest(spendCoinsURL, "POST");
@@ -124,7 +115,7 @@ public class CoinsManager : MonoBehaviour
     [System.Serializable]
     public class CoinSpendRequest
     {
-        public string playerId;
+        public string ;
         public int amount;
     }
 }

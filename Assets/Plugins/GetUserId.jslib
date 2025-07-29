@@ -3,15 +3,16 @@ mergeInto(LibraryManager.library,
   GetUserIdFromLocalStorage: function() 
   {
     var userId = localStorage.getItem('userId');
+    
+    // Send the found userId to the UserIDManager script in unity
     if(userId)
     {
-      // Send the found userId to the UserIDBridge script in unity
       // SendMessage('GameObjectName', 'MethodName', 'parameter');
-      SendMessage("UserKeysManager", "ReceiveUserId", userId)
+      SendMessage("UserIDManager", "ReceiveUserId", userId)
     }
     else 
     {
         console.error('userId not found in localStorage.');
     }
-  },  `
+  },
 });

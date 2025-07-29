@@ -46,6 +46,23 @@ public class CoinsManager : MonoBehaviour
         StartCoroutine(FetchCoinsFromServer());
     }
 
+    IEnumerator FetchCoinsFromServer()
+    {
+        UnityWebRequest request = UnityWebRequest.Get(getCoinsURL + playerId);
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            CoinResponse res = JsonUtility.FromJson<CoinResponse>(request.downloadHandler.text);
+            currentCoins = res.coins;
+            UpdateCoinUI();
+        }
+        else
+        {
+            Debug.LogError("Failed to fetch coins: " + request.error);
+        }
+    }
+    
     public void SpendCoins(int amount, System.Action<bool> onComplete = null)
     {
         if (currentCoins >= amount)
@@ -76,23 +93,6 @@ public class CoinsManager : MonoBehaviour
     {
         if (coinText != null)
             coinText.text = currentCoins.ToString();
-    }
-
-    IEnumerator FetchCoinsFromServer()
-    {
-        UnityWebRequest request = UnityWebRequest.Get(getCoinsURL + playerId);
-        yield return request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
-        {
-            CoinResponse res = JsonUtility.FromJson<CoinResponse>(request.downloadHandler.text);
-            currentCoins = res.coins;
-            UpdateCoinUI();
-        }
-        else
-        {
-            Debug.LogError("Failed to fetch coins: " + request.error);
-        }
     }
 
     IEnumerator SendSpendRequest(int amount, System.Action<bool> onComplete)

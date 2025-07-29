@@ -20,6 +20,7 @@ public class ShopCanvas : MonoBehaviour
     public Button minusButton;
     public TextMeshProUGUI bulletCountText;
     public TextMeshProUGUI totalCostText;
+    public int bulletCount;
 
     public bool canBuyBullets = false;
     
@@ -49,11 +50,11 @@ public class ShopCanvas : MonoBehaviour
 
     void Update()
     {
-        if (coinsCount >= bulletCount * COST_PER_BULLET && canBuyBullets == false)
+        if (coinsCount.text.ToInt() >= (bulletCount * COST_PER_BULLET))
         {
             canBuyBullets = true;
         }
-        else if (coinsCount < bulletCount * COST_PER_BULLET && canBuyBullets == true)
+        else if (coinsCount.text.ToInt() < (bulletCount * COST_PER_BULLET))
         {
             canBuyBullets = false;
         }

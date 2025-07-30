@@ -13,6 +13,9 @@ public class OptionsMenuManager : MonoBehaviour
     public Slider volumeSlider; 
     public Toggle musicToggle; 
     
+    [Header("Sensitivity Settings")]
+    public float sensitivityMultiplier = 2.0f; // Adjust this in the inspector to scale sensitivity
+    
     // Settings values
     private float screenSensitivity = 0.5f;
     private float volumeLevel = 0.5f;
@@ -37,15 +40,8 @@ public class OptionsMenuManager : MonoBehaviour
         LoadSettings();
         
         // Initialize UI elements with saved values
-        if (sensitivitySlider != null)
-            sensitivitySlider.value = screenSensitivity;
-            
-        if (volumeSlider != null)
-            volumeSlider.value = volumeLevel;
-            
-        if (musicToggle != null)
-            musicToggle.isOn = musicEnabled;
-            
+        UpdateUIFromSettings();
+        
         // Apply settings
         ApplySensitivity(screenSensitivity);
         ApplyVolume(volumeLevel);
@@ -93,7 +89,7 @@ public class OptionsMenuManager : MonoBehaviour
         // Apply to player controller if available
         if (playerController != null)
         {
-            playerController.touchSensitivity = sensitivity;
+            playerController.touchSensitivity = sensitivity * sensitivityMultiplier;
         }
     }
     
@@ -129,6 +125,19 @@ public class OptionsMenuManager : MonoBehaviour
         }
     }
     
+    // Updates all UI elements to match current settings
+    private void UpdateUIFromSettings()
+    {
+        if (sensitivitySlider != null)
+            sensitivitySlider.value = screenSensitivity;
+            
+        if (volumeSlider != null)
+            volumeSlider.value = volumeLevel;
+            
+        if (musicToggle != null)
+            musicToggle.isOn = musicEnabled;
+    }
+    
     // Save settings to PlayerPrefs
     private void SaveSettings()
     {
@@ -144,5 +153,10 @@ public class OptionsMenuManager : MonoBehaviour
         screenSensitivity = PlayerPrefs.GetFloat(SENSITIVITY_KEY, 0.5f);
         volumeLevel = PlayerPrefs.GetFloat(VOLUME_KEY, 0.5f);
         musicEnabled = PlayerPrefs.GetInt(MUSIC_KEY, 1) == 1;
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveSettings();
     }
 }

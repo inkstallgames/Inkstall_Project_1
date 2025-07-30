@@ -319,7 +319,7 @@ namespace StarterAssets
 									// Invert the Y-axis to fix the up/down movement
 									delta.y = -delta.y;
 									// Use touch delta for camera movement
-									_input.look = delta * touchSensitivity * Time.deltaTime;
+									_input.look = delta * touchSensitivity;
 								}
 
 								// Always update previous position

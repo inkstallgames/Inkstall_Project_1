@@ -10,6 +10,9 @@ public class AudioManager : MonoBehaviour
     [Header("Audio Sources")]
     public AudioClip musicSource;
 
+    // PlayerPrefs keys (same as in OptionsMenuManager)
+    private const string VOLUME_KEY = "VolumeLevel";
+    private const string MUSIC_KEY = "MusicEnabled";
 
     private void Awake()
     {
@@ -29,7 +32,18 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
-        PlayMusic();
+        // Load saved settings
+        float savedVolume = PlayerPrefs.GetFloat(VOLUME_KEY, 0.5f);
+        bool musicEnabled = PlayerPrefs.GetInt(MUSIC_KEY, 1) == 1;
+        
+        // Apply volume setting
+        audioSource.volume = savedVolume;
+        
+        // Play music only if it was enabled in saved settings
+        if (musicEnabled)
+        {
+            PlayMusic();
+        }
     }
 
     public void PlayMusic()

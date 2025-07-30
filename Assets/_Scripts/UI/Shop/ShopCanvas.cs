@@ -11,6 +11,7 @@ public class ShopCanvas : MonoBehaviour
 
     [Header("Coins")]
     public TextMeshProUGUI coinsCount;
+    private int playerCoins;
     
     [Header("Bullet UI")]
     public GameObject bullet1Image;
@@ -20,21 +21,31 @@ public class ShopCanvas : MonoBehaviour
     public Button minusButton;
     public TextMeshProUGUI bulletCountText;
     public TextMeshProUGUI totalCostText;
-    public int bulletCount;
-
-    public bool canBuyBullets = false;
+    public Button buyButton;
+    
+    [Header("Player Inventory")]
+    public int playerBullets = 0;
+    public TextMeshProUGUI playerBulletsText; // Reference to UI text showing player's bullet count
     
     private int currentBulletCount = 1;
     private const int MAX_BULLETS = 3;
     private const int MIN_BULLETS = 1;
 
     private const int COST_PER_BULLET = 250;
+    
+    // PlayerPrefs keys
+    private const string COINS_KEY = "PlayerCoins";
+    private const string BULLETS_KEY = "PlayerBullets";
 
     void Start()
     {
+        // Load saved player data
+        LoadPlayerData();
+        
         // Set initial state
         currentBulletCount = 1;
         UpdateBulletUI();
+        UpdatePlayerUI();
         
         // Add listeners to buttons
         if (plusButton != null)
@@ -46,29 +57,47 @@ public class ShopCanvas : MonoBehaviour
         {
             minusButton.onClick.AddListener(DecreaseBulletCount);
         }
+        
+        if (buyButton != null)
+        {
+            buyButton.onClick.AddListener(BuyBullets);
+        }
     }
 
-    // void Update()
-    // {
-    //     if (coinsCount.text.ToInt() >= (bulletCount * COST_PER_BULLET))
-    //     {
-    //         canBuyBullets = true;
-    //     }
-    //     else if (coinsCount.text.ToInt() < (bulletCount * COST_PER_BULLET))
-    //     {
-    //         canBuyBullets = false;
-    //     }
-    // }
+    void Update()
+    {
+        // Update the buy button interactability based on whether player can afford the bullets
+        if (buyButton != null)
+        {
+            int totalCost = currentBulletCount * COST_PER_BULLET;
+            buyButton.interactable = playerCoins >= totalCost;
+        }
+    }
 
-
-
-
+    private void LoadPlayerData()
+    {
+        // Load saved coins and bullets from PlayerPrefs
+        playerCoins = PlayerPrefs.GetInt(COINS_KEY, 10000); // Default 10000 coins for testing
+        playerBullets = PlayerPrefs.GetInt(BULLETS_KEY, 0);
+    }
+    
+    private void SavePlayerData()
+    {
+        // Save current coins and bullets to PlayerPrefs
+        PlayerPrefs.SetInt(COINS_KEY, playerCoins);
+        PlayerPrefs.SetInt(BULLETS_KEY, playerBullets);
+        PlayerPrefs.Save();
+    }
 
     public void EnableShopCanvas()
     {
+        // Load the latest player data when opening shop
+        LoadPlayerData();
+        
         // Reset to default state when opening shop
         currentBulletCount = 1;
         UpdateBulletUI();
+        UpdatePlayerUI();
         
         // Show shop UI
         bulletsShopCanvas.SetActive(true);
@@ -122,15 +151,50 @@ public class ShopCanvas : MonoBehaviour
         }
     }
     
+    private void UpdatePlayerUI()
+    {
+        // Update coins display
+        if (coinsCount != null)
+        {
+            coinsCount.text = playerCoins.ToString();
+        }
+        
+        // Update bullets display if available
+        if (playerBulletsText != null)
+        {
+            playerBulletsText.text = playerBullets.ToString();
+        }
+    }
+    
     public void BuyBullets()
     {
-        // Here you can add the logic to actually purchase the bullets
-        // For example, check if player has enough coins, then add bullets to their inventory
+        int totalCost = currentBulletCount * COST_PER_BULLET;
         
-        // After purchase, you might want to close the shop or show a success message
-        Debug.Log($"Purchased {currentBulletCount} bullets for {currentBulletCount * COST_PER_BULLET} coins");
-        
-        // Close the shop after purchase
-        CloseShopCanvas();
+        // Check if player has enough coins
+        if (playerCoins >= totalCost)
+        {
+            // Deduct coins
+            playerCoins -= totalCost;
+            
+            // Add bullets to inventory
+            playerBullets += currentBulletCount;
+            
+            // Save changes
+            SavePlayerData();
+            
+            // Update UI
+            UpdatePlayerUI();
+            
+            // Show success message
+            Debug.Log($"Purchased {currentBulletCount} bullets for {totalCost} coins. You now have {playerBullets} bullets and {playerCoins} coins.");
+            
+            // Close the shop after purchase
+            CloseShopCanvas();
+        }
+        else
+        {
+            // Show not enough coins message
+            Debug.Log("Not enough coins to purchase bullets!");
+        }
     }
 }

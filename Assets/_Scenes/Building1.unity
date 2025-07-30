@@ -552,8 +552,9 @@ MonoBehaviour:
   minusButton: {fileID: 277526321}
   bulletCountText: {fileID: 133234665}
   totalCostText: {fileID: 607017296}
-  bulletCount: 0
-  canBuyBullets: 0
+  buyButton: {fileID: 355339959}
+  playerBullets: 0
+  playerBulletsText: {fileID: 0}
 --- !u!1 &97805815
 GameObject:
   m_ObjectHideFlags: 0
@@ -54082,6 +54083,7 @@ MonoBehaviour:
   sensitivitySlider: {fileID: 187372423837252038}
   volumeSlider: {fileID: 2935529152360690934}
   musicToggle: {fileID: 5911377483413437284}
+  sensitivityMultiplier: 2
 --- !u!1 &8326494616761557451
 GameObject:
   m_ObjectHideFlags: 0

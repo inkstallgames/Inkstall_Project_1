@@ -78,6 +78,11 @@ namespace StarterAssets
 		[Tooltip("Whether to use screen split for touch controls (left: movement, right: camera)")]
 		public bool useSplitScreenTouch = true;
 
+		// PlayerPrefs key for sensitivity (matching OptionsMenuManager)
+		private const string SENSITIVITY_KEY = "ScreenSensitivity";
+		private const float DEFAULT_SENSITIVITY = 0.5f;
+		private const float SENSITIVITY_MULTIPLIER = 2.0f; // Match this with your OptionsMenuManager's sensitivityMultiplier
+
 #if ENABLE_INPUT_SYSTEM
 		private PlayerInput _playerInput;
 #endif
@@ -117,6 +122,10 @@ namespace StarterAssets
 #else
 			// Removed debug log error
 #endif
+
+			// Load sensitivity from PlayerPrefs
+			float savedSensitivity = PlayerPrefs.GetFloat(SENSITIVITY_KEY, DEFAULT_SENSITIVITY);
+			touchSensitivity = savedSensitivity * SENSITIVITY_MULTIPLIER;
 
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;

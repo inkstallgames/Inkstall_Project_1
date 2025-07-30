@@ -67,6 +67,12 @@ public class OptionsMenuManager : MonoBehaviour
             musicToggle.isOn = audioManager.IsMusicPlaying();
         }
 
+        // Update sensitivity slider to reflect current sensitivity
+        if (playerController != null && sensitivitySlider != null)
+        {
+            sensitivitySlider.value = playerController.touchSensitivity / sensitivityMultiplier;
+        }
+
         // Toggle the active state
         optionsMenuCanvas.SetActive(true);
         Time.timeScale = 0f; 

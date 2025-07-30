@@ -59502,7 +59502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b69e6ad7256afd4fbc5f83c157141af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keysCount: 3
+  keysCount: 10
   keyText: {fileID: 9141209313748028089}
   apiBaseUrl: http://localhost:4000/api/slot/get-keys/
   userId: 
@@ -190807,6 +190807,7 @@ MonoBehaviour:
   sensitivitySlider: {fileID: 1975201764182632071}
   volumeSlider: {fileID: 3552748045023210423}
   musicToggle: {fileID: 5474568657659552805}
+  sensitivityMultiplier: 2
 --- !u!114 &5821038431005200085
 MonoBehaviour:
   m_ObjectHideFlags: 0

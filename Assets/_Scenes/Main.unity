@@ -158270,7 +158270,7 @@ GameObject:
   - component: {fileID: 5810269023702943683}
   - component: {fileID: 727386550673671988}
   - component: {fileID: 234510865005541243}
-  - component: {fileID: 7671226788864116591}
+  - component: {fileID: 5810269023702943684}
   m_Layer: 5
   m_Name: Canvas_OptionsMenu
   m_TagString: Untagged
@@ -158633,7 +158633,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7671226788864116591}
+      - m_Target: {fileID: 5810269023702943684}
         m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
         m_MethodName: EnableOptionsMenu
         m_Mode: 1
@@ -183602,7 +183602,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7671226788864116591}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
         m_MethodName: ResumeGame
         m_Mode: 1
@@ -190790,6 +190790,23 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &5810269023702943684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653192173867715133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fea3046b72d10b849be180d2800a81c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  optionsMenuCanvas: {fileID: 653192173867715133}
+  mobileControlsCanvas: {fileID: 5890610881071145636}
+  sensitivitySlider: {fileID: 1975201764182632071}
+  volumeSlider: {fileID: 3552748045023210423}
+  musicToggle: {fileID: 5474568657659552805}
 --- !u!114 &5821038431005200085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198382,23 +198399,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2432891695361507363}
   m_Mesh: {fileID: 5951318220844342359, guid: 7db785f888d058642bc874bde6307b40, type: 3}
---- !u!114 &7671226788864116591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 653192173867715133}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fea3046b72d10b849be180d2800a81c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  optionsMenuCanvas: {fileID: 653192173867715133}
-  mobileControlsCanvas: {fileID: 5890610881071145636}
-  sensitivitySlider: {fileID: 1975201764182632071}
-  volumeSlider: {fileID: 3552748045023210423}
-  musicToggle: {fileID: 5474568657659552805}
 --- !u!23 &7679401332843470432
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -141,8 +141,8 @@ public class OptionsMenuManager : MonoBehaviour
     // Load settings from PlayerPrefs
     private void LoadSettings()
     {
-        screenSensitivity = PlayerPrefs.GetFloat(SENSITIVITY_KEY, 1.0f);
-        volumeLevel = PlayerPrefs.GetFloat(VOLUME_KEY, 1.0f);
+        screenSensitivity = PlayerPrefs.GetFloat(SENSITIVITY_KEY, 0.5f);
+        volumeLevel = PlayerPrefs.GetFloat(VOLUME_KEY, 0.5f);
         musicEnabled = PlayerPrefs.GetInt(MUSIC_KEY, 1) == 1;
     }
 }

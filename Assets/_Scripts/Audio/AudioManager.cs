@@ -16,6 +16,7 @@ public class AudioManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject); // Keep the AudioManager across scenes
         }
         else
         {
@@ -23,6 +24,7 @@ public class AudioManager : MonoBehaviour
             return;
         }
         audioSource = GetComponent<AudioSource>();
+        audioSource.loop = true; // Ensure music loops
     }
 
     private void Start()
@@ -32,7 +34,20 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusic()
     {
-        audioSource.PlayOneShot(musicSource);
+        if (audioSource.clip != musicSource)
+        {
+            audioSource.clip = musicSource;
+        }
+        audioSource.Play();
     }
 
+    public void StopMusic()
+    {
+        audioSource.Stop();
+    }
+
+    public bool IsMusicPlaying()
+    {
+        return audioSource.isPlaying;
+    }
 }

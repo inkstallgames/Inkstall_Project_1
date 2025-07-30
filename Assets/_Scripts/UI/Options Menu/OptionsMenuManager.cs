@@ -65,6 +65,12 @@ public class OptionsMenuManager : MonoBehaviour
     // Call this function when button is clicked
     public void EnableOptionsMenu()
     {
+        // Update music toggle to reflect current music state
+        if (audioManager != null && musicToggle != null)
+        {
+            musicToggle.isOn = audioManager.IsMusicPlaying();
+        }
+
         // Toggle the active state
         optionsMenuCanvas.SetActive(true);
         Time.timeScale = 0f; 
@@ -112,20 +118,13 @@ public class OptionsMenuManager : MonoBehaviour
         // Apply to audio manager if available
         if (audioManager != null)
         {
-            AudioSource audioSource = audioManager.GetComponent<AudioSource>();
-            if (audioSource != null)
+            if (enabled)
             {
-                if (enabled)
-                {
-                    if (!audioSource.isPlaying && audioManager.musicSource != null)
-                    {
-                        audioManager.PlayMusic();
-                    }
-                }
-                else
-                {
-                    audioSource.Stop();
-                }
+                audioManager.PlayMusic();
+            }
+            else
+            {
+                audioManager.StopMusic();
             }
         }
     }

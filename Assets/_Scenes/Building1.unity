@@ -42448,15 +42448,15 @@ MonoBehaviour:
   YAngle: -90
   ZAngle: 0
   doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
+  doorOpenSound: {fileID: 8300000, guid: eb3ab17d45f83e44d86a2ce34408745a, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   isLocked: 1
-  doorUnlockSound: {fileID: 0}
+  doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   shouldStartTimer: 0
   openCloseButton: {fileID: 37316258384756432}
   useKeyButton: {fileID: 4813111071799713780}
-  useKeyButtonObject: {fileID: 4370096595425205733}
+  useKeyButtonObject: {fileID: 5376026593118847093}
   lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:

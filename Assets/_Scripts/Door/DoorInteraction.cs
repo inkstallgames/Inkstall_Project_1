@@ -24,7 +24,7 @@ public class DoorInteraction : MonoBehaviour
 
     public Button openCloseButton;
     public Button useKeyButton;
-    public GameObject useKeyButtonObject;
+    [SerializeField] private GameObject useKeyButtonObject;
 
     // State
     private bool isDoorOpen = false;
@@ -92,7 +92,6 @@ public class DoorInteraction : MonoBehaviour
             PlayDoorLockedAnimation();
             PlayDoorLockedSound();
             EnableUseKeyButton();
-            return;
         }
 
         if (!isLocked)
@@ -143,9 +142,10 @@ public class DoorInteraction : MonoBehaviour
 
     private void TryUnlockDoor()
     {
-        if (KeyManager.Instance != null && KeyManager.Instance.GetCurrentKeyCount() > 0)
+        if (KeyManager.Instance.GetCurrentKeyCount() > 0)
         {
             UnlockDoor();
+            DisableUseKeyButton();
         }
         else
         {
@@ -158,8 +158,9 @@ public class DoorInteraction : MonoBehaviour
         if (isLocked)
         {
             KeyManager.Instance.UseKey();
-            DisableUseKeyButton();
+            audioSource.PlayOneShot(doorUnlockSound);
             isLocked = false;
+            lockedDoorAnimator.enabled = false;           
         }
     }
 
@@ -198,7 +199,6 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-
     private void DisableDoorInteraction()
     {
         if (lockedDoorAnimator != null)
@@ -207,7 +207,6 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-    
 
     // For backward compatibility
     public void ResetDoor()

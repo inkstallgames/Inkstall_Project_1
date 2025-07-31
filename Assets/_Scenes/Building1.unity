@@ -7226,8 +7226,7 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 9171070566221193531, guid: 3f29914b413904d40a89e972f348ebd8, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -57026,9 +57025,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3821e1b739673c45992e6fb9573fa63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactDistance: 3
+  rayDistance: 10
   playerMainCamera: {fileID: 9005220659803848082}
   openCloseButton: {fileID: 4370096595425205733}
+  interactDistance: 3
 --- !u!1 &8999046890446011017
 GameObject:
   m_ObjectHideFlags: 0

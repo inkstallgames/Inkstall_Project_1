@@ -12161,8 +12161,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -14466,8 +14466,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -16129,9 +16129,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1876635991172028073}
   - component: {fileID: 1792369392635816073}
+  - component: {fileID: 1876635991172028075}
+  - component: {fileID: 1876635991172028074}
   m_Layer: 0
   m_Name: Door_Room_LOD (1)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16662,11 +16664,10 @@ GameObject:
   - component: {fileID: 1876630031721721793}
   - component: {fileID: 1791959187678475605}
   - component: {fileID: 1875161216870501092}
+  - component: {fileID: 1876630031721721799}
   - component: {fileID: 1528809689062972323}
   - component: {fileID: 1876630031721721795}
   - component: {fileID: 1876630031721721798}
-  - component: {fileID: 1876630031721721796}
-  - component: {fileID: 1876630031721721799}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (3)
   m_TagString: Untagged
@@ -16738,6 +16739,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1876640084607535163}
   - component: {fileID: 1791408163362510033}
+  - component: {fileID: 1876640084607535165}
+  - component: {fileID: 1876640084607535164}
   m_Layer: 0
   m_Name: Door_Room_LOD (5)
   m_TagString: Untagged
@@ -16927,11 +16930,10 @@ GameObject:
   - component: {fileID: 1879614732177390105}
   - component: {fileID: 1792285144473676423}
   - component: {fileID: 1875161216609219847}
+  - component: {fileID: 1879614732177390110}
   - component: {fileID: 1498214080562857700}
   - component: {fileID: 1879614732177390107}
   - component: {fileID: 1879614732177390109}
-  - component: {fileID: 1879614732177390108}
-  - component: {fileID: 1879614732177390110}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (4)
   m_TagString: Untagged
@@ -17019,6 +17021,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1879530183016443163}
   - component: {fileID: 1791978278928947833}
+  - component: {fileID: 1879530183016443165}
+  - component: {fileID: 1879530183016443164}
   m_Layer: 0
   m_Name: Door_Room_LOD (10)
   m_TagString: Untagged
@@ -17493,11 +17497,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1876455092701696801}
   - component: {fileID: 1792040300594366519}
-  - component: {fileID: 1875161216683219789}
+  - component: {fileID: 8128831679578322679}
   - component: {fileID: 8128831679578322674}
   - component: {fileID: 8128831679578322676}
-  - component: {fileID: 8128831679578322679}
-  - component: {fileID: 8128831679578322677}
   - component: {fileID: 8128831679578322680}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (2)
@@ -17741,7 +17743,6 @@ GameObject:
   - component: {fileID: 5411702062035160465}
   - component: {fileID: 5411702062035160467}
   - component: {fileID: 5411702062035160470}
-  - component: {fileID: 5411702062035160468}
   - component: {fileID: 5411702062035160471}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (1)
@@ -17908,9 +17909,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1879301797568630685}
   - component: {fileID: 1791941259526225041}
+  - component: {fileID: 1879301797568630687}
+  - component: {fileID: 1879301797568630686}
   m_Layer: 0
   m_Name: Door_Room_LOD
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18292,16 +18295,16 @@ MonoBehaviour:
   YAngle: -90
   ZAngle: 0
   doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  isLocked: 0
-  doorUnlockSound: {fileID: 0}
-  doorLockedSound: {fileID: 0}
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  isLocked: 1
+  doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
+  doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  openCloseButton: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  useKeyButtonObject: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
+  openCloseButton: {fileID: 37316258384756432}
+  useKeyButton: {fileID: 4813111071799713780}
+  useKeyButtonObject: {fileID: 5376026593118847093}
+  lockedDoorAnimator: {fileID: 1879614732177390110}
 --- !u!4 &1875161216612700763
 Transform:
   m_ObjectHideFlags: 0
@@ -18519,34 +18522,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
-  shouldStartTimer: 0
-  openCloseButton: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  useKeyButtonObject: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
---- !u!114 &1875161216683219789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874423990281934407}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: -90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  isLocked: 0
   doorUnlockSound: {fileID: 0}
-  doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -18628,8 +18605,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -18937,16 +18914,16 @@ MonoBehaviour:
   YAngle: -90
   ZAngle: 0
   doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  isLocked: 0
-  doorUnlockSound: {fileID: 0}
-  doorLockedSound: {fileID: 0}
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  isLocked: 1
+  doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
+  doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  openCloseButton: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  useKeyButtonObject: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
+  openCloseButton: {fileID: 37316258384756432}
+  useKeyButton: {fileID: 4813111071799713780}
+  useKeyButtonObject: {fileID: 5376026593118847093}
+  lockedDoorAnimator: {fileID: 1876630031721721799}
 --- !u!23 &1875161216885549428 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 23781587173736794, guid: f052b5a392205224da8e029e1f7fed3e,
@@ -19235,8 +19212,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -19261,8 +19238,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -19494,8 +19471,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -19620,8 +19597,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -21156,8 +21133,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -21480,16 +21457,16 @@ MonoBehaviour:
   YAngle: -90
   ZAngle: 0
   doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  isLocked: 0
-  doorUnlockSound: {fileID: 0}
-  doorLockedSound: {fileID: 0}
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  isLocked: 1
+  doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
+  doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  openCloseButton: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  useKeyButtonObject: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
+  openCloseButton: {fileID: 37316258384756432}
+  useKeyButton: {fileID: 4813111071799713780}
+  useKeyButtonObject: {fileID: 5376026593118847093}
+  lockedDoorAnimator: {fileID: 5411702062035160471}
 --- !u!23 &1875161218500633082
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -21808,8 +21785,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -22018,9 +21995,8 @@ GameObject:
   - component: {fileID: 1994951600003332328}
   - component: {fileID: 6096234473738546701}
   - component: {fileID: 6096234473738546704}
-  - component: {fileID: 6096234473738546703}
-  - component: {fileID: 6096234473738546705}
   - component: {fileID: 6096234473738546706}
+  - component: {fileID: 6096234473738546703}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (5)
   m_TagString: Untagged
@@ -22976,27 +22952,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!65 &1876630031721721796
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873769200726274311}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.2845185, y: 1.7566341, z: 1.9281089}
-  m_Center: {x: 0.6781074, y: 0.3783167, z: -0.6779882}
 --- !u!114 &1876630031721721798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23024,7 +22979,7 @@ Animator:
   m_GameObject: {fileID: 1873769200726274311}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9ba340b0bab1d8c40b32719d424d6455, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -23067,6 +23022,128 @@ Transform:
   - {fileID: 1879217357959602253}
   m_Father: {fileID: 1876665683138981543}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1876635991172028074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873503481074003917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  XAngle: 0
+  YAngle: -90
+  ZAngle: 0
+  doorSpeed: 2
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  isLocked: 0
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
+  shouldStartTimer: 0
+  openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
+  lockedDoorAnimator: {fileID: 0}
+--- !u!82 &1876635991172028075
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873503481074003917}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &1876638271905410509
 Transform:
   m_ObjectHideFlags: 0
@@ -23099,6 +23176,128 @@ Transform:
   - {fileID: 1876757551249008609}
   m_Father: {fileID: 1876665683138981543}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1876640084607535164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873801391251004427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  XAngle: 0
+  YAngle: -90
+  ZAngle: 0
+  doorSpeed: 2
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  isLocked: 0
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
+  shouldStartTimer: 0
+  openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
+  lockedDoorAnimator: {fileID: 0}
+--- !u!82 &1876640084607535165
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873801391251004427}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &1876662862953980699
 Transform:
   m_ObjectHideFlags: 0
@@ -23583,7 +23782,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1873684772904769889}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.028, y: 1.007, z: -1.03}
   m_LocalScale: {x: 1.0000005, y: 1, z: 1.0000005}
   m_ConstrainProportionsScale: 0
@@ -23591,7 +23790,7 @@ Transform:
   - {fileID: 1879557386214284169}
   - {fileID: 1876666340737245651}
   m_Father: {fileID: 1876665683138981543}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1876739491560564362
 AudioSource:
   m_ObjectHideFlags: 0
@@ -23972,6 +24171,128 @@ Transform:
   - {fileID: 1876354062735984211}
   m_Father: {fileID: 1876665683138981543}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!114 &1879301797568630686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874581782186950483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  XAngle: 0
+  YAngle: -90
+  ZAngle: 0
+  doorSpeed: 2
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  isLocked: 0
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
+  shouldStartTimer: 0
+  openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
+  lockedDoorAnimator: {fileID: 0}
+--- !u!82 &1879301797568630687
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1874581782186950483}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &1879318446852713449
 Transform:
   m_ObjectHideFlags: 0
@@ -24290,7 +24611,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874043866255937373}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.9961947, z: 0, w: 0.08715588}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -8.058, y: 0.988, z: -1.709}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -24298,7 +24619,7 @@ Transform:
   - {fileID: 1879662703308637401}
   - {fileID: 1879592151995569485}
   m_Father: {fileID: 1876665683138981543}
-  m_LocalEulerAnglesHint: {x: 0, y: 170, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!82 &1879488396289454674
 AudioSource:
   m_ObjectHideFlags: 0
@@ -24493,6 +24814,128 @@ Transform:
   - {fileID: 1876420607574754421}
   m_Father: {fileID: 1876665683138981543}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1879530183016443164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873924034053657443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  XAngle: 0
+  YAngle: -90
+  ZAngle: 0
+  doorSpeed: 2
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  isLocked: 0
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
+  shouldStartTimer: 0
+  openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
+  lockedDoorAnimator: {fileID: 0}
+--- !u!82 &1879530183016443165
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873924034053657443}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &1879557386214284169
 Transform:
   m_ObjectHideFlags: 0
@@ -24861,27 +25304,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!65 &1879614732177390108
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873888420683840239}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.2845185, y: 1.7566341, z: 1.9281089}
-  m_Center: {x: 0.6781074, y: 0.3783167, z: -0.6779882}
 --- !u!114 &1879614732177390109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24909,7 +25331,7 @@ Animator:
   m_GameObject: {fileID: 1873888420683840239}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9ba340b0bab1d8c40b32719d424d6455, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -35555,8 +35977,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -36652,8 +37074,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -38383,8 +38805,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -39301,8 +39723,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -40681,8 +41103,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -41543,13 +41965,13 @@ MonoBehaviour:
   YAngle: -90
   ZAngle: 0
   doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  openCloseButton: {fileID: 0}
+  openCloseButton: {fileID: 37316258384756432}
   useKeyButton: {fileID: 0}
   useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -42378,11 +42800,11 @@ MonoBehaviour:
   YAngle: -90
   ZAngle: 0
   doorSpeed: 2
-  doorOpenSound: {fileID: 8300000, guid: eb3ab17d45f83e44d86a2ce34408745a, type: 3}
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   isLocked: 1
-  doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
+  doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
   openCloseButton: {fileID: 37316258384756432}
   useKeyButton: {fileID: 4813111071799713780}
@@ -43162,27 +43584,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!65 &5411702062035160468
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874491473996026743}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.7242894, y: 1.7566341, z: 1.9281089}
-  m_Center: {x: -0.85539484, y: 0.3783167, z: -0.6779882}
 --- !u!114 &5411702062035160470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43210,7 +43611,7 @@ Animator:
   m_GameObject: {fileID: 1874491473996026743}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9ba340b0bab1d8c40b32719d424d6455, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -44050,8 +44451,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -45689,37 +46090,16 @@ MonoBehaviour:
   YAngle: -90
   ZAngle: 0
   doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  isLocked: 0
-  doorUnlockSound: {fileID: 0}
-  doorLockedSound: {fileID: 0}
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  isLocked: 1
+  doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
+  doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  openCloseButton: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  useKeyButtonObject: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
---- !u!65 &6096234473738546705
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1875279496819915869}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.2845185, y: 1.7566341, z: 1.9281089}
-  m_Center: {x: 0.6781074, y: 0.3783167, z: -0.6779882}
+  openCloseButton: {fileID: 37316258384756432}
+  useKeyButton: {fileID: 4813111071799713780}
+  useKeyButtonObject: {fileID: 5376026593118847093}
+  lockedDoorAnimator: {fileID: 6096234473738546706}
 --- !u!95 &6096234473738546706
 Animator:
   serializedVersion: 5
@@ -45730,7 +46110,7 @@ Animator:
   m_GameObject: {fileID: 1875279496819915869}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9ba340b0bab1d8c40b32719d424d6455, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -47189,8 +47569,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -48301,8 +48681,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -48725,8 +49105,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}
@@ -53903,27 +54283,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!65 &8128831679578322677
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874423990281934407}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.7242894, y: 1.7566341, z: 1.9281089}
-  m_Center: {x: -0.85539484, y: 0.3783167, z: -0.6779882}
 --- !u!114 &8128831679578322679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -53940,16 +54299,16 @@ MonoBehaviour:
   YAngle: -90
   ZAngle: 0
   doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  isLocked: 0
-  doorUnlockSound: {fileID: 0}
-  doorLockedSound: {fileID: 0}
+  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  isLocked: 1
+  doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
+  doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  openCloseButton: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  useKeyButtonObject: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
+  openCloseButton: {fileID: 37316258384756432}
+  useKeyButton: {fileID: 4813111071799713780}
+  useKeyButtonObject: {fileID: 5376026593118847093}
+  lockedDoorAnimator: {fileID: 8128831679578322680}
 --- !u!95 &8128831679578322680
 Animator:
   serializedVersion: 5
@@ -53960,7 +54319,7 @@ Animator:
   m_GameObject: {fileID: 1874423990281934407}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9ba340b0bab1d8c40b32719d424d6455, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -54145,8 +54504,8 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  doorUnlockSound: {fileID: 0}
   doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
   useKeyButton: {fileID: 0}

@@ -41,7 +41,7 @@ public class PlayerInteraction : MonoBehaviour
             if (hitObject.tag == "Door")
             {
                 float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
-                if (distanceToObject <= interactDistance)
+                if (hitObject.tag == "Door" && distanceToObject <= interactDistance)
                 {
                     openCloseButton.SetActive(true);
                 }

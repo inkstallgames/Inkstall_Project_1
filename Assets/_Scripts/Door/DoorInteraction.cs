@@ -16,8 +16,8 @@ public class DoorInteraction : MonoBehaviour
 
     [Header("Lock Settings")]
     [SerializeField] private bool isLocked = false;
-    [SerializeField] private AudioClip doorUnlockSound;
     [SerializeField] private AudioClip doorLockedSound;
+    [SerializeField] private AudioClip doorUnlockSound;
 
     [Header("Timer Settings")]
     [SerializeField] private bool shouldStartTimer = false;

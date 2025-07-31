@@ -12161,6 +12161,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &975421949430823410
 Transform:
@@ -14464,6 +14466,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1609635412495604071
 MeshRenderer:
@@ -18291,6 +18295,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216612700763
 Transform:
@@ -18513,6 +18519,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161216683219789
 MonoBehaviour:
@@ -18537,6 +18545,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161216722088320
 MeshRenderer:
@@ -18618,6 +18628,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216731409326
 Transform:
@@ -18928,6 +18940,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161216885549428 stripped
 MeshRenderer:
@@ -19221,6 +19235,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161217056796249
 MonoBehaviour:
@@ -19245,6 +19261,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217079586938
 Transform:
@@ -19476,6 +19494,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!1 &1875161217394332177
 GameObject:
@@ -19600,6 +19620,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217482913422
 Transform:
@@ -21134,6 +21156,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161218230787375 stripped
 MeshRenderer:
@@ -21459,6 +21483,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161218500633082
 MeshRenderer:
@@ -21782,6 +21808,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161218662911432 stripped
 MeshRenderer:
@@ -35600,6 +35628,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3231434512211610070
 AudioSource:
@@ -36695,6 +36725,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3531443653390167215
 AudioSource:
@@ -38424,6 +38456,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4095303726235316411
 AudioSource:
@@ -39341,6 +39375,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4323376261421865388
 AudioSource:
@@ -40719,6 +40755,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4722926279912086933
 AudioSource:
@@ -41582,6 +41620,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &4985833862760063991
 Transform:
@@ -42415,7 +42455,9 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   shouldStartTimer: 0
   openCloseButton: {fileID: 37316258384756432}
-  lockedDoorAnimator: {fileID: 0}
+  useKeyButton: {fileID: 4813111071799713780}
+  useKeyButtonObject: {fileID: 4370096595425205733}
+  lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:
   m_ObjectHideFlags: 0
@@ -44082,6 +44124,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &5660267529715239442
 AudioSource:
@@ -45722,6 +45766,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &6096234473738546705
 BoxCollider:
@@ -47217,6 +47263,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6370389251489606861
 AudioSource:
@@ -48327,6 +48375,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6734199790238685268
 AudioSource:
@@ -48749,6 +48799,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &6823987876855903344
 MeshRenderer:
@@ -53965,6 +54017,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!95 &8128831679578322680
 Animator:
@@ -54165,6 +54219,8 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   shouldStartTimer: 0
   openCloseButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  useKeyButtonObject: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &8176039784201981259
 AudioSource:

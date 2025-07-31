@@ -23,6 +23,8 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private bool shouldStartTimer = false;
 
     public Button openCloseButton;
+    public Button useKeyButton;
+    public GameObject useKeyButtonObject;
 
     // State
     private bool isDoorOpen = false;
@@ -61,6 +63,11 @@ public class DoorInteraction : MonoBehaviour
         {
             openCloseButton.onClick.AddListener(TryOpenDoor);
         }
+
+        if (useKeyButton != null)
+        {
+            useKeyButton.onClick.AddListener(TryUnlockDoor);
+        }
     }
 
     private void Update()
@@ -84,6 +91,7 @@ public class DoorInteraction : MonoBehaviour
         {
             PlayDoorLockedAnimation();
             PlayDoorLockedSound();
+            EnableUseKeyButton();
             return;
         }
 
@@ -122,27 +130,39 @@ public class DoorInteraction : MonoBehaviour
             lockedDoorAnimator.SetBool("isLocked", false);
         }
     }
-        
-    public void Unlock()
+
+    public void EnableUseKeyButton()
     {
-        if (isLocked)
+        useKeyButtonObject.SetActive(true);
+    }
+
+    public void DisableUseKeyButton()
+    {
+        useKeyButtonObject.SetActive(false);
+    }   
+
+    private void TryUnlockDoor()
+    {
+        if (KeyManager.Instance != null && KeyManager.Instance.GetCurrentKeyCount() > 0)
         {
-            isLocked = false;
-
-            if (doorUnlockSound != null)
-            {
-                audioSource.PlayOneShot(doorUnlockSound);
-            }
-
-            // Disable Animator if it exists
-            if (lockedDoorAnimator != null)
-            {
-                lockedDoorAnimator.enabled = false;
-            }
+            UnlockDoor();
+        }
+        else
+        {
+            Debug.Log("[DoorInteraction] Cannot unlock door, no keys available");
         }
     }
 
-    
+    public void UnlockDoor()
+    {
+        if (isLocked)
+        {
+            KeyManager.Instance.UseKey();
+            DisableUseKeyButton();
+            isLocked = false;
+        }
+    }
+
     private void ToggleDoorOpenClose()
     {
         isDoorOpen = !isDoorOpen;
@@ -187,13 +207,7 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-    private void TryUnlockDoor()
-    {
-        if (KeyManager.Instance != null && KeyManager.Instance.UseKey())
-        {
-            Unlock();
-        }
-    }
+    
 
     // For backward compatibility
     public void ResetDoor()

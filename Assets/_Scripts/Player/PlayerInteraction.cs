@@ -36,21 +36,20 @@ public class PlayerInteraction : MonoBehaviour
             GameObject hitObject = hit.collider.gameObject;
             currentDoor = null;
 
+            Debug.Log(hitObject.name);
+
             //Check for Locked door
-            if (hitObject.TryGetComponent<DoorInteraction>(out var lockedDoor) && lockedDoor.IsLocked())
+            if (hitObject.TryGetComponent<DoorInteraction>(out var lockedDoor))
                 {
                     float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                     if (distanceToObject <= interactDistance)
                     {
+                        Debug.Log("Locked Door");
                         openCloseButton.SetActive(true);
                         currentDoor = lockedDoor;
                     }
                 }
-
-            else    
-            {
-                openCloseButton.SetActive(false);
-            }    
+   
 
             // Handle regular doors
             if (hitObject.TryGetComponent<DoorInteraction>(out var unlockedDoor) && !unlockedDoor.IsLocked())
@@ -61,11 +60,7 @@ public class PlayerInteraction : MonoBehaviour
                         currentDoor = unlockedDoor;
                         openCloseButton.SetActive(true);
                     }
-                }
-            else    
-            {
-                openCloseButton.SetActive(false);
-            }    
+                }   
             
             // Check for drawer
             if (hitObject.TryGetComponent<DrawerMech>(out var drawer))
@@ -81,10 +76,6 @@ public class PlayerInteraction : MonoBehaviour
                         }
                 }
             }
-            else    
-            {
-                openCloseButton.SetActive(false);
-            }    
 
             
             // Check for collectible prop
@@ -99,10 +90,6 @@ public class PlayerInteraction : MonoBehaviour
                 }       
             
             
-        }
-        else
-        {
-            openCloseButton.SetActive(false);
         }
     }
 }

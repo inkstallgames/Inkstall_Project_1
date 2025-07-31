@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using TMPro;
-
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 public class DoorInteraction : MonoBehaviour
@@ -16,11 +16,13 @@ public class DoorInteraction : MonoBehaviour
 
     [Header("Lock Settings")]
     [SerializeField] private bool isLocked = false;
-    [SerializeField] private AudioClip unlockSound;
-    [SerializeField] private AudioClip lockedSound;
+    [SerializeField] private AudioClip doorUnlockSound;
+    [SerializeField] private AudioClip doorLockedSound;
 
     [Header("Timer Settings")]
     [SerializeField] private bool shouldStartTimer = false;
+
+    public Button openCloseButton;
 
     // State
     private bool isDoorOpen = false;
@@ -29,7 +31,7 @@ public class DoorInteraction : MonoBehaviour
     private Quaternion openRotation;
     private AudioSource audioSource;
     private GameTimer attachedTimer;
-    private Animator doorAnimator;
+    public Animator lockedDoorAnimator;
 
     private void Awake()
     {
@@ -39,7 +41,10 @@ public class DoorInteraction : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
-        doorAnimator = GetComponent<Animator>();
+        if (lockedDoorAnimator == null)
+        {
+            lockedDoorAnimator = GetComponent<Animator>();
+        }
         
         // Store the initial rotation as closed rotation
         closedRotation = transform.rotation;
@@ -47,11 +52,19 @@ public class DoorInteraction : MonoBehaviour
 
         // Get the GameTimer component if it exists
         attachedTimer = GetComponent<GameTimer>();
-        
+
+    }
+
+    private void Start()
+    {
+        if (openCloseButton != null)
+        {
+            openCloseButton.onClick.AddListener(TryOpenDoor);
+        }
     }
 
     private void Update()
-    {
+    {       
         // Door movement animation
         if (isDoorMoving)
         {
@@ -59,67 +72,78 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-    public void OpenDoor()
+    public bool IsLocked()
     {
-        Debug.Log("Button Pressed");
+        return isLocked;
     }
-    public void Interact()
+    
+    
+    public void TryOpenDoor()
     {
         if (isLocked)
         {
-            PlayLockedSound();
-            OnInteractAttempt();
+            PlayDoorLockedAnimation();
+            PlayDoorLockedSound();
             return;
         }
 
-        // Check with GameManager if this door can be opened
-        if (GameManager.Instance != null && !GameManager.Instance.CanOpenDoor(gameObject))
+        if (!isLocked)
         {
-            Debug.Log("Cannot open this door until current room is completed");
-            return;
+            ToggleDoorOpenClose();
         }
 
-        // Toggle door open/close
-        ToggleDoor();
+    } 
 
-        if (shouldStartTimer && attachedTimer != null && !attachedTimer.HasBeenTriggered())
+    private void PlayDoorLockedSound()
+    {
+        if (doorLockedSound != null && audioSource != null)
         {
-            // Activate this room in the GameManager
-            if (GameManager.Instance != null)
+            if (!audioSource.isPlaying)
             {
-                GameManager.Instance.ActivateRoom(gameObject);
+                audioSource.PlayOneShot(doorLockedSound);
             }
-
-            attachedTimer.ResumeTimer();
-            Debug.Log("Door interaction started the timer for the first time!");
         }
     }
 
+    public void PlayDoorLockedAnimation()
+    {
+        if (lockedDoorAnimator != null)
+        {
+            lockedDoorAnimator.SetBool("isLocked", true);
+            Invoke("StopDoorLockedAnimation", 0.5f);
+
+        }
+    }  
+
+    private void StopDoorLockedAnimation()
+    {
+        if (lockedDoorAnimator != null)
+        {
+            lockedDoorAnimator.SetBool("isLocked", false);
+        }
+    }
+        
     public void Unlock()
     {
         if (isLocked)
         {
             isLocked = false;
 
-            if (unlockSound != null)
+            if (doorUnlockSound != null)
             {
-                audioSource.PlayOneShot(unlockSound);
+                audioSource.PlayOneShot(doorUnlockSound);
             }
 
             // Disable Animator if it exists
-            if (doorAnimator != null)
+            if (lockedDoorAnimator != null)
             {
-                doorAnimator.enabled = false;
+                lockedDoorAnimator.enabled = false;
             }
         }
     }
 
-    public bool IsLocked()
-    {
-        return isLocked;
-    }
-
-    private void ToggleDoor()
+    
+    private void ToggleDoorOpenClose()
     {
         isDoorOpen = !isDoorOpen;
         isDoorMoving = true;
@@ -154,33 +178,12 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-    private void PlayLockedSound()
-    {
-        if (isLocked && lockedSound != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(lockedSound);
-        }
-    }
-
-    public void OnInteractAttempt()
-    {
-        if (isLocked)
-        {
-            PlayLockedSound();
-
-            if (doorAnimator != null)
-            {
-                doorAnimator.SetBool("DoorInteractionEnable", true);
-                Invoke("DisableDoorInteraction", 1f);
-            }
-        }
-    }
 
     private void DisableDoorInteraction()
     {
-        if (doorAnimator != null)
+        if (lockedDoorAnimator != null)
         {
-            doorAnimator.SetBool("DoorInteractionEnable", false);
+            lockedDoorAnimator.SetBool("isLocked", false);
         }
     }
 
@@ -206,4 +209,5 @@ public class DoorInteraction : MonoBehaviour
             }
         }
     }
+    
 }

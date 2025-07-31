@@ -3,9 +3,11 @@ using UnityEngine;
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Interaction Settings")]
-    [SerializeField] private float interactDistance = 3f;
+    [SerializeField] private float rayDistance = 10f;
     [SerializeField] private Camera playerMainCamera;
     [SerializeField] private GameObject openCloseButton;
+
+    [SerializeField] private float interactDistance = 3f;
 
     private DoorInteraction currentDoor;   // Track which door we're looking at
 
@@ -31,67 +33,37 @@ public class PlayerInteraction : MonoBehaviour
     private void CheckRaycastInteraction()
     {
         Ray ray = new Ray(playerMainCamera.transform.position, playerMainCamera.transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
+        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
         {
             GameObject hitObject = hit.collider.gameObject;
-            currentDoor = null;
 
-            Debug.Log(hitObject.name);
-
-            //Check for Locked door
-            if (hitObject.TryGetComponent<DoorInteraction>(out var lockedDoor))
-                {
-                    float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
-                    if (distanceToObject <= interactDistance)
-                    {
-                        openCloseButton.SetActive(true);
-                        currentDoor = lockedDoor;
-                    }
-                    else
-                    {
-                        openCloseButton.SetActive(false);
-                    }
-                }
-   
-
-            // Handle regular doors
-            if (hitObject.TryGetComponent<DoorInteraction>(out var unlockedDoor) && !unlockedDoor.IsLocked())
-                {
-                    float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
-                    if (distanceToObject <= interactDistance)
-                    {
-                        currentDoor = unlockedDoor;
-                        openCloseButton.SetActive(true);
-                    }
-                }   
-            
-            // Check for drawer
-            if (hitObject.TryGetComponent<DrawerMech>(out var drawer))
+            //Check for door
+            if (hitObject.tag == "Door")
             {
-                // Only show prompt if DrawerMech is enabled
-                if (drawer.enabled)
+                float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
+                if (distanceToObject <= interactDistance)
                 {
-                    // Check if we're close enough to the drawer
-                        float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
-                        if (distanceToObject <= interactDistance)
-                        {
-                            openCloseButton.SetActive(true);
-                        }
+                    openCloseButton.SetActive(true);
+                }
+                else if (distanceToObject > interactDistance || hitObject.tag != "Door")
+                {
+                    openCloseButton.SetActive(false);
                 }
             }
-
             
-            // Check for collectible prop
-            if (hitObject.TryGetComponent<CollectibleProp>(out var collectible))
+            // Check for drawer
+            if (hitObject.tag == "Drawer")
+            {
+                float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
+                if (distanceToObject <= interactDistance)
                 {
-                    // Check if we're close enough to the prop
-                    float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
-                    if (distanceToObject <= interactDistance)
-                    {
-                        openCloseButton.SetActive(true);
-                    }
-                }       
-            
+                    openCloseButton.SetActive(true);
+                }
+                else if (distanceToObject > interactDistance || hitObject.tag != "Drawer")
+                {
+                    openCloseButton.SetActive(false);
+                }
+            }     
             
         }
     }

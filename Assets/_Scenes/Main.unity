@@ -660,9 +660,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &7431133
 LODGroup:
   m_ObjectHideFlags: 0
@@ -3804,9 +3805,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &65548425
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5827,9 +5829,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &92300584
 LODGroup:
   m_ObjectHideFlags: 0
@@ -6111,9 +6114,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &94431186
 LODGroup:
   m_ObjectHideFlags: 0
@@ -6690,9 +6694,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &100283151
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8304,9 +8309,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &127866685
 LODGroup:
   m_ObjectHideFlags: 0
@@ -8826,9 +8832,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &131479574
 LODGroup:
   m_ObjectHideFlags: 0
@@ -11589,9 +11596,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &175040372
 LODGroup:
   m_ObjectHideFlags: 0
@@ -13063,9 +13071,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &196507135
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14220,9 +14229,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &205595311
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -19720,9 +19730,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &286375270
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23945,9 +23956,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &341758773
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -30231,9 +30243,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &404150044
 LODGroup:
   m_ObjectHideFlags: 0
@@ -31244,9 +31257,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &418472710
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -31469,9 +31483,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &419554577
 LODGroup:
   m_ObjectHideFlags: 0
@@ -35242,9 +35257,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &478900513
 LODGroup:
   m_ObjectHideFlags: 0
@@ -36299,9 +36315,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &499634770
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -36940,9 +36957,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &504550167
 LODGroup:
   m_ObjectHideFlags: 0
@@ -37701,9 +37719,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &514558226
 LODGroup:
   m_ObjectHideFlags: 0
@@ -38698,9 +38717,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &522830152
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -40325,9 +40345,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &542281730
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -42169,9 +42190,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &560921206
 LODGroup:
   m_ObjectHideFlags: 0
@@ -44508,9 +44530,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &602021501
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -46400,9 +46423,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &632079604
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -47388,9 +47412,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &638407733
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -47817,9 +47842,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &645307921
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -48639,9 +48665,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &665400300
 AudioSource:
   m_ObjectHideFlags: 0
@@ -50524,9 +50551,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &680244834
 LODGroup:
   m_ObjectHideFlags: 0
@@ -53739,9 +53767,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &724603223
 LODGroup:
   m_ObjectHideFlags: 0
@@ -55181,9 +55210,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &735745864
 LODGroup:
   m_ObjectHideFlags: 0
@@ -55690,9 +55720,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &742459946
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -57947,9 +57978,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &770886193
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -58848,9 +58880,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &783682285
 LODGroup:
   m_ObjectHideFlags: 0
@@ -60003,9 +60036,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &789630988
 LODGroup:
   m_ObjectHideFlags: 0
@@ -63516,9 +63550,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &832353219
 LODGroup:
   m_ObjectHideFlags: 0
@@ -63691,9 +63726,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &833376008
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -64513,9 +64549,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &850690117
 LODGroup:
   m_ObjectHideFlags: 0
@@ -65204,9 +65241,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &860042677
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -65429,9 +65467,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &861121031
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -68925,9 +68964,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &912275514
 LODGroup:
   m_ObjectHideFlags: 0
@@ -70776,9 +70816,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &937736308
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -71786,9 +71827,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &945448659
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -73150,9 +73192,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &960548462
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -73684,9 +73727,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &969194669
 LODGroup:
   m_ObjectHideFlags: 0
@@ -74795,9 +74839,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &986512341
 LODGroup:
   m_ObjectHideFlags: 0
@@ -75056,9 +75101,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &991711262
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -77337,9 +77383,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1027447567
 LODGroup:
   m_ObjectHideFlags: 0
@@ -77681,9 +77728,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1031432515
 LODGroup:
   m_ObjectHideFlags: 0
@@ -78993,9 +79041,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1048029754
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -79406,9 +79455,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1049225333
 LODGroup:
   m_ObjectHideFlags: 0
@@ -80274,9 +80324,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1059370820
 LODGroup:
   m_ObjectHideFlags: 0
@@ -80619,9 +80670,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1064742300
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -83214,9 +83266,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1093871774
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -83439,9 +83492,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1094417030
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -83745,9 +83799,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1098779072
 LODGroup:
   m_ObjectHideFlags: 0
@@ -84008,9 +84063,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1102787942
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -86886,9 +86942,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1146141196
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -88142,9 +88199,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1156827452
 LODGroup:
   m_ObjectHideFlags: 0
@@ -91070,9 +91128,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1197044446
 LODGroup:
   m_ObjectHideFlags: 0
@@ -94665,9 +94724,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1256055862
 LODGroup:
   m_ObjectHideFlags: 0
@@ -95044,9 +95104,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1260610041
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -95292,9 +95353,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1261334822
 LODGroup:
   m_ObjectHideFlags: 0
@@ -96244,9 +96306,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1271847552
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -98696,9 +98759,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1323805121
 LODGroup:
   m_ObjectHideFlags: 0
@@ -99041,9 +99105,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1326364277
 LODGroup:
   m_ObjectHideFlags: 0
@@ -101612,9 +101677,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1362109623
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -106308,9 +106374,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1434568605
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -107150,9 +107217,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1443607367
 AudioSource:
   m_ObjectHideFlags: 0
@@ -108736,9 +108804,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1458319544
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -109370,9 +109439,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1465070210
 LODGroup:
   m_ObjectHideFlags: 0
@@ -110647,9 +110717,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1478254345
 LODGroup:
   m_ObjectHideFlags: 0
@@ -112152,9 +112223,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1493700858
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -112704,9 +112776,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1500338624
 LODGroup:
   m_ObjectHideFlags: 0
@@ -117600,9 +117673,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1574790228
 LODGroup:
   m_ObjectHideFlags: 0
@@ -123639,9 +123713,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1668161468
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -126908,9 +126983,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1721438025
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -129998,9 +130074,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1760120230
 LODGroup:
   m_ObjectHideFlags: 0
@@ -131036,9 +131113,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1778620479
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -134658,9 +134736,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1829674791
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -136074,9 +136153,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1865049642
 LODGroup:
   m_ObjectHideFlags: 0
@@ -138975,9 +139055,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1911240753
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -146078,9 +146159,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2021741634
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -146776,9 +146858,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &2027373671
 LODGroup:
   m_ObjectHideFlags: 0
@@ -147422,9 +147505,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &2039461619
 LODGroup:
   m_ObjectHideFlags: 0
@@ -148297,9 +148381,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2059175576
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -149674,9 +149759,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &2066204948
 LODGroup:
   m_ObjectHideFlags: 0
@@ -150186,9 +150272,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2070106397
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -153810,9 +153897,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2123666275
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -159724,9 +159812,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!1 &954360384414727499
 GameObject:
   m_ObjectHideFlags: 0
@@ -160242,9 +160331,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3821e1b739673c45992e6fb9573fa63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactDistance: 3
+  rayDistance: 10
   playerMainCamera: {fileID: 853274705947014384}
   openCloseButton: {fileID: 5108389835874313904}
+  useKeyButton: {fileID: 0}
+  interactDistance: 3
 --- !u!1 &1182903291308431203
 GameObject:
   m_ObjectHideFlags: 0
@@ -161986,9 +162077,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1609635412495604071
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -165700,9 +165792,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 1
+  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216612700763
 Transform:
   m_ObjectHideFlags: 0
@@ -165901,9 +165994,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161216683219789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165923,9 +166017,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 1
+  lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161216722088320
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -166002,9 +166097,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216731409326
 Transform:
   m_ObjectHideFlags: 0
@@ -166265,9 +166361,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 1
+  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216913999824
 Transform:
   m_ObjectHideFlags: 0
@@ -166470,9 +166567,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161217056796249
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166492,9 +166590,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217079586938
 Transform:
   m_ObjectHideFlags: 0
@@ -166715,9 +166814,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!1 &1875161217394332177
 GameObject:
   m_ObjectHideFlags: 0
@@ -166770,9 +166870,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217401311382
 Transform:
   m_ObjectHideFlags: 0
@@ -166846,9 +166947,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217482913422
 Transform:
   m_ObjectHideFlags: 0
@@ -168018,9 +168120,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218241288186
 Transform:
   m_ObjectHideFlags: 0
@@ -168220,9 +168323,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 1
+  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218516245653
 Transform:
   m_ObjectHideFlags: 0
@@ -168371,9 +168475,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218673369673
 Transform:
   m_ObjectHideFlags: 0
@@ -181804,9 +181909,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3231434512211610070
 AudioSource:
   m_ObjectHideFlags: 0
@@ -182917,9 +183023,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3531443653390167215
 AudioSource:
   m_ObjectHideFlags: 0
@@ -184923,9 +185030,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4095303726235316411
 AudioSource:
   m_ObjectHideFlags: 0
@@ -185770,9 +185878,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4323376261421865388
 AudioSource:
   m_ObjectHideFlags: 0
@@ -187208,9 +187317,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4722926279912086933
 AudioSource:
   m_ObjectHideFlags: 0
@@ -188121,9 +188231,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!224 &4981159361637667286
 RectTransform:
   m_ObjectHideFlags: 0
@@ -190445,9 +190556,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &5660267529715239442
 AudioSource:
   m_ObjectHideFlags: 0
@@ -191978,9 +192090,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 1
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6096234473738546701
 AudioSource:
   m_ObjectHideFlags: 0
@@ -193271,7 +193384,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8569271502420497968}
@@ -193474,9 +193587,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6370389251489606861
 AudioSource:
   m_ObjectHideFlags: 0
@@ -194611,9 +194725,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6734199790238685268
 AudioSource:
   m_ObjectHideFlags: 0
@@ -194972,9 +195087,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!23 &6823987876855903344
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -200470,9 +200586,10 @@ MonoBehaviour:
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
   isLocked: 0
-  unlockSound: {fileID: 0}
-  lockedSound: {fileID: 0}
+  doorLockedSound: {fileID: 0}
+  doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &8176039784201981259
 AudioSource:
   m_ObjectHideFlags: 0

@@ -112,7 +112,7 @@ public class PlayerInteraction : MonoBehaviour
             {
                 // Get the door interaction component
                 DoorInteraction doorInteraction = hitObject.GetComponent<DoorInteraction>();
-                if (doorInteraction != null)
+                if (doorInteraction != null && doorInteraction.enabled)
                 {
                     // Check if we're within interaction distance
                     float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);

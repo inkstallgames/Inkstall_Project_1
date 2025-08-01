@@ -18295,7 +18295,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XAngle: 0
-  YAngle: -90
+  YAngle: 90
   ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
@@ -18905,7 +18905,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XAngle: 0
-  YAngle: -90
+  YAngle: 90
   ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
@@ -46259,7 +46259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XAngle: 0
-  YAngle: -90
+  YAngle: 90
   ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}

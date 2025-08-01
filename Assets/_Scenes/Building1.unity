@@ -880,6 +880,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1875161218121732013}
     m_Modifications:
     - target: {fileID: 1084404098417284, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 1084404098417284, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -913,7 +917,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4904199861950686, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4.281
+      value: -4.048
       objectReference: {fileID: 0}
     - target: {fileID: 4904199861950686, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1405,6 +1409,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1875161218121732013}
     m_Modifications:
     - target: {fileID: 1081395957064068, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
+      propertyPath: m_TagString
+      value: Drawer
+      objectReference: {fileID: 0}
+    - target: {fileID: 1081395957064068, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -1425,8 +1433,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1405401060102548, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 1405401060102548, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948700120564148, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 1948700120564148, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1519,8 +1535,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 1875161218121732013}
     m_Modifications:
     - target: {fileID: 1529412923199490, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
+      propertyPath: m_TagString
+      value: Drawer
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529412923199490, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1608004519724090, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 1608004519724090, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1743,6 +1767,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1875161218121732013}
     m_Modifications:
     - target: {fileID: 1084404098417284, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 1084404098417284, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -1776,7 +1804,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4904199861950686, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.22
+      value: -6.02
       objectReference: {fileID: 0}
     - target: {fileID: 4904199861950686, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2245,6 +2273,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1875161218121732013}
     m_Modifications:
+    - target: {fileID: 1081395957064068, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
+      propertyPath: m_TagString
+      value: Drawer
+      objectReference: {fileID: 0}
     - target: {fileID: 1298414782933754, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
       propertyPath: m_Name
       value: Cabinet_5 (1)
@@ -2256,6 +2288,14 @@ PrefabInstance:
     - target: {fileID: 1298414782933754, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
       propertyPath: m_TagString
       value: Prop
+      objectReference: {fileID: 0}
+    - target: {fileID: 1405401060102548, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 1948700120564148, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 4994169025021864, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3154,6 +3194,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4328488083210567521, guid: 52247c4c064dd874fabf7eb71c4b4b88,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 4328488083210567521, guid: 52247c4c064dd874fabf7eb71c4b4b88,
         type: 3}
@@ -4640,6 +4685,10 @@ PrefabInstance:
     - target: {fileID: 1529412923199490, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1608004519724090, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 1608004519724090, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -6592,6 +6641,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1875161218121732013}
     m_Modifications:
     - target: {fileID: 1170341767172792, guid: 9fca9fb036f984445927918582183eac, type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 1170341767172792, guid: 9fca9fb036f984445927918582183eac, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -6625,7 +6678,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4097177081926234, guid: 9fca9fb036f984445927918582183eac, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -5.253
+      value: -5.029
       objectReference: {fileID: 0}
     - target: {fileID: 4097177081926234, guid: 9fca9fb036f984445927918582183eac, type: 3}
       propertyPath: m_LocalRotation.w
@@ -6854,6 +6907,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1875161218121732013}
     m_Modifications:
+    - target: {fileID: 1007683784285360, guid: 4ef5b485c0abb3f4e82680e350437b64, type: 3}
+      propertyPath: m_TagString
+      value: Drawer
+      objectReference: {fileID: 0}
     - target: {fileID: 1189680318001556, guid: 4ef5b485c0abb3f4e82680e350437b64, type: 3}
       propertyPath: m_Name
       value: Cabinet_3
@@ -6865,6 +6922,14 @@ PrefabInstance:
     - target: {fileID: 1189680318001556, guid: 4ef5b485c0abb3f4e82680e350437b64, type: 3}
       propertyPath: m_TagString
       value: Prop
+      objectReference: {fileID: 0}
+    - target: {fileID: 1576429470864110, guid: 4ef5b485c0abb3f4e82680e350437b64, type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 1981499815155522, guid: 4ef5b485c0abb3f4e82680e350437b64, type: 3}
+      propertyPath: m_TagString
+      value: Drawer
       objectReference: {fileID: 0}
     - target: {fileID: 4134699323623626, guid: 4ef5b485c0abb3f4e82680e350437b64, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7545,6 +7610,10 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Prop
       objectReference: {fileID: 0}
+    - target: {fileID: 1937917351076174, guid: f052b5a392205224da8e029e1f7fed3e, type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
     - target: {fileID: 4654624483710892, guid: f052b5a392205224da8e029e1f7fed3e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.28
@@ -7555,7 +7624,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4654624483710892, guid: f052b5a392205224da8e029e1f7fed3e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.85
+      value: -2.98
       objectReference: {fileID: 0}
     - target: {fileID: 4654624483710892, guid: f052b5a392205224da8e029e1f7fed3e, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8852,6 +8921,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1875161218121732013}
     m_Modifications:
+    - target: {fileID: 1351087311286238, guid: aa950a0fff2eccd408b3447dcb8b7f21, type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
     - target: {fileID: 1790755073740054, guid: aa950a0fff2eccd408b3447dcb8b7f21, type: 3}
       propertyPath: m_Name
       value: Fridge_1
@@ -8863,6 +8936,10 @@ PrefabInstance:
     - target: {fileID: 1790755073740054, guid: aa950a0fff2eccd408b3447dcb8b7f21, type: 3}
       propertyPath: m_TagString
       value: Prop
+      objectReference: {fileID: 0}
+    - target: {fileID: 1860466841465400, guid: aa950a0fff2eccd408b3447dcb8b7f21, type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 4526664636313418, guid: aa950a0fff2eccd408b3447dcb8b7f21, type: 3}
       propertyPath: m_LocalPosition.x
@@ -42983,7 +43060,7 @@ MonoBehaviour:
   isLocked: 1
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
-  shouldStartTimer: 0
+  shouldStartTimer: 1
   lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:

@@ -12,6 +12,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private float interactDistance = 3f;
 
     private DoorInteraction currentDoor;   // Track which door we're looking at
+    private DrawerMech currentDrawer;   // Track which drawer we're looking at
     private bool showUseKeyButton = false; // Flag to track if we should show the use key button
 
     private void Start()
@@ -64,31 +65,17 @@ public class PlayerInteraction : MonoBehaviour
     private void Update()
     {
         CheckRaycastInteraction();
-        
-        // Check for keyboard shortcuts when looking at a door
-        if (currentDoor != null && openCloseButton.activeSelf)
-        {
-            // E key for open/close
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                InteractWithCurrentDoor();
-            }
-            
-            // F key for unlock (if door is locked and use key button is visible)
-            if (Input.GetKeyDown(KeyCode.F) && useKeyButton.activeSelf)
-            {
-                UnlockCurrentDoor();
-            }
-        }
     }
 
     private void CheckRaycastInteraction()
     {
         // Store the previous door reference to check if we're still looking at the same door
         DoorInteraction previousDoor = currentDoor;
+        DrawerMech previousDrawer = currentDrawer;
         
         // Reset current door reference
         currentDoor = null;
+        currentDrawer = null;
         
         // Disable buttons by default
         if (openCloseButton != null)
@@ -137,9 +124,13 @@ public class PlayerInteraction : MonoBehaviour
             // Check for drawer (keeping existing functionality)
             if (hitObject.CompareTag("Drawer"))
             {
+                DrawerMech drawerInteraction = hitObject.GetComponent<DrawerMech>();
+                
+                // Check if we're within interaction distance
                 float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                 if (distanceToObject <= interactDistance)
                 {
+                    currentDrawer = drawerInteraction;
                     openCloseButton.SetActive(true);
                 }
             } 
@@ -147,6 +138,12 @@ public class PlayerInteraction : MonoBehaviour
         
         // If we're no longer looking at the same door, reset the showUseKeyButton flag
         if (currentDoor != previousDoor)
+        {
+            showUseKeyButton = false;
+        }
+
+        // If we're no longer looking at the same drawer, reset the showUseKeyButton flag
+        if (currentDrawer != previousDrawer)
         {
             showUseKeyButton = false;
         }

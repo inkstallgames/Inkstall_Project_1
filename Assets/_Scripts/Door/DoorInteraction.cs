@@ -22,10 +22,6 @@ public class DoorInteraction : MonoBehaviour
     [Header("Timer Settings")]
     [SerializeField] private bool shouldStartTimer = false;
 
-    public Button openCloseButton;
-    public Button useKeyButton;
-    [SerializeField] private GameObject useKeyButtonObject;
-
     // State
     private bool isDoorOpen = false;
     private bool isDoorMoving = false;
@@ -54,20 +50,11 @@ public class DoorInteraction : MonoBehaviour
 
         // Get the GameTimer component if it exists
         attachedTimer = GetComponent<GameTimer>();
-
     }
 
     private void Start()
     {
-        if (openCloseButton != null)
-        {
-            openCloseButton.onClick.AddListener(TryOpenDoor);
-        }
-
-        if (useKeyButton != null)
-        {
-            useKeyButton.onClick.AddListener(TryUnlockDoor);
-        }
+        // All button listeners are now handled by PlayerInteraction
     }
 
     private void Update()
@@ -91,15 +78,13 @@ public class DoorInteraction : MonoBehaviour
         {
             PlayDoorLockedAnimation();
             PlayDoorLockedSound();
-            EnableUseKeyButton();
+            // The use key button will be enabled by PlayerInteraction
         }
-
-        if (!isLocked)
+        else
         {
             ToggleDoorOpenClose();
         }
-
-    } 
+    }
 
     private void PlayDoorLockedSound()
     {
@@ -118,7 +103,6 @@ public class DoorInteraction : MonoBehaviour
         {
             lockedDoorAnimator.SetBool("isLocked", true);
             Invoke("StopDoorLockedAnimation", 0.5f);
-
         }
     }  
 
@@ -130,22 +114,18 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-    public void EnableUseKeyButton()
-    {
-        useKeyButtonObject.SetActive(true);
-    }
+    // These methods are no longer needed as PlayerInteraction will handle the UI
+    // Keeping them empty for backward compatibility
+    public void EnableUseKeyButton() { }
+    public void DisableUseKeyButton() { }   
 
-    public void DisableUseKeyButton()
-    {
-        useKeyButtonObject.SetActive(false);
-    }   
-
-    private void TryUnlockDoor()
+    // Public so PlayerInteraction can call it
+    public void TryUnlockDoor()
     {
         if (KeyManager.Instance.GetCurrentKeyCount() > 0)
         {
             UnlockDoor();
-            DisableUseKeyButton();
+            // The use key button will be disabled by PlayerInteraction
         }
         else
         {
@@ -207,7 +187,6 @@ public class DoorInteraction : MonoBehaviour
         }
     }
 
-
     // For backward compatibility
     public void ResetDoor()
     {
@@ -222,5 +201,4 @@ public class DoorInteraction : MonoBehaviour
             }
         }
     }
-    
 }

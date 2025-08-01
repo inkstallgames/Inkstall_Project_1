@@ -80,7 +80,7 @@ public class DoorInteraction : MonoBehaviour
             PlayDoorLockedSound();
             // The use key button will be enabled by PlayerInteraction
         }
-        else
+        else if (!isLocked)
         {
             ToggleDoorOpenClose();
         }

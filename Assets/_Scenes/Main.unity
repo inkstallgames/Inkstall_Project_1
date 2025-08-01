@@ -121511,6 +121511,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1577257726}
     m_Modifications:
+    - target: {fileID: 360494089543968180, guid: 9f91421c9babd52489a537dbe4cf29b1,
+        type: 3}
+      propertyPath: YAngle
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 1145299413198294408, guid: 9f91421c9babd52489a537dbe4cf29b1,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -121521,6 +121526,16 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1409237920027707578, guid: 9f91421c9babd52489a537dbe4cf29b1,
+        type: 3}
+      propertyPath: YAngle
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1467610242607625847, guid: 9f91421c9babd52489a537dbe4cf29b1,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
     - target: {fileID: 1467610242607625847, guid: 9f91421c9babd52489a537dbe4cf29b1,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -121528,8 +121543,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1478803868450802336, guid: 9f91421c9babd52489a537dbe4cf29b1,
         type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 1478803868450802336, guid: 9f91421c9babd52489a537dbe4cf29b1,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1711109547622578662, guid: 9f91421c9babd52489a537dbe4cf29b1,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 1711109547622578662, guid: 9f91421c9babd52489a537dbe4cf29b1,
         type: 3}
@@ -121565,6 +121590,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 5367708910492955937, guid: 9f91421c9babd52489a537dbe4cf29b1,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 5367708910492955937, guid: 9f91421c9babd52489a537dbe4cf29b1,
         type: 3}
@@ -204153,7 +204183,7 @@ MonoBehaviour:
   runThreshold: 0.6
   CinemachineCameraTarget: {fileID: 6981022636306073780}
   TopClamp: 9
-  BottomClamp: -40
+  BottomClamp: -90
   minTouchDelta: 10
   touchSensitivity: 5
   useSplitScreenTouch: 1

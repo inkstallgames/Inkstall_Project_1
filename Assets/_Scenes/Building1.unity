@@ -445,7 +445,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &90827212
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -827,10 +827,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 902840097}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -40}
+  m_SizeDelta: {x: 100, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &145262174
 MonoBehaviour:
@@ -8372,7 +8372,15 @@ MonoBehaviour:
   gunAnimator: {fileID: 1882129040}
   audioSource: {fileID: 1882129043}
   fireSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
-  isFiring: 0
+  noBulletsSound: {fileID: 0}
+  bulletCount: 0
+  coinCount: 100
+  bulletsCount: 0
+  maxBulletsToBuy: 3
+  costPerBullet: 10
+  coinText: {fileID: 0}
+  bulletAmountText: {fileID: 0}
+  totalCostText: {fileID: 0}
 --- !u!114 &1882129045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8385,13 +8393,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab22bdc5d7625e4abcae58b044fbac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinCount: 100
-  bulletCount: 0
-  maxBulletsToBuy: 3
-  costPerBullet: 10
-  coinText: {fileID: 0}
-  bulletAmountText: {fileID: 0}
-  totalCostText: {fileID: 0}
 --- !u!1001 &1899374207
 PrefabInstance:
   m_ObjectHideFlags: 0

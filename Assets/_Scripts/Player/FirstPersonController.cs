@@ -56,6 +56,14 @@ namespace StarterAssets
 		[Tooltip("How far in degrees can you move the camera down")]
 		public float BottomClamp = -90.0f;
 
+		[Header("Camera Arc Motion")]
+		[Tooltip("Enable PUBG-style camera arc motion when looking up/down")]
+		public bool enableCameraArcMotion = true;
+		[Tooltip("Height of the camera arc when looking up/down")]
+		public float cameraArcHeight = 2f;
+		[Tooltip("How quickly the camera moves along the arc")]
+		public float cameraArcSpeed = 10f;
+
 		// cinemachine
 		private float _cinemachineTargetPitch;
 
@@ -104,6 +112,12 @@ namespace StarterAssets
 			}
 		}
 
+		// Camera arc motion variables
+		private Vector3 _originalCameraOffset;
+		private bool _cameraInitialized = false;
+		private Cinemachine.CinemachineVirtualCamera _virtualCamera;
+		private Cinemachine.Cinemachine3rdPersonFollow _thirdPersonFollow;
+
 		private void Awake()
 		{
 			// get a reference to our main camera
@@ -111,6 +125,9 @@ namespace StarterAssets
 			{
 				_mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
 			}
+            
+			// Get reference to the virtual camera component
+			_virtualCamera = GameObject.FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
 		}
 
 		private void Start()
@@ -122,6 +139,17 @@ namespace StarterAssets
 #else
 			// Removed debug log error
 #endif
+
+			// Initialize camera components
+			if (_virtualCamera != null)
+			{
+				_thirdPersonFollow = _virtualCamera.GetCinemachineComponent<Cinemachine.Cinemachine3rdPersonFollow>();
+				if (_thirdPersonFollow != null)
+				{
+					_originalCameraOffset = _thirdPersonFollow.ShoulderOffset;
+					_cameraInitialized = true;
+				}
+			}
 
 			// Load sensitivity from PlayerPrefs
 			float savedSensitivity = PlayerPrefs.GetFloat(SENSITIVITY_KEY, DEFAULT_SENSITIVITY);
@@ -168,8 +196,38 @@ namespace StarterAssets
 				// Update Cinemachine camera target pitch
 				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
 
+				// Apply PUBG-style camera arc motion if enabled
+				if (enableCameraArcMotion && _cameraInitialized && _thirdPersonFollow != null)
+				{
+					// Calculate normalized pitch (-1 to 1 range)
+					float normalizedPitch = Mathf.Clamp(_cinemachineTargetPitch / 90.0f, -1.0f, 1.0f);
+					
+					// Calculate vertical offset based on pitch
+					float verticalOffset = Mathf.Sin(normalizedPitch * Mathf.PI * 0.5f) * cameraArcHeight;
+					
+					// Create new shoulder offset with the vertical component modified
+					Vector3 newOffset = _originalCameraOffset;
+					newOffset.y = _originalCameraOffset.y + verticalOffset;
+					
+					// Apply the new offset to create arc motion
+					_thirdPersonFollow.ShoulderOffset = Vector3.Lerp(
+						_thirdPersonFollow.ShoulderOffset,
+						newOffset,
+						Time.deltaTime * cameraArcSpeed
+					);
+				}
+
 				// rotate the player left and right
 				transform.Rotate(Vector3.up * _rotationVelocity);
+			}
+			else if (enableCameraArcMotion && _cameraInitialized && _thirdPersonFollow != null)
+			{
+				// Gradually return to original offset when no input
+				_thirdPersonFollow.ShoulderOffset = Vector3.Lerp(
+					_thirdPersonFollow.ShoulderOffset,
+					_originalCameraOffset,
+					Time.deltaTime * cameraArcSpeed
+				);
 			}
 		}
 

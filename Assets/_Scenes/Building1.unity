@@ -1493,6 +1493,11 @@ PrefabInstance:
       propertyPath: YAngle
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: YAngle
+      value: 90
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2341,6 +2346,11 @@ PrefabInstance:
         type: 3}
       propertyPath: YAngle
       value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: YAngle
+      value: 90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -16508,7 +16518,7 @@ GameObject:
   - component: {fileID: 1879628717615984172}
   m_Layer: 0
   m_Name: Door_Room_LOD (6)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16564,7 +16574,7 @@ GameObject:
   - component: {fileID: 1876739491560564363}
   m_Layer: 0
   m_Name: Door_Room_LOD (2)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16788,7 +16798,7 @@ GameObject:
   - component: {fileID: 1876707140387489406}
   m_Layer: 0
   m_Name: Door_Room_LOD (4)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16826,7 +16836,7 @@ GameObject:
   - component: {fileID: 1876640084607535166}
   m_Layer: 0
   m_Name: Door_Room_LOD (5)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17368,7 +17378,7 @@ GameObject:
   - component: {fileID: 1879488396289454676}
   m_Layer: 0
   m_Name: Door_Room_LOD (3)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17651,7 +17661,7 @@ GameObject:
   - component: {fileID: 1879345764369267872}
   m_Layer: 0
   m_Name: Door_Room_LOD (7)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

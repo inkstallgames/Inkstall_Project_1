@@ -127320,6 +127320,11 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 3730767551911605136, guid: 86e477d6015698b4ca2d27d2f2be9c3c,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7111027218946674300, guid: 86e477d6015698b4ca2d27d2f2be9c3c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -204183,7 +204188,7 @@ MonoBehaviour:
   runThreshold: 0.6
   CinemachineCameraTarget: {fileID: 6981022636306073780}
   TopClamp: 20
-  BottomClamp: -60
+  BottomClamp: -80
   minTouchDelta: 10
   touchSensitivity: 5
   useSplitScreenTouch: 1

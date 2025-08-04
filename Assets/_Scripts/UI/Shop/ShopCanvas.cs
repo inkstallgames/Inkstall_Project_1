@@ -15,7 +15,7 @@ public class ShopCanvas : MonoBehaviour
     
     [Header("Bullet UI")]
     public GameObject bullet1Image;
-    public GameObject bullet2Image;
+    public GameObject bullet2Image;  
     public GameObject bullet3Image;
     public Button plusButton;
     public Button minusButton;

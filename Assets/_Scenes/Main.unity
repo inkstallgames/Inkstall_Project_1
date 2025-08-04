@@ -204186,8 +204186,8 @@ MonoBehaviour:
     m_Bits: 1
   runThreshold: 0.6
   CinemachineCameraTarget: {fileID: 6981022636306073780}
-  TopClamp: 20
-  BottomClamp: -80
+  TopClamp: 80
+  BottomClamp: -50
   minTouchDelta: 10
   touchSensitivity: 5
   useSplitScreenTouch: 1

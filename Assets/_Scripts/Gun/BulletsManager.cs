@@ -14,7 +14,7 @@ public class BulletShop : MonoBehaviour
     public TextMeshProUGUI bulletAmountText;
     public TextMeshProUGUI totalCostText;
 
-    void Start()
+    void OnEnable()
     {
         UpdateUI();
     }

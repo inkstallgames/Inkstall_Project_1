@@ -7,18 +7,20 @@ public class Gun : MonoBehaviour
     public Animator gunAnimator;
     public AudioSource audioSource;
     public AudioClip fireSound;
-    public bool isFiring;
+    public AudioClip noBulletsSound;
+
 
     public void Fire()
     {
-        if(isFiring)
-        {
-            gunAnimator.SetBool("isFiring", true);
-            audioSource.PlayOneShot(fireSound);
-        }
-        else
-        {
-            gunAnimator.SetBool("isFiring", false);
-        }
+        if(bulletsCount > 0)
+            {
+                gunAnimator.SetBool("isFiring", true);
+                audioSource.PlayOneShot(fireSound);
+                bulletsCount--;
+            }
+            else
+            {
+                audioSource.PlayOneShot(noBulletsSound);
+            }
     }
 }

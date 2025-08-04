@@ -27,11 +27,6 @@ public class CoinsManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        FetchCoins();
-    }
-
     public void FetchCoins()
     {
         StartCoroutine(FetchCoinsFromServer());
@@ -107,6 +102,11 @@ public class CoinsManager : MonoBehaviour
         }
         
         onComplete?.Invoke(true);
+    }
+
+    public void FetchLocalCoinsCount()
+    {
+        FetchCoins();
     }
 
     [System.Serializable]

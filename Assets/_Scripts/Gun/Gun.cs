@@ -13,14 +13,12 @@ public class Gun : MonoBehaviour
     {
         if(isFiring)
         {
-            
-            gunAnimator.SetTrigger("isFiring true");
+            gunAnimator.SetBool("isFiring", true);
             audioSource.PlayOneShot(fireSound);
         }
         else
         {
-            gunAnimator.SetTrigger("isFiring false");
+            gunAnimator.SetBool("isFiring", false);
         }
     }
-    
 }

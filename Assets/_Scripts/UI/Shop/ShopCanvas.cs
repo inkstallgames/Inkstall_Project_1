@@ -64,6 +64,11 @@ public class ShopCanvas : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        CoinsManager.Instance.FetchCoins();
+    }
+
     void Update()
     {
         // Update the buy button interactability based on whether player can afford the bullets

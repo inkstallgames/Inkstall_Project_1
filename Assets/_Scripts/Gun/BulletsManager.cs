@@ -4,7 +4,7 @@ using TMPro;
 public class BulletShop : MonoBehaviour
 {
     public int coinCount = 100;
-    public int bulletCount = 0;
+    public int bulletsCount = 0;
     private int bulletsToBuy = 1;
     public int maxBulletsToBuy = 3;
     public int costPerBullet = 10;

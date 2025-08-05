@@ -63,6 +63,14 @@ namespace StarterAssets
 		public float cameraArcHeight = 2f;
 		[Tooltip("How quickly the camera moves along the arc")]
 		public float cameraArcSpeed = 10f;
+		[Tooltip("How much to reduce camera distance when looking up/down")]
+		public float cameraZoomAmount = 1.5f;
+		[Tooltip("How quickly the camera zooms in/out")]
+		public float cameraZoomSpeed = 8f;
+
+		[Header("Movement Settings")]
+		[Tooltip("If true, player will move at the same speed in all directions. If false, speed varies by direction.")]
+		public bool uniformMovementSpeed = false;
 
 		// cinemachine
 		private float _cinemachineTargetPitch;
@@ -114,6 +122,7 @@ namespace StarterAssets
 
 		// Camera arc motion variables
 		private Vector3 _originalCameraOffset;
+		private float _originalCameraDistance;
 		private bool _cameraInitialized = false;
 		private Cinemachine.CinemachineVirtualCamera _virtualCamera;
 		private Cinemachine.Cinemachine3rdPersonFollow _thirdPersonFollow;
@@ -147,6 +156,7 @@ namespace StarterAssets
 				if (_thirdPersonFollow != null)
 				{
 					_originalCameraOffset = _thirdPersonFollow.ShoulderOffset;
+					_originalCameraDistance = _thirdPersonFollow.CameraDistance;
 					_cameraInitialized = true;
 				}
 			}
@@ -205,6 +215,10 @@ namespace StarterAssets
 					// Calculate vertical offset based on pitch
 					float verticalOffset = Mathf.Sin(normalizedPitch * Mathf.PI * 0.5f) * cameraArcHeight;
 					
+					// Calculate distance reduction based on pitch (more reduction when looking up/down)
+					float pitchFactor = Mathf.Abs(normalizedPitch);
+					float distanceReduction = pitchFactor * cameraZoomAmount;
+					
 					// Create new shoulder offset with the vertical component modified
 					Vector3 newOffset = _originalCameraOffset;
 					newOffset.y = _originalCameraOffset.y + verticalOffset;
@@ -215,20 +229,19 @@ namespace StarterAssets
 						newOffset,
 						Time.deltaTime * cameraArcSpeed
 					);
+					
+					// Apply distance reduction to bring camera closer when looking up/down
+					_thirdPersonFollow.CameraDistance = Mathf.Lerp(
+						_thirdPersonFollow.CameraDistance,
+						_originalCameraDistance - distanceReduction,
+						Time.deltaTime * cameraZoomSpeed
+					);
 				}
 
 				// rotate the player left and right
 				transform.Rotate(Vector3.up * _rotationVelocity);
 			}
-			else if (enableCameraArcMotion && _cameraInitialized && _thirdPersonFollow != null)
-			{
-				// Gradually return to original offset when no input
-				_thirdPersonFollow.ShoulderOffset = Vector3.Lerp(
-					_thirdPersonFollow.ShoulderOffset,
-					_originalCameraOffset,
-					Time.deltaTime * cameraArcSpeed
-				);
-			}
+			// We removed the else block to maintain camera position when not looking
 		}
 
 		private void Move()
@@ -245,13 +258,25 @@ namespace StarterAssets
 				if (movementAngle < 0) movementAngle += 360f;
 			}
 
-			// Check if movement is in the forward quadrant (between 30 and 150 degrees)
-			bool isMovingForward = movementAngle >= 40f && movementAngle <= 140f;
-
-			// Only apply sprint speed when moving in the forward quadrant
-			if ((_input.sprint || _input.move.magnitude > runThreshold) && isMovingForward)
+			// Only apply directional speed modifications if not using uniform movement
+			if (!uniformMovementSpeed)
 			{
-				targetSpeed = SprintSpeed;
+				// Check if movement is in the forward quadrant (between 40 and 140 degrees)
+				bool isMovingForward = movementAngle >= 40f && movementAngle <= 140f;
+
+				// Only apply sprint speed when moving in the forward quadrant
+				if ((_input.sprint || _input.move.magnitude > runThreshold) && isMovingForward)
+				{
+					targetSpeed = SprintSpeed;
+				}
+			}
+			else
+			{
+				// In uniform movement mode, always allow sprinting in any direction
+				if (_input.sprint || _input.move.magnitude > runThreshold)
+				{
+					targetSpeed = SprintSpeed;
+				}
 			}
 
 			// a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon

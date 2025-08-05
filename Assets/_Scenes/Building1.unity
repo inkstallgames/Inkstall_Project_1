@@ -8373,7 +8373,6 @@ MonoBehaviour:
   audioSource: {fileID: 1882129043}
   fireSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   noBulletsSound: {fileID: 0}
-  bulletCount: 0
   coinCount: 100
   bulletsCount: 0
   maxBulletsToBuy: 3
@@ -56949,9 +56948,12 @@ MonoBehaviour:
   CinemachineCameraTarget: {fileID: 4135013735539516853}
   TopClamp: 89
   BottomClamp: -89
-  enableCameraArcMotion: 1
+  enableCameraArcMotion: 0
   cameraArcHeight: 2
   cameraArcSpeed: 10
+  cameraZoomAmount: 1.5
+  cameraZoomSpeed: 8
+  uniformMovementSpeed: 1
   minTouchDelta: 10
   touchSensitivity: 5
   useSplitScreenTouch: 1

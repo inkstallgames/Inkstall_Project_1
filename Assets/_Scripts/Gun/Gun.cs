@@ -23,6 +23,16 @@ public class Gun : MonoBehaviour
     public TextMeshProUGUI totalCostText;
 
     
+    public void OnFireButtonDown()
+    {
+        Fire();
+    }
+    
+    public void OnFireButtonUp()
+    {
+        gunAnimator.SetBool("isFiring", false);
+    }
+    
     public void Fire()
     {
         if(bulletsCount > 0)
@@ -31,7 +41,7 @@ public class Gun : MonoBehaviour
                 audioSource.PlayOneShot(fireSound);
                 bulletsCount--;
             }
-            else
+            else if(bulletsCount <= 0)
             {
                 audioSource.PlayOneShot(noBulletsSound);
             }

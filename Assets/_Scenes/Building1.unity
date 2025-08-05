@@ -4692,6 +4692,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1875161218121732013}
     m_Modifications:
     - target: {fileID: 1529412923199490, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
+      propertyPath: m_TagString
+      value: Drawer
+      objectReference: {fileID: 0}
+    - target: {fileID: 1529412923199490, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}

@@ -16706,6 +16706,7 @@ GameObject:
   - component: {fileID: 1875161216726950089}
   - component: {fileID: 1876739491560564362}
   - component: {fileID: 1876739491560564363}
+  - component: {fileID: 1876739491560564364}
   m_Layer: 0
   m_Name: Door_Room_LOD (2)
   m_TagString: Door
@@ -16747,7 +16748,7 @@ GameObject:
   - component: {fileID: 1876668107975457890}
   m_Layer: 0
   m_Name: Door_Room_LOD (11)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17106,7 +17107,7 @@ GameObject:
   - component: {fileID: 1879558091537109994}
   m_Layer: 0
   m_Name: Door_Room_LOD (8)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17144,7 +17145,7 @@ GameObject:
   - component: {fileID: 1876481243523332480}
   m_Layer: 0
   m_Name: Door_Room_LOD (9)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17256,7 +17257,7 @@ GameObject:
   - component: {fileID: 1879530183016443166}
   m_Layer: 0
   m_Name: Door_Room_LOD (10)
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17657,7 +17658,6 @@ GameObject:
   - component: {fileID: 1879557386214284169}
   - component: {fileID: 1905960659448501319}
   - component: {fileID: 1896409413793906381}
-  - component: {fileID: 1937208386943077309}
   - component: {fileID: 4722926279912086932}
   - component: {fileID: 4722926279912086933}
   - component: {fileID: 4722926279912086934}
@@ -18756,7 +18756,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XAngle: 0
-  YAngle: -90
+  YAngle: 90
   ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
@@ -18836,7 +18836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XAngle: 0
-  YAngle: -90
+  YAngle: 90
   ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
@@ -19437,7 +19437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XAngle: 0
-  YAngle: -90
+  YAngle: 90
   ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
@@ -21992,7 +21992,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XAngle: 0
-  YAngle: -90
+  YAngle: 90
   ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
@@ -23554,7 +23554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XAngle: 0
-  YAngle: -90
+  YAngle: 90
   ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
@@ -24333,6 +24333,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!65 &1876739491560564364
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873684772904769889}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.2526206, y: 2.5627837, z: 1.4479071}
+  m_Center: {x: -0.0014567226, y: 1.2690032, z: 0.66905683}
 --- !u!4 &1876742323217504935
 Transform:
   m_ObjectHideFlags: 0
@@ -25312,7 +25333,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XAngle: 0
-  YAngle: -90
+  YAngle: 90
   ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
@@ -29770,27 +29791,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.6236961, y: 2.7029605, z: 0.10830575}
   m_Center: {x: 0.8203647, y: 1.3388054, z: 0.00597745}
---- !u!65 &1937208386943077309
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874390169252728131}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.25262067, y: 2.5627837, z: 1.4479074}
-  m_Center: {x: -0.001456723, y: 1.2690032, z: 0.669057}
 --- !u!65 &1937223242868390663
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -49467,7 +49467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   XAngle: 0
-  YAngle: -90
+  YAngle: 90
   ZAngle: 0
   doorSpeed: 2
   doorOpenSound: {fileID: 0}

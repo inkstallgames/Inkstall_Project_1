@@ -22,28 +22,31 @@ public class Gun : MonoBehaviour
     public TextMeshProUGUI bulletAmountText;
     public TextMeshProUGUI totalCostText;
 
-    
-    public void OnFireButtonDown()
-    {
-        Fire();
-    }
-    
-    public void OnFireButtonUp()
-    {
-        gunAnimator.SetBool("isFiring", false);
-    }
-    
+    private bool canFire = true;
+     
     public void Fire()
     {
-        if(bulletsCount > 0)
+        if(bulletsCount > 0 && canFire)
             {
                 gunAnimator.SetBool("isFiring", true);
+                StartCoroutine(ResetFireBool());
                 audioSource.PlayOneShot(fireSound);
                 bulletsCount--;
+                
             }
-            else if(bulletsCount <= 0)
+            else if(bulletsCount <= 0 || !canFire)
             {
                 audioSource.PlayOneShot(noBulletsSound);
             }
+    }
+
+
+    private IEnumerator ResetFireBool()
+    {
+        canFire = false;
+        yield return new WaitForSeconds(0.1f); // short delay
+        gunAnimator.SetBool("isFiring", false);
+        yield return new WaitForSeconds(0.3f); // cooldown (based on your animation length)
+        canFire = true;
     }
 }

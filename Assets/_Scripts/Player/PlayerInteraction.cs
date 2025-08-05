@@ -31,7 +31,7 @@ public class PlayerInteraction : MonoBehaviour
         if (openCloseButton != null)
         {
             openCloseButton.SetActive(false);
-            
+
             // Add click listener to the open/close button
             Button openCloseButtonComponent = openCloseButton.GetComponent<Button>();
             if (openCloseButtonComponent != null)
@@ -43,12 +43,12 @@ public class PlayerInteraction : MonoBehaviour
                 Debug.LogError("Open/Close button doesn't have a Button component!");
             }
         }
-        
+
         // Setup use key button
         if (useKeyButton != null)
         {
             useKeyButton.SetActive(false);
-            
+
             // Add click listener to the use key button
             Button useKeyButtonComponent = useKeyButton.GetComponent<Button>();
             if (useKeyButtonComponent != null)
@@ -72,28 +72,28 @@ public class PlayerInteraction : MonoBehaviour
         // Store the previous door reference to check if we're still looking at the same door
         DoorInteraction previousDoor = currentDoor;
         DrawerMech previousDrawer = currentDrawer;
-        
+
         // Reset current door reference
         currentDoor = null;
         currentDrawer = null;
-        
+
         // Disable buttons by default
         if (openCloseButton != null)
         {
             openCloseButton.SetActive(false);
         }
-        
+
         if (useKeyButton != null)
         {
             useKeyButton.SetActive(false);
         }
-        
+
         // Cast ray from camera center (where crosshair is)
         Ray ray = new Ray(playerMainCamera.transform.position, playerMainCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
         {
             GameObject hitObject = hit.collider.gameObject;
-            
+
             // Check if we hit a door
             if (hitObject.CompareTag("Door"))
             {
@@ -108,7 +108,7 @@ public class PlayerInteraction : MonoBehaviour
                         // We're looking at a door and within range
                         currentDoor = doorInteraction;
                         openCloseButton.SetActive(true);
-                        
+
                         // Only show use key button if:
                         // 1. The door is locked
                         // 2. We've previously tried to open this specific door (showUseKeyButton is true)
@@ -120,35 +120,40 @@ public class PlayerInteraction : MonoBehaviour
                     }
                 }
             }
-            
-            // Check for drawer (keeping existing functionality)
+
+            // Check for drawer 
             if (hitObject.CompareTag("Drawer"))
             {
+                // Get the drawer interaction component
                 DrawerMech drawerInteraction = hitObject.GetComponent<DrawerMech>();
-                
-                // Check if we're within interaction distance
-                float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
-                if (distanceToObject <= interactDistance)
+                if (drawerInteraction != null && drawerInteraction.enabled)
                 {
-                    currentDrawer = drawerInteraction;
-                    openCloseButton.SetActive(true);
+                    // Check if we're within interaction distance
+                    float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
+                    if (distanceToObject <= interactDistance)
+                    {
+                        // We're looking at a drawer and within range
+                        currentDrawer = drawerInteraction;
+                        openCloseButton.SetActive(true);
+                    }
                 }
-            } 
-        }
-        
-        // If we're no longer looking at the same door, reset the showUseKeyButton flag
-        if (currentDoor != previousDoor)
-        {
-            showUseKeyButton = false;
+            }
+
+            // If we're no longer looking at the same door, reset the showUseKeyButton flag
+            if (currentDoor != previousDoor)
+            {
+                showUseKeyButton = false;
+            }
+
+            // If we're no longer looking at the same drawer, reset the showUseKeyButton flag
+            if (currentDrawer != previousDrawer)
+            {
+                showUseKeyButton = false;
+            }
         }
 
-        // If we're no longer looking at the same drawer, reset the showUseKeyButton flag
-        if (currentDrawer != previousDrawer)
-        {
-            showUseKeyButton = false;
-        }
     }
-    
+
     // Method to interact with the current door
     private void InteractWithCurrentDoor()
     {
@@ -156,12 +161,12 @@ public class PlayerInteraction : MonoBehaviour
         {
             // Try to open the door
             currentDoor.TryOpenDoor();
-            
+
             // If the door is locked, enable the use key button
             if (currentDoor.IsLocked())
             {
                 showUseKeyButton = true;
-                
+
                 // Immediately show the use key button if we're still looking at the door
                 if (useKeyButton != null)
                 {
@@ -170,16 +175,25 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
     }
-    
+
     // Method to unlock the current door
     private void UnlockCurrentDoor()
     {
         if (currentDoor != null && currentDoor.IsLocked())
         {
             currentDoor.TryUnlockDoor();
-            
+
             // Reset the flag since the door is now unlocked
             showUseKeyButton = false;
+        }
+    }
+
+    private void InteractWithCurrentDrawer()
+    {
+        if (currentDrawer != null)
+        {
+            // Toggle the drawer open/close
+            currentDrawer.ToggleDrawerOpenClose();
         }
     }
 }

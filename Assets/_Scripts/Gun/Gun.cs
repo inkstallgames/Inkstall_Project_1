@@ -29,7 +29,8 @@ public class Gun : MonoBehaviour
         if(bulletsCount > 0 && canFire)
             {
                 gunAnimator.SetBool("isFiring", true);
-                StartCoroutine(ResetFireBool());
+                // StartCoroutine(ResetFireBool());
+                Invoke("ResetFireBool", 0.5f);
                 audioSource.PlayOneShot(fireSound);
                 bulletsCount--;
                 
@@ -41,12 +42,21 @@ public class Gun : MonoBehaviour
     }
 
 
-    private IEnumerator ResetFireBool()
-    {
-        canFire = false;
-        yield return new WaitForSeconds(0.1f); // short delay
-        gunAnimator.SetBool("isFiring", false);
-        yield return new WaitForSeconds(0.3f); // cooldown (based on your animation length)
-        canFire = true;
-    }
+        private void ResetFireBool()
+        {
+            gunAnimator.SetBool("isFiring", false);
+            canFire = true;
+     
+        }
 }
+
+
+//     private IEnumerator ResetFireBool()
+//     {
+//         canFire = false;
+//         yield return new WaitForSeconds(0.1f); // short delay
+//         gunAnimator.SetBool("isFiring", false);
+//         yield return new WaitForSeconds(0.3f); // cooldown (based on your animation length)
+//         canFire = true;
+//     }
+// }

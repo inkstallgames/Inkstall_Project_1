@@ -38,12 +38,6 @@ public class DrawerMech : MonoBehaviour
     // This is the method called by PlayerInteraction script
     public void ToggleDrawerOpenClose()
     {
-        // Toggle drawer open/close
-        ToggleDrawer();
-    }
-
-    private void ToggleDrawer()
-    {
         if (isDrawerMoving) return;
 
         isDrawerOpen = !isDrawerOpen;

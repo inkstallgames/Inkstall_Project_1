@@ -122,7 +122,7 @@ public class PlayerInteraction : MonoBehaviour
             }
 
             // Check for drawer 
-            if (hitObject.CompareTag("Drawer"))
+            if (hitObject.CompareTag("SlidingDoor"))
             {
                 // Get the drawer interaction component
                 DrawerMech drawerInteraction = hitObject.GetComponent<DrawerMech>();
@@ -133,6 +133,7 @@ public class PlayerInteraction : MonoBehaviour
                     if (distanceToObject <= interactDistance)
                     {
                         // We're looking at a drawer and within range
+                        Debug.Log("We are looking at the drawer and also wihin range");
                         currentDrawer = drawerInteraction;
                         openCloseButton.SetActive(true);
                     }
@@ -173,6 +174,11 @@ public class PlayerInteraction : MonoBehaviour
                     useKeyButton.SetActive(true);
                 }
             }
+        }
+        else if (currentDrawer != null)
+        {
+            // If we're looking at a drawer instead of a door, interact with it
+            InteractWithCurrentDrawer();
         }
     }
 

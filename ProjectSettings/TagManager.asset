@@ -10,7 +10,7 @@ TagManager:
   - QuizPanel
   - Prop
   - Door
-  - Drawer
+  - SlidingDoor
   layers:
   - Default
   - TransparentFX

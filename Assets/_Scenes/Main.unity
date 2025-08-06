@@ -92732,6 +92732,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 752629832370366590, guid: ad0f80dc67ce9684b8972b2f04854d93,
         type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 752629832370366590, guid: ad0f80dc67ce9684b8972b2f04854d93,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -92792,6 +92797,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1413877534280874110, guid: ad0f80dc67ce9684b8972b2f04854d93,
         type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 1413877534280874110, guid: ad0f80dc67ce9684b8972b2f04854d93,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
@@ -92804,6 +92814,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1876026157323782943, guid: ad0f80dc67ce9684b8972b2f04854d93,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 1876026157323782943, guid: ad0f80dc67ce9684b8972b2f04854d93,
         type: 3}
@@ -92824,6 +92839,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4920420155967728131, guid: ad0f80dc67ce9684b8972b2f04854d93,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 4920420155967728131, guid: ad0f80dc67ce9684b8972b2f04854d93,
         type: 3}
@@ -92874,6 +92894,16 @@ PrefabInstance:
         type: 3}
       propertyPath: openRotation.y
       value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7644159789103769126, guid: ad0f80dc67ce9684b8972b2f04854d93,
+        type: 3}
+      propertyPath: YAngle
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7914301408419970824, guid: ad0f80dc67ce9684b8972b2f04854d93,
+        type: 3}
+      propertyPath: YAngle
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 8545846847292708922, guid: ad0f80dc67ce9684b8972b2f04854d93,
         type: 3}
@@ -98513,6 +98543,16 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 2141775192729955118, guid: b12952e62525ed648967814a075216b6,
+        type: 3}
+      propertyPath: YAngle
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3768240280647661138, guid: b12952e62525ed648967814a075216b6,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
     - target: {fileID: 3768240280647661138, guid: b12952e62525ed648967814a075216b6,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -98525,8 +98565,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4194393703435961243, guid: b12952e62525ed648967814a075216b6,
         type: 3}
+      propertyPath: m_TagString
+      value: Door
+      objectReference: {fileID: 0}
+    - target: {fileID: 4194393703435961243, guid: b12952e62525ed648967814a075216b6,
+        type: 3}
       propertyPath: m_StaticEditorFlags
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4207993716404201342, guid: b12952e62525ed648967814a075216b6,
+        type: 3}
+      propertyPath: YAngle
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 4522497228187334821, guid: b12952e62525ed648967814a075216b6,
         type: 3}
@@ -98537,6 +98587,11 @@ PrefabInstance:
         type: 3}
       propertyPath: openRotation.y
       value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052381390422283920, guid: b12952e62525ed648967814a075216b6,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 6052381390422283920, guid: b12952e62525ed648967814a075216b6,
         type: 3}
@@ -98552,6 +98607,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7337817835986412717, guid: b12952e62525ed648967814a075216b6,
+        type: 3}
+      propertyPath: m_TagString
+      value: Door
       objectReference: {fileID: 0}
     - target: {fileID: 7337817835986412717, guid: b12952e62525ed648967814a075216b6,
         type: 3}

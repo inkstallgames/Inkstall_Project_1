@@ -3797,7 +3797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XAngle: 90
+  XAngle: 60
   YAngle: 0
   ZAngle: 0
   doorSpeed: 2
@@ -48657,7 +48657,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XAngle: 90
+  XAngle: 60
   YAngle: 0
   ZAngle: 0
   doorSpeed: 2
@@ -92823,6 +92823,12 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1594402207044655989, guid: ad0f80dc67ce9684b8972b2f04854d93,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -3199788514121984058, guid: 14cce29ad9058904d96cc3067402803d,
+        type: 3}
     - target: {fileID: 1829922410192357324, guid: ad0f80dc67ce9684b8972b2f04854d93,
         type: 3}
       propertyPath: m_Name
@@ -92881,6 +92887,17 @@ PrefabInstance:
     - target: {fileID: 5630090754105576187, guid: ad0f80dc67ce9684b8972b2f04854d93,
         type: 3}
       propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5862201646697128736, guid: ad0f80dc67ce9684b8972b2f04854d93,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -3199788514121984058, guid: 14cce29ad9058904d96cc3067402803d,
+        type: 3}
+    - target: {fileID: 5862201646697128736, guid: ad0f80dc67ce9684b8972b2f04854d93,
+        type: 3}
+      propertyPath: m_Convex
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5984496860629068849, guid: ad0f80dc67ce9684b8972b2f04854d93,
@@ -92988,7 +93005,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XAngle: -90
+  XAngle: -40
   YAngle: 0
   ZAngle: 0
   doorSpeed: 2
@@ -98859,7 +98876,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XAngle: -90
+  XAngle: -40
   YAngle: 0
   ZAngle: 0
   doorSpeed: 2
@@ -107578,7 +107595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XAngle: 90
+  XAngle: 60
   YAngle: 0
   ZAngle: 0
   doorSpeed: 2
@@ -121969,6 +121986,12 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 4122071064520869078, guid: 9f91421c9babd52489a537dbe4cf29b1,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -3199788514121984058, guid: 14cce29ad9058904d96cc3067402803d,
+        type: 3}
     - target: {fileID: 5367708910492955937, guid: 9f91421c9babd52489a537dbe4cf29b1,
         type: 3}
       propertyPath: m_TagString
@@ -121979,6 +122002,12 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6209696417937806930, guid: 9f91421c9babd52489a537dbe4cf29b1,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -3199788514121984058, guid: 14cce29ad9058904d96cc3067402803d,
+        type: 3}
     - target: {fileID: 6418221964813995520, guid: 9f91421c9babd52489a537dbe4cf29b1,
         type: 3}
       propertyPath: m_StaticEditorFlags
@@ -122104,7 +122133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  XAngle: -90
+  XAngle: -40
   YAngle: 0
   ZAngle: 0
   doorSpeed: 2

@@ -5,6 +5,11 @@ using TMPro;
 
 public class Gun : MonoBehaviour
 {
+    private void Start()
+    {
+        // Disable the gun at the start of the game
+        gameObject.SetActive(false);
+    }
     public Animator gunAnimator;
     public AudioSource audioSource;
     public AudioClip fireSound;
@@ -25,38 +30,39 @@ public class Gun : MonoBehaviour
     private bool canFire = true;
      
     public void Fire()
+{
+    if (bulletsCount > 0 && audioSource != null)
     {
-        if(bulletsCount > 0 && canFire)
-            {
-                gunAnimator.SetBool("isFiring", true);
-                // StartCoroutine(ResetFireBool());
-                Invoke("ResetFireBool", 0.5f);
-                audioSource.PlayOneShot(fireSound);
-                bulletsCount--;
-                
-            }
-            else if(bulletsCount <= 0 || !canFire)
-            {
-                audioSource.PlayOneShot(noBulletsSound);
-            }
-    }
-
-
-        private void ResetFireBool()
+        if (canFire)
         {
-            gunAnimator.SetBool("isFiring", false);
-            canFire = true;
-     
+            StartCoroutine(FireRoutine());
         }
+    }
+    else
+    {
+        if (audioSource != null)
+            audioSource.PlayOneShot(noBulletsSound);
+    }
 }
 
+private IEnumerator FireRoutine()
+{
+    canFire = false;
 
-//     private IEnumerator ResetFireBool()
-//     {
-//         canFire = false;
-//         yield return new WaitForSeconds(0.1f); // short delay
-//         gunAnimator.SetBool("isFiring", false);
-//         yield return new WaitForSeconds(0.3f); // cooldown (based on your animation length)
-//         canFire = true;
-//     }
-// }
+    // 🔥 Trigger the animation (not a bool!)
+    gunAnimator.SetBool("isFiring", true);
+
+    // 🔊 Play fire sound
+    audioSource.PlayOneShot(fireSound);
+
+    // 🔫 Decrease bullet
+    bulletsCount--;
+
+    // 🕒 Wait for animation duration (adjust if needed)
+    yield return new WaitForSeconds(0.1f);
+
+    gunAnimator.SetBool("isFiring", false);
+    canFire = true;
+}
+
+}

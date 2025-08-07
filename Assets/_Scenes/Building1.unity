@@ -4905,6 +4905,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7232697963552053662, guid: cde875813fb5ee54c8770e39c214453b,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6208,7 +6213,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1307166878
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7501,17 +7506,17 @@ PrefabInstance:
     - target: {fileID: 253104850378633474, guid: 3f29914b413904d40a89e972f348ebd8,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.80000013
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 253104850378633474, guid: 3f29914b413904d40a89e972f348ebd8,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.8000002
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 253104850378633474, guid: 3f29914b413904d40a89e972f348ebd8,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.8000003
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 253104850378633474, guid: 3f29914b413904d40a89e972f348ebd8,
         type: 3}
@@ -7571,7 +7576,7 @@ PrefabInstance:
     - target: {fileID: 633007714637671352, guid: 3f29914b413904d40a89e972f348ebd8,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1425417154615888493, guid: 3f29914b413904d40a89e972f348ebd8,
         type: 3}
@@ -8825,7 +8830,7 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   noBulletsSound: {fileID: 0}
   coinCount: 100
-  bulletsCount: 10
+  bulletsCount: 20
   maxBulletsToBuy: 3
   costPerBullet: 10
   coinText: {fileID: 0}
@@ -9605,7 +9610,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4526664636313418, guid: aa950a0fff2eccd408b3447dcb8b7f21, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -7.167
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: 4526664636313418, guid: aa950a0fff2eccd408b3447dcb8b7f21, type: 3}
       propertyPath: m_LocalRotation.w
@@ -9635,7 +9640,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 23149672436203634, guid: aa950a0fff2eccd408b3447dcb8b7f21,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e3dec620ecd879248a90f60078c69962, type: 2}
     - target: {fileID: 23413534225647686, guid: aa950a0fff2eccd408b3447dcb8b7f21,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7ac047e1b4168b7489bab58ed4930324, type: 2}
+    - target: {fileID: 23856461503608618, guid: aa950a0fff2eccd408b3447dcb8b7f21,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -12900,6 +12915,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &975421949430823410
 Transform:
@@ -15165,6 +15184,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1609635412495604071
 MeshRenderer:
@@ -18970,6 +18993,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 1879614732177390110}
 --- !u!4 &1875161216612700763
 Transform:
@@ -19148,6 +19175,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161216722088320
 MeshRenderer:
@@ -19228,6 +19259,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216731409326
 Transform:
@@ -19537,6 +19572,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 1876630031721721799}
 --- !u!23 &1875161216885549428 stripped
 MeshRenderer:
@@ -19829,6 +19868,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161217056796249
 MonoBehaviour:
@@ -19852,6 +19895,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217121920507
 Transform:
@@ -20018,6 +20065,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!1 &1875161217394332177
 GameObject:
@@ -20140,6 +20191,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217482913422
 Transform:
@@ -21582,6 +21637,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161218230787375 stripped
 MeshRenderer:
@@ -21848,6 +21907,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 5411702062035160471}
 --- !u!4 &1875161218516245653
 Transform:
@@ -22012,6 +22075,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218673369673
 Transform:
@@ -22768,6 +22835,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876481243523332479
 AudioSource:
@@ -23368,6 +23439,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876635991172028075
 AudioSource:
@@ -23540,6 +23615,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876640084607535165
 AudioSource:
@@ -24616,6 +24695,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879301797568630687
 AudioSource:
@@ -25319,6 +25402,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879530183016443165
 AudioSource:
@@ -25948,6 +26035,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879628717615984171
 AudioSource:
@@ -36735,6 +36826,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3231434512211610070
 AudioSource:
@@ -37800,6 +37895,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3531443653390167215
 AudioSource:
@@ -39502,6 +39601,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4095303726235316411
 AudioSource:
@@ -40402,6 +40505,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4323376261421865388
 AudioSource:
@@ -41729,6 +41836,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4722926279912086933
 AudioSource:
@@ -42591,6 +42702,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &4985833862760063991
 Transform:
@@ -43423,6 +43538,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 1
+  gunModel: {fileID: 1882129039}
+  fireButton: {fileID: 1536972007016953564}
+  shopButton: {fileID: 2888523364713361416}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:
@@ -45050,6 +45169,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &5660267529715239442
 AudioSource:
@@ -46674,6 +46797,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 6096234473738546706}
 --- !u!95 &6096234473738546706
 Animator:
@@ -48116,6 +48243,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6370389251489606861
 AudioSource:
@@ -48712,7 +48843,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &6609228294208508213
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -49225,6 +49356,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6734199790238685268
 AudioSource:
@@ -49638,6 +49773,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &6823987876855903344
 MeshRenderer:
@@ -54798,6 +54937,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 8128831679578322680}
 --- !u!95 &8128831679578322680
 Animator:
@@ -54997,6 +55140,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &8176039784201981259
 AudioSource:
@@ -55915,7 +56062,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &8445824210148928009
 MonoBehaviour:
   m_ObjectHideFlags: 0

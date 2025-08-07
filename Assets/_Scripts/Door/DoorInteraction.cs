@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using TMPro;
 using UnityEngine.UI;
@@ -22,8 +22,15 @@ public class DoorInteraction : MonoBehaviour
     [Header("Timer Settings")]
     [SerializeField] private bool shouldStartTimer = false;
 
+    [Header("Game Activation Settings")]
+    [SerializeField] private GameObject gunModel;
+    [SerializeField] private Button fireButton;
+    [SerializeField] private Button shopButton;
+    [SerializeField] private GameTimer gameTimer;
+
     // State
     private bool isDoorOpen = false;
+    private bool gameElementsActivated = false;
     private bool isDoorMoving = false;
     private Quaternion closedRotation;
     private Quaternion openRotation;
@@ -82,6 +89,11 @@ public class DoorInteraction : MonoBehaviour
         }
         else if (!isLocked)
         {
+            if (!isDoorOpen && !gameElementsActivated)
+            {
+                ActivateGameElements();
+                gameElementsActivated = true;
+            }
             ToggleDoorOpenClose();
         }
     }
@@ -94,6 +106,29 @@ public class DoorInteraction : MonoBehaviour
             {
                 audioSource.PlayOneShot(doorLockedSound);
             }
+        }
+    }
+
+    private void ActivateGameElements()
+    {
+        if (gunModel != null)
+        {
+            gunModel.SetActive(true);
+        }
+
+        if (fireButton != null)
+        {
+            fireButton.gameObject.SetActive(true);
+        }
+
+        if (shopButton != null)
+        {
+            shopButton.gameObject.SetActive(true);
+        }
+
+        if (shouldStartTimer && gameTimer != null)
+        {
+            gameTimer.gameObject.SetActive(true);
         }
     }
 

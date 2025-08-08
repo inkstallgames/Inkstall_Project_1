@@ -47,6 +47,9 @@ namespace StarterAssets
 		[Header("Mobile Controls")]
 		[Tooltip("Joystick magnitude threshold for running")]
 		public float runThreshold = 0.7f;
+		[Tooltip("Sensitivity multiplier for WebGL builds")]
+		[Range(0.1f, 1.0f)]
+		public float webGLSensitivity = 0.5f;
 
 		[Header("Cinemachine")]
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
@@ -410,8 +413,16 @@ namespace StarterAssets
 								{
 									// Invert the Y-axis to fix the up/down movement
 									delta.y = -delta.y;
-									// Use touch delta for camera movement
-									_input.look = delta * touchSensitivity;
+									// Apply platform-specific sensitivity
+                                    float sensitivity = touchSensitivity;
+                                    
+                                    // Reduce sensitivity for WebGL builds
+                                    #if UNITY_WEBGL
+                                    sensitivity *= webGLSensitivity;
+                                    #endif
+                                    
+                                    // Use touch delta for camera movement
+                                    _input.look = delta * sensitivity;
 								}
 
 								// Always update previous position

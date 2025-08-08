@@ -662,6 +662,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &7431133
 LODGroup:
@@ -3807,6 +3811,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &65548425
 AudioSource:
@@ -5831,6 +5839,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &92300584
 LODGroup:
@@ -6116,6 +6128,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &94431186
 LODGroup:
@@ -6696,6 +6712,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &100283151
 BoxCollider:
@@ -8311,6 +8331,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &127866685
 LODGroup:
@@ -8834,6 +8858,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &131479574
 LODGroup:
@@ -11598,6 +11626,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &175040372
 LODGroup:
@@ -13073,6 +13105,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &196507135
 BoxCollider:
@@ -14231,6 +14267,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &205595311
 BoxCollider:
@@ -19732,6 +19772,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &286375270
 BoxCollider:
@@ -23958,6 +24002,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &341758773
 BoxCollider:
@@ -30245,6 +30293,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &404150044
 LODGroup:
@@ -31259,6 +31311,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &418472710
 BoxCollider:
@@ -31485,6 +31541,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &419554577
 LODGroup:
@@ -35259,6 +35319,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &478900513
 LODGroup:
@@ -36317,6 +36381,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &499634770
 BoxCollider:
@@ -36959,6 +37027,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &504550167
 LODGroup:
@@ -37721,6 +37793,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &514558226
 LODGroup:
@@ -38719,6 +38795,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &522830152
 BoxCollider:
@@ -40347,6 +40427,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &542281730
 BoxCollider:
@@ -42192,6 +42276,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &560921206
 LODGroup:
@@ -44532,6 +44620,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &602021501
 BoxCollider:
@@ -46425,6 +46517,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &632079604
 BoxCollider:
@@ -47414,6 +47510,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &638407733
 BoxCollider:
@@ -47844,6 +47944,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &645307921
 BoxCollider:
@@ -48667,6 +48771,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &665400300
 AudioSource:
@@ -50553,6 +50661,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &680244834
 LODGroup:
@@ -53769,6 +53881,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &724603223
 LODGroup:
@@ -55212,6 +55328,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &735745864
 LODGroup:
@@ -55722,6 +55842,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &742459946
 BoxCollider:
@@ -57980,6 +58104,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &770886193
 BoxCollider:
@@ -58882,6 +59010,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &783682285
 LODGroup:
@@ -59538,7 +59670,7 @@ MonoBehaviour:
   totalKeys: 0
   keyText: {fileID: 9141209313748028089}
   apiBaseUrl: https://api.inkstall.in/api/slot/get-keys/
-  userId: 681ee0e6198ad04bf6c1c733
+  studentId: 681ee0e6198ad04bf6c1c733
 --- !u!1001 &788885689
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60038,6 +60170,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &789630988
 LODGroup:
@@ -63552,6 +63688,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &832353219
 LODGroup:
@@ -63728,6 +63868,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &833376008
 BoxCollider:
@@ -64569,6 +64713,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &850690117
 LODGroup:
@@ -65261,6 +65409,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &860042677
 BoxCollider:
@@ -65487,6 +65639,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &861121031
 BoxCollider:
@@ -68984,6 +69140,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &912275514
 LODGroup:
@@ -70836,6 +70996,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &937736308
 BoxCollider:
@@ -71847,6 +72011,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &945448659
 BoxCollider:
@@ -73212,6 +73380,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &960548462
 BoxCollider:
@@ -73747,6 +73919,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &969194669
 LODGroup:
@@ -74859,6 +75035,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &986512341
 LODGroup:
@@ -75121,6 +75301,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &991711262
 BoxCollider:
@@ -77403,6 +77587,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1027447567
 LODGroup:
@@ -77748,6 +77936,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1031432515
 LODGroup:
@@ -79061,6 +79253,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1048029754
 BoxCollider:
@@ -79475,6 +79671,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1049225333
 LODGroup:
@@ -80344,6 +80544,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1059370820
 LODGroup:
@@ -80690,6 +80894,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1064742300
 BoxCollider:
@@ -83286,6 +83494,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1093871774
 BoxCollider:
@@ -83512,6 +83724,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1094417030
 BoxCollider:
@@ -83819,6 +84035,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1098779072
 LODGroup:
@@ -84083,6 +84303,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1102787942
 BoxCollider:
@@ -86962,6 +87186,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1146141196
 BoxCollider:
@@ -88219,6 +88447,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1156827452
 LODGroup:
@@ -91148,6 +91380,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1197044446
 LODGroup:
@@ -93015,6 +93251,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1220914489
 AudioSource:
@@ -94934,6 +95174,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1256055862
 LODGroup:
@@ -95314,6 +95558,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1260610041
 BoxCollider:
@@ -95563,6 +95811,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1261334822
 LODGroup:
@@ -96516,6 +96768,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1271847552
 BoxCollider:
@@ -98886,6 +99142,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1318172692
 AudioSource:
@@ -99147,6 +99407,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1323805121
 LODGroup:
@@ -99493,6 +99757,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1326364277
 LODGroup:
@@ -102065,6 +102333,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1362109623
 BoxCollider:
@@ -106762,6 +107034,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1434568605
 BoxCollider:
@@ -107605,6 +107881,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1443607367
 AudioSource:
@@ -109192,6 +109472,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1458319544
 BoxCollider:
@@ -109827,6 +110111,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1465070210
 LODGroup:
@@ -111105,6 +111393,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1478254345
 LODGroup:
@@ -112611,6 +112903,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1493700858
 BoxCollider:
@@ -113164,6 +113460,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1500338624
 LODGroup:
@@ -118061,6 +118361,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1574790228
 LODGroup:
@@ -122143,6 +122447,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1628415624
 AudioSource:
@@ -124286,6 +124594,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1668161468
 BoxCollider:
@@ -127556,6 +127868,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1721438025
 BoxCollider:
@@ -130652,6 +130968,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1760120230
 LODGroup:
@@ -131691,6 +132011,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1778620479
 BoxCollider:
@@ -135314,6 +135638,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1829674791
 BoxCollider:
@@ -136731,6 +137059,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1865049642
 LODGroup:
@@ -139633,6 +139965,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1911240753
 BoxCollider:
@@ -146737,6 +147073,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2021741634
 BoxCollider:
@@ -147436,6 +147776,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &2027373671
 LODGroup:
@@ -148105,6 +148449,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &2039461619
 LODGroup:
@@ -148981,6 +149329,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2059175576
 BoxCollider:
@@ -150359,6 +150711,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!205 &2066204948
 LODGroup:
@@ -150872,6 +151228,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2070106397
 BoxCollider:
@@ -154497,6 +154857,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2123666275
 BoxCollider:
@@ -160434,6 +160798,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!1 &954360384414727499
 GameObject:
@@ -162699,6 +163067,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1609635412495604071
 MeshRenderer:
@@ -166414,6 +166786,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 1
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216612700763
 Transform:
@@ -166616,6 +166992,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161216683219789
 MonoBehaviour:
@@ -166639,6 +167019,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 1
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161216722088320
 MeshRenderer:
@@ -166719,6 +167103,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216731409326
 Transform:
@@ -166983,6 +167371,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 1
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216913999824
 Transform:
@@ -167189,6 +167581,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161217056796249
 MonoBehaviour:
@@ -167212,6 +167608,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217079586938
 Transform:
@@ -167436,6 +167836,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!1 &1875161217394332177
 GameObject:
@@ -167492,6 +167896,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217401311382
 Transform:
@@ -167569,6 +167977,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217482913422
 Transform:
@@ -168742,6 +169154,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218241288186
 Transform:
@@ -168945,6 +169361,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 1
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218516245653
 Transform:
@@ -169097,6 +169517,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218673369673
 Transform:
@@ -182531,6 +182955,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3231434512211610070
 AudioSource:
@@ -183519,7 +183947,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &3524143169024362717
 MeshRenderer:
@@ -183645,6 +184073,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3531443653390167215
 AudioSource:
@@ -185652,6 +186084,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4095303726235316411
 AudioSource:
@@ -186500,6 +186936,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4323376261421865388
 AudioSource:
@@ -187520,11 +187960,11 @@ RectTransform:
   - {fileID: 3521703716589642488}
   m_Father: {fileID: 8420975128366436157}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 518, y: 0}
-  m_SizeDelta: {x: 128, y: 128}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 1, y: 1}
 --- !u!23 &4638681773428525511
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -187939,6 +188379,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4722926279912086933
 AudioSource:
@@ -188853,6 +189297,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!224 &4981159361637667286
 RectTransform:
@@ -191178,6 +191626,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &5660267529715239442
 AudioSource:
@@ -192712,6 +193164,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 1
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6096234473738546701
 AudioSource:
@@ -194209,6 +194665,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6370389251489606861
 AudioSource:
@@ -195347,6 +195807,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6734199790238685268
 AudioSource:
@@ -195709,6 +196173,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &6823987876855903344
 MeshRenderer:
@@ -201208,6 +201676,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
+  gunModel: {fileID: 0}
+  fireButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  gameTimer: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &8176039784201981259
 AudioSource:
@@ -204770,6 +205242,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   runThreshold: 0.6
+  webGLSensitivity: 0.5
   CinemachineCameraTarget: {fileID: 6981022636306073780}
   TopClamp: 50
   BottomClamp: -50

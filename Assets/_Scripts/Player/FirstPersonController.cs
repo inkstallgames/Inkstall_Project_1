@@ -47,9 +47,6 @@ namespace StarterAssets
 		[Header("Mobile Controls")]
 		[Tooltip("Joystick magnitude threshold for running")]
 		public float runThreshold = 0.7f;
-		[Tooltip("Sensitivity multiplier for WebGL builds")]
-		[Range(0.1f, 1.0f)]
-		public float webGLSensitivity = 0.5f;
 
 		[Header("Cinemachine")]
 		[Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
@@ -96,11 +93,13 @@ namespace StarterAssets
 		public float touchSensitivity = 0.1f;
 		[Tooltip("Whether to use screen split for touch controls (left: movement, right: camera)")]
 		public bool useSplitScreenTouch = true;
+		[Tooltip("Additional sensitivity reduction for WebGL platform (lower = less sensitive)")]
+		public float webGLSensitivityMultiplier = 0.1f;
 
 		// PlayerPrefs key for sensitivity (matching OptionsMenuManager)
 		private const string SENSITIVITY_KEY = "ScreenSensitivity";
 		private const float DEFAULT_SENSITIVITY = 0.2f;
-		private const float SENSITIVITY_MULTIPLIER = 1.5f; // Match this with your OptionsMenuManager's sensitivityMultiplier
+		private const float SENSITIVITY_MULTIPLIER = 1f; // Match this with your OptionsMenuManager's sensitivityMultiplier
 
 #if ENABLE_INPUT_SYSTEM
 		private PlayerInput _playerInput;
@@ -413,16 +412,17 @@ namespace StarterAssets
 								{
 									// Invert the Y-axis to fix the up/down movement
 									delta.y = -delta.y;
-									// Apply platform-specific sensitivity
-                                    float sensitivity = touchSensitivity;
-                                    
-                                    // Reduce sensitivity for WebGL builds
-                                    #if UNITY_WEBGL
-                                    sensitivity *= webGLSensitivity;
-                                    #endif
-                                    
-                                    // Use touch delta for camera movement
-                                    _input.look = delta * sensitivity;
+									
+									// Apply platform-specific sensitivity adjustments
+									float adjustedSensitivity = touchSensitivity;
+									
+									// Apply WebGL-specific sensitivity reduction
+#if UNITY_WEBGL && !UNITY_EDITOR
+									adjustedSensitivity *= webGLSensitivityMultiplier;
+#endif
+									
+									// Use touch delta for camera movement
+									_input.look = delta * adjustedSensitivity;
 								}
 
 								// Always update previous position

@@ -14,10 +14,10 @@ public class OptionsMenuManager : MonoBehaviour
     public Toggle musicToggle; 
     
     [Header("Sensitivity Settings")]
-    public float sensitivityMultiplier = 2.0f; // Adjust this in the inspector to scale sensitivity
+    public float sensitivityMultiplier = 1.0f; // Adjust this in the inspector to scale sensitivity
     
     // Settings values
-    private float screenSensitivity = 0.5f;
+    private float screenSensitivity = 0.2f;
     private float volumeLevel = 0.5f;
     private bool musicEnabled = true;
     

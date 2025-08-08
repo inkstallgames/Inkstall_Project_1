@@ -187962,7 +187962,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!23 &4638681773428525511
@@ -191991,7 +191991,7 @@ MonoBehaviour:
   sensitivitySlider: {fileID: 1975201764182632071}
   volumeSlider: {fileID: 3552748045023210423}
   musicToggle: {fileID: 5474568657659552805}
-  sensitivityMultiplier: 2
+  sensitivityMultiplier: 1
 --- !u!114 &5821038431005200085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205241,8 +205241,7 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 1
-  runThreshold: 0.6
-  webGLSensitivity: 0.5
+  runThreshold: 0.7
   CinemachineCameraTarget: {fileID: 6981022636306073780}
   TopClamp: 50
   BottomClamp: -50
@@ -205253,7 +205252,7 @@ MonoBehaviour:
   cameraZoomSpeed: 8
   uniformMovementSpeed: 0
   minTouchDelta: 10
-  touchSensitivity: 5
+  touchSensitivity: 1
   useSplitScreenTouch: 1
 --- !u!33 &9189814346118641669
 MeshFilter:

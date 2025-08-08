@@ -890,7 +890,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1428814400818248, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1428814400818248, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1419,7 +1419,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1298414782933754, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1298414782933754, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1539,6 +1539,10 @@ PrefabInstance:
     - target: {fileID: 1766323525299762, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_Name
       value: Cabinet_2 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1766323525299762, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 4528681997937634, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1741,7 +1745,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1428814400818248, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1428814400818248, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1935,7 +1939,7 @@ PrefabInstance:
     - target: {fileID: 5637405974644548247, guid: 0f92be68b353738408865a535490c198,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2192,7 +2196,7 @@ PrefabInstance:
     - target: {fileID: 6849773654558260055, guid: db33d25094d109346b90b5f2c993c8ba,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2243,7 +2247,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1298414782933754, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1405401060102548, guid: 4416d88702eb8a242be0cb14dabcd387, type: 3}
       propertyPath: m_TagString
@@ -2724,7 +2728,7 @@ PrefabInstance:
     - target: {fileID: 7312628443597218575, guid: 16dc4a415aa867240bb05bb29dfbcc68,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7939983031341152693, guid: 16dc4a415aa867240bb05bb29dfbcc68,
         type: 3}
@@ -3254,7 +3258,7 @@ PrefabInstance:
     - target: {fileID: 4328488083210567523, guid: 52247c4c064dd874fabf7eb71c4b4b88,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 4328488083210567523, guid: 52247c4c064dd874fabf7eb71c4b4b88,
         type: 3}
@@ -3522,7 +3526,7 @@ PrefabInstance:
     - target: {fileID: 7497851449543707673, guid: e926a1146adc61d4ba6ba0270ee0e09a,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4865,6 +4869,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cabinet_2
       objectReference: {fileID: 0}
+    - target: {fileID: 1766323525299762, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 4528681997937634, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.16
@@ -4945,7 +4953,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1080529212456780, guid: 1a5a864cc965e6241b10e38df4c0ecd9, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1080529212456780, guid: 1a5a864cc965e6241b10e38df4c0ecd9, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -5095,7 +5103,7 @@ PrefabInstance:
     - target: {fileID: 8062489396906497250, guid: 5aa0fa2f0ae58574fbb4cc0840a150b3,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5554,7 +5562,7 @@ PrefabInstance:
     - target: {fileID: 6961233565070228966, guid: 57df82bc3ccfe344499a13dc4400ac61,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7768873901944809308, guid: 57df82bc3ccfe344499a13dc4400ac61,
         type: 3}
@@ -5684,8 +5692,9 @@ GameObject:
   - component: {fileID: 1194441156}
   - component: {fileID: 1194441158}
   - component: {fileID: 1194441157}
+  - component: {fileID: 1194441159}
   m_Layer: 5
-  m_Name: Timer_Text
+  m_Name: GameTimer_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5807,6 +5816,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1194441155}
   m_CullTransparentMesh: 1
+--- !u!114 &1194441159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194441155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalTime: 180
+  timerText: {fileID: 0}
+  timerRunning: 0
+  tickSound: {fileID: 0}
+  tickVolume: 1
 --- !u!1 &1206205651
 GameObject:
   m_ObjectHideFlags: 0
@@ -5996,7 +6022,7 @@ MonoBehaviour:
   totalKeys: 0
   keyText: {fileID: 3130298712862170198}
   apiBaseUrl: https://api.inkstall.in/api/slot/get-keys/
-  userId: 681ee0e6198ad04bf6c1c733
+  studentId: 681ee0e6198ad04bf6c1c733
 --- !u!1 &1236287189 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6961233565070228966, guid: 57df82bc3ccfe344499a13dc4400ac61,
@@ -6404,7 +6430,7 @@ PrefabInstance:
     - target: {fileID: 7556791777611879696, guid: f76b38a89acf9134ea391ff11d86fe8e,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6757,7 +6783,7 @@ PrefabInstance:
     - target: {fileID: 369948187675801988, guid: cc98aa33a8b15a64381c437a2624e579,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1038503327757198142, guid: cc98aa33a8b15a64381c437a2624e579,
         type: 3}
@@ -6938,7 +6964,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1411180530148116, guid: 9fca9fb036f984445927918582183eac, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1411180530148116, guid: 9fca9fb036f984445927918582183eac, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -7201,7 +7227,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1189680318001556, guid: 4ef5b485c0abb3f4e82680e350437b64, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1576429470864110, guid: 4ef5b485c0abb3f4e82680e350437b64, type: 3}
       propertyPath: m_TagString
@@ -7300,7 +7326,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1080529212456780, guid: 1a5a864cc965e6241b10e38df4c0ecd9, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1080529212456780, guid: 1a5a864cc965e6241b10e38df4c0ecd9, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -7396,7 +7422,7 @@ PrefabInstance:
     - target: {fileID: 3784001720782453869, guid: d0a8bc4e217d52847b8990d03d52174e,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 4596109411780667095, guid: d0a8bc4e217d52847b8990d03d52174e,
         type: 3}
@@ -7916,7 +7942,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1371724373281570, guid: f052b5a392205224da8e029e1f7fed3e, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1937917351076174, guid: f052b5a392205224da8e029e1f7fed3e, type: 3}
       propertyPath: m_TagString
@@ -8075,7 +8101,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1913783745208930, guid: dedbe4995cba5524e88567108388f7cc, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1913783745208930, guid: dedbe4995cba5524e88567108388f7cc, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -8298,7 +8324,7 @@ PrefabInstance:
     - target: {fileID: 4171355621365708254, guid: 43370f2e01c86b048945ae33be0ce755,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -8871,7 +8897,7 @@ PrefabInstance:
     - target: {fileID: 1157308512712802934, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1964771587898480844, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
         type: 3}
@@ -8979,7 +9005,7 @@ PrefabInstance:
     - target: {fileID: 4647774750311119868, guid: 8861d859fa131a94aa6deb29053058cc,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 5461712059280564550, guid: 8861d859fa131a94aa6deb29053058cc,
         type: 3}
@@ -9594,7 +9620,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1790755073740054, guid: aa950a0fff2eccd408b3447dcb8b7f21, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1860466841465400, guid: aa950a0fff2eccd408b3447dcb8b7f21, type: 3}
       propertyPath: m_TagString
@@ -43541,7 +43567,7 @@ MonoBehaviour:
   gunModel: {fileID: 1882129039}
   fireButton: {fileID: 1536972007016953564}
   shopButton: {fileID: 2888523364713361416}
-  gameTimer: {fileID: 0}
+  gameTimer: {fileID: 1194441159}
   lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:
@@ -46797,10 +46823,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gunModel: {fileID: 1882129039}
+  fireButton: {fileID: 1536972007016953564}
+  shopButton: {fileID: 2888523364713361416}
+  gameTimer: {fileID: 1194441159}
   lockedDoorAnimator: {fileID: 6096234473738546706}
 --- !u!95 &6096234473738546706
 Animator:
@@ -50283,7 +50309,7 @@ PrefabInstance:
     - target: {fileID: 4209097972572177867, guid: 2e2f50ae6981ae345a26a7d077ed4652,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -56832,7 +56858,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 1
   SprintSpeed: 3
-  RotationSpeed: 20
+  RotationSpeed: 5
   SpeedChangeRate: 10
   JumpHeight: 1.2
   Gravity: -15

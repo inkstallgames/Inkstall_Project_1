@@ -2,7 +2,7 @@ mergeInto(LibraryManager.library,
 {
   GetUserIdFromLocalStorage: function() 
   {
-    var userId = localStorage.getItem('userId');
+    var userId = localStorage.getItem('studentId');
     
     // Send the found userId to the UserIDManager script in unity
     if(userId)

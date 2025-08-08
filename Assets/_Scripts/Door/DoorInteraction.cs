@@ -26,7 +26,7 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private GameObject gunModel;
     [SerializeField] private Button fireButton;
     [SerializeField] private Button shopButton;
-    [SerializeField] private GameTimer gameTimer;
+    [SerializeField] private TextMeshProUGUI gameTimer;
 
     // State
     private bool isDoorOpen = false;
@@ -115,20 +115,21 @@ public class DoorInteraction : MonoBehaviour
         {
             gunModel.SetActive(true);
         }
-
         if (fireButton != null)
         {
             fireButton.gameObject.SetActive(true);
         }
-
         if (shopButton != null)
         {
             shopButton.gameObject.SetActive(true);
         }
-
-        if (shouldStartTimer && gameTimer != null)
+        if (shouldStartTimer)
         {
-            gameTimer.gameObject.SetActive(true);
+            if (gameTimer != null)
+            {
+                gameTimer.enabled = true;
+                gameTimer.gameObject.SetActive(true);
+            }
         }
     }
 

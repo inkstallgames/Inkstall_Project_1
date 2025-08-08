@@ -31,7 +31,13 @@ public class ShopCanvas : MonoBehaviour
     private const int MAX_BULLETS = 3;
     private const int MIN_BULLETS = 1;
 
-    private const int COST_PER_BULLET = 250;
+    // Tiered pricing for bullets
+    private readonly Dictionary<int, int> bulletPrices = new Dictionary<int, int>
+    {
+        { 1, 200 },  // 1 bullet costs 200 coins
+        { 2, 300 },  // 2 bullets cost 300 coins
+        { 3, 500 }   // 3 bullets cost 500 coins
+    };
     
     // PlayerPrefs keys
     private const string COINS_KEY = "PlayerCoins";
@@ -76,7 +82,7 @@ public class ShopCanvas : MonoBehaviour
         // Update the buy button interactability based on whether player can afford the bullets
         if (buyButton != null)
         {
-            int totalCost = currentBulletCount * COST_PER_BULLET;
+            int totalCost = bulletPrices[currentBulletCount];
             buyButton.interactable = playerCoins >= totalCost;
         }
     }
@@ -153,7 +159,7 @@ public class ShopCanvas : MonoBehaviour
         // Update total cost
         if (totalCostText != null)
         {
-            int totalCost = currentBulletCount * COST_PER_BULLET;
+            int totalCost = bulletPrices[currentBulletCount];
             totalCostText.text = $"{totalCost} coins";
         }
     }
@@ -175,7 +181,7 @@ public class ShopCanvas : MonoBehaviour
     
     public void BuyBullets()
     {
-        int totalCost = currentBulletCount * COST_PER_BULLET;
+        int totalCost = bulletPrices[currentBulletCount];
         
         // Check if player has enough coins
         if (playerCoins >= totalCost)

@@ -29,7 +29,7 @@ public class GetUserIDBridge : MonoBehaviour
     {
         if (KeyManager.Instance != null)
         {
-            KeyManager.Instance.userId = userId;
+            KeyManager.Instance.studentId = userId;
             // Call the new method to fetch keys after setting the userId
             KeyManager.Instance.FetchKeysFromDB();
         }

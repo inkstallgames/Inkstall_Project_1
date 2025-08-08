@@ -354,7 +354,7 @@ public class KeyManager : MonoBehaviour
         string jsonData = "{\"totalKeys\":" + keysCount + "}";
         Debug.Log(" [API CALL] Sending update to DB with JSON: " + jsonData);
         
-        string url = apiBaseUrl + userId;
+        string url = apiBaseUrl + studentId;
         Debug.Log(" [API CALL] Sending update to URL: " + url);
         
         UnityWebRequest www = new UnityWebRequest(url, "POST");

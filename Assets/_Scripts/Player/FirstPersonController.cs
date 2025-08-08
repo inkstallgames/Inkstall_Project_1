@@ -94,7 +94,7 @@ namespace StarterAssets
 		[Tooltip("Whether to use screen split for touch controls (left: movement, right: camera)")]
 		public bool useSplitScreenTouch = true;
 		[Tooltip("Additional sensitivity reduction for WebGL platform (lower = less sensitive)")]
-		public float webGLSensitivityMultiplier = 0.1f;
+		public float webGLSensitivityMultiplier = 0.05f;
 
 		// PlayerPrefs key for sensitivity (matching OptionsMenuManager)
 		private const string SENSITIVITY_KEY = "ScreenSensitivity";

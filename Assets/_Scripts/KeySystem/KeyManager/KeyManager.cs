@@ -19,7 +19,7 @@ public class KeyDetail
 public class KeyResponse
 {
     public string _id;
-    public string userId;
+    public string studentId;
     public int freeKeys;
     public int totalKeys;
     public List<KeyDetail> keyDetails;
@@ -38,7 +38,7 @@ public class KeyManager : MonoBehaviour
     [SerializeField] private string apiBaseUrl = "https://api.inkstall.in/api/slot/get-keys/";
 
     // Hardcoded user ID for testing purposes
-    public string userId = "681ee0e6198ad04bf6c1c733";
+    public string studentId = "681ee0e6198ad04bf6c1c733";
     
     // Store the full key data for potential future use
     private KeyResponse keyData;
@@ -87,7 +87,7 @@ public class KeyManager : MonoBehaviour
             Debug.Log(" [INIT] Initial UI text set to: " + keyText.text);
         }
         
-        Debug.Log(" [INIT] Attempting to fetch keys from database with userId: " + userId);
+        Debug.Log(" [INIT] Attempting to fetch keys from database with userId: " + studentId);
         FetchKeysFromDB();
         
         // Schedule periodic refresh of keys (every 30 seconds)
@@ -98,9 +98,9 @@ public class KeyManager : MonoBehaviour
     public void FetchKeysFromDB()
     {
         Debug.Log(" [API CALL] FetchKeysFromDB called");
-        if (!string.IsNullOrEmpty(userId))
+        if (!string.IsNullOrEmpty(studentId))
         {
-            Debug.Log(" [API CALL] Valid userId found: " + userId + ", starting fetch coroutine");
+            Debug.Log(" [API CALL] Valid userId found: " + studentId + ", starting fetch coroutine");
             StartCoroutine(FetchDBKeyCount());
         }
         else
@@ -117,7 +117,7 @@ public class KeyManager : MonoBehaviour
         Debug.Log(" [API CALL] Current keysCount BEFORE fetch: " + keysCount);
         Debug.Log(" [API CALL] Current totalKeys BEFORE fetch: " + totalKeys);
         
-        string url = apiBaseUrl + userId;
+        string url = apiBaseUrl + studentId;
         Debug.Log($" [API CALL] URL: {url}");
         
         UnityWebRequest www = UnityWebRequest.Get(url);

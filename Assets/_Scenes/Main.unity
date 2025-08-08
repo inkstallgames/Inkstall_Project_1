@@ -205254,6 +205254,7 @@ MonoBehaviour:
   minTouchDelta: 10
   touchSensitivity: 1
   useSplitScreenTouch: 1
+  webGLSensitivityMultiplier: 0.1
 --- !u!33 &9189814346118641669
 MeshFilter:
   m_ObjectHideFlags: 0

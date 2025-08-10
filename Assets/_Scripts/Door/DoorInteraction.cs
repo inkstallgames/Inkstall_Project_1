@@ -207,10 +207,7 @@ public class DoorInteraction : MonoBehaviour
 
             if (isDoorOpen && shouldStartTimer && attachedTimer != null && attachedTimer.HasBeenTriggered())
             {
-                if (GameManager.Instance != null)
-                {
-                    GameManager.Instance.ShowChancesText();
-                }
+
             }
         }
     }

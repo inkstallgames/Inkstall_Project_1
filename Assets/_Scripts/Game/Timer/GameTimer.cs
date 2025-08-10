@@ -35,17 +35,7 @@ public class GameTimer : MonoBehaviour
 
     void Start()
     {
-        // Initialize timer values but don't start running
         currentTime = totalTime;
-
-        // Initialize string builder to avoid GC allocations
-        timerStringBuilder = new StringBuilder(8);
-
-        // Pre-cache all possible digit strings (0-59)
-        for (int i = 0; i < 60; i++)
-        {
-            digitStrings[i] = i < 10 ? "0" + i : i.ToString();
-        }
 
         // Hide timer UI until it's triggered
         if (timerText != null)
@@ -62,6 +52,20 @@ public class GameTimer : MonoBehaviour
             tickSource.loop = true;
             tickSource.playOnAwake = false;
         }
+
+        // Initialize string builder to avoid GC allocations
+        timerStringBuilder = new StringBuilder(8);
+
+        // Pre-cache all possible digit strings (0-59)
+        for (int i = 0; i < 60; i++)
+        {
+            digitStrings[i] = i < 10 ? "0" + i : i.ToString();
+        }
+    }
+
+    void OnEnable()
+    {
+        StartTimer();
     }
 
     void Update()
@@ -96,9 +100,15 @@ public class GameTimer : MonoBehaviour
             currentTime = 0f;
             timerRunning = false;
             StopTicking();
-            EndGame();
+            GameManager.Instance.GameOver();
         }
     }
+
+    void StartTimer()
+    {
+
+    }
+
 
     void UpdateTimerUI()
     {
@@ -129,17 +139,7 @@ public class GameTimer : MonoBehaviour
             timerText.color = normalColor;
     }
 
-    void EndGame()
-    {
-        if (timerText != null)
-            timerText.gameObject.SetActive(false);
 
-        // Ensure GameManager exists and call GameOver with proper error handling
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.GameOver();
-        }
-    }
 
     void StartTicking()
     {

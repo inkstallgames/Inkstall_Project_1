@@ -9,6 +9,7 @@ public class Gun : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip fireSound;
     public AudioClip noBulletsSound;
+    public Camera mainCamera;
 
     
     public int coinCount = 100;
@@ -26,18 +27,23 @@ public class Gun : MonoBehaviour
      
     public void Fire()
 {
-    if (bulletsCount > 0 && audioSource != null)
-    {
-        if (canFire)
+        RaycastHit hit;
+        Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out hit);
+
+
+
+        if (bulletsCount > 0 && audioSource != null)
         {
-            StartCoroutine(FireRoutine());
+            if (canFire)
+            {
+                StartCoroutine(FireRoutine());
+            }
         }
-    }
-    else
-    {
-        if (audioSource != null)
-            audioSource.PlayOneShot(noBulletsSound);
-    }
+        else
+        {
+            if (audioSource != null)
+                audioSource.PlayOneShot(noBulletsSound);
+        }
 }
 
 private IEnumerator FireRoutine()

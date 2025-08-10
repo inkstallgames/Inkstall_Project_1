@@ -50,7 +50,7 @@ public class DoorInteraction : MonoBehaviour
         {
             lockedDoorAnimator = GetComponent<Animator>();
         }
-        
+
         // Store the initial rotation as closed rotation
         closedRotation = transform.rotation;
         openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(XAngle, YAngle, ZAngle));
@@ -65,7 +65,7 @@ public class DoorInteraction : MonoBehaviour
     }
 
     private void Update()
-    {       
+    {
         // Door movement animation
         if (isDoorMoving)
         {
@@ -77,8 +77,8 @@ public class DoorInteraction : MonoBehaviour
     {
         return isLocked;
     }
-    
-    
+
+
     public void TryOpenDoor()
     {
         if (isLocked)
@@ -140,7 +140,7 @@ public class DoorInteraction : MonoBehaviour
             lockedDoorAnimator.SetBool("isLocked", true);
             Invoke("StopDoorLockedAnimation", 0.5f);
         }
-    }  
+    }
 
     private void StopDoorLockedAnimation()
     {
@@ -153,7 +153,7 @@ public class DoorInteraction : MonoBehaviour
     // These methods are no longer needed as PlayerInteraction will handle the UI
     // Keeping them empty for backward compatibility
     public void EnableUseKeyButton() { }
-    public void DisableUseKeyButton() { }   
+    public void DisableUseKeyButton() { }
 
     // Public so PlayerInteraction can call it
     public void TryUnlockDoor()
@@ -176,7 +176,7 @@ public class DoorInteraction : MonoBehaviour
             KeyManager.Instance.UseKey();
             audioSource.PlayOneShot(doorUnlockSound);
             isLocked = false;
-            lockedDoorAnimator.enabled = false;           
+            lockedDoorAnimator.enabled = false;
         }
     }
 

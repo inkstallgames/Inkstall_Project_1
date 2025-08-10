@@ -59,11 +59,6 @@ public class DoorInteraction : MonoBehaviour
         attachedTimer = GetComponent<GameTimer>();
     }
 
-    private void Start()
-    {
-        // All button listeners are now handled by PlayerInteraction
-    }
-
     private void Update()
     {
         // Door movement animation
@@ -127,7 +122,6 @@ public class DoorInteraction : MonoBehaviour
         {
             if (gameTimer != null)
             {
-                gameTimer.enabled = true;
                 gameTimer.gameObject.SetActive(true);
             }
         }

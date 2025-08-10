@@ -49,11 +49,6 @@ public class PropFakeMarker : MonoBehaviour
             shuffled[i].isFake = true;
             Debug.Log($"✅ Marked {shuffled[i].name} as FAKE");
 
-            // Register fake prop with GameManager
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.RegisterFakeProp();
-            }
         }
 
         // Optional log

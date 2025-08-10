@@ -37,12 +37,6 @@ public class GameTimer : MonoBehaviour
     {
         currentTime = totalTime;
 
-        // Hide timer UI until it's triggered
-        if (timerText != null)
-        {
-            timerText.gameObject.SetActive(false);
-        }
-
         // Setup audio but don't play yet
         if (tickSound != null)
         {
@@ -106,7 +100,20 @@ public class GameTimer : MonoBehaviour
 
     void StartTimer()
     {
+        {
+            if (timerText != null)
+            {
+                timerText.gameObject.SetActive(true); // Show UI
+            }
 
+            currentTime = totalTime;  // Reset time
+            timerRunning = true;      // Start ticking
+            hasBeenTriggered = true;  // Mark as triggered
+            warningTriggered = false;
+            tickingStarted = false;
+
+            UpdateTimerUI(); // Update immediately so it shows correct starting time
+        }
     }
 
 

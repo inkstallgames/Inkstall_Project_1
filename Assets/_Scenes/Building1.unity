@@ -5787,7 +5787,7 @@ MonoBehaviour:
   totalTime: 180
   timerText: {fileID: 1194441157}
   timerRunning: 0
-  tickSound: {fileID: 0}
+  tickSound: {fileID: 8300000, guid: bbb7c848b236a994a835f80c489027d3, type: 3}
   tickVolume: 1
 --- !u!1 &1206205651
 GameObject:
@@ -18753,7 +18753,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1873888420683840239}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
@@ -19332,7 +19332,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1873769200726274311}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
@@ -21667,7 +21667,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874491473996026743}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
@@ -22024,7 +22024,6 @@ GameObject:
   - component: {fileID: 6096234473738546701}
   - component: {fileID: 6096234473738546704}
   - component: {fileID: 6096234473738546706}
-  - component: {fileID: 6096234473738546703}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (5)
   m_TagString: Door
@@ -46517,23 +46516,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6096234473738546703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1875279496819915869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalTime: 50
-  timerText: {fileID: 1194441157}
-  timerRunning: 0
-  tickSound: {fileID: 0}
-  tickVolume: 1
 --- !u!114 &6096234473738546704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46541,7 +46523,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1875279496819915869}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 
@@ -54681,7 +54663,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874423990281934407}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
   m_Name: 

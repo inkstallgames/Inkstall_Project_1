@@ -5,11 +5,6 @@ using TMPro;
 
 public class Gun : MonoBehaviour
 {
-    private void Start()
-    {
-        // Disable the gun at the start of the game
-        gameObject.SetActive(false);
-    }
     public Animator gunAnimator;
     public AudioSource audioSource;
     public AudioClip fireSound;

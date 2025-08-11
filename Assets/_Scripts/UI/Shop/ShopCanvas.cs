@@ -66,7 +66,7 @@ public class ShopCanvas : MonoBehaviour
         
         if (buyButton != null)
         {
-            buyButton.onClick.AddListener(BuyBullets);
+            buyButton.onClick.AddListener(BuyBalls);
         }
     }
 
@@ -191,7 +191,7 @@ public class ShopCanvas : MonoBehaviour
         }
     }
     
-    public void BuyBullets()
+    public void BuyBalls()
     {
         int totalCost = bulletPrices[currentBulletCount];
         
@@ -203,9 +203,9 @@ public class ShopCanvas : MonoBehaviour
                 if (success)
                 {
                     // Add bullets to BulletsManager if it exists
-                    if (BulletsManager.Instance != null)
+                    if (BallsManager.Instance != null)
                     {
-                        BulletsManager.Instance.AddBullets(currentBulletCount);
+                        BallsManager.Instance.AddBullets(currentBulletCount);
                         Debug.Log($"Added {currentBulletCount} bullets to BulletsManager");
                     }
                     else

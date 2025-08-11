@@ -7509,6 +7509,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1578915017}
+    - targetCorrespondingSourceObject: {fileID: 3784001720782453869, guid: d0a8bc4e217d52847b8990d03d52174e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1578915021}
   m_SourcePrefab: {fileID: 100100000, guid: d0a8bc4e217d52847b8990d03d52174e, type: 3}
 --- !u!4 &1578915012 stripped
 Transform:
@@ -7544,6 +7548,28 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+--- !u!64 &1578915021
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 433802011}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 248990217346661487, guid: a45f51de007e00043916205f6b5151e2, type: 3}
 --- !u!1 &1607335632
 GameObject:
   m_ObjectHideFlags: 0

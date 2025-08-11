@@ -9,7 +9,7 @@ public class CoinsManager : MonoBehaviour
 
     public TextMeshProUGUI coinText; // Assign in Inspector
     public string userId;
-    private int currentCoins;
+    public int currentCoins;
 
     private string getCoinsURL = "http://localhost:4000/api/slot/get-keys";
     private string spendCoinsURL = "http://localhost:4000/api/slot/spend-keys";

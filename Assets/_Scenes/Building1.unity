@@ -945,6 +945,16 @@ PrefabInstance:
       propertyPath: YAngle
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 114649959237634244, guid: 0ff98eeb9bb99e5478390555bd891392,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114649959237634244, guid: 0ff98eeb9bb99e5478390555bd891392,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1101,6 +1111,143 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1308626346}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!1 &231538699
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 231538700}
+  - component: {fileID: 231538703}
+  - component: {fileID: 231538702}
+  - component: {fileID: 231538701}
+  m_Layer: 0
+  m_Name: GunCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &231538700
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231538699}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9005220659803848085}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &231538701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231538699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+--- !u!81 &231538702
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231538699}
+  m_Enabled: 1
+--- !u!20 &231538703
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 231538699}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!1 &254344660 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1094092405755746, guid: 8a4002e1855493b4a9279ec7546b101a,
@@ -1486,11 +1633,31 @@ PrefabInstance:
       propertyPath: YAngle
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 114865460635196722, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114865460635196722, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
         type: 3}
       propertyPath: YAngle
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1584,6 +1751,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114097176944761904, guid: cde875813fb5ee54c8770e39c214453b,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114097176944761904, guid: cde875813fb5ee54c8770e39c214453b,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1800,6 +1977,16 @@ PrefabInstance:
       propertyPath: YAngle
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 114649959237634244, guid: 0ff98eeb9bb99e5478390555bd891392,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114649959237634244, guid: 0ff98eeb9bb99e5478390555bd891392,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2302,11 +2489,31 @@ PrefabInstance:
       propertyPath: YAngle
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 114865460635196722, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114865460635196722, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
         type: 3}
       propertyPath: YAngle
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2889,37 +3096,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &600059353
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 600059354}
-  m_Layer: 0
-  m_Name: BulletsManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &600059354
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 600059353}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1607335633}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &607017294
 GameObject:
   m_ObjectHideFlags: 0
@@ -3167,6 +3343,16 @@ PrefabInstance:
       propertyPath: YAngle
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 4957322451614726213, guid: 52247c4c064dd874fabf7eb71c4b4b88,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 4957322451614726213, guid: 52247c4c064dd874fabf7eb71c4b4b88,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4869,6 +5055,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114097176944761904, guid: cde875813fb5ee54c8770e39c214453b,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114097176944761904, guid: cde875813fb5ee54c8770e39c214453b,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     - target: {fileID: 7232697963552053662, guid: cde875813fb5ee54c8770e39c214453b,
         type: 3}
       propertyPath: m_Enabled
@@ -6187,12 +6383,12 @@ GameObject:
   - component: {fileID: 1307166881}
   - component: {fileID: 1307166880}
   m_Layer: 5
-  m_Name: Bullets Container
+  m_Name: Bullets UI Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1307166878
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6950,6 +7146,16 @@ PrefabInstance:
       propertyPath: YAngle
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 114004310969659868, guid: 9fca9fb036f984445927918582183eac,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114004310969659868, guid: 9fca9fb036f984445927918582183eac,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7221,6 +7427,16 @@ PrefabInstance:
       propertyPath: YAngle
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: 114735950387043822, guid: 4ef5b485c0abb3f4e82680e350437b64,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114735950387043822, guid: 4ef5b485c0abb3f4e82680e350437b64,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     - target: {fileID: 178970873740842801, guid: 4ef5b485c0abb3f4e82680e350437b64,
         type: 3}
       propertyPath: m_Enabled
@@ -7532,6 +7748,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 633007714637671352, guid: 3f29914b413904d40a89e972f348ebd8,
         type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 633007714637671352, guid: 3f29914b413904d40a89e972f348ebd8,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -7562,6 +7783,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1882129043}
+    - targetCorrespondingSourceObject: {fileID: 633007714637671352, guid: 3f29914b413904d40a89e972f348ebd8,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1882129047}
   m_SourcePrefab: {fileID: 100100000, guid: 3f29914b413904d40a89e972f348ebd8, type: 3}
 --- !u!4 &1604742952 stripped
 Transform:
@@ -7603,7 +7828,6 @@ Transform:
   - {fileID: 962220123}
   - {fileID: 1093428159}
   - {fileID: 2035848311}
-  - {fileID: 600059354}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1610220211 stripped
@@ -7921,6 +8145,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: d12d7f3e1c844be4a9cf8b8be038f795, type: 2}
+    - target: {fileID: 114328286526553892, guid: f052b5a392205224da8e029e1f7fed3e,
+        type: 3}
+      propertyPath: doorOpenSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 114328286526553892, guid: f052b5a392205224da8e029e1f7fed3e,
+        type: 3}
+      propertyPath: doorCloseSound
+      value: 
+      objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
     - target: {fileID: 8058768335995626864, guid: f052b5a392205224da8e029e1f7fed3e,
         type: 3}
       propertyPath: realInteractSound
@@ -8784,13 +9018,26 @@ MonoBehaviour:
   fireSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   noBulletsSound: {fileID: 0}
   mainCamera: {fileID: 0}
-  coinCount: 100
-  bulletsCount: 20
+--- !u!114 &1882129047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1882129039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f980321577add2543a0fed6175019504, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletsCount: 0
   maxBulletsToBuy: 3
   costPerBullet: 10
-  coinText: {fileID: 0}
-  bulletAmountText: {fileID: 0}
-  totalCostText: {fileID: 0}
+  maxBullets: 6
+  currentBullets: 0
+  bulletContainer: {fileID: 0}
+  bulletUIElements: []
+  shopButton: {fileID: 0}
 --- !u!1001 &1899374207
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9283,6 +9530,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coinText: {fileID: 1505732595}
   userId: 
+  currentCoins: 0
 --- !u!1 &2049626417
 GameObject:
   m_ObjectHideFlags: 0
@@ -12694,7 +12942,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -14687,7 +14934,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6768324474576803770}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1882129044}
+        m_TargetAssemblyTypeName: Gun, Assembly-CSharp
+        m_MethodName: Fire
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!33 &1557372129351986145
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -14964,7 +15223,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -18773,7 +19031,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 1879614732177390110}
@@ -18956,7 +19213,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -19041,7 +19297,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -19355,7 +19610,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 1876630031721721799}
@@ -19652,7 +19906,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -19680,7 +19933,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -19851,7 +20103,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -19978,7 +20229,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -21425,7 +21675,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -21696,7 +21945,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 5411702062035160471}
@@ -21865,7 +22113,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -22625,7 +22872,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -23230,7 +23476,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -23407,7 +23652,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -24488,7 +24732,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -25196,7 +25439,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -25830,7 +26072,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -36624,7 +36865,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -37694,7 +37934,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -39401,7 +39640,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -40306,7 +40544,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -41638,7 +41875,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -42505,7 +42741,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -43325,7 +43560,6 @@ MonoBehaviour:
   shouldStartTimer: 1
   gunModel: {fileID: 1882129039}
   fireButton: {fileID: 1536972007016953564}
-  shopButton: {fileID: 2888523364713361416}
   gameTimer: {fileID: 1194441157}
   bulletsUI: {fileID: 1307166877}
   lockedDoorAnimator: {fileID: 5248679429457064832}
@@ -44956,7 +45190,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -46568,7 +46801,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 1882129039}
   fireButton: {fileID: 1536972007016953564}
-  shopButton: {fileID: 2888523364713361416}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 6096234473738546706}
@@ -48015,7 +48247,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -49129,7 +49360,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -49547,7 +49777,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -54712,7 +54941,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 8128831679578322680}
@@ -54916,7 +55144,6 @@ MonoBehaviour:
   shouldStartTimer: 0
   gunModel: {fileID: 0}
   fireButton: {fileID: 0}
-  shopButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bulletsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
@@ -55830,7 +56057,6 @@ GameObject:
   - component: {fileID: 7776710531509494469}
   - component: {fileID: 6768324474576803770}
   - component: {fileID: 1536972007016953564}
-  - component: {fileID: 8445824210148928009}
   m_Layer: 5
   m_Name: Fire_Button
   m_TagString: Untagged
@@ -55838,51 +56064,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &8445824210148928009
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8445824210148928008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 3
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1882129044}
-          m_TargetAssemblyTypeName: Gun, Assembly-CSharp
-          m_MethodName: Fire
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 2
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1882129044}
-          m_TargetAssemblyTypeName: Gun, Assembly-CSharp
-          m_MethodName: Fire
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!4 &8448999409746998557
 Transform:
   m_ObjectHideFlags: 0
@@ -57859,6 +58040,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 231538700}
   - {fileID: 1604742952}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

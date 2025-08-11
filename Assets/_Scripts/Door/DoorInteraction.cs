@@ -25,7 +25,6 @@ public class DoorInteraction : MonoBehaviour
     [Header("Game Activation Settings")]
     [SerializeField] private GameObject gunModel;
     [SerializeField] private Button fireButton;
-    [SerializeField] private Button shopButton;
     [SerializeField] private TextMeshProUGUI gameTimer;
     [SerializeField] private GameObject bulletsUI;
 
@@ -126,10 +125,6 @@ public class DoorInteraction : MonoBehaviour
                     gameTimer.gameObject.SetActive(true);
                 }
             }
-          if (shopButton != null)
-        {
-            shopButton.gameObject.SetActive(true);
-        }
     }
 
     public void PlayDoorLockedAnimation()

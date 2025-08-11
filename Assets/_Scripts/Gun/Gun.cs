@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class Gun : MonoBehaviour
 {
@@ -10,60 +8,45 @@ public class Gun : MonoBehaviour
     public AudioClip fireSound;
     public AudioClip noBulletsSound;
     public Camera mainCamera;
-
     
-    public int coinCount = 100;
-    public int bulletsCount = 0;
-    private int bulletsToBuy = 1;
-    public int maxBulletsToBuy = 3;
-    public int costPerBullet = 10;
-
-    [Header("UI Elements")]
-    public TextMeshProUGUI coinText;
-    public TextMeshProUGUI bulletAmountText;
-    public TextMeshProUGUI totalCostText;
-
     private bool canFire = true;
      
     public void Fire()
-{
-        RaycastHit hit;
-        Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out hit);
-
-
-
-        if (bulletsCount > 0 && audioSource != null)
+    {
+        if (BulletsManager.Instance == null)
         {
-            if (canFire)
-            {
-                StartCoroutine(FireRoutine());
-            }
+            Debug.LogError("BulletsManager instance not found!");
+            return;
         }
-        else
+
+        if (BulletsManager.Instance.currentBullets > 0 && canFire)
         {
-            if (audioSource != null)
-                audioSource.PlayOneShot(noBulletsSound);
+            StartCoroutine(FireRoutine());
         }
-}
+        else if (audioSource != null)
+        {
+            audioSource.PlayOneShot(noBulletsSound);
+        }
+    }
 
-private IEnumerator FireRoutine()
-{
-    canFire = false;
+    private IEnumerator FireRoutine()
+    {
+        canFire = false;
 
-    // 🔥 Trigger the animation (not a bool!)
-    gunAnimator.SetBool("isFiring", true);
+        // Trigger the animation
+        gunAnimator.SetTrigger("isFiring");
 
-    // 🔊 Play fire sound
-    audioSource.PlayOneShot(fireSound);
+        // Play fire sound
+        audioSource.PlayOneShot(fireSound);
 
-    // 🔫 Decrease bullet
-    bulletsCount--;
+        // Decrease bullet using BulletsManager
+        BulletsManager.Instance.DecreaseBullet();
 
-    // 🕒 Wait for animation duration (adjust if needed)
-    yield return new WaitForSeconds(0.1f);
+        // Wait for animation duration (adjust if needed)
+        float animationLength = gunAnimator.GetCurrentAnimatorStateInfo(0).length;
+        yield return new WaitForSeconds(animationLength);
 
-    gunAnimator.SetBool("isFiring", false);
-    canFire = true;
-}
-
+        gunAnimator.SetBool("isFiring", false);
+        canFire = true;
+    }
 }

@@ -987,7 +987,7 @@ PrefabInstance:
     - target: {fileID: 7413652023988646185, guid: 3f2b5850f354baa4ba3d794b4939b879,
         type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 7901923506118634387, guid: 3f2b5850f354baa4ba3d794b4939b879,
         type: 3}
@@ -2427,7 +2427,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1094092405755746, guid: 8a4002e1855493b4a9279ec7546b101a, type: 3}
       propertyPath: m_TagString
-      value: Prop
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 1094092405755746, guid: 8a4002e1855493b4a9279ec7546b101a, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -8783,6 +8783,7 @@ MonoBehaviour:
   audioSource: {fileID: 1882129043}
   fireSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   noBulletsSound: {fileID: 0}
+  mainCamera: {fileID: 0}
   coinCount: 100
   bulletsCount: 20
   maxBulletsToBuy: 3
@@ -13590,7 +13591,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1321133436471216720
 GameObject:
   m_ObjectHideFlags: 0
@@ -16284,7 +16285,7 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.20320915
+  - screenRelativeHeight: 0.08261156
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 1898003386633031645}
@@ -18037,7 +18038,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1874429375789236659
 GameObject:
   m_ObjectHideFlags: 0
@@ -21983,7 +21984,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1875263745222527011
 GameObject:
   m_ObjectHideFlags: 0
@@ -33780,7 +33781,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!205 &2496271520342150009
 LODGroup:
   m_ObjectHideFlags: 0
@@ -41545,7 +41546,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &4698398557860696640
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -47187,7 +47188,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &6251384279365515024
 GameObject:
   m_ObjectHideFlags: 0
@@ -53719,7 +53720,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &7877320310564804972
 GameObject:
   m_ObjectHideFlags: 0
@@ -55184,7 +55185,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!33 &8243016739979864896
 MeshFilter:
   m_ObjectHideFlags: 0

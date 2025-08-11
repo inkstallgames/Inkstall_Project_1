@@ -43740,7 +43740,7 @@ GameObject:
   - component: {fileID: 5393215578858899700}
   - component: {fileID: 5393215578858899701}
   - component: {fileID: 5393215578858899706}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49268,7 +49268,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ae61f7fd605599c4a88fcf50784af0ad, type: 3}
+  m_Sprite: {fileID: 21300000, guid: dc7febbd0ea71a0468a9fc5ad25b29b5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -51406,7 +51406,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: -135, y: -80}
-  m_SizeDelta: {x: 200, y: 210}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!33 &7323899012097438061
 MeshFilter:
@@ -55657,7 +55657,7 @@ GameObject:
   - component: {fileID: 6768324474576803770}
   - component: {fileID: 1536972007016953564}
   m_Layer: 5
-  m_Name: Fire_Button
+  m_Name: Throw_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56429,7 +56429,7 @@ GameObject:
   - component: {fileID: 5420857361081467026}
   - component: {fileID: 8616685848467102946}
   - component: {fileID: 6282551668740351559}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}

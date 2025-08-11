@@ -73,17 +73,29 @@ public class ShopCanvas : MonoBehaviour
 
     void OnEnable()
     {
-        CoinsManager.Instance.FetchCoins();
-        // UpdateUI();
+        // Update coins display from CoinsManager if available
+        if (CoinsManager.Instance != null)
+        {
+            CoinsManager.Instance.FetchCoins();
+            playerCoins = CoinsManager.Instance.currentCoins;
+            UpdatePlayerUI();
+        }
     }
 
     void Update()
     {
         // Update the buy button interactability based on whether player can afford the bullets
-        if (buyButton != null)
+        if (buyButton != null && CoinsManager.Instance != null)
         {
             int totalCost = bulletPrices[currentBulletCount];
-            buyButton.interactable = playerCoins >= totalCost;
+            buyButton.interactable = CoinsManager.Instance.currentCoins >= totalCost;
+            
+            // Update local coins value if it changed in CoinsManager
+            if (playerCoins != CoinsManager.Instance.currentCoins)
+            {
+                playerCoins = CoinsManager.Instance.currentCoins;
+                UpdatePlayerUI();
+            }
         }
     }
 
@@ -183,26 +195,45 @@ public class ShopCanvas : MonoBehaviour
     {
         int totalCost = bulletPrices[currentBulletCount];
         
-        // Check if player has enough coins
-        if (playerCoins >= totalCost)
+        // Check if player has enough coins and if CoinsManager exists
+        if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost)
         {
-            // Deduct coins
-            playerCoins -= totalCost;
-            
-            // Add bullets to inventory
-            playerBullets += currentBulletCount;
-            
-            // Save changes
-            SavePlayerData();
-            
-            // Update UI
-            UpdatePlayerUI();
-            
-            // Show success message
-            Debug.Log($"Purchased {currentBulletCount} bullets for {totalCost} coins. You now have {playerBullets} bullets and {playerCoins} coins.");
-            
-            // Close the shop after purchase
-            CloseShopCanvas();
+            // Deduct coins using CoinsManager
+            CoinsManager.Instance.SpendCoins(totalCost, (success) => {
+                if (success)
+                {
+                    // Add bullets to BulletsManager if it exists
+                    if (BulletsManager.Instance != null)
+                    {
+                        BulletsManager.Instance.AddBullets(currentBulletCount);
+                        Debug.Log($"Added {currentBulletCount} bullets to BulletsManager");
+                    }
+                    else
+                    {
+                        Debug.LogError("BulletsManager instance not found!");
+                    }
+                    
+                    // Update local tracking for UI
+                    playerCoins = CoinsManager.Instance.currentCoins;
+                    playerBullets += currentBulletCount;
+                    
+                    // Save changes to PlayerPrefs as backup
+                    SavePlayerData();
+                    
+                    // Update UI
+                    UpdatePlayerUI();
+                    
+                    // Show success message
+                    Debug.Log($"Purchased {currentBulletCount} bullets for {totalCost} coins. You now have {playerBullets} bullets and {playerCoins} coins.");
+                    
+                    // Close the shop after purchase
+                    CloseShopCanvas();
+                }
+                else
+                {
+                    Debug.LogError("Failed to spend coins!");
+                }
+            });
         }
         else
         {

@@ -8,9 +8,6 @@ public class BulletsManager : MonoBehaviour
 
     [Header("Bullet Settings")]
     public int bulletsCount = 0;
-    private int bulletsToBuy = 1;
-    public int maxBulletsToBuy = 3;
-    public int costPerBullet = 10;
     public int maxBullets = 6;
     public int currentBullets = 0;
     
@@ -29,6 +26,18 @@ public class BulletsManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        if (currentBullets <= 3)
+        {
+            shopButton.gameObject.SetActive(true);
+        }
+        else
+        {
+            shopButton.gameObject.SetActive(false);
         }
     }
     
@@ -79,18 +88,9 @@ public class BulletsManager : MonoBehaviour
         {
             shopButton.gameObject.SetActive(true);
         }
-        else
+        else if (shopButton != null && currentBullets > 3)
         {
             shopButton.gameObject.SetActive(false);    
-        }
-    }
-
-    public void BuyBullets()
-    {
-        if (CoinsManager.Instance.currentCoins >= costPerBullet * bulletsToBuy)
-        {
-            CoinsManager.Instance.currentCoins -= costPerBullet * bulletsToBuy;
-            AddBullets(bulletsToBuy);
         }
     }
 }

@@ -8,22 +8,19 @@ public class Gun : MonoBehaviour
     public AudioClip fireSound;
     public AudioClip noBulletsSound;
     public Camera mainCamera;
+    private bool canFire;
     
-    private bool canFire = true;
-     
     public void Fire()
     {
-        if (BulletsManager.Instance == null)
+        if (BulletsManager.Instance.currentBullets > 0)
         {
-            Debug.LogError("BulletsManager instance not found!");
-            return;
+            canFire = true;
+            if (canFire)
+            {
+                StartCoroutine(FireRoutine());
+            }
         }
-
-        if (BulletsManager.Instance.currentBullets > 0 && canFire)
-        {
-            StartCoroutine(FireRoutine());
-        }
-        else if (audioSource != null)
+        else if (BulletsManager.Instance.currentBullets <= 0)
         {
             audioSource.PlayOneShot(noBulletsSound);
         }
@@ -31,20 +28,30 @@ public class Gun : MonoBehaviour
 
     private IEnumerator FireRoutine()
     {
-        canFire = false;
-
-        // Trigger the animation
-        gunAnimator.SetTrigger("isFiring");
-
-        // Play fire sound
+        gunAnimator.SetBool("isFiring", true);
         audioSource.PlayOneShot(fireSound);
-
-        // Decrease bullet using BulletsManager
         BulletsManager.Instance.DecreaseBullet();
 
-        // Wait for animation duration (adjust if needed)
-        float animationLength = gunAnimator.GetCurrentAnimatorStateInfo(0).length;
-        yield return new WaitForSeconds(animationLength);
+        // Cast ray from camera center to detect hits
+        if (mainCamera != null)
+        {
+            Ray ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            RaycastHit hit;
+            
+            if (Physics.Raycast(ray, out hit))
+            {
+                // Check if the hit object has the Alien tag
+                if (hit.collider.CompareTag("Alien"))
+                {
+                    Debug.Log("Alien found! Hit at: " + hit.point);
+                    
+                    // You can add more alien interaction logic here later
+                    // For example: hit.collider.GetComponent<Alien>().TakeDamage();
+                }
+            }
+        }
+
+        yield return new WaitForSeconds(0.1f);
 
         gunAnimator.SetBool("isFiring", false);
         canFire = true;

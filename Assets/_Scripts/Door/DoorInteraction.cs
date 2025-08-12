@@ -23,10 +23,10 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private bool shouldStartTimer = false;
 
     [Header("Game Activation Settings")]
-    [SerializeField] private GameObject gunModel;
-    [SerializeField] private Button fireButton;
+    [SerializeField] private GameObject chemicalBomb;
+    [SerializeField] private Button throwButton;
     [SerializeField] private TextMeshProUGUI gameTimer;
-    [SerializeField] private GameObject bulletsUI;
+    [SerializeField] private GameObject bombsUI;
 
     // State
     private bool isDoorOpen = false;
@@ -106,17 +106,17 @@ public class DoorInteraction : MonoBehaviour
 
     private void ActivateGameElements()
     {
-        if (gunModel != null)
+        if (chemicalBomb != null)
         {
-            gunModel.SetActive(true);
+            chemicalBomb.SetActive(true);
         }
-        if (fireButton != null)
+        if (throwButton != null)
         {
-            fireButton.gameObject.SetActive(true);
+            throwButton.gameObject.SetActive(true);
         }
-        if (bulletsUI != null)
+        if (bombsUI != null)
         {
-            bulletsUI.gameObject.SetActive(true);
+            bombsUI.gameObject.SetActive(true);
         }
         if (shouldStartTimer)
             {

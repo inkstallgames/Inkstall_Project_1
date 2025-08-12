@@ -378,10 +378,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1307166878}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -94, y: 0}
-  m_SizeDelta: {x: 120, y: 90}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 183.21257, y: -50}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &56271969
 MonoBehaviour:
@@ -396,14 +396,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 7b5c508217b80d24c8e798109fc6c2ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -539,16 +539,16 @@ MonoBehaviour:
   bulletsShopCanvas: {fileID: 90827211}
   mobileControlsCanvas: {fileID: 2121465414623763718}
   coinsCount: {fileID: 1505732595}
-  bullet1Image: {fileID: 145262172}
-  bullet2Image: {fileID: 0}
-  bullet3Image: {fileID: 0}
+  bombs1Image: {fileID: 145262172}
+  bombs2Image: {fileID: 2008902406}
+  bombs3Image: {fileID: 1303235945}
   plusButton: {fileID: 920148262}
   minusButton: {fileID: 277526321}
-  bulletCountText: {fileID: 133234665}
+  bombsCountText: {fileID: 0}
   totalCostText: {fileID: 607017296}
   buyButton: {fileID: 355339959}
-  playerBullets: 0
-  playerBulletsText: {fileID: 0}
+  playerBombs: 0
+  playerBombsText: {fileID: 0}
 --- !u!1 &97805815
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,7 +826,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 200, y: -50}
-  m_SizeDelta: {x: 100, y: 150}
+  m_SizeDelta: {x: 150, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &145262174
 MonoBehaviour:
@@ -848,7 +848,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ace5316426b1dc74dac77bdd87cb9170, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7b5c508217b80d24c8e798109fc6c2ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2278,6 +2278,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a00c660a06c6558409881ca30be91691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &403247379
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 403247380}
+  m_Layer: 0
+  m_Name: PlayerResetPosPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &403247380
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 403247379}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0.455, y: 1.391, z: 5.846}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1875161217596607455}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1001 &425970491
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2433,10 +2464,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1307166878}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 95, y: 0}
-  m_SizeDelta: {x: 120, y: 90}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 515.33826, y: -50}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &430515289
 MonoBehaviour:
@@ -2451,14 +2482,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d940ede728ebcfd4fa3ac595ffc5dbdf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7b5c508217b80d24c8e798109fc6c2ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3778,7 +3809,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 87}
+  m_AnchoredPosition: {x: -10, y: 80}
   m_SizeDelta: {x: 400, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &902840098
@@ -3828,27 +3859,165 @@ MonoBehaviour:
   m_GameObject: {fileID: 902840096}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 40
-    m_Right: 40
+    m_Left: 0
+    m_Right: 0
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 100, y: 150}
-  m_Spacing: {x: -30, y: 0}
-  m_Constraint: 0
-  m_ConstraintCount: 2
+  m_Spacing: -60
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &902975497 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7556791777611879696, guid: f76b38a89acf9134ea391ff11d86fe8e,
     type: 3}
   m_PrefabInstance: {fileID: 1314045405}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &915453990
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 915453991}
+  - component: {fileID: 915453993}
+  m_Layer: 0
+  m_Name: ThrowPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &915453991
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915453990}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.428, y: 1.0420002, z: 0.523}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8997996947364382292}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!120 &915453993
+LineRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915453990}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 0
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  m_Parameters:
+    serializedVersion: 3
+    widthMultiplier: 1
+    widthCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    colorGradient:
+      serializedVersion: 2
+      key0: {r: 1, g: 1, b: 1, a: 1}
+      key1: {r: 1, g: 1, b: 1, a: 1}
+      key2: {r: 0, g: 0, b: 0, a: 0}
+      key3: {r: 0, g: 0, b: 0, a: 0}
+      key4: {r: 0, g: 0, b: 0, a: 0}
+      key5: {r: 0, g: 0, b: 0, a: 0}
+      key6: {r: 0, g: 0, b: 0, a: 0}
+      key7: {r: 0, g: 0, b: 0, a: 0}
+      ctime0: 0
+      ctime1: 65535
+      ctime2: 0
+      ctime3: 0
+      ctime4: 0
+      ctime5: 0
+      ctime6: 0
+      ctime7: 0
+      atime0: 0
+      atime1: 65535
+      atime2: 0
+      atime3: 0
+      atime4: 0
+      atime5: 0
+      atime6: 0
+      atime7: 0
+      m_Mode: 0
+      m_ColorSpace: -1
+      m_NumColorKeys: 2
+      m_NumAlphaKeys: 2
+    numCornerVertices: 0
+    numCapVertices: 0
+    alignment: 0
+    textureMode: 0
+    textureScale: {x: 1, y: 1}
+    shadowBias: 0.5
+    generateLightingData: 0
+  m_MaskInteraction: 0
+  m_UseWorldSpace: 1
+  m_Loop: 0
+  m_ApplyActiveColorSpace: 1
 --- !u!1 &920094687
 GameObject:
   m_ObjectHideFlags: 0
@@ -4191,6 +4360,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2169b008ae359144ca4cff41c1e16f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  playerStartPos: {fileID: 0}
+  timer: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
+  shopButton: {fileID: 0}
+  looseSound: {fileID: 0}
+  winSound: {fileID: 0}
 --- !u!1 &974389389
 GameObject:
   m_ObjectHideFlags: 0
@@ -4681,10 +4858,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1307166878}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -54, y: 0}
-  m_SizeDelta: {x: 120, y: 90}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 249.63771, y: -50}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1075262426
 MonoBehaviour:
@@ -4699,14 +4876,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 7b5c508217b80d24c8e798109fc6c2ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6130,8 +6307,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 235, y: -50}
-  m_SizeDelta: {x: 100, y: 150}
+  m_AnchoredPosition: {x: 245, y: -50}
+  m_SizeDelta: {x: 150, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1303235947
 MonoBehaviour:
@@ -6153,7 +6330,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ace5316426b1dc74dac77bdd87cb9170, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7b5c508217b80d24c8e798109fc6c2ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6182,13 +6359,14 @@ GameObject:
   - component: {fileID: 1307166878}
   - component: {fileID: 1307166881}
   - component: {fileID: 1307166880}
+  - component: {fileID: 1307166882}
   m_Layer: 5
   m_Name: Balls UI Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1307166878
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6211,8 +6389,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: -20}
-  m_SizeDelta: {x: 250, y: 200}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 698.5508, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1307166880
 MonoBehaviour:
@@ -6252,6 +6430,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1307166877}
   m_CullTransparentMesh: 1
+--- !u!114 &1307166882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307166877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: -300
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &1308626345
 GameObject:
   m_ObjectHideFlags: 0
@@ -6646,10 +6850,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1307166878}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -16.1, y: 0}
-  m_SizeDelta: {x: 120, y: 90}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 316.06287, y: -50}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1392616449
 MonoBehaviour:
@@ -6664,14 +6868,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d940ede728ebcfd4fa3ac595ffc5dbdf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7b5c508217b80d24c8e798109fc6c2ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8258,6 +8462,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1774634692}
   m_CullTransparentMesh: 1
+--- !u!1 &1781030203 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+    type: 3}
+  m_PrefabInstance: {fileID: 2005320271}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1804517141
 GameObject:
   m_ObjectHideFlags: 0
@@ -8290,10 +8500,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1307166878}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 58, y: 0}
-  m_SizeDelta: {x: 120, y: 90}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 448.91315, y: -50}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1804517143
 MonoBehaviour:
@@ -8308,14 +8518,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d940ede728ebcfd4fa3ac595ffc5dbdf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7b5c508217b80d24c8e798109fc6c2ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8872,6 +9082,143 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1981799373}
   m_CullTransparentMesh: 1
+--- !u!1001 &2005320271
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 8997996947364382292}
+    m_Modifications:
+    - target: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_Name
+      value: ChemicalBomb
+      objectReference: {fileID: 0}
+    - target: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.4280002
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.0420002
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.5230001
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 0}
+    - {fileID: 2226494032232215082, guid: 9f9b24be79c20704ab4fd2e4ddc732ed, type: 3}
+    - {fileID: 600856454808466885, guid: 9f9b24be79c20704ab4fd2e4ddc732ed, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2005320277}
+    - targetCorrespondingSourceObject: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2005320276}
+  m_SourcePrefab: {fileID: 100100000, guid: 9f9b24be79c20704ab4fd2e4ddc732ed, type: 3}
+--- !u!4 &2005320272 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+    type: 3}
+  m_PrefabInstance: {fileID: 2005320271}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2005320276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781030203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f980321577add2543a0fed6175019504, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bombsCount: 0
+  maxBombs: 6
+  currentBombs: 0
+  bombsContainer: {fileID: 0}
+  bombsUIElements: []
+  shopButton: {fileID: 0}
+--- !u!114 &2005320277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781030203}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a3067430331e1845ad3bcff81fd3f92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  throwPoint: {fileID: 915453991}
+  chemicalBallPrefab: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+    type: 3}
+  throwForce: 15
+  throwCooldown: 1
+  playerCamera: {fileID: 9005220659803848082}
+  maxThrowDistance: 50
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 87
+  throwEffect: {fileID: 0}
+  ballScale: 1
+  ballMaterial: {fileID: 2100000, guid: e73ba6bc747f9824cb26c5d03237cc5a, type: 2}
+  ballColor: {r: 0, g: 1, b: 0, a: 1}
+  showTrajectory: 1
+  trajectorySteps: 10
+  trajectoryPointPrefab: {fileID: 0}
 --- !u!1 &2008902406
 GameObject:
   m_ObjectHideFlags: 0
@@ -8907,7 +9254,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 200, y: -50}
-  m_SizeDelta: {x: 100, y: 150}
+  m_SizeDelta: {x: 150, y: 170}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2008902408
 MonoBehaviour:
@@ -8929,7 +9276,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ace5316426b1dc74dac77bdd87cb9170, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7b5c508217b80d24c8e798109fc6c2ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9026,10 +9373,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1307166878}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 20.5, y: 0}
-  m_SizeDelta: {x: 120, y: 90}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 382.48798, y: -50}
+  m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2049626419
 MonoBehaviour:
@@ -9044,14 +9391,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d940ede728ebcfd4fa3ac595ffc5dbdf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7b5c508217b80d24c8e798109fc6c2ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12403,10 +12750,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &975421949430823410
 Transform:
@@ -14684,10 +15031,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1609635412495604071
 MeshRenderer:
@@ -18486,10 +18833,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 1879614732177390110}
 --- !u!4 &1875161216612700763
 Transform:
@@ -18668,10 +19015,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161216722088320
 MeshRenderer:
@@ -18752,10 +19099,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216731409326
 Transform:
@@ -19065,10 +19412,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 1876630031721721799}
 --- !u!4 &1875161216913999824
 Transform:
@@ -19355,10 +19702,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161217056796249
 MonoBehaviour:
@@ -19382,10 +19729,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217121920507
 Transform:
@@ -19552,10 +19899,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!1 &1875161217394332177
 GameObject:
@@ -19666,10 +20013,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217482913422
 Transform:
@@ -20247,6 +20594,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 403247380}
   - {fileID: 6824490319558725932}
   - {fileID: 5481483733102823509}
   - {fileID: 3345664092190548725}
@@ -21111,10 +21459,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161218230787375 stripped
 MeshRenderer:
@@ -21381,10 +21729,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 5411702062035160471}
 --- !u!4 &1875161218516245653
 Transform:
@@ -21549,10 +21897,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218673369673
 Transform:
@@ -22308,10 +22656,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876481243523332479
 AudioSource:
@@ -22912,10 +23260,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876635991172028075
 AudioSource:
@@ -23088,10 +23436,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876640084607535165
 AudioSource:
@@ -24168,10 +24516,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879301797568630687
 AudioSource:
@@ -24875,10 +25223,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879530183016443165
 AudioSource:
@@ -25508,10 +25856,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879628717615984171
 AudioSource:
@@ -36301,10 +36649,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3231434512211610070
 AudioSource:
@@ -37370,10 +37718,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3531443653390167215
 AudioSource:
@@ -39076,10 +39424,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4095303726235316411
 AudioSource:
@@ -39980,10 +40328,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4323376261421865388
 AudioSource:
@@ -41311,10 +41659,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4722926279912086933
 AudioSource:
@@ -42177,10 +42525,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &4985833862760063991
 Transform:
@@ -42990,16 +43338,16 @@ MonoBehaviour:
   YAngle: -90
   ZAngle: 0
   doorSpeed: 2
-  doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
+  doorOpenSound: {fileID: 8300000, guid: 65537af5d6ca25b4682099e1a18c6d17, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   isLocked: 1
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 1
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 1536972007016953564}
+  chemicalBomb: {fileID: 1781030203}
+  throwButton: {fileID: 1536972007016953564}
   gameTimer: {fileID: 1194441157}
-  bulletsUI: {fileID: 1307166877}
+  bombsUI: {fileID: 1307166877}
   lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:
@@ -43830,7 +44178,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 157.5, y: -16.699951}
+  m_AnchoredPosition: {x: 157.5, y: -16.699707}
   m_SizeDelta: {x: 140, y: 140}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5420857361081467026
@@ -44626,10 +44974,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &5660267529715239442
 AudioSource:
@@ -44918,7 +45266,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -130.6, y: 177}
+  m_AnchoredPosition: {x: -130.59961, y: 177}
   m_SizeDelta: {x: 180, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5800314964552747296
@@ -46237,10 +46585,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 1536972007016953564}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 6096234473738546706}
 --- !u!95 &6096234473738546706
 Animator:
@@ -47683,10 +48031,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6370389251489606861
 AudioSource:
@@ -48796,10 +49144,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6734199790238685268
 AudioSource:
@@ -49213,10 +49561,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &6823987876855903344
 MeshRenderer:
@@ -54378,10 +54726,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 8128831679578322680}
 --- !u!95 &8128831679578322680
 Animator:
@@ -54581,10 +54929,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   shouldStartTimer: 0
-  gunModel: {fileID: 0}
-  fireButton: {fileID: 0}
+  chemicalBomb: {fileID: 0}
+  throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
-  bulletsUI: {fileID: 0}
+  bombsUI: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &8176039784201981259
 AudioSource:
@@ -57333,6 +57681,8 @@ Transform:
   m_Children:
   - {fileID: 4135013735539516850}
   - {fileID: 5393215578858899707}
+  - {fileID: 915453991}
+  - {fileID: 2005320272}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &8997996947364382293

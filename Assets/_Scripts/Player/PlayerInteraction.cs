@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Interaction Settings")]
-    [SerializeField] private float rayDistance = 10f;
+    [SerializeField] private float rayDistance = 50f;
     [SerializeField] private Camera playerMainCamera;
     [SerializeField] private GameObject openCloseButton;
     [SerializeField] private GameObject useKeyButton; // Reference to the use key button

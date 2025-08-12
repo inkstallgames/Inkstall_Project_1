@@ -7,13 +7,13 @@ public class BallsManager : MonoBehaviour
     public static BallsManager Instance;
 
     [Header("Bullet Settings")]
-    public int bulletsCount = 0;
-    public int maxBullets = 6;
-    public int currentBullets = 0;
+    public int bombsCount = 0;
+    public int maxBombs = 6;
+    public int currentBombs = 0;
     
     [Header("UI References")]
-    public GameObject bulletContainer;
-    public GameObject[] bulletUIElements;
+    public GameObject bombsContainer;
+    public GameObject[] bombsUIElements;
     public Button shopButton;
     
     private void Awake()
@@ -31,7 +31,7 @@ public class BallsManager : MonoBehaviour
 
     private void Update()
     {
-        if (currentBullets <= 3)
+        if (currentBombs <= 3)
         {
             shopButton.gameObject.SetActive(true);
         }
@@ -43,21 +43,21 @@ public class BallsManager : MonoBehaviour
     
     void OnEnable()
     {
-        currentBullets = maxBullets;
-        UpdateBulletUI();
+        currentBombs = maxBombs;
+        UpdateBombsUI();
     }
     
-    public void UpdateBulletUI()
+    public void UpdateBombsUI()
     {
         // Update bullet UI elements
-        if (bulletUIElements != null)
+        if (bombsUIElements != null)
         {
-            for (int i = 0; i < bulletUIElements.Length; i++)
+            for (int i = 0; i < bombsUIElements.Length; i++)
             {
-                if (bulletUIElements[i] != null)
+                if (bombsUIElements[i] != null)
                 {
                     // Enable bullet UI if index is less than current bullet count
-                    bulletUIElements[i].SetActive(i < currentBullets);
+                    bombsUIElements[i].SetActive(i < currentBombs);
                 }
             }
         }
@@ -66,29 +66,29 @@ public class BallsManager : MonoBehaviour
         UpdateShopButtonState();
     }
     
-    public void DecreaseBullet()
+    public void DecreaseBomb()
     {
-        if (currentBullets > 0)
+        if (currentBombs > 0)
         {
-            currentBullets--;
-            UpdateBulletUI();
+            currentBombs--;
+            UpdateBombsUI();
         }
     }
     
-    public void AddBullets(int amount)
+    public void AddBombs(int amount)
     {
-        currentBullets = Mathf.Min(currentBullets + amount, maxBullets);
-        UpdateBulletUI();
+        currentBombs = Mathf.Min(currentBombs + amount, maxBombs);
+        UpdateBombsUI();
     }
     
     private void UpdateShopButtonState()
     {
         // Enable shop button if bullet count is 3 or less
-        if (shopButton != null && currentBullets <= 3)
+        if (shopButton != null && currentBombs <= 3)
         {
             shopButton.gameObject.SetActive(true);
         }
-        else if (shopButton != null && currentBullets > 3)
+        else if (shopButton != null && currentBombs > 3)
         {
             shopButton.gameObject.SetActive(false);    
         }

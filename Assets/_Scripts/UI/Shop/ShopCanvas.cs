@@ -14,34 +14,34 @@ public class ShopCanvas : MonoBehaviour
     private int playerCoins;
     
     [Header("Bullet UI")]
-    public GameObject bullet1Image;
-    public GameObject bullet2Image;  
-    public GameObject bullet3Image;
+    public GameObject bombs1Image;
+    public GameObject bombs2Image;  
+    public GameObject bombs3Image;
     public Button plusButton;
     public Button minusButton;
-    public TextMeshProUGUI bulletCountText;
+    public TextMeshProUGUI bombsCountText;
     public TextMeshProUGUI totalCostText;
     public Button buyButton;
     
     [Header("Player Inventory")]
-    public int playerBullets = 0;
-    public TextMeshProUGUI playerBulletsText; // Reference to UI text showing player's bullet count
+    public int playerBombs = 0;
+    public TextMeshProUGUI playerBombsText; // Reference to UI text showing player's bullet count
     
-    private int currentBulletCount = 1;
-    private const int MAX_BULLETS = 3;
-    private const int MIN_BULLETS = 1;
+    private int currentBombsCount = 1;
+    private const int MAX_BOMBS = 3;
+    private const int MIN_BOMBS = 1;
 
     // Tiered pricing for bullets
-    private readonly Dictionary<int, int> bulletPrices = new Dictionary<int, int>
+    private readonly Dictionary<int, int> bombsPrices = new Dictionary<int, int>
     {
-        { 1, 200 },  // 1 bullet costs 200 coins
-        { 2, 300 },  // 2 bullets cost 300 coins
-        { 3, 500 }   // 3 bullets cost 500 coins
+        { 1, 200 },  // 1 bomb costs 200 coins
+        { 2, 300 },  // 2 bomb cost 300 coins
+        { 3, 500 }   // 3 bomb cost 500 coins
     };
     
     // PlayerPrefs keys
     private const string COINS_KEY = "PlayerCoins";
-    private const string BULLETS_KEY = "PlayerBullets";
+    private const string BOMBS_KEY = "PlayerBombs";
 
     void Start()
     {
@@ -49,24 +49,24 @@ public class ShopCanvas : MonoBehaviour
         LoadPlayerData();
         
         // Set initial state
-        currentBulletCount = 1;
-        UpdateBulletUI();
+        currentBombsCount = 1;
+        UpdateBombsUI();
         UpdatePlayerUI();
         
         // Add listeners to buttons
         if (plusButton != null)
         {
-            plusButton.onClick.AddListener(IncreaseBulletCount);
+            plusButton.onClick.AddListener(IncreaseBombsCount);
         }
         
         if (minusButton != null)
         {
-            minusButton.onClick.AddListener(DecreaseBulletCount);
+            minusButton.onClick.AddListener(DecreaseBombsCount);
         }
         
         if (buyButton != null)
         {
-            buyButton.onClick.AddListener(BuyBalls);
+            buyButton.onClick.AddListener(BuyBombs);
         }
     }
 
@@ -87,7 +87,7 @@ public class ShopCanvas : MonoBehaviour
         // Update the buy button interactability based on whether player can afford the bullets
         if (buyButton != null && CoinsManager.Instance != null)
         {
-            int totalCost = bulletPrices[currentBulletCount];
+            int totalCost = bombsPrices[currentBombsCount];
             buyButton.interactable = CoinsManager.Instance.currentCoins >= totalCost;
             
             // Update local coins value if it changed in CoinsManager
@@ -103,14 +103,14 @@ public class ShopCanvas : MonoBehaviour
     {
         // Load saved coins and bullets from PlayerPrefs
         playerCoins = PlayerPrefs.GetInt(COINS_KEY, 10000); // Default 10000 coins for testing
-        playerBullets = PlayerPrefs.GetInt(BULLETS_KEY, 0);
+        playerBombs = PlayerPrefs.GetInt(BOMBS_KEY, 0);
     }
     
     private void SavePlayerData()
     {
         // Save current coins and bullets to PlayerPrefs
         PlayerPrefs.SetInt(COINS_KEY, playerCoins);
-        PlayerPrefs.SetInt(BULLETS_KEY, playerBullets);
+        PlayerPrefs.SetInt(BOMBS_KEY, playerBombs);
         PlayerPrefs.Save();
     }
 
@@ -120,8 +120,8 @@ public class ShopCanvas : MonoBehaviour
         LoadPlayerData();
         
         // Reset to default state when opening shop
-        currentBulletCount = 1;
-        UpdateBulletUI();
+        currentBombsCount = 1;
+        UpdateBombsUI();
         UpdatePlayerUI();
         
         // Show shop UI
@@ -137,41 +137,41 @@ public class ShopCanvas : MonoBehaviour
         Time.timeScale = 1f; // Resume the game
     }
 
-    public void IncreaseBulletCount()
+    public void IncreaseBombsCount()
     {
-        if (currentBulletCount < MAX_BULLETS)
+        if (currentBombsCount < MAX_BOMBS)
         {
-            currentBulletCount++;
-            UpdateBulletUI();
+            currentBombsCount++;
+            UpdateBombsUI();
         }
     }
     
-    public void DecreaseBulletCount()
+    public void DecreaseBombsCount()
     {
-        if (currentBulletCount > MIN_BULLETS)
+        if (currentBombsCount > MIN_BOMBS)
         {
-            currentBulletCount--;
-            UpdateBulletUI();
+            currentBombsCount--;
+            UpdateBombsUI();
         }
     }
 
-    private void UpdateBulletUI()
+    private void UpdateBombsUI()
     {
-        // Update bullet images
-        if (bullet1Image != null) bullet1Image.SetActive(currentBulletCount >= 1);
-        if (bullet2Image != null) bullet2Image.SetActive(currentBulletCount >= 2);
-        if (bullet3Image != null) bullet3Image.SetActive(currentBulletCount >= 3);
+        // Update bombs images
+        if (bombs1Image != null) bombs1Image.SetActive(currentBombsCount >= 1);
+        if (bombs2Image != null) bombs2Image.SetActive(currentBombsCount >= 2);
+        if (bombs3Image != null) bombs3Image.SetActive(currentBombsCount >= 3);
         
-        // Update bullet count text
-        if (bulletCountText != null)
+        // Update bombs count text
+        if (bombsCountText != null)
         {
-            bulletCountText.text = currentBulletCount.ToString();
+            bombsCountText.text = currentBombsCount.ToString();
         }
         
         // Update total cost
         if (totalCostText != null)
         {
-            int totalCost = bulletPrices[currentBulletCount];
+            int totalCost = bombsPrices[currentBombsCount];
             totalCostText.text = $"{totalCost} coins";
         }
     }
@@ -184,16 +184,16 @@ public class ShopCanvas : MonoBehaviour
             coinsCount.text = playerCoins.ToString();
         }
         
-        // Update bullets display if available
-        if (playerBulletsText != null)
+        // Update bombs display if available
+        if (playerBombsText != null)
         {
-            playerBulletsText.text = playerBullets.ToString();
+            playerBombsText.text = playerBombs.ToString();
         }
     }
     
-    public void BuyBalls()
+    public void BuyBombs()
     {
-        int totalCost = bulletPrices[currentBulletCount];
+        int totalCost = bombsPrices[currentBombsCount];
         
         // Check if player has enough coins and if CoinsManager exists
         if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost)
@@ -205,8 +205,8 @@ public class ShopCanvas : MonoBehaviour
                     // Add bullets to BulletsManager if it exists
                     if (BallsManager.Instance != null)
                     {
-                        BallsManager.Instance.AddBullets(currentBulletCount);
-                        Debug.Log($"Added {currentBulletCount} bullets to BulletsManager");
+                        BallsManager.Instance.AddBombs(currentBombsCount);
+                        Debug.Log($"Added {currentBombsCount} bombs to BulletsManager");
                     }
                     else
                     {
@@ -215,7 +215,7 @@ public class ShopCanvas : MonoBehaviour
                     
                     // Update local tracking for UI
                     playerCoins = CoinsManager.Instance.currentCoins;
-                    playerBullets += currentBulletCount;
+                    playerBombs += currentBombsCount;
                     
                     // Save changes to PlayerPrefs as backup
                     SavePlayerData();
@@ -224,7 +224,7 @@ public class ShopCanvas : MonoBehaviour
                     UpdatePlayerUI();
                     
                     // Show success message
-                    Debug.Log($"Purchased {currentBulletCount} bullets for {totalCost} coins. You now have {playerBullets} bullets and {playerCoins} coins.");
+                    Debug.Log($"Purchased {currentBombsCount} bombs for {totalCost} coins. You now have {playerBombs} bombs and {playerCoins} coins.");
                     
                     // Close the shop after purchase
                     CloseShopCanvas();
@@ -238,7 +238,7 @@ public class ShopCanvas : MonoBehaviour
         else
         {
             // Show not enough coins message
-            Debug.Log("Not enough coins to purchase bullets!");
+            Debug.Log("Not enough coins to purchase bombs!");
         }
     }
 }

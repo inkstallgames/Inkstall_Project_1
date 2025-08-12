@@ -6,6 +6,17 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    public GameObject player; 
+    public GameObject playerStartPos;
+    public GameObject timer;
+    public GameObject chemicalBomb;
+    public GameObject throwButton;
+    public GameObject shopButton;
+
+    public AudioClip looseSound;
+    public AudioClip winSound;
+
+
     void Awake()
     {
         if (Instance == null)
@@ -27,11 +38,7 @@ public class GameManager : MonoBehaviour
         // Play Loose Sound
 
         // (and after some time)
-        // Player Position = Start Position
-        // Disable Timer
-        // Disable Gun Model
-        // Disable Fire Button
-        // Disable Shop Button
+        ResetGame();
         // Active Room(Unlocked Door) locked Again
     }
 
@@ -40,12 +47,18 @@ public class GameManager : MonoBehaviour
         // Play Game Win Sound
 
         // (and after some time)
-        // Player Position = Start Position
-        // Disable Timer
-        // Disable Gun Model
-        // Disable Fire Button
-        // Disable Shop Button
+        ResetGame();
         // Active Room(Unlocked Door) locked Again
     }
+
+    public void ResetGame()
+    {
+        player.transform.position = playerStartPos.transform.position;
+        timer.SetActive(false);
+        chemicalBomb.SetActive(false);
+        throwButton.SetActive(false);
+        shopButton.SetActive(false);
+    }
+
 
 }

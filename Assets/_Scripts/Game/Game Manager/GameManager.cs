@@ -53,9 +53,11 @@ public class GameManager : MonoBehaviour
 
     public void ResetGame()
     {
+        Debug.Log("Reset Game");
         player.transform.position = playerStartPos.transform.position;
+        player.transform.rotation = playerStartPos.transform.rotation;
         timer.SetActive(false);
-        chemicalBomb.SetActive(false);
+        // chemicalBomb.SetActive(false);
         throwButton.SetActive(false);
         if(!shopButton.activeSelf)
         {

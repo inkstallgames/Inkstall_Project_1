@@ -39,6 +39,10 @@ public class BallsManager : MonoBehaviour
         {
             shopButton.gameObject.SetActive(false);
         }
+        if(currentBombs <= 0)
+        {
+            GameManager.Instance.GameOver();
+        }   
     }
     
     void OnEnable()

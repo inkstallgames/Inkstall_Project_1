@@ -2302,13 +2302,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403247379}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0.455, y: 1.391, z: 5.846}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1875161217596607455}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &425970491
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4363,7 +4363,7 @@ MonoBehaviour:
   player: {fileID: 8616685848467102958}
   playerStartPos: {fileID: 403247379}
   timer: {fileID: 1194441155}
-  chemicalBomb: {fileID: 1781030203}
+  chemicalBomb: {fileID: 0}
   throwButton: {fileID: 8445824210148928008}
   shopButton: {fileID: 6598752559073692206}
   looseSound: {fileID: 0}
@@ -6133,6 +6133,92 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1079518711}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1256279764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1256279765}
+  - component: {fileID: 1256279767}
+  - component: {fileID: 1256279766}
+  m_Layer: 0
+  m_Name: ChemicalBombManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1256279765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256279764}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1607335633}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1256279766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256279764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f980321577add2543a0fed6175019504, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bombsCount: 0
+  maxBombs: 6
+  currentBombs: 0
+  bombsContainer: {fileID: 1307166877}
+  bombsUIElements:
+  - {fileID: 56271967}
+  - {fileID: 1075262424}
+  - {fileID: 1392616447}
+  - {fileID: 2049626417}
+  - {fileID: 1804517141}
+  - {fileID: 430515287}
+  shopButton: {fileID: 2888523364713361416}
+--- !u!114 &1256279767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256279764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a3067430331e1845ad3bcff81fd3f92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  throwPoint: {fileID: 915453991}
+  chemicalBallPrefab: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+    type: 3}
+  throwForce: 15
+  throwCooldown: 1
+  playerCamera: {fileID: 9005220659803848082}
+  maxThrowDistance: 50
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 87
+  throwEffect: {fileID: 0}
+  ballScale: 1
+  ballMaterial: {fileID: 0}
+  ballColor: {r: 0, g: 1, b: 0, a: 1}
+  showTrajectory: 1
+  trajectorySteps: 10
+  trajectoryPointPrefab: {fileID: 0}
 --- !u!1 &1277224522 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 369948187675801988, guid: cc98aa33a8b15a64381c437a2624e579,
@@ -7808,6 +7894,7 @@ Transform:
   - {fileID: 962220123}
   - {fileID: 1093428159}
   - {fileID: 2035848311}
+  - {fileID: 1256279765}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1610220211 stripped
@@ -9179,7 +9266,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1781030203}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f980321577add2543a0fed6175019504, type: 3}
   m_Name: 
@@ -9203,7 +9290,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1781030203}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a3067430331e1845ad3bcff81fd3f92, type: 3}
   m_Name: 
@@ -32976,7 +33063,7 @@ Transform:
   m_GameObject: {fileID: 2270817489796091379}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.955, z: 3.71}
+  m_LocalPosition: {x: -0.028, y: 2.955, z: 3.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -57681,7 +57768,7 @@ Transform:
   m_GameObject: {fileID: 8616685848467102958}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 1.58, z: 3.71}
+  m_LocalPosition: {x: -0.028, y: 1.58, z: 3.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -57830,7 +57917,7 @@ Transform:
   m_GameObject: {fileID: 9005220659803848080}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 2.955, z: 3.71}
+  m_LocalPosition: {x: -0.028, y: 2.955, z: 3.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

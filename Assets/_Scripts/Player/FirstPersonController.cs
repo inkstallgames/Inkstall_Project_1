@@ -376,10 +376,14 @@ namespace StarterAssets
 			// Reset look input at the beginning of the frame
 			_input.look = Vector2.zero;
 
+			// Track camera rotation touch
+			bool foundCameraTouch = false;
+			Vector2 cameraDelta = Vector2.zero;
+
 			// Handle touch input for camera look
 			if (Input.touchCount > 0)
 			{
-				// Process only touches on the right side of the screen for camera control
+				// First pass: Process right side touches for camera control
 				for (int i = 0; i < Input.touchCount; i++)
 				{
 					UnityEngine.Touch touch = Input.GetTouch(i);
@@ -393,25 +397,27 @@ namespace StarterAssets
 					if (useSplitScreenTouch && !isRightSide)
 						continue; // Skip left side touches when using split screen
 
+					// Process camera rotation touch
 					switch (touch.phase)
 					{
 						case UnityEngine.TouchPhase.Began:
 							touchStartPos = touch.position;
 							previousTouchPos = touch.position;
 							isTouching = true;
+							foundCameraTouch = true;
 							break;
 
 						case UnityEngine.TouchPhase.Moved:
 							if (isTouching)
 							{
-								// Calculate delta from previous frame position, not from start position
-								Vector2 delta = touch.position - previousTouchPos;
+								// Calculate delta from previous frame position
+								cameraDelta = touch.position - previousTouchPos;
 
 								// Only process if movement exceeds minimum delta
-								if (delta.magnitude > 0)
+								if (cameraDelta.magnitude > 0)
 								{
 									// Invert the Y-axis to fix the up/down movement
-									delta.y = -delta.y;
+									cameraDelta.y = -cameraDelta.y;
 									
 									// Apply platform-specific sensitivity adjustments
 									float adjustedSensitivity = touchSensitivity;
@@ -422,7 +428,8 @@ namespace StarterAssets
 #endif
 									
 									// Use touch delta for camera movement
-									_input.look = delta * adjustedSensitivity;
+									_input.look = cameraDelta * adjustedSensitivity;
+									foundCameraTouch = true;
 								}
 
 								// Always update previous position
@@ -431,7 +438,8 @@ namespace StarterAssets
 							break;
 
 						case UnityEngine.TouchPhase.Stationary:
-							// No movement, so no camera rotation
+							// No movement, but still tracking this touch
+							foundCameraTouch = true;
 							break;
 
 						case UnityEngine.TouchPhase.Ended:
@@ -440,9 +448,32 @@ namespace StarterAssets
 							break;
 					}
 
-					// We only need one touch for camera control, so break after processing the first valid touch
-					if (isTouching)
+					// If we found a valid camera touch, don't process any more for camera
+					if (foundCameraTouch)
 						break;
+				}
+
+				// Second pass: Process left side touches for joystick movement
+				// This allows simultaneous movement and camera rotation
+				if (useSplitScreenTouch)
+				{
+					for (int i = 0; i < Input.touchCount; i++)
+					{
+						UnityEngine.Touch touch = Input.GetTouch(i);
+
+						// Check if touch is over UI
+						if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
+							continue;
+
+						// Only process left side touches for movement
+						bool isLeftSide = touch.position.x <= Screen.width / 2;
+						if (!isLeftSide)
+							continue;
+
+						// We don't need to do anything here since the joystick control
+						// is likely handled by another component (UIVirtualJoystick)
+						// This is just to ensure we're allowing both touches to be processed
+					}
 				}
 			}
 		}

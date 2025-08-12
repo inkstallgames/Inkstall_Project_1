@@ -57,7 +57,10 @@ public class GameManager : MonoBehaviour
         timer.SetActive(false);
         chemicalBomb.SetActive(false);
         throwButton.SetActive(false);
-        shopButton.SetActive(false);
+        if(!shopButton.activeSelf)
+        {
+            shopButton.SetActive(false);
+        }
     }
 
 

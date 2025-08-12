@@ -35,7 +35,7 @@ public class BallsManager : MonoBehaviour
         {
             shopButton.gameObject.SetActive(true);
         }
-        else
+        else if(currentBombs > 3 && !shopButton.gameObject.activeSelf)
         {
             shopButton.gameObject.SetActive(false);
         }

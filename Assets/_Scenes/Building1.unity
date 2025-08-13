@@ -4577,6 +4577,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4035222792055163475, guid: 6f34ef0d986e9db4199cf75805f79753,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5112403345841327294, guid: 6f34ef0d986e9db4199cf75805f79753,
         type: 3}
       propertyPath: m_Range
@@ -4647,6 +4652,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: CFXR3 Hit Ice B (Air)
       objectReference: {fileID: 0}
+    - target: {fileID: 5112403345868107899, guid: 6f34ef0d986e9db4199cf75805f79753,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5112403347238810568, guid: 6f34ef0d986e9db4199cf75805f79753,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5112403347238810575, guid: 6f34ef0d986e9db4199cf75805f79753,
         type: 3}
       propertyPath: m_Materials.Array.size
@@ -4656,6 +4671,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7531768400295773596, guid: 6f34ef0d986e9db4199cf75805f79753,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8280942166302414958, guid: 6f34ef0d986e9db4199cf75805f79753,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9197,7 +9222,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1957566989}
   - component: {fileID: 1957566992}
-  - component: {fileID: 1957566991}
   - component: {fileID: 1957566990}
   m_Layer: 0
   m_Name: ChemicalBombCam
@@ -9266,14 +9290,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!81 &1957566991
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1957566988}
-  m_Enabled: 1
 --- !u!20 &1957566992
 Camera:
   m_ObjectHideFlags: 0
@@ -37695,6 +37711,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8903012401801144ca78a0fd534f7a2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionEffect: {fileID: 0}
+  explosionSound: {fileID: 0}
 --- !u!4 &3455499736271528778
 Transform:
   m_ObjectHideFlags: 0

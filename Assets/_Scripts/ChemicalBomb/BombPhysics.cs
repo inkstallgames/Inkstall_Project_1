@@ -1,23 +1,52 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BombPhysics : MonoBehaviour
 {
+    [Header("Effects")]
+    [SerializeField] private ParticleSystem explosionEffect;
+    [SerializeField] private AudioClip explosionSound;
+    
+    private AudioSource audioSource;
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        // Play particle effect on collision
-        collision.gameObject.GetComponentInChildren<ParticleSystem>().Play();
-        Destroy(collision.gameObject);
         
-        // and also play sound effect
-
-        if (collision.gameObject.CompareTag("Alien"))
+        // Handle alien collision
+        Alien alien = collision.gameObject.GetComponent<Alien>();
+        if (alien != null)
         {
-            collision.gameObject.SetActive(false);
-            
-            collision.gameObject.GetComponent<Alien>().PlayDeathEffect();
+            alien.PlayDeathEffect();
+            PlayExplosionEffects();
+            Destroy(gameObject);
+            return;
         }
-        
+
+        // Handle other collisions (walls, environment)
+        PlayExplosionEffects();
+        Destroy(gameObject);
+    }
+
+    private void PlayExplosionEffects()
+    {
+        // Play particle effect
+        if (explosionEffect != null)
+        {
+            Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        }
+
+        // Play sound effect
+        if (explosionSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(explosionSound);
+        }
     }
 }

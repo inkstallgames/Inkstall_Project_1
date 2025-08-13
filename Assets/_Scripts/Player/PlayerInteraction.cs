@@ -6,13 +6,14 @@ public class PlayerInteraction : MonoBehaviour
     [Header("Interaction Settings")]
     [SerializeField] private float rayDistance = 50f;
     [SerializeField] private Camera playerMainCamera;
+    [SerializeField] private float interactDistance = 3f;
+    
     [SerializeField] private GameObject openCloseButton;
     [SerializeField] private GameObject useKeyButton; // Reference to the use key button
 
-    [SerializeField] private float interactDistance = 3f;
-
     private DoorInteraction currentDoor;   // Track which door we're looking at
-    private DrawerMech currentDrawer;   // Track which drawer we're looking at
+    private DrawerMech currentDrawer;      // Track which drawer we're looking at
+    
     private bool showUseKeyButton = false; // Flag to track if we should show the use key button
 
     private void Start()
@@ -97,6 +98,7 @@ public class PlayerInteraction : MonoBehaviour
             // Check if we hit a door
             if (hitObject.CompareTag("Door"))
             {
+                // Get the door interaction component
                 DoorInteraction doorInteraction = hitObject.GetComponent<DoorInteraction>();
                 if (doorInteraction != null && doorInteraction.enabled)
                 {

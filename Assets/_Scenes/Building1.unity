@@ -57958,9 +57958,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rayDistance: 10
   playerMainCamera: {fileID: 9005220659803848082}
+  interactDistance: 3
   openCloseButton: {fileID: 4370096595425205733}
   useKeyButton: {fileID: 5376026593118847093}
-  interactDistance: 3
 --- !u!1 &8999046890446011017
 GameObject:
   m_ObjectHideFlags: 0

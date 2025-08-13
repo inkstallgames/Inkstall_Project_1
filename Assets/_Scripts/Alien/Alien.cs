@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class Alien : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private GameObject deathEffect;
+    [SerializeField] private GameObject alienPrefab;
+    
+    public void PlayDeathEffect()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        Destroy(gameObject);
+        Instantiate(deathEffect, transform.position, transform.rotation);
+        Instantiate(alienPrefab, transform.position, transform.rotation);
     }
 }

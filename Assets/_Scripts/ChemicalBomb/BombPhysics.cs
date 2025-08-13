@@ -15,10 +15,15 @@ public class BombPhysics : MonoBehaviour
     
     private void OnCollisionEnter(Collision collision)
     {
+        Destroy(gameObject);
+        // Play particle effect on collision
+        // and also play sound effect
+
         if (collision.gameObject.CompareTag("Alien"))
         {
             collision.gameObject.SetActive(false);
-            this.gameObject.SetActive(false);
+            
+            collision.gameObject.GetComponent<Alien>().PlayDeathEffect();
         }
         if (!hasCollided)
         {

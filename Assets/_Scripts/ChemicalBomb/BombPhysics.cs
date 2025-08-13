@@ -4,19 +4,12 @@ using UnityEngine;
 
 public class BombPhysics : MonoBehaviour
 {
-    bool hasCollided = false;
-    Rigidbody rb;
-    
-    private void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-        rb.useGravity = false;
-    }
-    
     private void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject);
         // Play particle effect on collision
+        collision.gameObject.GetComponentInChildren<ParticleSystem>().Play();
+        Destroy(collision.gameObject);
+        
         // and also play sound effect
 
         if (collision.gameObject.CompareTag("Alien"))
@@ -25,10 +18,6 @@ public class BombPhysics : MonoBehaviour
             
             collision.gameObject.GetComponent<Alien>().PlayDeathEffect();
         }
-        if (!hasCollided)
-        {
-            hasCollided = true;
-            rb.useGravity = true;
-        }
+        
     }
 }

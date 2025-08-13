@@ -203,9 +203,9 @@ public class ShopCanvas : MonoBehaviour
                 if (success)
                 {
                     // Add bullets to BulletsManager if it exists
-                    if (BallsManager.Instance != null)
+                    if (ChemicalBombManager.Instance != null)
                     {
-                        BallsManager.Instance.AddBombs(currentBombsCount);
+                        ChemicalBombManager.Instance.AddBombs(currentBombsCount);
                         Debug.Log($"Added {currentBombsCount} bombs to BulletsManager");
                     }
                     else

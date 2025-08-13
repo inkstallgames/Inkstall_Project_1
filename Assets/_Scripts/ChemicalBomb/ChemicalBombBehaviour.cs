@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ChemicalBombScript : MonoBehaviour
+public class ChemicalBombBehaviour : MonoBehaviour
 {
     [Header("Throwing Settings")]
     [SerializeField] private Transform throwPoint;         // Point from which the ball is thrown
@@ -23,7 +23,7 @@ public class ChemicalBombScript : MonoBehaviour
     [SerializeField] private GameObject trajectoryPointPrefab; // Prefab for trajectory points
     
     // Reference to the BallsManager for ammo management
-    private BallsManager ballsManager;
+    private ChemicalBombManager chemicalBombManager;
     private float nextThrowTime = 0f;
     private GameObject[] trajectoryPoints;
     private Vector3 targetPoint;
@@ -38,11 +38,11 @@ public class ChemicalBombScript : MonoBehaviour
         }
 
         // Try to get the BallsManager instance
-        ballsManager = BallsManager.Instance;
+        chemicalBombManager = ChemicalBombManager.Instance;
         
-        if (ballsManager == null)
+        if (chemicalBombManager == null)
         {
-            Debug.LogWarning("BallsManager not found. Ammo counting will be disabled.");
+            Debug.LogWarning("ChemicalBombManager not found. Ammo counting will be disabled.");
         }
         
         // Initialize trajectory visualization
@@ -56,12 +56,6 @@ public class ChemicalBombScript : MonoBehaviour
     {
         // Update target point based on raycast
         UpdateTargetPoint();
-        
-        // Check for throw input (can be changed to any input you prefer)
-        if (Input.GetMouseButtonDown(1) && Time.time >= nextThrowTime)
-        {
-            ThrowChemicalBall();
-        }
         
         // Update trajectory visualization
         if (showTrajectory && trajectoryPoints != null && hasTarget)
@@ -108,7 +102,7 @@ public class ChemicalBombScript : MonoBehaviour
     private void UpdateTrajectoryVisualization()
     {
         // Only show trajectory if we have ammo
-        if (ballsManager != null && ballsManager.currentBombs <= 0)
+        if (chemicalBombManager != null && chemicalBombManager.currentBombs <= 0)
         {
             HideTrajectory();
             return;
@@ -173,7 +167,7 @@ public class ChemicalBombScript : MonoBehaviour
     public void ThrowChemicalBall()
     {
         // Check if we have ammo available
-        if (ballsManager != null && ballsManager.currentBombs <= 0)
+        if (ChemicalBombManager.Instance != null && ChemicalBombManager.Instance.currentBombs <= 0)
         {
             Debug.Log("No chemical balls left!");
             return;
@@ -219,9 +213,9 @@ public class ChemicalBombScript : MonoBehaviour
             }
             
             // Decrease ammo count
-            if (ballsManager != null)
+            if (ChemicalBombManager.Instance != null)
             {
-                ballsManager.DecreaseBomb();
+                ChemicalBombManager.Instance.DecreaseBomb();
             }
         }
         else

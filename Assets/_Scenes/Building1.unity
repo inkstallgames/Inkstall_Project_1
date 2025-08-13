@@ -6142,7 +6142,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1256279765}
-  - component: {fileID: 1256279767}
   - component: {fileID: 1256279766}
   m_Layer: 0
   m_Name: ChemicalBombManager
@@ -6175,13 +6174,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1256279764}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f980321577add2543a0fed6175019504, type: 3}
+  m_Script: {fileID: 11500000, guid: 46fb8b902a9e69e438ff0aa03127239d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   bombsCount: 0
   maxBombs: 6
   currentBombs: 0
-  bombsContainer: {fileID: 1307166877}
+  bombsContainerUI: {fileID: 1307166877}
   bombsUIElements:
   - {fileID: 56271967}
   - {fileID: 1075262424}
@@ -6190,35 +6189,6 @@ MonoBehaviour:
   - {fileID: 1804517141}
   - {fileID: 430515287}
   shopButton: {fileID: 2888523364713361416}
---- !u!114 &1256279767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1256279764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a3067430331e1845ad3bcff81fd3f92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  throwPoint: {fileID: 915453991}
-  chemicalBallPrefab: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
-    type: 3}
-  throwForce: 15
-  throwCooldown: 1
-  playerCamera: {fileID: 9005220659803848082}
-  maxThrowDistance: 50
-  hitLayers:
-    serializedVersion: 2
-    m_Bits: 87
-  throwEffect: {fileID: 0}
-  ballScale: 1
-  ballMaterial: {fileID: 0}
-  ballColor: {r: 0, g: 1, b: 0, a: 1}
-  showTrajectory: 1
-  trajectorySteps: 10
-  trajectoryPointPrefab: {fileID: 0}
 --- !u!1 &1277224522 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 369948187675801988, guid: cc98aa33a8b15a64381c437a2624e579,
@@ -6447,7 +6417,7 @@ GameObject:
   - component: {fileID: 1307166880}
   - component: {fileID: 1307166882}
   m_Layer: 5
-  m_Name: Balls UI Container
+  m_Name: Chemical Bomb UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9094,6 +9064,144 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 607035549}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1957566988
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1957566989}
+  - component: {fileID: 1957566992}
+  - component: {fileID: 1957566991}
+  - component: {fileID: 1957566990}
+  m_Layer: 0
+  m_Name: ChemicalBombCam
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1957566989
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957566988}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2005320272}
+  m_Father: {fileID: 9005220659803848085}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1957566990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957566988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 1
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+--- !u!81 &1957566991
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957566988}
+  m_Enabled: 1
+--- !u!20 &1957566992
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957566988}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 128
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!1 &1981799373
 GameObject:
   m_ObjectHideFlags: 0
@@ -9175,8 +9283,13 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 9005220659803848085}
+    m_TransformParent: {fileID: 1957566989}
     m_Modifications:
+    - target: {fileID: 2853037462887993578, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
         type: 3}
       propertyPath: m_Name
@@ -9184,23 +9297,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
         type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4894376839943411890, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7461181197689092511, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.402
+      value: 0.4020002
       objectReference: {fileID: 0}
     - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.292
+      value: -0.29200006
       objectReference: {fileID: 0}
     - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.523
+      value: 0.5230001
       objectReference: {fileID: 0}
     - target: {fileID: 9157282966855789288, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
         type: 3}
@@ -9239,19 +9367,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
-    - {fileID: 2226494032232215082, guid: 9f9b24be79c20704ab4fd2e4ddc732ed, type: 3}
-    - {fileID: 600856454808466885, guid: 9f9b24be79c20704ab4fd2e4ddc732ed, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2005320277}
-    - targetCorrespondingSourceObject: {fileID: 4001697182811736323, guid: 9f9b24be79c20704ab4fd2e4ddc732ed,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2005320276}
+      addedObject: {fileID: 2005320273}
   m_SourcePrefab: {fileID: 100100000, guid: 9f9b24be79c20704ab4fd2e4ddc732ed, type: 3}
 --- !u!4 &2005320272 stripped
 Transform:
@@ -9259,40 +9381,16 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2005320271}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2005320276
+--- !u!114 &2005320273
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1781030203}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f980321577add2543a0fed6175019504, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bombsCount: 0
-  maxBombs: 6
-  currentBombs: 0
-  bombsContainer: {fileID: 1307166877}
-  bombsUIElements:
-  - {fileID: 56271967}
-  - {fileID: 1075262424}
-  - {fileID: 1392616447}
-  - {fileID: 2049626417}
-  - {fileID: 1804517141}
-  - {fileID: 430515287}
-  shopButton: {fileID: 2888523364713361416}
---- !u!114 &2005320277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1781030203}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a3067430331e1845ad3bcff81fd3f92, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fd174ae5f874f74f83df2e00d928aa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   throwPoint: {fileID: 915453991}
@@ -9307,7 +9405,7 @@ MonoBehaviour:
     m_Bits: 87
   throwEffect: {fileID: 0}
   ballScale: 1
-  ballMaterial: {fileID: 2100000, guid: e73ba6bc747f9824cb26c5d03237cc5a, type: 2}
+  ballMaterial: {fileID: 0}
   ballColor: {r: 0, g: 1, b: 0, a: 1}
   showTrajectory: 1
   trajectorySteps: 10
@@ -14838,9 +14936,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Gun, Assembly-CSharp
-        m_MethodName: Fire
+      - m_Target: {fileID: 2005320273}
+        m_TargetAssemblyTypeName: ChemicalBombBehaviour, Assembly-CSharp
+        m_MethodName: ThrowChemicalBall
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -35274,7 +35372,8 @@ MonoBehaviour:
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
-  m_Cameras: []
+  m_Cameras:
+  - {fileID: 1957566992}
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
@@ -55943,7 +56042,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8448999409746998557
 Transform:
   m_ObjectHideFlags: 0
@@ -57888,7 +57987,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 119
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -57921,7 +58020,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2005320272}
+  - {fileID: 1957566989}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &9008112002071678117

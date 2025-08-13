@@ -2,17 +2,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class BallsManager : MonoBehaviour
+public class ChemicalBombManager : MonoBehaviour
 {
-    public static BallsManager Instance;
+    public static ChemicalBombManager Instance;
 
     [Header("Bullet Settings")]
-    public int bombsCount = 0;
     public int maxBombs = 6;
     public int currentBombs = 0;
     
     [Header("UI References")]
-    public GameObject bombsContainer;
+    public GameObject bombsContainerUI;
     public GameObject[] bombsUIElements;
     public Button shopButton;
     

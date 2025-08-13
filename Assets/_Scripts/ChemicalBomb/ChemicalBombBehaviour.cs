@@ -66,6 +66,12 @@ public class ChemicalBombBehaviour : MonoBehaviour
         {
             HideTrajectory();
         }
+
+        if(ChemicalBombManager.Instance.currentBombs <= 0)
+        {
+            this.gameObject.SetActive(false);
+        }
+
     }
     
     private void UpdateTargetPoint()

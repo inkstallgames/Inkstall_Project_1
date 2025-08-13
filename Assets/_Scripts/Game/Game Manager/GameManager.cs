@@ -6,8 +6,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    public GameObject player; 
-    public GameObject playerStartPos;
+    public Transform player; 
+    public Transform playerResetPos;
     public GameObject timer;
     public GameObject chemicalBomb;
     public GameObject throwButton;
@@ -15,6 +15,8 @@ public class GameManager : MonoBehaviour
 
     public AudioClip looseSound;
     public AudioClip winSound;
+
+    public DoorInteraction[] allDoors;
 
 
     void Awake()
@@ -39,7 +41,7 @@ public class GameManager : MonoBehaviour
 
         // (and after some time)
         ResetGame();
-        // Active Room(Unlocked Door) locked Again
+        ResetAllDoors();
     }
 
     public void GameWin()
@@ -48,14 +50,15 @@ public class GameManager : MonoBehaviour
 
         // (and after some time)
         ResetGame();
-        // Active Room(Unlocked Door) locked Again
+        ResetAllDoors();
+        
     }
 
     public void ResetGame()
     {
         Debug.Log("Reset Game");
-        player.transform.position = playerStartPos.transform.position;
-        player.transform.rotation = playerStartPos.transform.rotation;
+        // player.position = playerResetPos.position;
+        // player.rotation = playerResetPos.rotation;
         timer.SetActive(false);
         // chemicalBomb.SetActive(false);
         throwButton.SetActive(false);
@@ -63,7 +66,36 @@ public class GameManager : MonoBehaviour
         {
             shopButton.SetActive(false);
         }
+        
+        // Reset all doors in the scene
     }
-
-
+    
+    private void ResetAllDoors()
+    {
+        // Find all door interaction components in the scene
+        
+        // Reset each door to closed and locked state
+        foreach (DoorInteraction door in allDoors)
+        {
+            // Close the door if it's open
+            door.ResetDoor();
+            
+            // We need to add a method to relock the door in DoorInteraction class
+            // For now, we'll call a method that we'll implement next
+            RelockDoor(door);
+        }
+        
+        Debug.Log("All doors have been reset and locked");
+    }
+    
+    private void RelockDoor(DoorInteraction door)
+    {
+        // Access the door's isLocked field using reflection since it's private
+        // This is a workaround - ideally, DoorInteraction should have a public LockDoor() method
+        var field = typeof(DoorInteraction).GetField("isLocked", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        if (field != null)
+        {
+            field.SetValue(door, true);
+        }
+    }
 }

@@ -227,5 +227,21 @@ public class DoorInteraction : MonoBehaviour
                 audioSource.PlayOneShot(doorCloseSound);
             }
         }
+        GetComponent<Animator>().enabled = true;
+    }
+
+    // Added for GameManager to lock doors during reset
+    public void LockDoor()
+    {
+        isLocked = true;
+        
+        // Re-enable the animator if it was disabled during unlock
+        if (lockedDoorAnimator != null)
+        {
+            lockedDoorAnimator.enabled = true;
+        }
+        
+        // Reset game elements activation state
+        gameElementsActivated = false;
     }
 }

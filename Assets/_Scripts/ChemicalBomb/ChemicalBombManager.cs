@@ -40,6 +40,7 @@ public class ChemicalBombManager : MonoBehaviour
         }
         if(currentBombs <= 0)
         {
+            shopButton.gameObject.SetActive(false);
             GameManager.Instance.GameOver();
         }   
     }

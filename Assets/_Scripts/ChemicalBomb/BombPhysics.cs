@@ -15,6 +15,11 @@ public class BombPhysics : MonoBehaviour
     
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.CompareTag("Alien"))
+        {
+            collision.gameObject.SetActive(false);
+            this.gameObject.SetActive(false);
+        }
         if (!hasCollided)
         {
             hasCollided = true;

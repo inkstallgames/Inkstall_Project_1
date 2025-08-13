@@ -97,7 +97,6 @@ public class PlayerInteraction : MonoBehaviour
             // Check if we hit a door
             if (hitObject.CompareTag("Door"))
             {
-                // Get the door interaction component
                 DoorInteraction doorInteraction = hitObject.GetComponent<DoorInteraction>();
                 if (doorInteraction != null && doorInteraction.enabled)
                 {

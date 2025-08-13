@@ -9222,18 +9222,33 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
+        type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.6006286
+      value: 1.018
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.9679074
+      value: 1.051
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.7608943
+      value: 2.342
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
         type: 3}
@@ -9274,6 +9289,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Zombie Death (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389098658331350518, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389098658331350518, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389098658331350518, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: b057e86114e725b489da07afb542d66f, type: 2}
+    - target: {fileID: 5866666021909216657, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -1,23 +1,17 @@
 using UnityEngine;
 using System.Collections;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
-    public Transform player; 
-    public Transform playerResetPos;
-    public GameObject timer;
-    public GameObject chemicalBomb;
-    public GameObject throwButton;
-    public GameObject shopButton;
-
+   
     public AudioClip looseSound;
     public AudioClip winSound;
 
-    public DoorInteraction[] allDoors;
-
+    // Play Loose effect
+    // Play Win effect
 
     void Awake()
     {
@@ -34,73 +28,27 @@ public class GameManager : MonoBehaviour
 
     }
 
-
     public void GameOver()
     {
         // Level Loose effect
-        // Play Loose Sound
-        // Disable Timer, Disable throw button, Disable shop button
-
-        // (and after some time)
-
-        // Player Position to Start Position
-        // Door will be locked Again
+        // Play Loose Sound        
+        
+        StartCoroutine(ResetGame());
     }
-
+    
     public void GameWin()
     {
         // Level Win effect
         // Play Win Sound
-        // Disable Timer, Disable throw button, Disable shop button
-        
-        // (and after some time)
-        
-        // Player Position to Start Position
-        // Door will be locked Again       
+
+        StartCoroutine(ResetGame());
     }
 
-    public void ResetGame()
+    IEnumerator ResetGame()
     {
-        Debug.Log("Reset Game");
-        // player.position = playerResetPos.position;
-        // player.rotation = playerResetPos.rotation;
-        timer.SetActive(false);
-        // chemicalBomb.SetActive(false);
-        throwButton.SetActive(false);
-        if(!shopButton.activeSelf)
-        {
-            shopButton.SetActive(false);
-        }
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         
-        // Reset all doors in the scene
     }
-    
-    private void ResetAllDoors()
-    {
-        // Find all door interaction components in the scene
-        
-        // Reset each door to closed and locked state
-        foreach (DoorInteraction door in allDoors)
-        {
-            // Close the door if it's open
-            door.ResetDoor();
-            
-            // We need to add a method to relock the door in DoorInteraction class
-            // For now, we'll call a method that we'll implement next
-            RelockDoor(door);
-        }
-        
-        Debug.Log("All doors have been reset and locked");
-    }
-    
-    private void RelockDoor(DoorInteraction door)
-    {
-        // Access the door's isLocked field using reflection since it's private
-        // This is a workaround - ideally, DoorInteraction should have a public LockDoor() method
-        var field = typeof(DoorInteraction).GetField("isLocked", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        if (field != null)
-        {
-            field.SetValue(door, true);
-        }
-    }
+
 }

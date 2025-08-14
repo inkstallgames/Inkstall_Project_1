@@ -58,6 +58,7 @@ public class AlienProp : MonoBehaviour
 
     public void DestroyAlien()
     {
+        Debug.Log("Alien Destroyed");
         Destroy(alienPrefab.gameObject);
     }
 }

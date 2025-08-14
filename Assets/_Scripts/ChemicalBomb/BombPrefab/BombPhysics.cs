@@ -27,8 +27,9 @@ public class BombPhysics : MonoBehaviour
             PlayHitEffect();
             PlayHitSound();
 
-            Destroy(gameObject);
             Destroy(alien.gameObject);
+            Destroy(gameObject);
+            
             return;
         }
 

@@ -19,12 +19,11 @@ public class BombPhysics : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        
         // Handle alien collision
         Alien alien = collision.gameObject.GetComponent<Alien>();
         if (alien != null)
         {
-            alien.PlayDeathEffect();
+            alien.AlienFound();
             PlayExplosionEffects();
             Destroy(gameObject);
             return;

@@ -8966,6 +8966,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1914743390}
+    - targetCorrespondingSourceObject: {fileID: 1157308512712802934, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1914743394}
   m_SourcePrefab: {fileID: 100100000, guid: a49b32dc9efad8f4b8e5e16c67a9873f, type: 3}
 --- !u!4 &1899374208 stripped
 Transform:
@@ -9242,6 +9246,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1914743394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1914743381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54e5e7ded06d7314583c6577d3831eb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathEffect: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c,
+    type: 3}
+  alienPrefab: {fileID: 919132149155446097, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
+    type: 3}
 --- !u!1 &1943370790 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4328488083210567523, guid: 52247c4c064dd874fabf7eb71c4b4b88,

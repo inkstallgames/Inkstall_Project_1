@@ -2819,6 +2819,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!1 &575563911
 GameObject:
   m_ObjectHideFlags: 0
@@ -3267,6 +3270,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!1 &708511222
 GameObject:
   m_ObjectHideFlags: 0
@@ -3504,6 +3510,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!1 &776522120
 GameObject:
   m_ObjectHideFlags: 0
@@ -4808,6 +4817,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!54 &1052067773
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5333,6 +5345,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!54 &1081622642
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6237,6 +6252,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!1 &1245760201
 GameObject:
   m_ObjectHideFlags: 0
@@ -6849,6 +6867,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!1 &1324293215 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1428814400818248, guid: 0ff98eeb9bb99e5478390555bd891392,
@@ -7272,22 +7293,19 @@ PrefabInstance:
       propertyPath: isFake
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2219464849429128062, guid: cc98aa33a8b15a64381c437a2624e579, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 369948187675801988, guid: cc98aa33a8b15a64381c437a2624e579,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1422244173}
-    - targetCorrespondingSourceObject: {fileID: 369948187675801988, guid: cc98aa33a8b15a64381c437a2624e579,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1422244175}
-    - targetCorrespondingSourceObject: {fileID: 369948187675801988, guid: cc98aa33a8b15a64381c437a2624e579,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1422244179}
+    - targetCorrespondingSourceObject: {fileID: 369948187675801988, guid: cc98aa33a8b15a64381c437a2624e579,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1422244183}
   m_SourcePrefab: {fileID: 100100000, guid: cc98aa33a8b15a64381c437a2624e579, type: 3}
 --- !u!4 &1422244169 stripped
 Transform:
@@ -7295,47 +7313,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1422244168}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1422244170 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2219464849429128062, guid: cc98aa33a8b15a64381c437a2624e579,
-    type: 3}
-  m_PrefabInstance: {fileID: 1422244168}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1277224522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a00c660a06c6558409881ca30be91691, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1422244173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1277224522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d73e8525c2e94fc43aae70b3630d22b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPointsParent: {fileID: 0}
-  spawnPoints: []
---- !u!114 &1422244175
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1277224522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91acacdd6e2bcbf4cbb872181ba058d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
-  soundVolume: 1
 --- !u!54 &1422244179
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7363,6 +7340,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1422244183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277224522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9503dd00292b0f847b94fde5ee85f787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  alienPrefab: {fileID: 936761454669438973, guid: bd1403387fb3058428504f2a545b0704,
+    type: 3}
 --- !u!1 &1436208056 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1080529212456780, guid: 1a5a864cc965e6241b10e38df4c0ecd9,
@@ -7983,6 +7974,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!64 &1578915021
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -8551,7 +8545,7 @@ MonoBehaviour:
   - {fileID: 301692045}
   - {fileID: 1555151380}
   - {fileID: 1904817713}
-  - {fileID: 1422244170}
+  - {fileID: 0}
   - {fileID: 545819699}
   - {fileID: 1314045407}
   - {fileID: 1772174248}
@@ -8560,7 +8554,7 @@ MonoBehaviour:
   - {fileID: 1163754221}
   - {fileID: 200075173}
   - {fileID: 352363810}
-  - {fileID: 1899374209}
+  - {fileID: 0}
   - {fileID: 1081622633}
   - {fileID: 1578915016}
   - {fileID: 362147266}
@@ -8841,6 +8835,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!54 &1857171375
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8894,17 +8891,17 @@ PrefabInstance:
     - target: {fileID: 1964771587898480844, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.546
+      value: 9.544
       objectReference: {fileID: 0}
     - target: {fileID: 1964771587898480844, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.094
+      value: 2.068
       objectReference: {fileID: 0}
     - target: {fileID: 1964771587898480844, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.8
+      value: 2.872
       objectReference: {fileID: 0}
     - target: {fileID: 1964771587898480844, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
         type: 3}
@@ -8946,7 +8943,8 @@ PrefabInstance:
       propertyPath: isFake
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2061706942514101231, guid: a49b32dc9efad8f4b8e5e16c67a9873f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1964771587898480844, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
@@ -8954,14 +8952,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1041419014}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1157308512712802934, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1914743385}
-    - targetCorrespondingSourceObject: {fileID: 1157308512712802934, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1914743386}
     - targetCorrespondingSourceObject: {fileID: 1157308512712802934, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
         type: 3}
       insertIndex: -1
@@ -8977,18 +8967,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1899374207}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1899374209 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2061706942514101231, guid: a49b32dc9efad8f4b8e5e16c67a9873f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1899374207}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1914743381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a00c660a06c6558409881ca30be91691, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1904817711
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9126,6 +9104,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!54 &1904817724
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9190,35 +9171,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1899374207}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1914743385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1914743381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d73e8525c2e94fc43aae70b3630d22b0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnPointsParent: {fileID: 0}
-  spawnPoints: []
---- !u!114 &1914743386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1914743381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91acacdd6e2bcbf4cbb872181ba058d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
-  realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
-  soundVolume: 1
 --- !u!54 &1914743390
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9255,12 +9207,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1914743381}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54e5e7ded06d7314583c6577d3831eb4, type: 3}
+  m_Script: {fileID: 11500000, guid: 9503dd00292b0f847b94fde5ee85f787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deathEffect: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c,
-    type: 3}
-  alienPrefab: {fileID: 919132149155446097, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
+  alienPrefab: {fileID: 936761454669438973, guid: bd1403387fb3058428504f2a545b0704,
     type: 3}
 --- !u!1 &1943370790 stripped
 GameObject:
@@ -9268,119 +9218,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 607035549}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1951701223
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1.018
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.051
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 2.342
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.60981077
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.79254705
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -104.848
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_Name
-      value: Zombie Death (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4389098658331350518, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4389098658331350518, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 4389098658331350518, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 5866666021909216657, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: b057e86114e725b489da07afb542d66f, type: 2}
-    - target: {fileID: 5866666021909216657, guid: c7cc7b82a59b2ba4ba2f2001065f0f97,
-        type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: c7cc7b82a59b2ba4ba2f2001065f0f97, type: 3}
 --- !u!1 &1957566988
 GameObject:
   m_ObjectHideFlags: 0
@@ -9803,6 +9640,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!1001 &2106195319
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19397,6 +19237,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!114 &1875161216681000373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19692,6 +19535,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!4 &1875161216794708494
 Transform:
   m_ObjectHideFlags: 0
@@ -19884,6 +19730,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!4 &1875161216934841792
 Transform:
   m_ObjectHideFlags: 0
@@ -20066,6 +19915,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!4 &1875161217053615524
 Transform:
   m_ObjectHideFlags: 0
@@ -20526,6 +20378,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!4 &1875161217518314153
 Transform:
   m_ObjectHideFlags: 0
@@ -20571,6 +20426,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!4 &1875161217537759246
 Transform:
   m_ObjectHideFlags: 0
@@ -21150,6 +21008,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!4 &1875161217708082474
 Transform:
   m_ObjectHideFlags: 0
@@ -21366,6 +21227,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!114 &1875161217842615759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21406,6 +21270,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!4 &1875161217875363635
 Transform:
   m_ObjectHideFlags: 0
@@ -21637,6 +21504,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!1 &1875161218096118384
 GameObject:
   m_ObjectHideFlags: 0
@@ -21720,6 +21590,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!1 &1875161218121732012
 GameObject:
   m_ObjectHideFlags: 0
@@ -21846,6 +21719,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!4 &1875161218206037485
 Transform:
   m_ObjectHideFlags: 0
@@ -22002,6 +21878,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!23 &1875161218325417116 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 23546199921830310, guid: cde875813fb5ee54c8770e39c214453b,
@@ -51558,6 +51437,9 @@ MonoBehaviour:
   fakePickupSound: {fileID: 8300000, guid: ab58c44ae050dec488c6a78bda9d6d0e, type: 3}
   realInteractSound: {fileID: 8300000, guid: 4abb4962aacdf584fb17ed21dc33e7c2, type: 3}
   soundVolume: 1
+  audioSource: {fileID: 0}
+  isCollected: 0
+  propIdentity: {fileID: 0}
 --- !u!114 &6941002240414471615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60882,4 +60764,3 @@ SceneRoots:
   - {fileID: 776522121}
   - {fileID: 575563914}
   - {fileID: 1158750012}
-  - {fileID: 1951701223}

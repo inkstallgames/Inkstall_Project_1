@@ -37,21 +37,26 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        // Level Loose effect
         // Play Loose Sound
+        // Disable Timer, Disable throw button, Disable shop button
 
         // (and after some time)
-        ResetGame();
-        ResetAllDoors();
+
+        // Player Position to Start Position
+        // Door will be locked Again
     }
 
     public void GameWin()
     {
-        // Play Game Win Sound
-
-        // (and after some time)
-        ResetGame();
-        ResetAllDoors();
+        // Level Win effect
+        // Play Win Sound
+        // Disable Timer, Disable throw button, Disable shop button
         
+        // (and after some time)
+        
+        // Player Position to Start Position
+        // Door will be locked Again       
     }
 
     public void ResetGame()

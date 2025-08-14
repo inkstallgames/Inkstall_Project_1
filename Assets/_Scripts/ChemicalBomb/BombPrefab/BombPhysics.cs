@@ -20,28 +20,35 @@ public class BombPhysics : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         // Handle alien collision
-        Alien alien = collision.gameObject.GetComponent<Alien>();
+        AlienProp alien = collision.gameObject.GetComponent<AlienProp>();
         if (alien != null)
         {
             alien.AlienFound();
-            PlayExplosionEffects();
+            PlayHitEffect();
+            PlayHitSound();
+
             Destroy(gameObject);
+            Destroy(alien.gameObject);
             return;
         }
 
-        // Handle other collisions (walls, environment)
-        PlayExplosionEffects();
+        // Handle other collisions
+        PlayHitEffect();
+        PlayHitSound();
         Destroy(gameObject);
     }
 
-    private void PlayExplosionEffects()
+    private void PlayHitEffect()
     {
         // Play particle effect
         if (explosionEffect != null)
         {
             Instantiate(explosionEffect, transform.position, Quaternion.identity);
         }
+    }
 
+    private void PlayHitSound()
+    {
         // Play sound effect
         if (explosionSound != null && audioSource != null)
         {

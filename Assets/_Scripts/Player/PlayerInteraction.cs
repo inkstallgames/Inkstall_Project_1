@@ -152,16 +152,6 @@ public class PlayerInteraction : MonoBehaviour
             {
                 showUseKeyButton = false;
             }
-
-            if (hitObject.CompareTag("Alien"))
-            {
-                
-                Alien alien = hitObject.GetComponent<Alien>();
-                if (alien != null)
-                {
-                    // alien.Interact();
-                }
-            }
         }
     }
 

@@ -5975,6 +5975,7 @@ RectTransform:
   m_Children:
   - {fileID: 5420367080220706981}
   - {fileID: 1194441156}
+  - {fileID: 9157282966612371623}
   - {fileID: 1981799374}
   - {fileID: 977753790}
   - {fileID: 1774634693}
@@ -9164,8 +9165,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 9157282966612371623}
+  m_Children: []
   m_Father: {fileID: 9005220659803848085}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1957566990
@@ -39535,7 +39535,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9157282966612371623}
   m_Layer: 7
-  m_Name: ChemicalBombUI
+  m_Name: ChemicalBomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47572,7 +47572,7 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  chemicalBomb: {fileID: 0}
+  chemicalBomb: {fileID: 4001697182668950348}
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
@@ -60306,15 +60306,15 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4001697182668950348}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.4020002, y: -0.29200006, z: 0.5230001}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalPosition: {x: -959.80804, y: -414.048, z: 10.31902}
+  m_LocalScale: {x: 1.9591837, y: 1.9591837, z: 1.9591837}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7506216599991068423}
   - {fileID: 2029419306885955393}
   - {fileID: 9114862386215161999}
-  m_Father: {fileID: 1957566989}
+  m_Father: {fileID: 1217582467}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9167194953556824550
 GameObject:

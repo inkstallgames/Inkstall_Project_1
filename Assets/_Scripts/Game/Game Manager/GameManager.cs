@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ResetGame()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(1f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         
     }

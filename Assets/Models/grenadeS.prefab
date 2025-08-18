@@ -110,6 +110,8 @@ MonoBehaviour:
   explosionEffect: {fileID: 5112403345868107899, guid: 6f34ef0d986e9db4199cf75805f79753,
     type: 3}
   explosionSound: {fileID: 0}
+  alienPrefab: {fileID: 936761454669438973, guid: bd1403387fb3058428504f2a545b0704,
+    type: 3}
 --- !u!135 &5462579479137243271
 SphereCollider:
   m_ObjectHideFlags: 0

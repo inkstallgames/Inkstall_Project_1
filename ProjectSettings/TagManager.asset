@@ -12,6 +12,7 @@ TagManager:
   - Door
   - SlidingDoor
   - Alien
+  - AlienProp
   layers:
   - Default
   - TransparentFX

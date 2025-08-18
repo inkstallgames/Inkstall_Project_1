@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306a4b653742dd24eb770f020132ae08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfAliens: 10
+  numberOfAliens: 5
 --- !u!1 &33735638
 GameObject:
   m_ObjectHideFlags: 0

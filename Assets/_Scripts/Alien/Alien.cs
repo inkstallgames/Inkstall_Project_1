@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Alien : MonoBehaviour
 {
-    
+    [SerializeField] private ParticleSystem dissappearEffect;
+    [SerializeField] private AudioClip dissappearSound;
     
     // Start is called before the first frame update
     void OnEnable()
@@ -16,8 +17,6 @@ public class Alien : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         Destroy(gameObject);
-    }
-
-    
+    }   
 }
  

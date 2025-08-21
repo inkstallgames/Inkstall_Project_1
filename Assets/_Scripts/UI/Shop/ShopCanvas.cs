@@ -30,6 +30,10 @@ public class ShopCanvas : MonoBehaviour
     private int currentBombsCount = 1;
     private const int MAX_BOMBS = 3;
     private const int MIN_BOMBS = 1;
+    
+    // Track how many bombs have been purchased in this shop session
+    private int bombsPurchasedThisSession = 0;
+    private const int MAX_BOMBS_PER_SESSION = 3;
 
     // Tiered pricing for bullets
     private readonly Dictionary<int, int> bombsPrices = new Dictionary<int, int>
@@ -99,7 +103,7 @@ public class ShopCanvas : MonoBehaviour
         if (buyButton != null && CoinsManager.Instance != null)
         {
             int totalCost = bombsPrices[currentBombsCount];
-            buyButton.interactable = CoinsManager.Instance.currentCoins >= totalCost;
+            buyButton.interactable = CoinsManager.Instance.currentCoins >= totalCost && bombsPurchasedThisSession < MAX_BOMBS_PER_SESSION;
         }
     }
 
@@ -127,6 +131,7 @@ public class ShopCanvas : MonoBehaviour
         
         // Reset to default state when opening shop
         currentBombsCount = 1;
+        bombsPurchasedThisSession = 0;
         UpdateBombsUI();
         UpdatePlayerUI();
         
@@ -208,7 +213,7 @@ public class ShopCanvas : MonoBehaviour
         int totalCost = bombsPrices[currentBombsCount];
         
         // Check if player has enough coins and if CoinsManager exists
-        if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost)
+        if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost && bombsPurchasedThisSession < MAX_BOMBS_PER_SESSION)
         {
             // Deduct coins using CoinsManager
             CoinsManager.Instance.SpendCoins(totalCost, (success) => {
@@ -222,6 +227,7 @@ public class ShopCanvas : MonoBehaviour
                         
                         // Update local tracking for UI
                         playerBombs += currentBombsCount;
+                        bombsPurchasedThisSession += currentBombsCount;
                         
                         // Save changes to PlayerPrefs as backup
                         SavePlayerData();
@@ -245,8 +251,15 @@ public class ShopCanvas : MonoBehaviour
         }
         else
         {
-            // Show not enough coins message
-            Debug.Log("Not enough coins to purchase bombs!");
+            // Show not enough coins message or session limit reached message
+            if (CoinsManager.Instance.currentCoins < totalCost)
+            {
+                Debug.Log("Not enough coins to purchase bombs!");
+            }
+            else
+            {
+                Debug.Log("You have reached the session purchase limit of 3 bombs!");
+            }
         }
     }
 }

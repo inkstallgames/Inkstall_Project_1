@@ -5,6 +5,8 @@ using System.Runtime.InteropServices;
 public class GetUserIDBridge : MonoBehaviour
 {
     public static string userId = "";
+    // Default user ID to use if none is found in local storage
+    public string defaultUserId = "681ee0e6198ad04bf6c1c733"; // Same as the one in KeyManager
 
     [DllImport("__Internal")]
     private static extern void GetUserIdFromLocalStorage();
@@ -13,6 +15,9 @@ public class GetUserIDBridge : MonoBehaviour
     {
         #if UNITY_WEBGL && !UNITY_EDITOR
         GetUserIdFromLocalStorage();
+        #else
+        // In editor or non-WebGL builds, use the default ID
+        UseDefaultUserId("");
         #endif
     }
 
@@ -21,6 +26,15 @@ public class GetUserIDBridge : MonoBehaviour
     {
         userId = id;
         Debug.Log("User ID received from localstorage: " + userId);
+        SendUserIdToKeyManager();
+        SendUserIdToCoinsManager();
+    }
+
+    // This will be called when userId is not found in localStorage or when in editor
+    public void UseDefaultUserId(string unused)
+    {
+        userId = defaultUserId;
+        Debug.Log("Using default User ID: " + userId);
         SendUserIdToKeyManager();
         SendUserIdToCoinsManager();
     }
@@ -53,4 +67,3 @@ public class GetUserIDBridge : MonoBehaviour
         }
     }
 }
-

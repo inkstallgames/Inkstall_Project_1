@@ -70,15 +70,26 @@ public class ShopCanvas : MonoBehaviour
         }
     }
 
-
     void OnEnable()
     {
-        // Update coins display from CoinsManager if available
+        // Subscribe to CoinsManager events
         if (CoinsManager.Instance != null)
         {
+            CoinsManager.Instance.OnCoinsUpdated += UpdatePlayerUI;
             CoinsManager.Instance.FetchCoins();
-            playerCoins = CoinsManager.Instance.currentCoins;
-            UpdatePlayerUI();
+        }
+        
+        // Update UI
+        UpdateBombsUI();
+        UpdatePlayerUI();
+    }
+
+    void OnDisable()
+    {
+        // Unsubscribe from CoinsManager events
+        if (CoinsManager.Instance != null)
+        {
+            CoinsManager.Instance.OnCoinsUpdated -= UpdatePlayerUI;
         }
     }
 
@@ -89,21 +100,16 @@ public class ShopCanvas : MonoBehaviour
         {
             int totalCost = bombsPrices[currentBombsCount];
             buyButton.interactable = CoinsManager.Instance.currentCoins >= totalCost;
-            
-            // Update local coins value if it changed in CoinsManager
-            if (playerCoins != CoinsManager.Instance.currentCoins)
-            {
-                playerCoins = CoinsManager.Instance.currentCoins;
-                UpdatePlayerUI();
-            }
         }
     }
 
     private void LoadPlayerData()
     {
-        // Load saved coins and bullets from PlayerPrefs
-        playerCoins = PlayerPrefs.GetInt(COINS_KEY, 10000); // Default 10000 coins for testing
+        // Load saved bombs from PlayerPrefs
         playerBombs = PlayerPrefs.GetInt(BOMBS_KEY, 0);
+        
+        // Update UI
+        UpdatePlayerUI();
     }
     
     private void SavePlayerData()
@@ -178,6 +184,12 @@ public class ShopCanvas : MonoBehaviour
     
     private void UpdatePlayerUI()
     {
+        // Get current coins from CoinsManager if available
+        if (CoinsManager.Instance != null)
+        {
+            playerCoins = CoinsManager.Instance.currentCoins;
+        }
+        
         // Update coins display
         if (coinsCount != null)
         {
@@ -202,32 +214,28 @@ public class ShopCanvas : MonoBehaviour
             CoinsManager.Instance.SpendCoins(totalCost, (success) => {
                 if (success)
                 {
-                    // Add bullets to BulletsManager if it exists
+                    // Add bombs to ChemicalBombManager if it exists
                     if (ChemicalBombManager.Instance != null)
                     {
                         ChemicalBombManager.Instance.AddBombs(currentBombsCount);
-                        Debug.Log($"Added {currentBombsCount} bombs to BulletsManager");
+                        Debug.Log($"Added {currentBombsCount} bombs to ChemicalBombManager");
+                        
+                        // Update local tracking for UI
+                        playerBombs += currentBombsCount;
+                        
+                        // Save changes to PlayerPrefs as backup
+                        SavePlayerData();
+                        
+                        // Show success message
+                        Debug.Log($"Purchased {currentBombsCount} bombs for {totalCost} coins. You now have {playerBombs} bombs and {playerCoins} coins.");
+                        
+                        // Close the shop after purchase
+                        CloseShopCanvas();
                     }
                     else
                     {
-                        Debug.LogError("BulletsManager instance not found!");
+                        Debug.LogError("ChemicalBombManager instance not found!");
                     }
-                    
-                    // Update local tracking for UI
-                    playerCoins = CoinsManager.Instance.currentCoins;
-                    playerBombs += currentBombsCount;
-                    
-                    // Save changes to PlayerPrefs as backup
-                    SavePlayerData();
-                    
-                    // Update UI
-                    UpdatePlayerUI();
-                    
-                    // Show success message
-                    Debug.Log($"Purchased {currentBombsCount} bombs for {totalCost} coins. You now have {playerBombs} bombs and {playerCoins} coins.");
-                    
-                    // Close the shop after purchase
-                    CloseShopCanvas();
                 }
                 else
                 {

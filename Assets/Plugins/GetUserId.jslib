@@ -4,15 +4,17 @@ mergeInto(LibraryManager.library,
   {
     var userId = localStorage.getItem('studentId');
     
-    // Send the found userId to the UserIDManager script in unity
+    // Send the found userId to the GetUserIDBridge script in unity
     if(userId)
     {
       // SendMessage('GameObjectName', 'MethodName', 'parameter');
-      SendMessage("UserIDManager", "ReceiveUserId", userId)
+      SendMessage("GetUserIDBridge", "ReceiveUserId", userId);
     }
     else 
     {
-        console.error('userId not found in localStorage.');
+        console.log('userId not found in localStorage, using default ID.');
+        // Send a signal to use default ID
+        SendMessage("GetUserIDBridge", "UseDefaultUserId", "");
     }
   },
 });

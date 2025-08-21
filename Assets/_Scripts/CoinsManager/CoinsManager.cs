@@ -7,12 +7,15 @@ public class CoinsManager : MonoBehaviour
 {
     public static CoinsManager Instance;
 
+    // Event that will be triggered whenever coins are updated
+    public event System.Action OnCoinsUpdated;
+
     public TextMeshProUGUI coinText; // Assign in Inspector
     public string userId;
     public int currentCoins;
 
-    private string getCoinsURL = "http://localhost:4000/api/slot/get-keys";
-    private string spendCoinsURL = "http://localhost:4000/api/slot/spend-keys";
+    private string getCoinsURL = "https://api.inkstall.in/api/student-portal/studentpoints/";
+    private string spendCoinsURL = "https://api.inkstall.in/api/student-portal/studentpoints/add-game-points";
 
     void Awake()
     {
@@ -42,6 +45,8 @@ public class CoinsManager : MonoBehaviour
             CoinResponse res = JsonUtility.FromJson<CoinResponse>(request.downloadHandler.text);
             currentCoins = res.coins;
             UpdateCoinUI();
+            // Notify listeners that coins have been updated
+            OnCoinsUpdated?.Invoke();
         }
         else
         {
@@ -56,6 +61,8 @@ public class CoinsManager : MonoBehaviour
             // First, update the UI immediately for better responsiveness
             currentCoins -= amount;
             UpdateCoinUI();
+            // Notify listeners that coins have been updated
+            OnCoinsUpdated?.Invoke();
             
             // Then start the server request
             StartCoroutine(SendSpendRequest(amount, (success) => {
@@ -64,6 +71,8 @@ public class CoinsManager : MonoBehaviour
                     // If server request failed, revert the local changes
                     currentCoins += amount;
                     UpdateCoinUI();
+                    // Notify listeners that coins have been updated (reverted)
+                    OnCoinsUpdated?.Invoke();
                 }
                 onComplete?.Invoke(success);
             }));

@@ -26,7 +26,7 @@ public class Alien : MonoBehaviour
         ParticleSystem effect = Instantiate(disappearEffectPrefab, transform.position, Quaternion.identity);
         effect.Play();
         audioSource.PlayOneShot(dissappearSound);
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.5f);
         Destroy(gameObject);
     }   
 }

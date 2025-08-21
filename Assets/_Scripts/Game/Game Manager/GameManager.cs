@@ -40,13 +40,13 @@ public class GameManager : MonoBehaviour
     {
         // Level Win effect
         // Play Win Sound
-
+        
         StartCoroutine(ResetGame());
     }
 
     IEnumerator ResetGame()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(3f);     
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         
     }

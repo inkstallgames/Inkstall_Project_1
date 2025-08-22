@@ -65,17 +65,6 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
-        // Check if any door is being unlocked before doing raycast interaction
-        if (KeyManager.Instance != null && KeyManager.Instance.IsDoorBeingUnlocked())
-        {
-            // Force hide the use key button when any door is being unlocked
-            if (useKeyButton != null && useKeyButton.activeSelf)
-            {
-                useKeyButton.SetActive(false);
-                Debug.Log("[PlayerInteraction] Force hiding use key button because a door is being unlocked");
-            }
-        }
-        
         CheckRaycastInteraction();
     }
 
@@ -121,26 +110,13 @@ public class PlayerInteraction : MonoBehaviour
                         currentDoor = doorInteraction;
                         openCloseButton.SetActive(true);
 
-                        // Check if any door is currently being unlocked
-                        bool anyDoorBeingUnlocked = KeyManager.Instance != null && KeyManager.Instance.IsDoorBeingUnlocked();
-                        Debug.Log("[PlayerInteraction] Door unlocking state: " + anyDoorBeingUnlocked);
-                        
                         // Only show use key button if:
                         // 1. The door is locked
                         // 2. We've previously tried to open this specific door (showUseKeyButton is true)
                         // 3. We're still looking at the same door as before
-                        // 4. No door is currently being unlocked
-                        if (doorInteraction.IsLocked() && showUseKeyButton && doorInteraction == previousDoor && !anyDoorBeingUnlocked)
+                        if (doorInteraction.IsLocked() && showUseKeyButton && doorInteraction == previousDoor)
                         {
                             useKeyButton.SetActive(true);
-                            Debug.Log("[PlayerInteraction] Showing use key button");
-                        }
-                        else
-                        {
-                            Debug.Log("[PlayerInteraction] Not showing use key button. Conditions: IsLocked=" + 
-                                doorInteraction.IsLocked() + ", showUseKeyButton=" + showUseKeyButton + 
-                                ", sameDoor=" + (doorInteraction == previousDoor) + 
-                                ", !anyDoorBeingUnlocked=" + !anyDoorBeingUnlocked);
                         }
                     }
                 }
@@ -192,15 +168,10 @@ public class PlayerInteraction : MonoBehaviour
             {
                 showUseKeyButton = true;
 
-                // Check if any door is currently being unlocked
-                bool anyDoorBeingUnlocked = KeyManager.Instance != null && KeyManager.Instance.IsDoorBeingUnlocked();
-                Debug.Log("[PlayerInteraction] Door unlocking state in InteractWithCurrentDoor: " + anyDoorBeingUnlocked);
-                
-                // Immediately show the use key button if we're still looking at the door and no door is being unlocked
-                if (useKeyButton != null && !anyDoorBeingUnlocked)
+                // Immediately show the use key button if we're still looking at the door
+                if (useKeyButton != null)
                 {
                     useKeyButton.SetActive(true);
-                    Debug.Log("[PlayerInteraction] Showing use key button in InteractWithCurrentDoor");
                 }
             }
         }
@@ -214,15 +185,12 @@ public class PlayerInteraction : MonoBehaviour
     // Method to unlock the current door
     private void UnlockCurrentDoor()
     {
-        Debug.Log("[PlayerInteraction] UnlockCurrentDoor called");
         if (currentDoor != null && currentDoor.IsLocked())
         {
-            Debug.Log("[PlayerInteraction] Calling TryUnlockDoor on door");
             currentDoor.TryUnlockDoor();
 
             // Reset the flag since the door is now unlocked
             showUseKeyButton = false;
-            Debug.Log("[PlayerInteraction] Reset showUseKeyButton to false");
         }
     }
 

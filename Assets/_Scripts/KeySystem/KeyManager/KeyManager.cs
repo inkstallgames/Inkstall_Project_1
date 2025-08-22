@@ -45,13 +45,6 @@ public class KeyManager : MonoBehaviour
 
     // Flag to track if we've successfully fetched keys
     private bool hasInitializedKeys = false;
-    
-    // Flag to track if a door is currently being unlocked
-    private static bool isDoorBeingUnlocked = false;
-    
-    // Timer to automatically reset the door unlocking state after a timeout
-    private float unlockTimeout = 3.0f; // 3 seconds timeout
-    private Coroutine unlockTimeoutCoroutine;
 
     private void Awake()
     {
@@ -331,18 +324,8 @@ public class KeyManager : MonoBehaviour
     {
         Debug.Log("[KeyManager] UseKey called, current count: " + keysCount);
         
-        // Check if another door is already being unlocked
-        if (isDoorBeingUnlocked)
-        {
-            Debug.Log("[KeyManager] Cannot use key, another door is being unlocked");
-            return false;
-        }
-        
         if (keysCount > 0)
         {
-            // Set the door unlocking flag
-            SetDoorUnlockingState(true);
-            
             keysCount--;
             Debug.Log("[KeyManager] Key used, new count: " + keysCount);
             UpdateUIKeyCount();
@@ -356,53 +339,6 @@ public class KeyManager : MonoBehaviour
         }
     }
     
-    // Check if a door is currently being unlocked
-    public bool IsDoorBeingUnlocked()
-    {
-        Debug.Log("[KeyManager] IsDoorBeingUnlocked called, returning: " + isDoorBeingUnlocked);
-        return isDoorBeingUnlocked;
-    }
-    
-    // Set the door unlocking state with an optional timeout
-    public void SetDoorUnlockingState(bool state, bool useTimeout = true)
-    {
-        Debug.Log("[KeyManager] SetDoorUnlockingState called with state: " + state + ", useTimeout: " + useTimeout);
-        isDoorBeingUnlocked = state;
-        Debug.Log("[KeyManager] Door unlocking state set to: " + state);
-        
-        // If we're setting the state to true and useTimeout is true, start the timeout coroutine
-        if (state && useTimeout)
-        {
-            // Cancel any existing timeout coroutine
-            if (unlockTimeoutCoroutine != null)
-            {
-                Debug.Log("[KeyManager] Cancelling existing timeout coroutine");
-                StopCoroutine(unlockTimeoutCoroutine);
-            }
-            
-            // Start a new timeout coroutine
-            Debug.Log("[KeyManager] Starting new timeout coroutine");
-            unlockTimeoutCoroutine = StartCoroutine(ResetDoorUnlockingStateAfterTimeout());
-        }
-        // If we're setting the state to false, cancel any existing timeout coroutine
-        else if (!state && unlockTimeoutCoroutine != null)
-        {
-            Debug.Log("[KeyManager] Cancelling timeout coroutine due to state being set to false");
-            StopCoroutine(unlockTimeoutCoroutine);
-            unlockTimeoutCoroutine = null;
-        }
-    }
-    
-    // Coroutine to reset the door unlocking state after a timeout
-    private IEnumerator ResetDoorUnlockingStateAfterTimeout()
-    {
-        Debug.Log("[KeyManager] ResetDoorUnlockingStateAfterTimeout coroutine started, waiting for " + unlockTimeout + " seconds");
-        yield return new WaitForSeconds(unlockTimeout);
-        isDoorBeingUnlocked = false;
-        Debug.Log("[KeyManager] Door unlocking state reset after timeout");
-        unlockTimeoutCoroutine = null;
-    }
-
     // Update the database with the current key count
     private void UpdateDBKeyCount()
     {

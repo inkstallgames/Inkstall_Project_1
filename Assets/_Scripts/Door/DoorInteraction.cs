@@ -152,18 +152,8 @@ public class DoorInteraction : MonoBehaviour
     // Public so PlayerInteraction can call it
     public void TryUnlockDoor()
     {
-        Debug.Log("[DoorInteraction] TryUnlockDoor called on " + gameObject.name);
-        
-        // Check if another door is already being unlocked
-        if (KeyManager.Instance.IsDoorBeingUnlocked())
-        {
-            Debug.Log("[DoorInteraction] Cannot unlock door, another door is being unlocked");
-            return;
-        }
-        
         if (KeyManager.Instance.GetCurrentKeyCount() > 0)
         {
-            Debug.Log("[DoorInteraction] Keys available, calling UnlockDoor");
             UnlockDoor();
             // The use key button will be disabled by PlayerInteraction
         }
@@ -175,36 +165,13 @@ public class DoorInteraction : MonoBehaviour
 
     public void UnlockDoor()
     {
-        Debug.Log("[DoorInteraction] UnlockDoor called on " + gameObject.name);
         if (isLocked)
         {
-            Debug.Log("[DoorInteraction] Door is locked, using key and playing unlock sound");
             KeyManager.Instance.UseKey();
             audioSource.PlayOneShot(doorUnlockSound);
             isLocked = false;
             lockedDoorAnimator.enabled = false;
-            
-            // Reset the door unlocking state after the unlock animation completes
-            Debug.Log("[DoorInteraction] Starting ResetDoorUnlockingStateAfterAnimation coroutine");
-            StartCoroutine(ResetDoorUnlockingStateAfterAnimation());
         }
-        else
-        {
-            Debug.Log("[DoorInteraction] Door is already unlocked");
-        }
-    }
-    
-    // Coroutine to reset the door unlocking state after the animation completes
-    private IEnumerator ResetDoorUnlockingStateAfterAnimation()
-    {
-        Debug.Log("[DoorInteraction] ResetDoorUnlockingStateAfterAnimation started, waiting for 2.5 seconds");
-        // Wait for the unlock animation/sound to complete (adjust time as needed)
-        // Increasing wait time to 2.5 seconds to ensure animation fully completes before allowing other doors to be unlocked
-        yield return new WaitForSeconds(2.5f);
-        
-        // Reset the door unlocking state
-        Debug.Log("[DoorInteraction] Animation wait complete, resetting door unlocking state");
-        KeyManager.Instance.SetDoorUnlockingState(false, false);
     }
 
     private void ToggleDoorOpenClose()

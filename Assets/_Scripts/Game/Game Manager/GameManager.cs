@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip doorCloseSound;
    
     public AudioClip looseSound;
     public AudioClip winSound;
@@ -28,11 +31,17 @@ public class GameManager : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+
     public void GameOver()
     {
         // Level Loose effect
         // Play Loose Sound        
         
+        audioSource.PlayOneShot(doorCloseSound);
         StartCoroutine(ResetGame());
     }
     
@@ -41,12 +50,13 @@ public class GameManager : MonoBehaviour
         // Level Win effect
         // Play Win Sound
         
+        audioSource.PlayOneShot(doorCloseSound);
         StartCoroutine(ResetGame());
     }
 
     IEnumerator ResetGame()
     {
-        yield return new WaitForSeconds(3f);     
+        yield return new WaitForSeconds(0.5f);     
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         
     }

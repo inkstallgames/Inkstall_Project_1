@@ -24,8 +24,6 @@ public class Alien : MonoBehaviour
         audioSource.PlayOneShot(dissappearSound);
         Instantiate(coinPrefab, this.gameObject.transform.position, Quaternion.identity);
         yield return new WaitForSeconds(2f);
-        coinPrefab.SetActive(false);
-        yield return new WaitForSeconds(1f);
         // Now disable the GameObject
         gameObject.SetActive(false);
     }   

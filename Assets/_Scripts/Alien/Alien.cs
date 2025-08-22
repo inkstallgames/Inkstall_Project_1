@@ -19,7 +19,7 @@ public class Alien : MonoBehaviour
 
     void OnEnable()
     {
-        audioSource.PlayOneShot(alienDyingSound);
+        // audioSource.PlayOneShot(alienDyingSound);
         StartCoroutine(DestroyAlien());
     }
 

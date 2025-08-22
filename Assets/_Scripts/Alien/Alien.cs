@@ -19,7 +19,6 @@ public class Alien : MonoBehaviour
 
     void OnEnable()
     {
-        // audioSource.PlayOneShot(alienDyingSound);
         StartCoroutine(DestroyAlien());
     }
 
@@ -30,8 +29,11 @@ public class Alien : MonoBehaviour
         effect.Play();
         audioSource.PlayOneShot(dissappearSound);
         Instantiate(coinPrefab, transform.position, Quaternion.identity);
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(2f);
+        coinPrefab.SetActive(false);
+        yield return new WaitForSeconds(1f);
         gameObject.SetActive(false);
+        audioSource.PlayOneShot(alienDyingSound);
     }   
 }
  

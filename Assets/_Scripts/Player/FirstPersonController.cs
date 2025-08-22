@@ -448,32 +448,21 @@ namespace StarterAssets
 							break;
 					}
 
-					// If we found a valid camera touch, don't process any more for camera
-					if (foundCameraTouch)
-						break;
+					// IMPORTANT CHANGE: Don't break the loop here
+					// This allows us to process all touches, including camera rotation
+					// while the joystick is being used
+					// if (foundCameraTouch)
+					//    break;
 				}
 
 				// Second pass: Process left side touches for joystick movement
 				// This allows simultaneous movement and camera rotation
 				if (useSplitScreenTouch)
 				{
-					for (int i = 0; i < Input.touchCount; i++)
-					{
-						UnityEngine.Touch touch = Input.GetTouch(i);
-
-						// Check if touch is over UI
-						if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(touch.fingerId))
-							continue;
-
-						// Only process left side touches for movement
-						bool isLeftSide = touch.position.x <= Screen.width / 2;
-						if (!isLeftSide)
-							continue;
-
-						// We don't need to do anything here since the joystick control
-						// is likely handled by another component (UIVirtualJoystick)
-						// This is just to ensure we're allowing both touches to be processed
-					}
+					// We don't need to do anything here since the joystick control
+					// is handled by another component (UIVirtualJoystick)
+					// The key change is removing the break statement above
+					// to allow both joystick and camera touches to be processed
 				}
 			}
 		}

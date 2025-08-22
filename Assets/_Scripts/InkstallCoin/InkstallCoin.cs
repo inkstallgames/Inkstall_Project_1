@@ -16,7 +16,7 @@ public class InkstallCoin : MonoBehaviour
 
     private IEnumerator DestroyCoin()
     {
-        yield return new WaitForSeconds(10f);
+        yield return new WaitForSeconds(2f);
         audioSource.PlayOneShot(collectSound);
         Destroy(gameObject);
     }

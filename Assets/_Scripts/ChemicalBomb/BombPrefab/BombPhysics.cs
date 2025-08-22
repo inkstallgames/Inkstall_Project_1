@@ -71,18 +71,7 @@ public class BombPhysics : MonoBehaviour
         if (particleSystem != null)
         {
             particleSystem.Play();
-        }
-        
-        // // 4) Play the alien death animation 
-        // Animator animator = newAlien.GetComponent<Animator>();
-        // if (animator != null)
-        // {
-        //     animator.Play("ZombieDeath"); // Replace with your animation state name
-        // }
-
-        // // 5) Play Death sound Effect
-        // alienPrefab.GetComponent<AudioSource>().Play();
-        
+        }   
     }
     
     private void PlayHitEffect()

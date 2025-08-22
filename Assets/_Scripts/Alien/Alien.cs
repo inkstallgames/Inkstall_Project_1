@@ -7,6 +7,7 @@ public class Alien : MonoBehaviour
     [SerializeField] private ParticleSystem disappearEffectPrefab;
     [SerializeField] private AudioClip dissappearSound;
     [SerializeField] private GameObject coinPrefab;
+    [SerializeField] private AudioClip alienDyingSound;
 
     AudioSource audioSource;
 
@@ -18,6 +19,7 @@ public class Alien : MonoBehaviour
 
     void OnEnable()
     {
+        audioSource.PlayOneShot(alienDyingSound);
         StartCoroutine(DestroyAlien());
     }
 
@@ -27,7 +29,7 @@ public class Alien : MonoBehaviour
         ParticleSystem effect = Instantiate(disappearEffectPrefab, transform.position, Quaternion.identity);
         effect.Play();
         audioSource.PlayOneShot(dissappearSound);
-        Instantiate(coinPrefab, this.gameObject.transform.position, Quaternion.Euler(-90, 0, 0));
+        Instantiate(coinPrefab, transform.position, Quaternion.identity);
         yield return new WaitForSeconds(0.1f);
         gameObject.SetActive(false);
     }   

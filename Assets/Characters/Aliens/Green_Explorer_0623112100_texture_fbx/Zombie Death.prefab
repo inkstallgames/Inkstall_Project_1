@@ -229,7 +229,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f37d6ded3435822409ff14912251bd77, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -356,9 +356,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disappearEffectPrefab: {fileID: 2433282508523890284, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312,
     type: 3}
-  dissappearSound: {fileID: 8300000, guid: 89dce49ee3f2c6443935522d94a0629a, type: 3}
-  coinPrefab: {fileID: 1086219355661245880, guid: d1333f42f6d255348bbdd53e10fef887,
+  dissappearSound: {fileID: 0}
+  coinPrefab: {fileID: 5656154876045068174, guid: ad8928dedf4cd294bb33e6b2bf8a137c,
     type: 3}
+  alienDyingSound: {fileID: 8300000, guid: aee9422c4be817940a7c3286f2822f86, type: 3}
 --- !u!1 &938146147297785274
 GameObject:
   m_ObjectHideFlags: 0

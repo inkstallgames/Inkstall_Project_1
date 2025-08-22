@@ -3,8 +3,8 @@ using UnityEngine;
 public class BombPhysics : MonoBehaviour
 {
     [Header("Effects")]
-    [SerializeField] private ParticleSystem explosionEffect;
-    [SerializeField] private AudioClip explosionSound;
+    [SerializeField] private ParticleSystem hitEffect;
+    [SerializeField] private AudioClip hitSound;
 
     [SerializeField] private GameObject alienPrefab;
     private Transform player;
@@ -73,33 +73,33 @@ public class BombPhysics : MonoBehaviour
             particleSystem.Play();
         }
         
-        // 4) Play the alien death animation 
-        Animator animator = newAlien.GetComponent<Animator>();
-        if (animator != null)
-        {
-            animator.Play("ZombieDeath"); // Replace with your animation state name
-        }
+        // // 4) Play the alien death animation 
+        // Animator animator = newAlien.GetComponent<Animator>();
+        // if (animator != null)
+        // {
+        //     animator.Play("ZombieDeath"); // Replace with your animation state name
+        // }
 
-        // 5) Play Death sound Effect
-        alienPrefab.GetComponent<AudioSource>().Play();
+        // // 5) Play Death sound Effect
+        // alienPrefab.GetComponent<AudioSource>().Play();
         
     }
     
     private void PlayHitEffect()
     {
         // Play particle effect
-        if (explosionEffect != null)
+        if (hitEffect != null)
         {
-            Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            Instantiate(hitEffect, transform.position, Quaternion.identity);
         }
     }
 
     private void PlayHitSound()
     {
         // Play sound effect
-        if (explosionSound != null && audioSource != null)
+        if (hitSound != null && audioSource != null)
         {
-            audioSource.PlayOneShot(explosionSound);
+            audioSource.PlayOneShot(hitSound);
         }
     }
 

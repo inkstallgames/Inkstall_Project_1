@@ -36,6 +36,7 @@ public class KeyManager : MonoBehaviour
     [SerializeField] private int totalKeys = 0;
     [SerializeField] private TextMeshProUGUI keyText;
     [SerializeField] private string apiBaseUrl = "https://api.inkstall.in/api/slot/get-keys/";
+    [SerializeField] private string useKeysUrl = "https://api.inkstall.in/api/slot/use-keys/";
 
     // Hardcoded user ID for testing purposes
     public string studentId = "681ee0e6198ad04bf6c1c733";
@@ -83,7 +84,7 @@ public class KeyManager : MonoBehaviour
         else
         {
             Debug.Log(" [INIT] keyText reference is valid: " + keyText.name);
-            keyText.text = keysCount.ToString();
+            keyText.text = totalKeys.ToString();
             Debug.Log(" [INIT] Initial UI text set to: " + keyText.text);
         }
         
@@ -319,26 +320,179 @@ public class KeyManager : MonoBehaviour
         return totalKeys;
     }
     
-    // Use a key (called by LockedDoor when unlocking)
+    /// <summary>
+    /// Use a key and update the database
+    /// </summary>
+    /// <returns>True if key was successfully used, false otherwise</returns>
     public bool UseKey()
     {
-        Debug.Log("[KeyManager] UseKey called, current count: " + keysCount);
-        
-        if (keysCount > 0)
+        // Check if we have keys available
+        if (keysCount <= 0)
         {
-            keysCount--;
-            Debug.Log("[KeyManager] Key used, new count: " + keysCount);
-            UpdateUIKeyCount();
-            UpdateDBKeyCount();
-            return true;
+            Debug.LogWarning("No keys available to use!");
+            return false;
+        }
+
+        // Start the coroutine to use a key
+        StartCoroutine(UseKeyCoroutine());
+        
+        // Immediately reduce local key count for responsive UI
+        keysCount--;
+        UpdateKeyText();
+        
+        return true;
+    }
+    
+    private IEnumerator UseKeyCoroutine()
+    {
+        // Use the exact format from the backend code: PATCH /api/slot/use-keys/:userId/:keysToUse
+        int keysToUse = 1; // We're using 1 key at a time
+        string url = "https://api.inkstall.in/api/slot/use-keys/" + studentId + "/" + keysToUse;
+        Debug.Log(" [API CALL] Using key at URL: " + url);
+        Debug.Log(" [API CALL] Current student ID: " + studentId);
+        Debug.Log(" [API CALL] Current keys count before API call: " + keysCount);
+        Debug.Log(" [API CALL] HTTP Method: PATCH");
+        
+        // Create PATCH request (no body needed as parameters are in URL)
+        UnityWebRequest webRequest = new UnityWebRequest(url, "PATCH");
+        webRequest.downloadHandler = new DownloadHandlerBuffer();
+        webRequest.SetRequestHeader("Content-Type", "application/json");
+
+        Debug.Log(" [API CALL] Web request created, sending...");
+        yield return webRequest.SendWebRequest();
+        Debug.Log(" [API CALL] Update request completed with result: " + webRequest.result);
+        Debug.Log(" [API CALL] Response code: " + webRequest.responseCode);
+        
+        if (webRequest.downloadHandler != null && webRequest.downloadHandler.text != null)
+        {
+            Debug.Log(" [API CALL] Response body: " + webRequest.downloadHandler.text);
+        }
+        
+        // Log all response headers for debugging
+        Debug.Log(" [API CALL] Response Headers:");
+        var responseHeaders = webRequest.GetResponseHeaders();
+        if (responseHeaders != null)
+        {
+            foreach (var header in responseHeaders)
+            {
+                Debug.Log($" [API CALL] Header: {header.Key}: {header.Value}");
+            }
+        }
+        
+        // Handle errors or success
+        if (webRequest.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError(" [API CALL] Error using key: " + webRequest.error);
+            Debug.LogError(" [API CALL] Response code: " + webRequest.responseCode);
+            if (webRequest.downloadHandler != null && webRequest.downloadHandler.text != null)
+            {
+                Debug.LogError(" [API CALL] Error response body: " + webRequest.downloadHandler.text);
+            }
+            
+            // If there was an error, revert the key count change
+            keysCount++;
+            UpdateKeyText();
+            
+            // Visual feedback for error
+            StartCoroutine(ShowErrorIndicator());
         }
         else
         {
-            Debug.Log("[KeyManager] Cannot use key, count is 0");
-            return false;
+            // Parse the response
+            string jsonResponse = webRequest.downloadHandler.text;
+            Debug.Log(" [API CALL] Key used successfully: " + jsonResponse);
+            
+            try
+            {
+                // Update the key data with the latest from server
+                KeyResponse updatedKeyData = JsonUtility.FromJson<KeyResponse>(jsonResponse);
+                if (updatedKeyData != null)
+                {
+                    keyData = updatedKeyData;
+                    
+                    // Check if the key count was actually reduced
+                    if (updatedKeyData.freeKeys < keysCount + 1)
+                    {
+                        Debug.Log(" [API CALL] Key count successfully reduced in database from " + (keysCount + 1) + " to " + updatedKeyData.freeKeys);
+                    }
+                    else
+                    {
+                        Debug.LogWarning(" [API CALL] Key count was not reduced in database! Before: " + (keysCount + 1) + ", After: " + updatedKeyData.freeKeys);
+                    }
+                    
+                    // Update local counts
+                    keysCount = updatedKeyData.freeKeys;
+                    totalKeys = updatedKeyData.totalKeys;
+                    UpdateKeyText();
+                    
+                    // Visual feedback for success
+                    StartCoroutine(ShowUpdateSuccessIndicator());
+                }
+                else
+                {
+                    Debug.LogError(" [API CALL] Failed to parse key response JSON");
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(" [API CALL] Error parsing key response: " + e.Message);
+                Debug.LogError(" [API CALL] Raw response: " + jsonResponse);
+                
+                // Try manual parsing as fallback
+                try
+                {
+                    // Look for freeKeys in the response
+                    if (jsonResponse.Contains("\"freeKeys\":"))
+                    {
+                        int startIndex = jsonResponse.IndexOf("\"freeKeys\":") + "\"freeKeys\":".Length;
+                        int endIndex = jsonResponse.IndexOf(",", startIndex);
+                        if (endIndex == -1) endIndex = jsonResponse.IndexOf("}", startIndex);
+                        
+                        if (endIndex > startIndex)
+                        {
+                            string freeKeysStr = jsonResponse.Substring(startIndex, endIndex - startIndex).Trim();
+                            int freeKeys;
+                            if (int.TryParse(freeKeysStr, out freeKeys))
+                            {
+                                Debug.Log(" [API CALL] Manually parsed freeKeys: " + freeKeys);
+                                keysCount = freeKeys;
+                                UpdateKeyText();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(" [API CALL] Manual parsing also failed: " + ex.Message);
+                }
+            }
         }
     }
     
+    // Show a visual indicator for errors
+    private IEnumerator ShowErrorIndicator()
+    {
+        // Change text color to indicate error
+        if (keyText == null) yield break;
+        
+        Color originalColor = keyText.color;
+        keyText.color = Color.red;
+        
+        yield return new WaitForSeconds(1.5f);
+        
+        // Return to original color
+        keyText.color = originalColor;
+    }
+    
+    // Update the UI text displaying the key count
+    private void UpdateKeyText()
+    {
+        if (keyText != null)
+        {
+            keyText.text = keysCount.ToString();
+        }
+    }
+
     // Update the database with the current key count
     private void UpdateDBKeyCount()
     {

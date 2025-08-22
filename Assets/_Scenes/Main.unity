@@ -73679,6 +73679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2169b008ae359144ca4cff41c1e16f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  doorCloseSound: {fileID: 0}
   looseSound: {fileID: 0}
   winSound: {fileID: 8300000, guid: 6618dde00549b60489d6bbcadd555662, type: 3}
 --- !u!1 &966689385
@@ -93954,6 +93955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 270f000a57628ff4883ea7192bd9e33a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultUserId: 681ee0e6198ad04bf6c1c733
 --- !u!1001 &1245010651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -142013,6 +142015,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1875161217596607455}
     m_Modifications:
+    - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: EnteredThePortalSound
+      value: 
+      objectReference: {fileID: 8300000, guid: a0e6b0b42a16dc748b123c04d4d09b85, type: 3}
     - target: {fileID: 4347093295648580978, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
       propertyPath: m_Name
@@ -205220,6 +205227,8 @@ MonoBehaviour:
   cameraArcSpeed: 10
   cameraZoomAmount: 1.5
   cameraZoomSpeed: 8
+  enableCameraSmoothing: 1
+  cameraSmoothingSpeed: 10
   uniformMovementSpeed: 0
   minTouchDelta: 10
   touchSensitivity: 1

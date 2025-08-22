@@ -15,10 +15,19 @@ public class LoadBuildingScene : MonoBehaviour
     [Tooltip("The main city scene index (used when exiting buildings)")]
     [SerializeField] private int mainCitySceneIndex = 0;
 
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip EnteredThePortalSound;
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
+        
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
+            audioSource.PlayOneShot(EnteredThePortalSound);
             Invoke("LoadTargetScene", loadDelay);
         }
     }

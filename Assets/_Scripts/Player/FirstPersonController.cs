@@ -68,12 +68,19 @@ namespace StarterAssets
 		[Tooltip("How quickly the camera zooms in/out")]
 		public float cameraZoomSpeed = 8f;
 
+		[Header("Camera Smoothing")]
+		[Tooltip("Enable smoothing for camera rotation")]
+		public bool enableCameraSmoothing = true;
+		[Tooltip("How quickly the camera rotation smooths to target value (higher = faster)")]
+		public float cameraSmoothingSpeed = 10f;
+
 		[Header("Movement Settings")]
 		[Tooltip("If true, player will move at the same speed in all directions. If false, speed varies by direction.")]
 		public bool uniformMovementSpeed = false;
 
 		// cinemachine
 		private float _cinemachineTargetPitch;
+		private float _currentPitch;
 
 		// player
 		private float _speed;
@@ -205,8 +212,20 @@ namespace StarterAssets
 				// clamp our pitch rotation
 				_cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
-				// Update Cinemachine camera target pitch
-				CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
+				// Apply smoothing to the pitch rotation if enabled
+				if (enableCameraSmoothing)
+				{
+					// Smoothly interpolate current pitch toward target pitch
+					_currentPitch = Mathf.Lerp(_currentPitch, _cinemachineTargetPitch, Time.deltaTime * cameraSmoothingSpeed);
+					
+					// Update Cinemachine camera target pitch with smoothed value
+					CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_currentPitch, 0.0f, 0.0f);
+				}
+				else
+				{
+					// Direct update without smoothing
+					CinemachineCameraTarget.transform.localRotation = Quaternion.Euler(_cinemachineTargetPitch, 0.0f, 0.0f);
+				}
 
 				// Apply PUBG-style camera arc motion if enabled
 				if (enableCameraArcMotion && _cameraInitialized && _thirdPersonFollow != null)

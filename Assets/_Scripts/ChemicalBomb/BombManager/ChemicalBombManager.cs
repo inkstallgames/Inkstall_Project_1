@@ -15,6 +15,9 @@ public class ChemicalBombManager : MonoBehaviour
     public GameObject[] bombsUIElements;
     public Button shopButton;
     
+    // Flag to track if the purchase limit has been reached
+    private bool purchaseLimitReached = false;
+    
     private void Awake()
     {
         // Singleton pattern
@@ -30,6 +33,14 @@ public class ChemicalBombManager : MonoBehaviour
 
     private void Update()
     {
+        // If purchase limit is reached, keep shop button disabled
+        if (purchaseLimitReached)
+        {
+            shopButton.gameObject.SetActive(false);
+            return;
+        }
+        
+        // Original logic for shop button visibility
         if (currentBombs <= 3)
         {
             shopButton.gameObject.SetActive(true);
@@ -87,7 +98,17 @@ public class ChemicalBombManager : MonoBehaviour
     
     private void UpdateShopButtonState()
     {
-        // Enable shop button if bullet count is 3 or less
+        // If purchase limit is reached, keep shop button disabled
+        if (purchaseLimitReached)
+        {
+            if (shopButton != null)
+            {
+                shopButton.gameObject.SetActive(false);
+            }
+            return;
+        }
+        
+        // Original logic
         if (shopButton != null && currentBombs <= 3)
         {
             shopButton.gameObject.SetActive(true);
@@ -96,5 +117,23 @@ public class ChemicalBombManager : MonoBehaviour
         {
             shopButton.gameObject.SetActive(false);    
         }
+    }
+    
+    // Public method to permanently disable the shop button after reaching purchase limit
+    public void DisableShopButton()
+    {
+        purchaseLimitReached = true;
+        if (shopButton != null)
+        {
+            shopButton.gameObject.SetActive(false);
+        }
+        Debug.Log("Shop button permanently disabled - purchase limit reached");
+    }
+    
+    // Public method to reset the purchase limit (call this when starting a new game)
+    public void ResetPurchaseLimit()
+    {
+        purchaseLimitReached = false;
+        UpdateShopButtonState();
     }
 }

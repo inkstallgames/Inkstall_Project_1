@@ -9713,6 +9713,7 @@ GameObject:
   - component: {fileID: 1875161217790413783}
   - component: {fileID: 5893846230695156746}
   - component: {fileID: 1875161217790413800}
+  - component: {fileID: 5893846230695156747}
   m_Layer: 0
   m_Name: Lamp_2
   m_TagString: Untagged
@@ -18372,10 +18373,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
-  bombsUI: {fileID: 0}
+  chemicalBomb: {fileID: 4001697182668950348}
+  throwButton: {fileID: 1536972007016953564}
+  gameTimer: {fileID: 1194441157}
+  bombsUI: {fileID: 1307166877}
   lockedDoorAnimator: {fileID: 1879614732177390110}
 --- !u!4 &1875161216612700763
 Transform:
@@ -18942,10 +18943,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
-  bombsUI: {fileID: 0}
+  chemicalBomb: {fileID: 4001697182668950348}
+  throwButton: {fileID: 1536972007016953564}
+  gameTimer: {fileID: 1194441157}
+  bombsUI: {fileID: 1307166877}
   lockedDoorAnimator: {fileID: 1876630031721721799}
 --- !u!4 &1875161216913999824
 Transform:
@@ -21064,10 +21065,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
-  bombsUI: {fileID: 0}
+  chemicalBomb: {fileID: 4001697182668950348}
+  throwButton: {fileID: 1536972007016953564}
+  gameTimer: {fileID: 1194441157}
+  bombsUI: {fileID: 1307166877}
   lockedDoorAnimator: {fileID: 5411702062035160471}
 --- !u!4 &1875161218516245653
 Transform:
@@ -38445,6 +38446,7 @@ GameObject:
   - component: {fileID: 1875161217001433730}
   - component: {fileID: 5895817448166357200}
   - component: {fileID: 1875161217001433731}
+  - component: {fileID: 5895817448166357201}
   m_Layer: 0
   m_Name: Lamp_2 (1)
   m_TagString: Untagged
@@ -45628,6 +45630,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 214383446706178276}
   m_Mesh: {fileID: 4300000, guid: 432a8c1961b424e4cbcc8f8b58a06fbe, type: 3}
+--- !u!65 &5893846230695156747
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 214383446706178276}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.6364626, y: 0.35211322, z: 0.6364626}
+  m_Center: {x: -0.00000008940697, y: -0.18205588, z: 0}
 --- !u!1 &5894723932901356388
 GameObject:
   m_ObjectHideFlags: 0
@@ -45654,6 +45677,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3805967193178492209}
   m_Mesh: {fileID: 4300000, guid: 432a8c1961b424e4cbcc8f8b58a06fbe, type: 3}
+--- !u!65 &5895817448166357201
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3805967193178492209}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.6364626, y: 0.35211322, z: 0.6364626}
+  m_Center: {x: -0.00000008940697, y: -0.18205588, z: 0}
 --- !u!224 &5896944821374349715
 RectTransform:
   m_ObjectHideFlags: 0
@@ -46662,9 +46706,9 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
   chemicalBomb: {fileID: 4001697182668950348}
-  throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
-  bombsUI: {fileID: 0}
+  throwButton: {fileID: 1536972007016953564}
+  gameTimer: {fileID: 1194441157}
+  bombsUI: {fileID: 1307166877}
   lockedDoorAnimator: {fileID: 6096234473738546706}
 --- !u!95 &6096234473738546706
 Animator:
@@ -55347,10 +55391,10 @@ MonoBehaviour:
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   shouldStartTimer: 0
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
-  bombsUI: {fileID: 0}
+  chemicalBomb: {fileID: 4001697182668950348}
+  throwButton: {fileID: 1536972007016953564}
+  gameTimer: {fileID: 1194441157}
+  bombsUI: {fileID: 1307166877}
   lockedDoorAnimator: {fileID: 8128831679578322680}
 --- !u!95 &8128831679578322680
 Animator:

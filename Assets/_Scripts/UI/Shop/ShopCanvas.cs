@@ -34,6 +34,9 @@ public class ShopCanvas : MonoBehaviour
     // Track how many bombs have been purchased in this shop session
     private int bombsPurchasedThisSession = 0;
     private const int MAX_BOMBS_PER_SESSION = 3;
+    
+    // Static variable to track total bombs purchased across shop sessions
+    private static int totalBombsPurchased = 0;
 
     // Tiered pricing for bullets
     private readonly Dictionary<int, int> bombsPrices = new Dictionary<int, int>
@@ -103,7 +106,7 @@ public class ShopCanvas : MonoBehaviour
         if (buyButton != null && CoinsManager.Instance != null)
         {
             int totalCost = bombsPrices[currentBombsCount];
-            buyButton.interactable = CoinsManager.Instance.currentCoins >= totalCost && bombsPurchasedThisSession < MAX_BOMBS_PER_SESSION;
+            buyButton.interactable = CoinsManager.Instance.currentCoins >= totalCost && totalBombsPurchased < MAX_BOMBS_PER_SESSION;
         }
     }
 
@@ -131,9 +134,15 @@ public class ShopCanvas : MonoBehaviour
         
         // Reset to default state when opening shop
         currentBombsCount = 1;
-        bombsPurchasedThisSession = 0;
+        // Don't reset bombsPurchasedThisSession anymore
         UpdateBombsUI();
         UpdatePlayerUI();
+        
+        // Update buy button state based on total bombs purchased
+        if (buyButton != null)
+        {
+            buyButton.interactable = totalBombsPurchased < MAX_BOMBS_PER_SESSION;
+        }
         
         // Show shop UI
         bulletsShopCanvas.SetActive(true);
@@ -213,7 +222,7 @@ public class ShopCanvas : MonoBehaviour
         int totalCost = bombsPrices[currentBombsCount];
         
         // Check if player has enough coins and if CoinsManager exists
-        if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost && bombsPurchasedThisSession < MAX_BOMBS_PER_SESSION)
+        if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost && totalBombsPurchased < MAX_BOMBS_PER_SESSION)
         {
             // Deduct coins using CoinsManager
             CoinsManager.Instance.SpendCoins(totalCost, (success) => {
@@ -228,6 +237,13 @@ public class ShopCanvas : MonoBehaviour
                         // Update local tracking for UI
                         playerBombs += currentBombsCount;
                         bombsPurchasedThisSession += currentBombsCount;
+                        totalBombsPurchased += currentBombsCount;
+                        
+                        // Check if we've reached the limit and update shop button in ChemicalBombManager
+                        if (totalBombsPurchased >= MAX_BOMBS_PER_SESSION && ChemicalBombManager.Instance.shopButton != null)
+                        {
+                            ChemicalBombManager.Instance.DisableShopButton();
+                        }
                         
                         // Save changes to PlayerPrefs as backup
                         SavePlayerData();
@@ -246,6 +262,8 @@ public class ShopCanvas : MonoBehaviour
                 else
                 {
                     Debug.LogError("Failed to spend coins!");
+                    // Show error message to the player
+                    ShowErrorMessage("Failed to purchase bombs. Please try again.");
                 }
             });
         }
@@ -255,11 +273,27 @@ public class ShopCanvas : MonoBehaviour
             if (CoinsManager.Instance.currentCoins < totalCost)
             {
                 Debug.Log("Not enough coins to purchase bombs!");
+                ShowErrorMessage("Not enough coins to purchase bombs!");
             }
-            else
+            else if (totalBombsPurchased >= MAX_BOMBS_PER_SESSION)
             {
-                Debug.Log("You have reached the session purchase limit of 3 bombs!");
+                Debug.Log("You have reached the purchase limit of 3 bombs!");
+                ShowErrorMessage("You have reached the purchase limit of 3 bombs!");
             }
         }
+    }
+    
+    // Method to show error messages to the player
+    private void ShowErrorMessage(string message)
+    {
+        // You can implement this to show a UI message to the player
+        // For now, just log to console
+        Debug.LogWarning(message);
+    }
+    
+    // Public method to reset the bomb purchase counter (call this when starting a new game)
+    public static void ResetBombPurchaseCounter()
+    {
+        totalBombsPurchased = 0;
     }
 }

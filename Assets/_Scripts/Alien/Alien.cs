@@ -7,24 +7,12 @@ public class Alien : MonoBehaviour
     [SerializeField] private ParticleSystem disappearEffectPrefab;
     [SerializeField] private AudioClip dissappearSound;
     [SerializeField] private GameObject coinPrefab;
-    [SerializeField] private AudioClip alienDyingSound; // Sound played when alien appears
 
-    AudioSource audioSource;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        audioSource = GetComponent<AudioSource>();
-    }
+    private AudioSource audioSource;
 
     void OnEnable()
     {
-        // Play alien appear sound when the GameObject is enabled
-        if (audioSource != null && alienDyingSound != null)
-        {
-            audioSource.PlayOneShot(alienDyingSound);
-        }
-        
+        audioSource = GetComponent<AudioSource>();
         StartCoroutine(DestroyAlien());
     }
 
@@ -34,7 +22,7 @@ public class Alien : MonoBehaviour
         ParticleSystem effect = Instantiate(disappearEffectPrefab, transform.position, Quaternion.identity);
         effect.Play();
         audioSource.PlayOneShot(dissappearSound);
-        Instantiate(coinPrefab, transform.position, Quaternion.identity);
+        Instantiate(coinPrefab, this.gameObject.transform.position, Quaternion.identity);
         yield return new WaitForSeconds(2f);
         coinPrefab.SetActive(false);
         yield return new WaitForSeconds(1f);

@@ -27,7 +27,7 @@ public class Alien : MonoBehaviour
         ParticleSystem effect = Instantiate(disappearEffectPrefab, transform.position, Quaternion.identity);
         effect.Play();
         audioSource.PlayOneShot(dissappearSound);
-        Instantiate(coinPrefab, transform.position, Quaternion.Euler(-90, 0, 0));
+        Instantiate(coinPrefab, this.gameObject.transform.position, Quaternion.Euler(-90, 0, 0));
         yield return new WaitForSeconds(0.1f);
         gameObject.SetActive(false);
     }   

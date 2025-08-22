@@ -41,7 +41,6 @@ public class GameManager : MonoBehaviour
         // Level Loose effect
         // Play Loose Sound        
         
-        audioSource.PlayOneShot(doorCloseSound);
         StartCoroutine(ResetGame());
     }
     
@@ -50,12 +49,13 @@ public class GameManager : MonoBehaviour
         // Level Win effect
         // Play Win Sound
         
-        audioSource.PlayOneShot(doorCloseSound);
         StartCoroutine(ResetGame());
     }
 
     IEnumerator ResetGame()
     {
+        yield return new WaitForSeconds(0.5f);
+        audioSource.PlayOneShot(doorCloseSound);
         yield return new WaitForSeconds(0.5f);     
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         

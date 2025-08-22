@@ -5,7 +5,6 @@ public class BombPhysics : MonoBehaviour
     [Header("Effects")]
     [SerializeField] private ParticleSystem hitEffect;
     [SerializeField] private AudioClip hitSound;
-
     [SerializeField] private GameObject alienPrefab;
     private Transform player;
     
@@ -91,6 +90,5 @@ public class BombPhysics : MonoBehaviour
             audioSource.PlayOneShot(hitSound);
         }
     }
-
-    
+   
 }

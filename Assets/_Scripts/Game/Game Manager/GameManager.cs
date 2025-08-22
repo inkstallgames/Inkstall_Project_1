@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         audioSource.PlayOneShot(doorCloseSound);
-        yield return new WaitForSeconds(0.5f);     
+        yield return new WaitForSeconds(0.2f);     
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         
     }

@@ -78,6 +78,20 @@ namespace StarterAssets
 		[Tooltip("If true, player will move at the same speed in all directions. If false, speed varies by direction.")]
 		public bool uniformMovementSpeed = false;
 
+		[Header("Player Sounds")]
+		[Tooltip("Audio source for walking sound")]
+		public AudioSource walkAudioSource;
+		[Tooltip("Audio source for running sound")]
+		public AudioSource runAudioSource;
+		[Tooltip("Sound played when walking (looping)")]
+		public AudioClip walkSound;
+		[Tooltip("Sound played when running (looping)")]
+		public AudioClip runSound;
+		[Tooltip("Sound played when jumping")]
+		public AudioClip jumpSound;
+		[Tooltip("Threshold for joystick magnitude to trigger running")]
+		public float runThresholdSound = 0.7f;
+
 		// cinemachine
 		private float _cinemachineTargetPitch;
 		private float _currentPitch;
@@ -174,9 +188,49 @@ namespace StarterAssets
 			float savedSensitivity = PlayerPrefs.GetFloat(SENSITIVITY_KEY, DEFAULT_SENSITIVITY);
 			touchSensitivity = savedSensitivity * SENSITIVITY_MULTIPLIER;
 
+			// Initialize current pitch to match target pitch
+			_currentPitch = _cinemachineTargetPitch;
+
 			// reset our timeouts on start
 			_jumpTimeoutDelta = JumpTimeout;
 			_fallTimeoutDelta = FallTimeout;
+			
+			// Setup audio sources if needed
+			SetupAudioSources();
+		}
+
+		private void SetupAudioSources()
+		{
+			// Setup walking audio source
+			if (walkAudioSource == null)
+			{
+				walkAudioSource = gameObject.AddComponent<AudioSource>();
+				walkAudioSource.playOnAwake = false;
+				walkAudioSource.loop = true;
+				walkAudioSource.spatialBlend = 1.0f; // 3D sound
+				walkAudioSource.volume = 0.7f;
+			}
+			
+			// Setup running audio source
+			if (runAudioSource == null)
+			{
+				runAudioSource = gameObject.AddComponent<AudioSource>();
+				runAudioSource.playOnAwake = false;
+				runAudioSource.loop = true;
+				runAudioSource.spatialBlend = 1.0f; // 3D sound
+				runAudioSource.volume = 0.7f;
+			}
+			
+			// Assign clips if available
+			if (walkSound != null)
+			{
+				walkAudioSource.clip = walkSound;
+			}
+			
+			if (runSound != null)
+			{
+				runAudioSource.clip = runSound;
+			}
 		}
 
 		private void Update()
@@ -340,6 +394,75 @@ namespace StarterAssets
 
 			// move the player
 			_controller.Move(inputDirection.normalized * (_speed * Time.deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+			
+			// Handle movement sounds
+			HandleMovementSounds();
+		}
+		
+		private void HandleMovementSounds()
+		{
+			// Check if we have the required components
+			if (walkAudioSource == null || runAudioSource == null || walkSound == null || runSound == null)
+				return;
+				
+			// Only play sounds when grounded
+			if (!Grounded)
+			{
+				StopMovementSounds();
+				return;
+			}
+			
+			// Check if player is moving
+			if (_input.move != Vector2.zero)
+			{
+				// Determine if running based on sprint input or joystick magnitude
+				bool isRunning = _input.sprint || _input.move.magnitude > runThresholdSound;
+				
+				// Handle walking sound
+				if (!isRunning)
+				{
+					// Stop running sound if it's playing
+					if (runAudioSource.isPlaying)
+						runAudioSource.Stop();
+						
+					// Start walking sound if not already playing
+					if (!walkAudioSource.isPlaying)
+					{
+						walkAudioSource.clip = walkSound;
+						walkAudioSource.Play();
+					}
+				}
+				// Handle running sound
+				else
+				{
+					// Stop walking sound if it's playing
+					if (walkAudioSource.isPlaying)
+						walkAudioSource.Stop();
+						
+					// Start running sound if not already playing
+					if (!runAudioSource.isPlaying)
+					{
+						runAudioSource.clip = runSound;
+						runAudioSource.Play();
+					}
+				}
+			}
+			// If not moving, stop all movement sounds
+			else
+			{
+				StopMovementSounds();
+			}
+		}
+		
+		private void StopMovementSounds()
+		{
+			// Stop walking sound if it exists and is playing
+			if (walkAudioSource != null && walkAudioSource.isPlaying)
+				walkAudioSource.Stop();
+				
+			// Stop running sound if it exists and is playing
+			if (runAudioSource != null && runAudioSource.isPlaying)
+				runAudioSource.Stop();
 		}
 
 		private void JumpAndGravity()
@@ -360,6 +483,9 @@ namespace StarterAssets
 				{
 					// the square root of H * -2 * G = how much velocity needed to reach desired height
 					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					
+					// Play jump sound
+					PlayJumpSound();
 				}
 
 				// jump timeout
@@ -387,6 +513,15 @@ namespace StarterAssets
 			if (_verticalVelocity < _terminalVelocity)
 			{
 				_verticalVelocity += Gravity * Time.deltaTime;
+			}
+		}
+		
+		private void PlayJumpSound()
+		{
+			if (jumpSound != null)
+			{
+				// Create a temporary audio source for the jump sound
+				AudioSource.PlayClipAtPoint(jumpSound, transform.position, 0.7f);
 			}
 		}
 
@@ -503,6 +638,12 @@ namespace StarterAssets
 
 			// when selected, draw a gizmo in the position of, and matching radius of, the grounded collider
 			Gizmos.DrawSphere(new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z), GroundedRadius);
+		}
+
+		private void OnDisable()
+		{
+			// Stop all sounds when disabled
+			StopMovementSounds();
 		}
 	}
 }

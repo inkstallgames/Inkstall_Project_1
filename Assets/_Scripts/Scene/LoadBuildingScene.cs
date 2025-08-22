@@ -15,19 +15,29 @@ public class LoadBuildingScene : MonoBehaviour
     [Tooltip("The main city scene index (used when exiting buildings)")]
     [SerializeField] private int mainCitySceneIndex = 0;
 
+    [Tooltip("Sound to play when player enters the portal")]
+    [SerializeField] private AudioClip portalEnterSound;
+
     private AudioSource audioSource;
-    [SerializeField] private AudioClip EnteredThePortalSound;
 
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
-        
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            audioSource.PlayOneShot(EnteredThePortalSound);
+            // Play the portal entry sound if one is assigned
+            if (portalEnterSound != null)
+            {
+                audioSource.PlayOneShot(portalEnterSound);
+            }
             Invoke("LoadTargetScene", loadDelay);
         }
     }

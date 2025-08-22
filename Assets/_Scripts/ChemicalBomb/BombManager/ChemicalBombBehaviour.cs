@@ -13,6 +13,8 @@ public class ChemicalBombBehaviour : MonoBehaviour
 
     [Header("Effects")]
     [SerializeField] private ParticleSystem throwEffect;   // Optional particle effect when throwing
+    [SerializeField] private AudioClip throwSound;         // Sound played when throwing the bomb
+    [SerializeField] private float throwSoundVolume = 1.0f; // Volume of the throw sound
     
     [Header("Visibility Settings")]
     [SerializeField] private float ballScale = 1.0f;       // Scale of the ball (increase for better visibility)
@@ -216,6 +218,12 @@ public class ChemicalBombBehaviour : MonoBehaviour
             if (throwEffect != null)
             {
                 throwEffect.Play();
+            }
+            
+            // Play throw sound if available
+            if (throwSound != null)
+            {
+                AudioSource.PlayClipAtPoint(throwSound, throwPoint.position, throwSoundVolume);
             }
             
             // Decrease ammo count

@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: -1063860783273861327}
   - component: {fileID: -841133373676973746}
   - component: {fileID: 4572613983777114908}
-  - component: {fileID: 1496133114317825228}
+  - component: {fileID: 6700546522681674069}
   m_Layer: 0
   m_Name: Zombie Death
   m_TagString: Untagged
@@ -342,7 +342,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1496133114317825228
+--- !u!114 &6700546522681674069
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

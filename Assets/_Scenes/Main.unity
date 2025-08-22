@@ -142017,6 +142017,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
+      propertyPath: portalEnterSound
+      value: 
+      objectReference: {fileID: 8300000, guid: a0e6b0b42a16dc748b123c04d4d09b85, type: 3}
+    - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
       propertyPath: EnteredThePortalSound
       value: 
       objectReference: {fileID: 8300000, guid: a0e6b0b42a16dc748b123c04d4d09b85, type: 3}
@@ -157929,6 +157934,7 @@ GameObject:
   - component: {fileID: 1925267657580579426}
   - component: {fileID: 2175900608327571845}
   - component: {fileID: 1899239270136308680}
+  - component: {fileID: 9180399638285295140}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -205230,10 +205236,112 @@ MonoBehaviour:
   enableCameraSmoothing: 1
   cameraSmoothingSpeed: 10
   uniformMovementSpeed: 0
+  walkAudioSource: {fileID: 9180399638285295140}
+  runAudioSource: {fileID: 9180399638285295140}
+  walkSound: {fileID: 8300000, guid: dc6a47c939cb15e43bf4f2a1f6ba2d9e, type: 3}
+  runSound: {fileID: 8300000, guid: 59d9676541955e346974963e43eea922, type: 3}
+  jumpSound: {fileID: 8300000, guid: 11f6bfe0292408549a75c58dc4067ab3, type: 3}
+  runThresholdSound: 0.7
   minTouchDelta: 10
   touchSensitivity: 1
   useSplitScreenTouch: 1
   webGLSensitivityMultiplier: 0.05
+--- !u!82 &9180399638285295140
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255884218013897704}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!33 &9189814346118641669
 MeshFilter:
   m_ObjectHideFlags: 0

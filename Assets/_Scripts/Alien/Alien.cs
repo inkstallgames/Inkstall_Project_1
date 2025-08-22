@@ -7,7 +7,7 @@ public class Alien : MonoBehaviour
     [SerializeField] private ParticleSystem disappearEffectPrefab;
     [SerializeField] private AudioClip dissappearSound;
     [SerializeField] private GameObject coinPrefab;
-    [SerializeField] private AudioClip alienDyingSound;
+    [SerializeField] private AudioClip alienDyingSound; // Sound played when alien appears
 
     AudioSource audioSource;
 
@@ -19,6 +19,12 @@ public class Alien : MonoBehaviour
 
     void OnEnable()
     {
+        // Play alien appear sound when the GameObject is enabled
+        if (audioSource != null && alienDyingSound != null)
+        {
+            audioSource.PlayOneShot(alienDyingSound);
+        }
+        
         StartCoroutine(DestroyAlien());
     }
 
@@ -32,8 +38,7 @@ public class Alien : MonoBehaviour
         yield return new WaitForSeconds(2f);
         coinPrefab.SetActive(false);
         yield return new WaitForSeconds(1f);
+        // Now disable the GameObject
         gameObject.SetActive(false);
-        audioSource.PlayOneShot(alienDyingSound);
     }   
 }
- 

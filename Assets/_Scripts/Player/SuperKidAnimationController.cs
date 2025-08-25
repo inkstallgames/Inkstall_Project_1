@@ -22,9 +22,6 @@ public class SuperKidAnimationController : MonoBehaviour
     [SerializeField] private float runThreshold = 0.1f; // Joystick magnitude threshold for running
     [SerializeField] private float directionThreshold = 0.1f; // Threshold for determining direction - lowered to match FirstPersonController
 
-    [Header("Debug")]
-    [SerializeField] private bool showDebugLogs = true;
-
     // References
     private Animator animator;
     private StarterAssetsInputs starterAssetsInputs;
@@ -80,7 +77,6 @@ public class SuperKidAnimationController : MonoBehaviour
         if (isJumping)
         {
             animator.SetBool(jumpingParam, true);
-            if (showDebugLogs) Debug.Log($"Animation State: Jumping");
             return;
         }
 
@@ -88,7 +84,6 @@ public class SuperKidAnimationController : MonoBehaviour
         if (!isMoving)
         {
             animator.SetBool(idleParam, true);
-            if (showDebugLogs) Debug.Log($"Animation State: Idle");
             return;
         }
 
@@ -99,8 +94,6 @@ public class SuperKidAnimationController : MonoBehaviour
         // Make sure angle is between 0 and 360
         if (angle < 0) angle += 360f;
 
-        if (showDebugLogs) Debug.Log($"Move Input: {moveInput}, Magnitude: {magnitude}, Angle: {angle}");
-
         // Check if we're in the forward quadrant (30-150 degrees) for running
         bool isInForwardRunningQuadrant = angle >= 30f && angle <= 150f;
 
@@ -109,7 +102,6 @@ public class SuperKidAnimationController : MonoBehaviour
         {
             // Walking Right (350-10 degrees)
             animator.SetBool(walkingRightParam, true);
-            if (showDebugLogs) Debug.Log($"Animation State: Walking Right");
         }
         else if (angle >= 10f && angle < 70f)
         {
@@ -118,13 +110,11 @@ public class SuperKidAnimationController : MonoBehaviour
             {
                 // Running Right-Forward (30-70 degrees with high magnitude)
                 animator.SetBool(runningRightForwardParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Running Right Forward");
             }
             else
             {
                 // Walking Right-Forward
                 animator.SetBool(walkingRightForwardParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Walking Right Forward");
             }
         }
         else if (angle >= 70f && angle <= 110f)
@@ -134,13 +124,11 @@ public class SuperKidAnimationController : MonoBehaviour
             {
                 // Running Forward
                 animator.SetBool(runningParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Running Forward");
             }
             else
             {
                 // Walking Forward
                 animator.SetBool(walkingParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Walking Forward");
             }
         }
         else if (angle > 110f && angle < 170f)
@@ -150,38 +138,32 @@ public class SuperKidAnimationController : MonoBehaviour
             {
                 // Running Left-Forward (110-150 degrees with high magnitude)
                 animator.SetBool(runningLeftForwardParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Running Left Forward");
             }
             else
             {
                 // Walking Left-Forward
                 animator.SetBool(walkingLeftForwardParam, true);
-                if (showDebugLogs) Debug.Log($"Animation State: Walking Left Forward");
             }
         }
         else if (angle >= 170f && angle < 190f)
         {
             // Walking Left (170-190 degrees)
             animator.SetBool(walkingLeftParam, true);
-            if (showDebugLogs) Debug.Log($"Animation State: Walking Left");
         }
         else if (angle >= 190f && angle < 260f)
         {
             // Walking Left-Backward (190-260 degrees)
             animator.SetBool(walkingLeftBackwardParam, true);
-            if (showDebugLogs) Debug.Log($"Animation State: Walking Left Backward");
         }
         else if (angle >= 260f && angle < 280f)
         {
             // Walking Backward (260-280 degrees)
             animator.SetBool(walkingBackwardParam, true);
-            if (showDebugLogs) Debug.Log($"Animation State: Walking Backward");
         }
         else if (angle >= 280f && angle < 350f)
         {
             // Walking Right-Backward (280-350 degrees)
             animator.SetBool(walkingRightBackwardParam, true);
-            if (showDebugLogs) Debug.Log($"Animation State: Walking Right Backward");
         }
     }
 

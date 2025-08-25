@@ -207,6 +207,53 @@ public class CoinsManager : MonoBehaviour
         onComplete?.Invoke(true);
     }
 
+    IEnumerator FetchCoinsAfterSpend()
+    {
+        // Wait a longer delay to ensure the server has processed the deduction
+        Debug.Log("[CoinsManager] Waiting for server to process deduction...");
+        yield return new WaitForSeconds(3.0f);
+        
+        Debug.Log("[CoinsManager] Fetching updated coins after spend...");
+        
+        // Create a new web request to fetch the latest coin count
+        UnityWebRequest request = UnityWebRequest.Get(getCoinsURL + userId);
+        yield return request.SendWebRequest();
+        
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError("[CoinsManager] Failed to fetch updated coins: " + request.error);
+            yield break;
+        }
+        
+        string responseJson = request.downloadHandler.text;
+        Debug.Log("[CoinsManager] Fetch response after spend: " + responseJson);
+        
+        try
+        {
+            CoinsResponse response = JsonUtility.FromJson<CoinsResponse>(responseJson);
+            if (response != null && response.data != null && response.data.Length > 0)
+            {
+                CurrentMonthPoints currentMonthData = response.data[0];
+                int updatedCoins = currentMonthData.points;
+                
+                Debug.Log("[CoinsManager] Updated coins from server: " + updatedCoins);
+                
+                // Update the local coin count and UI
+                currentCoins = updatedCoins;
+                UpdateCoinUI();
+                OnCoinsUpdated?.Invoke();
+            }
+            else
+            {
+                Debug.LogError("[CoinsManager] Invalid response format or no data received");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("[CoinsManager] Error parsing coins response: " + e.Message);
+        }
+    }
+
     public void FetchLocalCoinsCount()
     {
         FetchCoins();
@@ -233,6 +280,7 @@ public class CoinsManager : MonoBehaviour
         public int gamePoints;
         public int testMarksPoints;
         public int totalPoints;
+        public int points;
     }
 
     [System.Serializable]
@@ -254,5 +302,12 @@ public class CoinsManager : MonoBehaviour
     public class PointsArrayWrapper
     {
         public PointsRecord[] pointsArray;
+    }
+
+    [System.Serializable]
+    public class CoinsResponse
+    {
+        public bool success;
+        public CurrentMonthPoints[] data;
     }
 }

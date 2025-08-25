@@ -225,14 +225,13 @@ public class ShopCanvas : MonoBehaviour
         if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost && totalBombsPurchased < MAX_BOMBS_PER_SESSION)
         {
             // Deduct coins using CoinsManager
-            CoinsManager.Instance.SpendCoins(totalCost, (success) => {
+            CoinsManager.Instance.SpendCoins(totalCost, $"Purchased {currentBombsCount} chemical bombs", (success) => {
                 if (success)
                 {
                     // Add bombs to ChemicalBombManager if it exists
                     if (ChemicalBombManager.Instance != null)
                     {
                         ChemicalBombManager.Instance.AddBombs(currentBombsCount);
-                        Debug.Log($"Added {currentBombsCount} bombs to ChemicalBombManager");
                         
                         // Update local tracking for UI
                         playerBombs += currentBombsCount;
@@ -248,15 +247,22 @@ public class ShopCanvas : MonoBehaviour
                         // Save changes to PlayerPrefs as backup
                         SavePlayerData();
                         
-                        // Show success message
-                        Debug.Log($"Purchased {currentBombsCount} bombs for {totalCost} coins. You now have {playerBombs} bombs and {playerCoins} coins.");
+                        // Fetch the latest coin count from the database to ensure UI is up-to-date
+                        if (CoinsManager.Instance != null)
+                        {
+                            CoinsManager.Instance.FetchCoins();
+                        }
+                        
+                        // Update UI with the latest data
+                        UpdatePlayerUI();
                         
                         // Close the shop after purchase
                         CloseShopCanvas();
                     }
                     else
                     {
-                        Debug.LogError("ChemicalBombManager instance not found!");
+                        // ChemicalBombManager not found, show error
+                        ShowErrorMessage("Error: Bomb manager not found!");
                     }
                 }
                 else

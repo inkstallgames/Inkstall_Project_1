@@ -112,7 +112,7 @@ public class CoinsManager : MonoBehaviour
         }
     }
     
-    public void SpendCoins(int amount, System.Action<bool> onComplete = null)
+    public void SpendCoins(int amount, string reason, System.Action<bool> onComplete = null)
     {
         Debug.Log("[CoinsManager] SpendCoins called with amount: " + amount);
         Debug.Log("[CoinsManager] Current coins before spending: " + currentCoins);
@@ -127,7 +127,7 @@ public class CoinsManager : MonoBehaviour
             OnCoinsUpdated?.Invoke();
             
             // Then send the request to the server
-            StartCoroutine(SendSpendRequest(amount, (success) => {
+            StartCoroutine(SendSpendRequest(amount, reason, (success) => {
                 if (!success)
                 {
                     Debug.LogError("[CoinsManager] Server request failed, reverting coin change");
@@ -165,9 +165,17 @@ public class CoinsManager : MonoBehaviour
         }
     }
 
-    IEnumerator SendSpendRequest(int amount, System.Action<bool> onComplete)
+    IEnumerator SendSpendRequest(int amount, string reason, System.Action<bool> onComplete)
     {
-        CoinSpendRequest body = new CoinSpendRequest { userId = userId, amount = amount };
+        // Get the current month name (August, September, etc.)
+        string currentMonth = System.DateTime.Now.ToString("MMMM");
+        
+        CoinSpendRequest body = new CoinSpendRequest { 
+            studentId = userId, 
+            points = amount, 
+            reason = reason,
+            month = currentMonth
+        };
         string json = JsonUtility.ToJson(body);
         
         Debug.Log("[CoinsManager] Sending spend request with data: " + json);
@@ -230,8 +238,10 @@ public class CoinsManager : MonoBehaviour
     [System.Serializable]
     public class CoinSpendRequest
     {
-        public string userId;
-        public int amount;
+        public string studentId;
+        public int points;
+        public string reason;
+        public string month;
     }
 
     [System.Serializable]

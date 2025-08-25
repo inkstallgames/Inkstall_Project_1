@@ -33,6 +33,11 @@ public class RoomManager : MonoBehaviour
 
             // Set tag
             obj.tag = alienTag;
+            // Add behaviour
+            if (obj.GetComponent<AlienPropBehaviour>() == null)
+            {
+                obj.AddComponent<AlienPropBehaviour>();
+            }
         }
     }
 }

@@ -63,14 +63,7 @@ public class BombPhysics : MonoBehaviour
         if (player != null)
         {
             newAlien.transform.LookAt(player);
-        }
-        
-        // 3) Get the particle system from the instantiated prefab and play it
-        ParticleSystem particleSystem = newAlien.GetComponentInChildren<ParticleSystem>();
-        if (particleSystem != null)
-        {
-            particleSystem.Play();
-        }   
+        }  
     }
     
     private void PlayHitEffect()

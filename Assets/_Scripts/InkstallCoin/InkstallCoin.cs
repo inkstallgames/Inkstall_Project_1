@@ -11,14 +11,13 @@ public class InkstallCoin : MonoBehaviour
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        StartCoroutine(DestroyCoin());
+        StartCoroutine(InkCoinBehaviour());
     }
 
-    private IEnumerator DestroyCoin()
+    private IEnumerator InkCoinBehaviour()
     {
-        yield return new WaitForSeconds(3f);
         audioSource.PlayOneShot(collectSound);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         Destroy(gameObject);
     }
 }

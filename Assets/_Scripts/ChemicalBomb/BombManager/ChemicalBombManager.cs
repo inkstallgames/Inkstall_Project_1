@@ -49,11 +49,6 @@ public class ChemicalBombManager : MonoBehaviour
         {
             shopButton.gameObject.SetActive(false);
         }
-        if(currentBombs <= 0)
-        {
-            shopButton.gameObject.SetActive(false);
-            GameManager.Instance.GameOver();
-        }   
     }
     
     void OnEnable()
@@ -87,6 +82,16 @@ public class ChemicalBombManager : MonoBehaviour
         {
             currentBombs--;
             UpdateBombsUI();
+            
+            // Check for game over condition after decreasing bomb count
+            if (currentBombs <= 0)
+            {
+                shopButton.gameObject.SetActive(false);
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.GameOver();
+                }
+            }
         }
     }
     

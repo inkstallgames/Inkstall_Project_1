@@ -159,11 +159,25 @@ public class ShopCanvas : MonoBehaviour
 
     public void IncreaseBombsCount()
     {
-        if (currentBombsCount < MAX_BOMBS)
+        int maxPossibleToBuy = 3 - totalBombsPurchased; // Calculate remaining bombs that can be bought
+        if (maxPossibleToBuy <= 0)
+        {
+            // Already bought maximum bombs
+            Debug.Log("Maximum bomb purchase limit reached (3 bombs total)");
+            return;
+        }
+
+        // Don't allow increasing beyond the remaining purchasable amount
+        if (currentBombsCount < maxPossibleToBuy)
         {
             currentBombsCount++;
-            UpdateBombsUI();
         }
+        else
+        {
+            Debug.Log("Cannot purchase more than " + maxPossibleToBuy + " bombs (3 total limit)");
+        }
+        
+        UpdateBombsUI();
     }
     
     public void DecreaseBombsCount()
@@ -219,73 +233,50 @@ public class ShopCanvas : MonoBehaviour
     
     public void BuyBombs()
     {
-        int totalCost = bombsPrices[currentBombsCount];
+        int maxPossibleToBuy = 3 - totalBombsPurchased;
+        if (maxPossibleToBuy <= 0)
+        {
+            Debug.Log("You've already purchased the maximum allowed bombs (3 total)");
+            return;
+        }
+
+        // Ensure we don't try to buy more than allowed
+        int bombsToBuy = Mathf.Min(currentBombsCount, maxPossibleToBuy);
+        int totalCost = bombsPrices[bombsToBuy];
         
         // Check if player has enough coins and if CoinsManager exists
-        if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost && totalBombsPurchased < MAX_BOMBS_PER_SESSION)
+        if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost)
         {
             // Deduct coins using CoinsManager
-            CoinsManager.Instance.SpendCoins(totalCost, $"Purchased {currentBombsCount} chemical bombs", (success) => {
+            CoinsManager.Instance.SpendCoins(totalCost, $"Purchased {bombsToBuy} chemical bombs", (success) => {
                 if (success)
                 {
                     // Add bombs to ChemicalBombManager if it exists
                     if (ChemicalBombManager.Instance != null)
                     {
-                        ChemicalBombManager.Instance.AddBombs(currentBombsCount);
+                        ChemicalBombManager.Instance.AddBombs(bombsToBuy);
                         
                         // Update local tracking for UI
-                        playerBombs += currentBombsCount;
-                        bombsPurchasedThisSession += currentBombsCount;
-                        totalBombsPurchased += currentBombsCount;
+                        playerBombs += bombsToBuy;
+                        bombsPurchasedThisSession += bombsToBuy;
+                        totalBombsPurchased += bombsToBuy;
+                        
+                        // Reset the counter after purchase
+                        currentBombsCount = 1;
+                        UpdateBombsUI();
                         
                         // Check if we've reached the limit and update shop button in ChemicalBombManager
-                        if (totalBombsPurchased >= MAX_BOMBS_PER_SESSION && ChemicalBombManager.Instance.shopButton != null)
+                        if (totalBombsPurchased >= 3 && ChemicalBombManager.Instance.shopButton != null)
                         {
                             ChemicalBombManager.Instance.DisableShopButton();
                         }
-                        
-                        // Save changes to PlayerPrefs as backup
-                        SavePlayerData();
-                        
-                        // Fetch the latest coin count from the database to ensure UI is up-to-date
-                        if (CoinsManager.Instance != null)
-                        {
-                            CoinsManager.Instance.FetchCoins();
-                        }
-                        
-                        // Update UI with the latest data
-                        UpdatePlayerUI();
-                        
-                        // Close the shop after purchase
-                        CloseShopCanvas();
                     }
-                    else
-                    {
-                        // ChemicalBombManager not found, show error
-                        ShowErrorMessage("Error: Bomb manager not found!");
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Failed to spend coins!");
-                    // Show error message to the player
-                    ShowErrorMessage("Failed to purchase bombs. Please try again.");
                 }
             });
         }
         else
         {
-            // Show not enough coins message or session limit reached message
-            if (CoinsManager.Instance.currentCoins < totalCost)
-            {
-                Debug.Log("Not enough coins to purchase bombs!");
-                ShowErrorMessage("Not enough coins to purchase bombs!");
-            }
-            else if (totalBombsPurchased >= MAX_BOMBS_PER_SESSION)
-            {
-                Debug.Log("You have reached the purchase limit of 3 bombs!");
-                ShowErrorMessage("You have reached the purchase limit of 3 bombs!");
-            }
+            Debug.Log("Not enough coins to purchase bombs");
         }
     }
     

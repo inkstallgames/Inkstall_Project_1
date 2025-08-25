@@ -167,8 +167,8 @@ public class CoinsManager : MonoBehaviour
 
     IEnumerator SendSpendRequest(int amount, string reason, System.Action<bool> onComplete)
     {
-        // Get the current month name (August, September, etc.)
-        string currentMonth = System.DateTime.Now.ToString("MMMM");
+        // Format the month as yyyy-MM
+        string currentMonth = System.DateTime.Now.ToString("yyyy-MM");
         
         CoinSpendRequest body = new CoinSpendRequest { 
             studentId = userId, 
@@ -181,11 +181,23 @@ public class CoinsManager : MonoBehaviour
         Debug.Log("[CoinsManager] Sending spend request with data: " + json);
         Debug.Log("[CoinsManager] URL: " + spendCoinsURL);
 
-        UnityWebRequest request = new UnityWebRequest(spendCoinsURL, "PATCH");
+        UnityWebRequest request = new UnityWebRequest(spendCoinsURL, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
+        
+        // Add Authorization header if we have a token
+        string studentToken = PlayerPrefs.GetString("studenttoken", "");
+        if (!string.IsNullOrEmpty(studentToken))
+        {
+            request.SetRequestHeader("Authorization", "Bearer " + studentToken);
+            Debug.Log("[CoinsManager] Added Authorization header");
+        }
+        else
+        {
+            Debug.LogWarning("[CoinsManager] No student token found, proceeding without Authorization header");
+        }
 
         Debug.Log("[CoinsManager] Web request created, sending...");
         yield return request.SendWebRequest();

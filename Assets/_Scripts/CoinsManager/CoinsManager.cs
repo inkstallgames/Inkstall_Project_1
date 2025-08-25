@@ -15,7 +15,7 @@ public class CoinsManager : MonoBehaviour
     public int currentCoins;
 
     private string getCoinsURL = "https://api.inkstall.in/api/student-portal/studentpoints/";
-    private string spendCoinsURL = "https://api.inkstall.in/api/student-portal/studentpoints/add-game-points";
+    private string spendCoinsURL = "https://api.inkstall.in/api/student-portal/studentpoints/deduct-points";
 
     void Awake()
     {

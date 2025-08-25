@@ -20,14 +20,10 @@ public class ChemicalBombBehaviour : MonoBehaviour
     [SerializeField] private float ballScale = 1.0f;       // Scale of the ball (increase for better visibility)
     [SerializeField] private Material ballMaterial;        // Optional custom material for the ball
     [SerializeField] private Color ballColor = Color.green; // Color of the ball
-    [SerializeField] private bool showTrajectory = true;   // Whether to show trajectory prediction
-    [SerializeField] private int trajectorySteps = 10;     // Number of steps in trajectory prediction
-    [SerializeField] private GameObject trajectoryPointPrefab; // Prefab for trajectory points
     
     // Reference to the BallsManager for ammo management
     private ChemicalBombManager chemicalBombManager;
     private float nextThrowTime = 0f;
-    private GameObject[] trajectoryPoints;
     private Vector3 targetPoint;
     private bool hasTarget = false;
 
@@ -46,12 +42,6 @@ public class ChemicalBombBehaviour : MonoBehaviour
         {
             Debug.LogWarning("ChemicalBombManager not found. Ammo counting will be disabled.");
         }
-        
-        // Initialize trajectory visualization
-        if (showTrajectory && trajectoryPointPrefab != null)
-        {
-            InitializeTrajectoryPoints();
-        }
     }
 
     private void Update()
@@ -59,16 +49,6 @@ public class ChemicalBombBehaviour : MonoBehaviour
         // Update target point based on raycast
         UpdateTargetPoint();
         
-        // Update trajectory visualization
-        if (showTrajectory && trajectoryPoints != null && hasTarget)
-        {
-            UpdateTrajectoryVisualization();
-        }
-        else if (trajectoryPoints != null)
-        {
-            HideTrajectory();
-        }
-
         if(ChemicalBombManager.Instance.currentBombs <= 0)
         {
             this.gameObject.SetActive(false);
@@ -96,51 +76,6 @@ public class ChemicalBombBehaviour : MonoBehaviour
         }
     }
     
-    private void InitializeTrajectoryPoints()
-    {
-        trajectoryPoints = new GameObject[trajectorySteps];
-        
-        for (int i = 0; i < trajectorySteps; i++)
-        {
-            trajectoryPoints[i] = Instantiate(trajectoryPointPrefab);
-            trajectoryPoints[i].SetActive(false);
-        }
-    }
-    
-    private void UpdateTrajectoryVisualization()
-    {
-        // Only show trajectory if we have ammo
-        if (chemicalBombManager != null && chemicalBombManager.currentBombs <= 0)
-        {
-            HideTrajectory();
-            return;
-        }
-        
-        // Calculate direction to target
-        Vector3 throwDirection = (targetPoint - throwPoint.position).normalized;
-        
-        // Calculate initial velocity needed to hit the target
-        float distance = Vector3.Distance(throwPoint.position, targetPoint);
-        Vector3 velocity = CalculateVelocityToHitTarget(throwPoint.position, targetPoint, throwForce);
-        
-        // Visualize trajectory
-        Vector3 position = throwPoint.position;
-        float timeStep = 0.1f;
-        
-        for (int i = 0; i < trajectorySteps; i++)
-        {
-            float timeOffset = timeStep * i;
-            Vector3 predictedPosition = position + velocity * timeOffset + 0.5f * Physics.gravity * timeOffset * timeOffset;
-            
-            trajectoryPoints[i].transform.position = predictedPosition;
-            trajectoryPoints[i].SetActive(true);
-            
-            // Scale down the points as they get further along the trajectory
-            float scale = 1.0f - ((float)i / trajectorySteps) * 0.5f;
-            trajectoryPoints[i].transform.localScale = new Vector3(scale, scale, scale);
-        }
-    }
-    
     private Vector3 CalculateVelocityToHitTarget(Vector3 startPoint, Vector3 targetPoint, float force)
     {
         // Calculate direction to target
@@ -156,20 +91,6 @@ public class ChemicalBombBehaviour : MonoBehaviour
         direction.Normalize();
         
         return direction * force;
-    }
-    
-    private void HideTrajectory()
-    {
-        if (trajectoryPoints != null)
-        {
-            foreach (GameObject point in trajectoryPoints)
-            {
-                if (point != null)
-                {
-                    point.SetActive(false);
-                }
-            }
-        }
     }
 
     public void ThrowChemicalBall()

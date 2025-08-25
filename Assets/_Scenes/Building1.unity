@@ -509,7 +509,7 @@ GameObject:
   - component: {fileID: 90827212}
   - component: {fileID: 90827216}
   m_Layer: 5
-  m_Name: Canvas_BallsShop
+  m_Name: Canvas_ChemicalBombsShop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -618,7 +618,7 @@ MonoBehaviour:
   bombs3Image: {fileID: 1303235945}
   plusButton: {fileID: 920148262}
   minusButton: {fileID: 277526321}
-  bombsCountText: {fileID: 0}
+  bombsCountText: {fileID: 133234665}
   totalCostText: {fileID: 607017296}
   buyButton: {fileID: 355339959}
   playerBombs: 0
@@ -5911,9 +5911,6 @@ MonoBehaviour:
   ballScale: 1
   ballMaterial: {fileID: 0}
   ballColor: {r: 0, g: 1, b: 0, a: 1}
-  showTrajectory: 1
-  trajectorySteps: 10
-  trajectoryPointPrefab: {fileID: 0}
 --- !u!1 &1277224522 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 369948187675801988, guid: cc98aa33a8b15a64381c437a2624e579,

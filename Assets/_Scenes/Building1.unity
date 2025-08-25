@@ -6142,7 +6142,7 @@ GameObject:
   - component: {fileID: 1307166880}
   - component: {fileID: 1307166882}
   m_Layer: 5
-  m_Name: Chemical Bomb UI
+  m_Name: Chemical Bombs UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35839,7 +35839,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9157282966612371623}
   m_Layer: 7
-  m_Name: ChemicalBomb
+  m_Name: ChemicalBombUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

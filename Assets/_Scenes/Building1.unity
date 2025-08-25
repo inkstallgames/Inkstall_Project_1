@@ -1650,6 +1650,11 @@ PrefabInstance:
       propertyPath: doorCloseSound
       value: 
       objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
+    - target: {fileID: 7232697963552053662, guid: cde875813fb5ee54c8770e39c214453b,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 992973049149110368, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
     - {fileID: 1306827939940360672, guid: cde875813fb5ee54c8770e39c214453b, type: 3}

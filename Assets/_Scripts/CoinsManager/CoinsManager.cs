@@ -181,7 +181,7 @@ public class CoinsManager : MonoBehaviour
         Debug.Log("[CoinsManager] Sending spend request with data: " + json);
         Debug.Log("[CoinsManager] URL: " + spendCoinsURL);
 
-        UnityWebRequest request = new UnityWebRequest(spendCoinsURL, "POST");
+        UnityWebRequest request = new UnityWebRequest(spendCoinsURL, "PATCH");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();

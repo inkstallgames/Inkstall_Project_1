@@ -59670,6 +59670,7 @@ MonoBehaviour:
   totalKeys: 0
   keyText: {fileID: 9141209313748028089}
   apiBaseUrl: https://api.inkstall.in/api/slot/get-keys/
+  useKeysUrl: https://api.inkstall.in/api/slot/use-keys/
   studentId: 681ee0e6198ad04bf6c1c733
 --- !u!1001 &788885689
 PrefabInstance:
@@ -195756,7 +195757,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1354423276245893774}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 396b93be942f67a4baa5aca147c06fcc, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

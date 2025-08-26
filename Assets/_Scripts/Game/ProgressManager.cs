@@ -112,7 +112,7 @@ public class ProgressManager : MonoBehaviour
     {
         string url = $"{baseUrl}/initialize/{studentId}";
         
-        using (UnityWebRequest webRequest = UnityWebRequest.Post(url, ""))
+        using (UnityWebRequest webRequest = UnityWebRequest.PostWwwForm(url, ""))
         {
             yield return webRequest.SendWebRequest();
             

@@ -19,6 +19,8 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private AudioClip doorLockedSound;
     [SerializeField] private AudioClip doorUnlockSound;
     [SerializeField] private bool isUnlockable = false;
+    [SerializeField] public bool isRoomCompleted = false;
+    [SerializeField] private string doorID; // Unique identifier for this door
 
     [Header("Timer Settings")]
     [SerializeField] private bool shouldStartTimer = false;
@@ -58,6 +60,19 @@ public class DoorInteraction : MonoBehaviour
 
         // Get the GameTimer component if it exists
         attachedTimer = GetComponent<GameTimer>();
+        
+        // Generate a doorID if not set
+        if (string.IsNullOrEmpty(doorID))
+        {
+            doorID = gameObject.name + "_" + gameObject.GetInstanceID();
+            Debug.Log($"[DoorInteraction] Generated doorID: {doorID}");
+        }
+    }
+
+    private void Start()
+    {
+        // Load door states from database
+        LoadDoorStatesFromDatabase();
     }
 
     private void Update()
@@ -82,7 +97,15 @@ public class DoorInteraction : MonoBehaviour
     public void SetUnlockable(bool unlockable)
     {
         isUnlockable = unlockable;
+        SaveDoorStatesToDatabase();
         Debug.Log($"[DoorInteraction] Door {gameObject.name} unlockable status set to: {unlockable}");
+    }
+
+    public void SetRoomCompleted(bool completed)
+    {
+        isRoomCompleted = completed;
+        SaveDoorStatesToDatabase();
+        Debug.Log($"[DoorInteraction] Door {gameObject.name} room completion status set to: {completed}");
     }
 
     public void TryOpenDoor()
@@ -130,12 +153,12 @@ public class DoorInteraction : MonoBehaviour
             bombsUI.gameObject.SetActive(true);
         }
         if (shouldStartTimer)
+        {
+            if (gameTimer != null)
             {
-                if (gameTimer != null)
-                {
-                    gameTimer.gameObject.SetActive(true);
-                }
+                gameTimer.gameObject.SetActive(true);
             }
+        }
     }
 
     public void PlayDoorLockedAnimation()
@@ -254,5 +277,35 @@ public class DoorInteraction : MonoBehaviour
         
         // Reset game elements activation state
         gameElementsActivated = false;
+    }
+
+    // Load door states from database
+    private void LoadDoorStatesFromDatabase()
+    {
+        if (DataManager.Instance != null)
+        {
+            isUnlockable = DataManager.Instance.LoadDoorUnlockableState(doorID);
+            isRoomCompleted = DataManager.Instance.LoadRoomCompletionState(doorID);
+            Debug.Log($"[DoorInteraction] Loaded door states for {doorID}: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+        }
+        else
+        {
+            Debug.LogWarning("[DoorInteraction] DataManager instance not found. Using default door states.");
+        }
+    }
+    
+    // Save door states to database
+    private void SaveDoorStatesToDatabase()
+    {
+        if (DataManager.Instance != null)
+        {
+            DataManager.Instance.SaveDoorUnlockableState(doorID, isUnlockable);
+            DataManager.Instance.SaveRoomCompletionState(doorID, isRoomCompleted);
+            Debug.Log($"[DoorInteraction] Saved door states for {doorID}: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+        }
+        else
+        {
+            Debug.LogWarning("[DoorInteraction] DataManager instance not found. Door states not saved.");
+        }
     }
 }

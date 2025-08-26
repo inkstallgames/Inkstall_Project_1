@@ -11,6 +11,7 @@ public class RoomManager : MonoBehaviour
     [Header("Room Completion")]
     [SerializeField] private DoorInteraction nextDoorToUnlock;  // Reference to the next door to unlock
     [SerializeField] private bool isFinalRoom = false;          // Is this the final room in the level?
+    [SerializeField] private string roomID;                     // Unique identifier for this room
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props
     private int aliensRemaining;                                   // Counter for remaining aliens
@@ -37,6 +38,25 @@ public class RoomManager : MonoBehaviour
         int alienCount = Mathf.Min(numberOfAliens, children.Count);  // Avoid overflow
         aliensRemaining = alienCount;  // Initialize counter
         
+        // Generate roomID if not set
+        if (string.IsNullOrEmpty(roomID))
+        {
+            roomID = gameObject.name + "_" + gameObject.GetInstanceID();
+            Debug.Log($"[RoomManager] Generated roomID: {roomID}");
+        }
+        
+        // Check if room is already completed in database
+        if (DataManager.Instance != null && DataManager.Instance.LoadRoomCompletionState(roomID))
+        {
+            Debug.Log($"[RoomManager] Room {roomID} already completed. Unlocking next door.");
+            if (nextDoorToUnlock != null)
+            {
+                nextDoorToUnlock.SetUnlockable(true);
+                nextDoorToUnlock.SetRoomCompleted(true);
+            }
+            return;
+        }
+
         for (int i = 0; i < alienCount; i++)
         {
             GameObject obj = children[i].gameObject;
@@ -86,10 +106,18 @@ public class RoomManager : MonoBehaviour
         {
             Debug.Log($"All aliens caught in room {gameObject.name}! Room completed!");
             
+            // Save room completion status to database
+            if (DataManager.Instance != null)
+            {
+                DataManager.Instance.SaveRoomCompletionState(roomID, true);
+                Debug.Log($"[RoomManager] Saved room completion status for {roomID}");
+            }
+            
             // Unlock the next door if specified
             if (nextDoorToUnlock != null)
             {
                 nextDoorToUnlock.SetUnlockable(true);
+                nextDoorToUnlock.SetRoomCompleted(true);
                 Debug.Log($"Next door {nextDoorToUnlock.gameObject.name} is now unlockable!");
             }
             

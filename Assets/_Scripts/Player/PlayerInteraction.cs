@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class PlayerInteraction : MonoBehaviour
     
     [SerializeField] private GameObject interactButton;
     [SerializeField] private GameObject useKeyButton; // Reference to the use key button
+    [SerializeField] private TextMeshProUGUI completedRoomText; // Text to show when room is completed
 
     private DoorInteraction currentDoor;   // Track which door we're looking at
     private DrawerMech currentDrawer;      // Track which drawer we're looking at
@@ -61,6 +63,12 @@ public class PlayerInteraction : MonoBehaviour
                 Debug.LogError("Use Key button doesn't have a Button component!");
             }
         }
+        
+        // Make sure the completed room text is initially hidden
+        if (completedRoomText != null)
+        {
+            completedRoomText.gameObject.SetActive(false);
+        }
     }
 
     private void Update()
@@ -78,7 +86,7 @@ public class PlayerInteraction : MonoBehaviour
         currentDoor = null;
         currentDrawer = null;
 
-        // Disable buttons by default
+        // Disable buttons and text by default
         if (interactButton != null)
         {
             interactButton.SetActive(false);
@@ -87,6 +95,11 @@ public class PlayerInteraction : MonoBehaviour
         if (useKeyButton != null)
         {
             useKeyButton.SetActive(false);
+        }
+        
+        if (completedRoomText != null)
+        {
+            completedRoomText.gameObject.SetActive(false);
         }
 
         // Cast ray from camera center (where crosshair is)
@@ -108,15 +121,39 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         // We're looking at a door and within range
                         currentDoor = doorInteraction;
-                        interactButton.SetActive(true);
-
-                        // Only show use key button if:
-                        // 1. The door is locked
-                        // 2. We've previously tried to open this specific door (showUseKeyButton is true)
-                        // 3. We're still looking at the same door as before
-                        if (doorInteraction.IsLocked() && showUseKeyButton && doorInteraction == previousDoor)
+                        
+                        // Check if the room is completed
+                        if (doorInteraction.isRoomCompleted)
                         {
-                            useKeyButton.SetActive(true);
+                            // Show completed room message instead of interaction buttons
+                            if (completedRoomText != null)
+                            {
+                                completedRoomText.gameObject.SetActive(true);
+                                completedRoomText.text = "Room Already Completed";
+                            }
+                        }
+                        else if (doorInteraction.IsLocked() && !doorInteraction.IsUnlockable())
+                        {
+                            // Show message for locked and not yet unlockable door
+                            if (completedRoomText != null)
+                            {
+                                completedRoomText.gameObject.SetActive(true);
+                                completedRoomText.text = "Complete Previous Room First";
+                            }
+                        }
+                        else
+                        {
+                            // Show normal interaction buttons
+                            interactButton.SetActive(true);
+
+                            // Only show use key button if:
+                            // 1. The door is locked
+                            // 2. We've previously tried to open this specific door (showUseKeyButton is true)
+                            // 3. We're still looking at the same door as before
+                            if (doorInteraction.IsLocked() && showUseKeyButton && doorInteraction == previousDoor)
+                            {
+                                useKeyButton.SetActive(true);
+                            }
                         }
                     }
                 }
@@ -202,5 +239,4 @@ public class PlayerInteraction : MonoBehaviour
             currentDrawer.ToggleDrawerOpenClose();
         }
     }
-
 }

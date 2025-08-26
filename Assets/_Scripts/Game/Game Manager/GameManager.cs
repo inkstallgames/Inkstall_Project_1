@@ -54,9 +54,9 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ResetGame()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         audioSource.PlayOneShot(doorCloseSound);
-        yield return new WaitForSeconds(0.5f);     
+        yield return new WaitForSeconds(1f);     
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         
     }

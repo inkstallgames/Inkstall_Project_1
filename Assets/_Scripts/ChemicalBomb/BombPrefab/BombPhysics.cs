@@ -35,14 +35,20 @@ public class BombPhysics : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        // Handle alien collision
-        if (collision.gameObject.tag == "AlienProp")
+        GameObject collidedObject = collision.gameObject;
+        
+        // Check if the object itself or any of its parents has the AlienProp tag
+        if (HasAlienPropTag(collidedObject))
         {
+            // Find the root AlienProp object (could be parent)
+            GameObject alienPropObject = FindAlienPropObject(collidedObject);
+            
+            // Use the found AlienProp object for the collision handling
             AlienFound(collision);
             PlayHitEffect();
             PlayHitSound();
 
-            Destroy(collision.gameObject);
+            Destroy(alienPropObject);
             Destroy(gameObject);
             
             return;
@@ -52,6 +58,53 @@ public class BombPhysics : MonoBehaviour
         PlayHitEffect();
         PlayHitSound();
         Destroy(gameObject);
+    }
+
+    // Check if the object or any of its parents has the AlienProp tag
+    private bool HasAlienPropTag(GameObject obj)
+    {
+        // Check current object
+        if (obj.CompareTag("AlienProp"))
+        {
+            return true;
+        }
+        
+        // Check all parents
+        Transform parent = obj.transform.parent;
+        while (parent != null)
+        {
+            if (parent.CompareTag("AlienProp"))
+            {
+                return true;
+            }
+            parent = parent.parent;
+        }
+        
+        return false;
+    }
+    
+    // Find the object with AlienProp tag (either self or parent)
+    private GameObject FindAlienPropObject(GameObject obj)
+    {
+        // Check current object
+        if (obj.CompareTag("AlienProp"))
+        {
+            return obj;
+        }
+        
+        // Check all parents
+        Transform parent = obj.transform.parent;
+        while (parent != null)
+        {
+            if (parent.CompareTag("AlienProp"))
+            {
+                return parent.gameObject;
+            }
+            parent = parent.parent;
+        }
+        
+        // Fallback to original object if no AlienProp found (shouldn't happen due to HasAlienPropTag check)
+        return obj;
     }
 
     public void AlienFound(Collision collision)

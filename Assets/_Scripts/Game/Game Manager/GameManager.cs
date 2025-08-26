@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
    
     public AudioClip looseSound;
     public AudioClip winSound;
+    
+    [Header("API Settings")]
+    [SerializeField] private string studentId = "68931b31207ee46ce8769a1d"; // Default student ID
 
     // Play Loose effect
     // Play Win effect
@@ -34,6 +37,19 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        
+        // Initialize ProgressManager if it doesn't exist
+        if (ProgressManager.Instance != null)
+        {
+            // Set student ID if needed
+            if (!string.IsNullOrEmpty(studentId))
+            {
+                ProgressManager.Instance.SetStudentId(studentId);
+            }
+            
+            // Load door data from the server
+            StartCoroutine(ProgressManager.Instance.LoadStudentDoorData());
+        }
     }
 
     public void GameOver()

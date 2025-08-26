@@ -72,7 +72,16 @@ public class DoorInteraction : MonoBehaviour
     private void Start()
     {
         // Load door states from database
-        LoadDoorStatesFromDatabase();
+        if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
+        {
+            // Use ProgressManager to get door state
+            ProgressManager.Instance.UpdateDoorInteraction(this);
+        }
+        else
+        {
+            // Fallback to local DataManager if ProgressManager is not available
+            LoadDoorStatesFromDatabase();
+        }
     }
 
     private void Update()
@@ -106,6 +115,11 @@ public class DoorInteraction : MonoBehaviour
         isRoomCompleted = completed;
         SaveDoorStatesToDatabase();
         Debug.Log($"[DoorInteraction] Door {gameObject.name} room completion status set to: {completed}");
+    }
+
+    public string GetDoorID()
+    {
+        return doorID;
     }
 
     public void TryOpenDoor()
@@ -205,6 +219,15 @@ public class DoorInteraction : MonoBehaviour
             audioSource.PlayOneShot(doorUnlockSound);
             isLocked = false;
             lockedDoorAnimator.enabled = false;
+            
+            // Update the door status in the database
+            int doorIdInt;
+            if (int.TryParse(doorID, out doorIdInt) && ProgressManager.Instance != null)
+            {
+                ProgressManager.Instance.StartCoroutine(
+                    ProgressManager.Instance.UpdateDoorStatus(doorIdInt, isUnlockable, isRoomCompleted)
+                );
+            }
         }
     }
 
@@ -219,6 +242,22 @@ public class DoorInteraction : MonoBehaviour
             if (clip != null)
             {
                 audioSource.PlayOneShot(clip);
+            }
+        }
+        
+        // If this is the first time opening the door and it's not already marked as completed
+        if (isDoorOpen && !isRoomCompleted)
+        {
+            // Try to parse the door ID to an integer
+            int doorIdInt;
+            if (int.TryParse(doorID, out doorIdInt))
+            {
+                // Mark the room as completed in the database
+                if (ProgressManager.Instance != null)
+                {
+                    ProgressManager.Instance.MarkRoomAsCompleted(doorIdInt);
+                    isRoomCompleted = true;
+                }
             }
         }
     }
@@ -297,6 +336,17 @@ public class DoorInteraction : MonoBehaviour
     // Save door states to database
     private void SaveDoorStatesToDatabase()
     {
+        // Try to save to ProgressManager first
+        int doorIdInt;
+        if (int.TryParse(doorID, out doorIdInt) && ProgressManager.Instance != null)
+        {
+            ProgressManager.Instance.StartCoroutine(
+                ProgressManager.Instance.UpdateDoorStatus(doorIdInt, isUnlockable, isRoomCompleted)
+            );
+            return;
+        }
+        
+        // Fallback to local DataManager
         if (DataManager.Instance != null)
         {
             DataManager.Instance.SaveDoorUnlockableState(doorID, isUnlockable);

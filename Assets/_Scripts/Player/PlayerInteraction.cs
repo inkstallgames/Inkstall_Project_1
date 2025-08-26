@@ -8,7 +8,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private Camera playerMainCamera;
     [SerializeField] private float interactDistance = 3f;
     
-    [SerializeField] private GameObject openCloseButton;
+    [SerializeField] private GameObject interactButton;
     [SerializeField] private GameObject useKeyButton; // Reference to the use key button
 
     private DoorInteraction currentDoor;   // Track which door we're looking at
@@ -29,19 +29,19 @@ public class PlayerInteraction : MonoBehaviour
         }
 
         // Make sure the buttons are initially disabled
-        if (openCloseButton != null)
+        if (interactButton != null)
         {
-            openCloseButton.SetActive(false);
+            interactButton.SetActive(false);
 
             // Add click listener to the open/close button
-            Button openCloseButtonComponent = openCloseButton.GetComponent<Button>();
-            if (openCloseButtonComponent != null)
+            Button interactButtonComponent = interactButton.GetComponent<Button>();
+            if (interactButtonComponent != null)
             {
-                openCloseButtonComponent.onClick.AddListener(InteractWithCurrentDoor);
+                interactButtonComponent.onClick.AddListener(InteractWithCurrentDoor);
             }
             else
             {
-                Debug.LogError("Open/Close button doesn't have a Button component!");
+                Debug.LogError("Interact button doesn't have a Button component!");
             }
         }
 
@@ -79,9 +79,9 @@ public class PlayerInteraction : MonoBehaviour
         currentDrawer = null;
 
         // Disable buttons by default
-        if (openCloseButton != null)
+        if (interactButton != null)
         {
-            openCloseButton.SetActive(false);
+            interactButton.SetActive(false);
         }
 
         if (useKeyButton != null)
@@ -108,7 +108,7 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         // We're looking at a door and within range
                         currentDoor = doorInteraction;
-                        openCloseButton.SetActive(true);
+                        interactButton.SetActive(true);
 
                         // Only show use key button if:
                         // 1. The door is locked
@@ -136,7 +136,7 @@ public class PlayerInteraction : MonoBehaviour
                         // We're looking at a drawer and within range
                         Debug.Log("We are looking at the drawer and also wihin range");
                         currentDrawer = drawerInteraction;
-                        openCloseButton.SetActive(true);
+                        interactButton.SetActive(true);
                     }
                 }
             }

@@ -56219,6 +56219,7 @@ MonoBehaviour:
   interactButton: {fileID: 4370096595425205733}
   useKeyButton: {fileID: 5376026593118847093}
   doorText: {fileID: 1574232838}
+  crosshairImage: {fileID: 1981799375}
 --- !u!82 &8997996947364382294
 AudioSource:
   m_ObjectHideFlags: 0

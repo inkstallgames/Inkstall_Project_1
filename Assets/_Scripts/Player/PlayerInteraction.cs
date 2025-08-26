@@ -12,6 +12,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private GameObject interactButton;
     [SerializeField] private GameObject useKeyButton; // Reference to the use key button
     [SerializeField] private TextMeshProUGUI doorText; // Text to show when room is completed
+    [SerializeField] private Image crosshairImage;  // Reference the crosshair Image component
 
     private DoorInteraction currentDoor;   // Track which door we're looking at
     private DrawerMech currentDrawer;      // Track which drawer we're looking at
@@ -69,6 +70,12 @@ public class PlayerInteraction : MonoBehaviour
         {
             doorText.gameObject.SetActive(false);
         }
+
+        // Make sure the crosshair is visible at start
+        if (crosshairImage != null)
+        {
+            crosshairImage.gameObject.SetActive(true);
+        }
     }
 
     private void Update()
@@ -102,6 +109,12 @@ public class PlayerInteraction : MonoBehaviour
             doorText.gameObject.SetActive(false);
         }
 
+        // Show crosshair when no interaction text is showing
+        if (crosshairImage != null)
+        {
+            crosshairImage.gameObject.SetActive(true);
+        }
+
         // Cast ray from camera center (where crosshair is)
         Ray ray = new Ray(playerMainCamera.transform.position, playerMainCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
@@ -130,6 +143,11 @@ public class PlayerInteraction : MonoBehaviour
                             {
                                 doorText.gameObject.SetActive(true);
                                 doorText.text = "Room Already Completed";
+                                // Hide crosshair when showing interaction text
+                                if (crosshairImage != null)
+                                {
+                                    crosshairImage.gameObject.SetActive(false);
+                                }
                             }
                         }
                         else if (doorInteraction.IsLocked() && !doorInteraction.IsUnlockable())
@@ -139,6 +157,11 @@ public class PlayerInteraction : MonoBehaviour
                             {
                                 doorText.gameObject.SetActive(true);
                                 doorText.text = "Complete Previous Room First";
+                                // Hide crosshair when showing interaction text
+                                if (crosshairImage != null)
+                                {
+                                    crosshairImage.gameObject.SetActive(false);
+                                }
                             }
                         }
                         else
@@ -170,6 +193,11 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         doorText.gameObject.SetActive(true);
                         doorText.text = "Complete Levels on this Floor First to go ahead";
+                        // Hide crosshair when showing interaction text
+                        if (crosshairImage != null)
+                        {
+                            crosshairImage.gameObject.SetActive(false);
+                        }
                     }
                 }
             }

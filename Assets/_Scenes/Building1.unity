@@ -4781,6 +4781,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 16934225}
     m_Modifications:
+    - target: {fileID: 1677145780291700, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 1766323525299762, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_Name
       value: Cabinet_2
@@ -55751,7 +55755,7 @@ MonoBehaviour:
   rayDistance: 10
   playerMainCamera: {fileID: 9005220659803848082}
   interactDistance: 3
-  openCloseButton: {fileID: 4370096595425205733}
+  interactButton: {fileID: 0}
   useKeyButton: {fileID: 5376026593118847093}
 --- !u!82 &8997996947364382294
 AudioSource:

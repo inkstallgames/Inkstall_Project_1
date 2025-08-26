@@ -271,6 +271,72 @@ public class CoinsManager : MonoBehaviour
         FetchCoins();
     }
 
+    public void AddCoins(int amount, string reason = "Alien Defeated")
+    {
+        Debug.Log($"[CoinsManager] Adding {amount} coins for reason: {reason}");
+        Debug.Log($"[CoinsManager] Current coins before adding: {currentCoins}");
+        
+        // Update local coins immediately for better UX
+        currentCoins += amount;
+        UpdateCoinUI();
+        
+        // Start coroutine to update server
+        StartCoroutine(SendAddCoinsRequest(amount, reason));
+    }
+
+    IEnumerator SendAddCoinsRequest(int amount, string reason)
+    {
+        string currentDate = System.DateTime.Now.ToString("yyyy-MM-dd");
+        
+        // Create request object matching the API's expected format
+        var addRequest = new AddPointsRequest
+        {
+            studentId = userId,
+            points = amount,
+            reason = reason,
+            date = currentDate,
+            pointType = "game_points"
+        };
+
+        string json = JsonUtility.ToJson(addRequest);
+        Debug.Log($"[CoinsManager] Sending add coins request: {json}");
+        
+        var request = new UnityWebRequest("https://api.inkstall.in/api/student-portal/studentpoints/add-game-points", "POST");
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        
+        string studentToken = PlayerPrefs.GetString("studenttoken", "");
+        if (!string.IsNullOrEmpty(studentToken))
+        {
+            request.SetRequestHeader("Authorization", "Bearer " + studentToken);
+        }
+
+        yield return request.SendWebRequest();
+
+        Debug.Log($"[CoinsManager] Request completed with status: {request.responseCode}");
+        
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError($"[CoinsManager] Failed to add coins: {request.error}");
+            if (request.downloadHandler != null && !string.IsNullOrEmpty(request.downloadHandler.text))
+            {
+                Debug.LogError($"[CoinsManager] Error response: {request.downloadHandler.text}");
+            }
+            // Revert local changes if server update fails
+            currentCoins -= amount;
+            UpdateCoinUI();
+        }
+        else
+        {
+            Debug.Log($"[CoinsManager] Success response: {request.downloadHandler.text}");
+            Debug.Log($"[CoinsManager] Successfully added {amount} coins");
+            // Refresh coins from server to ensure sync
+            FetchCoins();
+        }
+    }
+
     [System.Serializable]
     public class CoinResponse 
     { 
@@ -302,6 +368,16 @@ public class CoinsManager : MonoBehaviour
         public int points;
         public string reason;
         public string month;
+    }
+
+    [System.Serializable]
+    public class AddPointsRequest
+    {
+        public string studentId;
+        public int points;
+        public string reason;
+        public string date;
+        public string pointType;
     }
 
     [System.Serializable]

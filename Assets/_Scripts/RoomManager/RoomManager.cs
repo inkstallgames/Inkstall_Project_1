@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This script is responsible for managing the room logic and turning props into aliens
 public class RoomManager : MonoBehaviour
 {
     private string alienTag = "AlienProp";   // Tag to assign

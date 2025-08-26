@@ -29,6 +29,13 @@ public class Alien : MonoBehaviour
         effect.Play();
         audioSource.PlayOneShot(alienDissappearedSound);
         Instantiate(coinPrefab, this.gameObject.transform.position, Quaternion.identity);
+        
+        // Add coins when alien is defeated
+        if (CoinsManager.Instance != null)
+        {
+            CoinsManager.Instance.AddCoins(20, "Alien Defeated");
+        }
+        
         // Now disable the GameObject
         gameObject.SetActive(false);
     }   

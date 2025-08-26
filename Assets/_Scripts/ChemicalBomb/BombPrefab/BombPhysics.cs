@@ -13,6 +13,7 @@ public class BombPhysics : MonoBehaviour
     private Transform player;
     
     private AudioSource audioSource;
+    private bool hasCollided = false;  // Flag to track if collision has been processed
 
     private void Start()
     {
@@ -39,6 +40,9 @@ public class BombPhysics : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        // Skip if already processed a collision
+        if (hasCollided) return;
+        
         GameObject collidedObject = collision.gameObject;
         
         // Check if the object itself or any of its parents has the AlienProp tag
@@ -46,6 +50,9 @@ public class BombPhysics : MonoBehaviour
         {
             // Find the root AlienProp object (could be parent)
             GameObject alienPropObject = FindAlienPropObject(collidedObject);
+            
+            // Mark as collided to prevent multiple triggers
+            hasCollided = true;
             
             // Use the found AlienProp object for the collision handling
             AlienFound(collision);
@@ -62,6 +69,7 @@ public class BombPhysics : MonoBehaviour
         }
 
         // Handle other collisions
+        hasCollided = true;
         PlayHitEffect();
         PlayHitSound();
         Destroy(gameObject);

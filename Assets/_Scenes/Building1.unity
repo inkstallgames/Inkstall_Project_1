@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306a4b653742dd24eb770f020132ae08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfAliens: 2
+  numberOfAliens: 15
   nextDoorToUnlock: {fileID: 6096234473738546704}
   isFinalRoom: 0
 --- !u!1 &33735638
@@ -37673,7 +37673,7 @@ GameObject:
   - component: {fileID: 4355246468695624679}
   - component: {fileID: 37316258384756432}
   m_Layer: 5
-  m_Name: Open_Close_Button
+  m_Name: Interact_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55755,7 +55755,7 @@ MonoBehaviour:
   rayDistance: 10
   playerMainCamera: {fileID: 9005220659803848082}
   interactDistance: 3
-  interactButton: {fileID: 0}
+  interactButton: {fileID: 4370096595425205733}
   useKeyButton: {fileID: 5376026593118847093}
 --- !u!82 &8997996947364382294
 AudioSource:

@@ -1,7 +1,11 @@
 using UnityEngine;
+using System;
 
 public class BombPhysics : MonoBehaviour
 {
+    // Static event that RoomManagers can subscribe to
+    public static event Action<GameObject> OnAlienDestroyed;
+    
     [Header("Effects")]
     [SerializeField] private ParticleSystem hitEffect;
     [SerializeField] private AudioClip hitSound;
@@ -47,6 +51,9 @@ public class BombPhysics : MonoBehaviour
             AlienFound(collision);
             PlayHitEffect();
             PlayHitSound();
+
+            // Notify any listeners (like RoomManager) that an alien was destroyed
+            OnAlienDestroyed?.Invoke(alienPropObject);
 
             Destroy(alienPropObject);
             Destroy(gameObject);

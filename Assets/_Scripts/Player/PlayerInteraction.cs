@@ -11,7 +11,7 @@ public class PlayerInteraction : MonoBehaviour
     
     [SerializeField] private GameObject interactButton;
     [SerializeField] private GameObject useKeyButton; // Reference to the use key button
-    [SerializeField] private TextMeshProUGUI completedRoomText; // Text to show when room is completed
+    [SerializeField] private TextMeshProUGUI doorText; // Text to show when room is completed
 
     private DoorInteraction currentDoor;   // Track which door we're looking at
     private DrawerMech currentDrawer;      // Track which drawer we're looking at
@@ -64,10 +64,10 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
         
-        // Make sure the completed room text is initially hidden
-        if (completedRoomText != null)
+        // Make sure the door text is initially hidden
+        if (doorText != null)
         {
-            completedRoomText.gameObject.SetActive(false);
+            doorText.gameObject.SetActive(false);
         }
     }
 
@@ -97,9 +97,9 @@ public class PlayerInteraction : MonoBehaviour
             useKeyButton.SetActive(false);
         }
         
-        if (completedRoomText != null)
+        if (doorText != null)
         {
-            completedRoomText.gameObject.SetActive(false);
+            doorText.gameObject.SetActive(false);
         }
 
         // Cast ray from camera center (where crosshair is)
@@ -126,19 +126,19 @@ public class PlayerInteraction : MonoBehaviour
                         if (doorInteraction.isRoomCompleted)
                         {
                             // Show completed room message instead of interaction buttons
-                            if (completedRoomText != null)
+                            if (doorText != null)
                             {
-                                completedRoomText.gameObject.SetActive(true);
-                                completedRoomText.text = "Room Already Completed";
+                                doorText.gameObject.SetActive(true);
+                                doorText.text = "Room Already Completed";
                             }
                         }
                         else if (doorInteraction.IsLocked() && !doorInteraction.IsUnlockable())
                         {
                             // Show message for locked and not yet unlockable door
-                            if (completedRoomText != null)
+                            if (doorText != null)
                             {
-                                completedRoomText.gameObject.SetActive(true);
-                                completedRoomText.text = "Complete Previous Room First";
+                                doorText.gameObject.SetActive(true);
+                                doorText.text = "Complete Previous Room First";
                             }
                         }
                         else
@@ -158,9 +158,23 @@ public class PlayerInteraction : MonoBehaviour
                     }
                 }
             }
-
+            // Check if we hit a building collider
+            else if (hitObject.CompareTag("BuildingCollider"))
+            {
+                // Check if we're within interaction distance
+                float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
+                if (distanceToObject <= interactDistance)
+                {
+                    // Show building collider message
+                    if (doorText != null)
+                    {
+                        doorText.gameObject.SetActive(true);
+                        doorText.text = "Complete Levels on this Floor First to go ahead";
+                    }
+                }
+            }
             // Check for drawer 
-            if (hitObject.CompareTag("SlidingDoor"))
+            else if (hitObject.CompareTag("SlidingDoor"))
             {
                 // Get the drawer interaction component
                 DrawerMech drawerInteraction = hitObject.GetComponent<DrawerMech>();

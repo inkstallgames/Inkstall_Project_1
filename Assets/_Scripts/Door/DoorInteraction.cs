@@ -18,6 +18,7 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private bool isLocked = false;
     [SerializeField] private AudioClip doorLockedSound;
     [SerializeField] private AudioClip doorUnlockSound;
+    [SerializeField] private bool isUnlockable = false;
 
     [Header("Timer Settings")]
     [SerializeField] private bool shouldStartTimer = false;
@@ -73,6 +74,16 @@ public class DoorInteraction : MonoBehaviour
         return isLocked;
     }
 
+    public bool IsUnlockable()
+    {
+        return isUnlockable;
+    }
+
+    public void SetUnlockable(bool unlockable)
+    {
+        isUnlockable = unlockable;
+        Debug.Log($"[DoorInteraction] Door {gameObject.name} unlockable status set to: {unlockable}");
+    }
 
     public void TryOpenDoor()
     {

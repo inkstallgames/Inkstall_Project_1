@@ -163,8 +163,8 @@ public class PlayerInteraction : MonoBehaviour
             // Try to open the door
             currentDoor.TryOpenDoor();
 
-            // If the door is locked, enable the use key button
-            if (currentDoor.IsLocked())
+            // If the door is locked and unlockable, enable the use key button
+            if (currentDoor.IsLocked() && currentDoor.IsUnlockable())
             {
                 showUseKeyButton = true;
 

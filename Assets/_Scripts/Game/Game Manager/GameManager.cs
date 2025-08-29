@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ResetGame());
     }
     
-    public void GameWin()
+    public void LevelWin()
     {
         // Level Win effect
         // Play Win Sound

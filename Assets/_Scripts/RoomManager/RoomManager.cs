@@ -14,7 +14,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private string roomID;                     // Unique identifier for this room
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props
-    private int aliensRemaining;                                   // Counter for remaining aliens
+    [SerializeField] private int aliensRemaining;                 // Counter for remaining aliens
 
     void Start()
     {
@@ -113,6 +113,17 @@ public class RoomManager : MonoBehaviour
                 Debug.Log($"[RoomManager] Saved room completion status for {roomID}");
             }
             
+            // Add 200 coins/points for completing the room
+            if (CoinsManager.Instance != null)
+            {
+                CoinsManager.Instance.AddCoins(200, "Room Completed");
+                Debug.Log($"[RoomManager] Added 200 coins for completing room {roomID}");
+            }
+            else
+            {
+                Debug.LogWarning("[RoomManager] CoinsManager instance not found, couldn't add coins");
+            }
+            
             // Unlock the next door if specified
             if (nextDoorToUnlock != null)
             {
@@ -124,7 +135,14 @@ public class RoomManager : MonoBehaviour
             // If this is the final room, trigger game win
             if (isFinalRoom && GameManager.Instance != null)
             {
-                GameManager.Instance.GameWin();
+                GameManager.Instance.LevelWin();
+                Debug.Log("[RoomManager] Final room completed! Level win triggered.");
+            }
+            else if (GameManager.Instance != null)
+            {
+                // Call LevelWin for non-final rooms too
+                GameManager.Instance.LevelWin();
+                Debug.Log("[RoomManager] Room completed! Level win triggered.");
             }
         }
     }

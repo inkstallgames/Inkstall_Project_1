@@ -279,21 +279,6 @@ public class DoorInteraction : MonoBehaviour
                 audioSource.PlayOneShot(clip);
             }
         }
-        
-        // If this is the first time opening the door and it's not already marked as completed
-        if (isDoorOpen && !isRoomCompleted)
-        {
-            // Mark the room as completed in the database
-            if (ProgressManager.Instance != null)
-            {
-                ProgressManager.Instance.MarkRoomAsCompleted(doorID);
-                isRoomCompleted = true;
-            }
-            else
-            {
-                Debug.LogWarning($"[DoorInteraction] ProgressManager not available, couldn't mark room for door {doorID} as completed");
-            }
-        }
     }
 
     private void AnimateDoor()

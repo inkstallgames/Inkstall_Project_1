@@ -9,11 +9,12 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private int numberOfAliens;          // How many props to turn into aliens
     [SerializeField] private int aliensRemaining;                 // Counter for remaining aliens
     
-    [Header("Room Completion")]
+    [Header("Door & Room Setting")]
+    [SerializeField] private DoorInteraction thisRoomDoor;
     [SerializeField] private DoorInteraction nextDoorToUnlock;  // Reference to the next door to unlock
-    [SerializeField] private bool isFinalRoom = false;          // Is this the final room in the level?
-    [SerializeField] private string roomID;                     // Unique identifier for this room
-    [SerializeField] private int doorId;                        // Door ID for ProgressManager
+    private bool isFinalRoom = false;          // Is this the final room in the level?
+    private string roomID;                     // Unique identifier for this room
+    private int doorId;                        // Door ID for ProgressManager
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props
 
@@ -56,8 +57,8 @@ public class RoomManager : MonoBehaviour
                 Debug.Log($"[RoomManager] Room with door ID {doorId} already completed. Unlocking next door.");
                 if (nextDoorToUnlock != null)
                 {
-                    nextDoorToUnlock.SetUnlockable(true);
-                    nextDoorToUnlock.SetRoomCompleted(true);
+                    thisRoomDoor.SetRoomCompleted(true);
+                    nextDoorToUnlock.SetUnlockable(true);    
                 }
                 return;
             }

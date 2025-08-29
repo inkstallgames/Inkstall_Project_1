@@ -198,10 +198,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfAliens: 2
   aliensRemaining: 0
+  thisRoomDoor: {fileID: 5248679429457064833}
   nextDoorToUnlock: {fileID: 6096234473738546704}
-  isFinalRoom: 0
-  roomID: 
-  doorId: 1
 --- !u!1 &33735638
 GameObject:
   m_ObjectHideFlags: 0
@@ -916,10 +914,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfAliens: 3
   aliensRemaining: 0
+  thisRoomDoor: {fileID: 0}
   nextDoorToUnlock: {fileID: 1875161218498077181}
-  isFinalRoom: 0
-  roomID: 
-  doorId: 0
 --- !u!4 &139479427 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5039926466952889830, guid: e1f33654e3014e349bc69c0511ed940f,
@@ -40693,7 +40689,7 @@ MonoBehaviour:
   isLocked: 1
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
-  isUnlockable: 0
+  isUnlockable: 1
   isRoomCompleted: 0
   doorID: 1
   shouldStartTimer: 1

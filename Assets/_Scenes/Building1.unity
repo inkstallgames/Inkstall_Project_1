@@ -4417,6 +4417,7 @@ MonoBehaviour:
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   looseSound: {fileID: 0}
   winSound: {fileID: 0}
+  studentId: 68931b31207ee46ce8769a1d
 --- !u!82 &962220128
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7636,7 +7637,7 @@ GameObject:
   - component: {fileID: 1574232839}
   - component: {fileID: 1574232838}
   m_Layer: 5
-  m_Name: RoomDoor_Text
+  m_Name: PlayerInteraction_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56218,7 +56219,7 @@ MonoBehaviour:
   interactDistance: 3
   interactButton: {fileID: 4370096595425205733}
   useKeyButton: {fileID: 5376026593118847093}
-  doorText: {fileID: 1574232838}
+  interactionText: {fileID: 1574232838}
   crosshairImage: {fileID: 1981799375}
 --- !u!82 &8997996947364382294
 AudioSource:

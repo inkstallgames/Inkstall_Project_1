@@ -11,7 +11,7 @@ public class PlayerInteraction : MonoBehaviour
     
     [SerializeField] private GameObject interactButton;
     [SerializeField] private GameObject useKeyButton; // Reference to the use key button
-    [SerializeField] private TextMeshProUGUI doorText; // Text to show when room is completed
+    [SerializeField] private TextMeshProUGUI interactionText; // Text to show when room is completed
     [SerializeField] private Image crosshairImage;  // Reference the crosshair Image component
 
     private DoorInteraction currentDoor;   // Track which door we're looking at
@@ -65,10 +65,10 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
         
-        // Make sure the door text is initially hidden
-        if (doorText != null)
+        // Make sure the interaction text is initially hidden
+        if (interactionText != null)
         {
-            doorText.gameObject.SetActive(false);
+            interactionText.gameObject.SetActive(false);
         }
 
         // Make sure the crosshair is visible at start
@@ -104,9 +104,9 @@ public class PlayerInteraction : MonoBehaviour
             useKeyButton.SetActive(false);
         }
         
-        if (doorText != null)
+        if (interactionText != null)
         {
-            doorText.gameObject.SetActive(false);
+            interactionText.gameObject.SetActive(false);
         }
 
         // Show crosshair when no interaction text is showing
@@ -139,10 +139,10 @@ public class PlayerInteraction : MonoBehaviour
                         if (doorInteraction.isRoomCompleted)
                         {
                             // Show completed room message instead of interaction buttons
-                            if (doorText != null)
+                            if (interactionText != null)
                             {
-                                doorText.gameObject.SetActive(true);
-                                doorText.text = "Room Already Completed";
+                                interactionText.gameObject.SetActive(true);
+                                interactionText.text = "Room Already Completed";
                                 // Hide crosshair when showing interaction text
                                 if (crosshairImage != null)
                                 {
@@ -153,10 +153,10 @@ public class PlayerInteraction : MonoBehaviour
                         else if (doorInteraction.IsLocked() && !doorInteraction.IsUnlockable())
                         {
                             // Show message for locked and not yet unlockable door
-                            if (doorText != null)
+                            if (interactionText != null)
                             {
-                                doorText.gameObject.SetActive(true);
-                                doorText.text = "Complete Previous Room First";
+                                interactionText.gameObject.SetActive(true);
+                                interactionText.text = "Complete Previous Room First";
                                 // Hide crosshair when showing interaction text
                                 if (crosshairImage != null)
                                 {
@@ -176,6 +176,19 @@ public class PlayerInteraction : MonoBehaviour
                             if (doorInteraction.IsLocked() && showUseKeyButton && doorInteraction == previousDoor)
                             {
                                 useKeyButton.SetActive(true);
+                                
+                                // Show interaction text for using key
+                                if (interactionText != null)
+                                {
+                                    interactionText.gameObject.SetActive(true);
+                                    interactionText.text = "Press Key to Unlock the Door";
+                                    
+                                    // Hide crosshair when showing interaction text
+                                    if (crosshairImage != null)
+                                    {
+                                        crosshairImage.gameObject.SetActive(false);
+                                    }
+                                }
                             }
                         }
                     }
@@ -189,10 +202,10 @@ public class PlayerInteraction : MonoBehaviour
                 if (distanceToObject <= interactDistance)
                 {
                     // Show building collider message
-                    if (doorText != null)
+                    if (interactionText != null)
                     {
-                        doorText.gameObject.SetActive(true);
-                        doorText.text = "Complete Levels on this Floor First to go ahead";
+                        interactionText.gameObject.SetActive(true);
+                        interactionText.text = "Complete Levels on this Floor First to go ahead";
                         // Hide crosshair when showing interaction text
                         if (crosshairImage != null)
                         {
@@ -251,6 +264,19 @@ public class PlayerInteraction : MonoBehaviour
                 if (useKeyButton != null)
                 {
                     useKeyButton.SetActive(true);
+                    
+                    // Show interaction text for using key
+                    if (interactionText != null)
+                    {
+                        interactionText.gameObject.SetActive(true);
+                        interactionText.text = "Press Key to Unlock the Door";
+                        
+                        // Hide crosshair when showing interaction text
+                        if (crosshairImage != null)
+                        {
+                            crosshairImage.gameObject.SetActive(false);
+                        }
+                    }
                 }
             }
         }

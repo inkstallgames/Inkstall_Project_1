@@ -661,6 +661,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -3810,6 +3813,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -5838,6 +5844,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -6127,6 +6136,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -6711,6 +6723,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -8330,6 +8345,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -8857,6 +8875,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -11625,6 +11646,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -13104,6 +13128,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -14266,6 +14293,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -19771,6 +19801,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -24001,6 +24034,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -30292,6 +30328,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -31310,6 +31349,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -31540,6 +31582,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -35318,6 +35363,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -36380,6 +36428,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -37026,6 +37077,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -37792,6 +37846,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -38794,6 +38851,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -40426,6 +40486,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -42275,6 +42338,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -44619,6 +44685,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -46516,6 +46585,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -47509,6 +47581,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -47943,6 +48018,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -48770,6 +48848,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -50660,6 +50741,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -53880,6 +53964,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -55327,6 +55414,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -55841,6 +55931,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -58103,6 +58196,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -59009,6 +59105,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -60170,6 +60269,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -63688,6 +63790,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -63868,6 +63973,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -64713,6 +64821,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -65409,6 +65520,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -65639,6 +65753,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -69140,6 +69257,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -70996,6 +71116,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -72011,6 +72134,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -73380,6 +73506,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -73683,6 +73812,7 @@ MonoBehaviour:
   doorCloseSound: {fileID: 0}
   looseSound: {fileID: 0}
   winSound: {fileID: 8300000, guid: 6618dde00549b60489d6bbcadd555662, type: 3}
+  studentId: 68931b31207ee46ce8769a1d
 --- !u!1 &966689385
 GameObject:
   m_ObjectHideFlags: 0
@@ -73906,6 +74036,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -75022,6 +75155,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -75288,6 +75424,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -77574,6 +77713,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -77923,6 +78065,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -79240,6 +79385,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -79658,6 +79806,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -80531,6 +80682,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -80881,6 +81035,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -83481,6 +83638,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -83711,6 +83871,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -84022,6 +84185,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -84290,6 +84456,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -87173,6 +87342,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -88434,6 +88606,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -91367,6 +91542,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -93238,6 +93416,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -95162,6 +95343,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -95546,6 +95730,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -95799,6 +95986,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -96756,6 +96946,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -99127,6 +99320,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -99392,6 +99588,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -99742,6 +99941,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -102318,6 +102520,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -107019,6 +107224,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -107866,6 +108074,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -109457,6 +109668,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -110096,6 +110310,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -111378,6 +111595,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -112888,6 +113108,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -113445,6 +113668,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -118346,6 +118572,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -122432,6 +122661,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -124579,6 +124811,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -127853,6 +128088,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -130953,6 +131191,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -131993,6 +132234,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -135620,6 +135864,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -137041,6 +137288,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -139947,6 +140197,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -147065,6 +147318,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -147768,6 +148024,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -148441,6 +148700,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -149321,6 +149583,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -150703,6 +150968,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -151220,6 +151488,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -154849,6 +155120,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -160791,6 +161065,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -161315,8 +161592,10 @@ MonoBehaviour:
   rayDistance: 10
   playerMainCamera: {fileID: 853274705947014384}
   interactDistance: 3
-  openCloseButton: {fileID: 5108389835874313904}
+  interactButton: {fileID: 0}
   useKeyButton: {fileID: 0}
+  doorText: {fileID: 0}
+  crosshairImage: {fileID: 0}
 --- !u!1 &1182903291308431203
 GameObject:
   m_ObjectHideFlags: 0
@@ -163060,6 +163339,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -166779,6 +167061,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 1
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -166982,6 +167267,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -167009,6 +167297,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 1
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -167093,6 +167384,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -167361,6 +167655,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 1
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -167571,6 +167868,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -167598,6 +167898,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -167826,6 +168129,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -167886,6 +168192,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -167967,6 +168276,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -169141,6 +169453,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -169348,6 +169663,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 1
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -169504,6 +169822,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -182942,6 +183263,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -184060,6 +184384,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -186071,6 +186398,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -186923,6 +187253,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -188365,6 +188698,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -189283,6 +189619,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -189524,12 +189863,12 @@ GameObject:
   - component: {fileID: 2875248350004165595}
   - component: {fileID: 3848948968259317427}
   m_Layer: 5
-  m_Name: Open/Close_Button
+  m_Name: Interact_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &5117208194337905379
 GameObject:
   m_ObjectHideFlags: 0
@@ -191612,6 +191951,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -193150,6 +193492,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 1
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -194650,6 +194995,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -195792,6 +196140,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -196158,6 +196509,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -201661,6 +202015,9 @@ MonoBehaviour:
   isLocked: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
+  isUnlockable: 0
+  isRoomCompleted: 0
+  doorID: 
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}

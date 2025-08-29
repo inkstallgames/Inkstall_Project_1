@@ -40693,7 +40693,7 @@ MonoBehaviour:
   isLocked: 1
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
-  isUnlockable: 1
+  isUnlockable: 0
   isRoomCompleted: 0
   doorID: 1
   shouldStartTimer: 1

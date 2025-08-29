@@ -46,6 +46,9 @@ public class ProgressManager : MonoBehaviour
     public StudentDoorsData studentData;
     public bool isDataLoaded = false;
     
+    // Add a static event that doors can subscribe to
+    public static event Action OnDataLoaded;
+    
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -60,7 +63,7 @@ public class ProgressManager : MonoBehaviour
 
     private void Start()
     {
-        // Load door data when the game starts
+        // Load student door data
         StartCoroutine(LoadStudentDoorData());
     }
 
@@ -71,19 +74,18 @@ public class ProgressManager : MonoBehaviour
         
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
-            // Send the request and wait for response
             yield return webRequest.SendWebRequest();
             
             if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
                 webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
-                Debug.LogError($"Error: {webRequest.error}");
+                Debug.LogError($"Error loading student data: {webRequest.error}");
                 
-                // If data doesn't exist, create new student data
+                // Check if the student exists
                 if (webRequest.responseCode == 404)
                 {
-                    Debug.Log("Student data not found. Creating new data...");
-                    yield return CreateNewStudentData();
+                    Debug.Log("Student not found, creating new student data");
+                    yield return StartCoroutine(CreateNewStudentData());
                 }
             }
             else
@@ -99,10 +101,15 @@ public class ProgressManager : MonoBehaviour
                     
                     // Update all door interactions in the scene
                     UpdateAllDoorInteractions();
+                    
+                    Debug.Log("Student data loaded successfully");
+                    
+                    // Notify subscribers that data is loaded
+                    OnDataLoaded?.Invoke();
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError($"Failed to parse JSON: {e.Message}");
+                    Debug.LogError($"Error parsing student data: {e.Message}");
                 }
             }
         }
@@ -202,6 +209,8 @@ public class ProgressManager : MonoBehaviour
         // Find all door interactions in the scene
         DoorInteraction[] doorInteractions = FindObjectsOfType<DoorInteraction>();
         
+        Debug.Log($"[ProgressManager] Updating {doorInteractions.Length} doors with database values");
+        
         foreach (DoorInteraction door in doorInteractions)
         {
             UpdateDoorInteraction(door);
@@ -216,14 +225,30 @@ public class ProgressManager : MonoBehaviour
         // Get the door ID from the door interaction
         int doorId = door.GetDoorID();
         
+        Debug.Log($"[ProgressManager] Looking for door ID {doorId} in database with {studentData.doors.Count} doors");
+        
         // Find the corresponding door data
         DoorData doorData = studentData.doors.Find(d => d.doorId == doorId);
         
         if (doorData != null)
         {
+            Debug.Log($"[ProgressManager] Found door {doorId} in database: Name={doorData.name}, Unlockable={doorData.isUnlockable}, Completed={doorData.isRoomCompleted}");
+            
             // Update the door interaction with the data from the server
             door.SetUnlockable(doorData.isUnlockable);
             door.SetRoomCompleted(doorData.isRoomCompleted);
+            Debug.Log($"[ProgressManager] Updated door {doorId}: Unlockable={doorData.isUnlockable}, Completed={doorData.isRoomCompleted}");
+        }
+        else
+        {
+            Debug.LogWarning($"[ProgressManager] Door {doorId} not found in database");
+            // Print all available door IDs for debugging
+            string availableDoors = "Available door IDs: ";
+            foreach (var d in studentData.doors)
+            {
+                availableDoors += d.doorId + ", ";
+            }
+            Debug.LogWarning(availableDoors);
         }
     }
 

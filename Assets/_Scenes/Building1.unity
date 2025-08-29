@@ -16817,7 +16817,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1879629539234302637}
   - component: {fileID: 1791447220727236853}
-  - component: {fileID: 1875161217450750284}
   - component: {fileID: 1879629539234302638}
   - component: {fileID: 1879629539234302639}
   m_Layer: 0
@@ -18080,7 +18079,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1876401415243230919}
   - component: {fileID: 1791760863833185981}
-  - component: {fileID: 1875161218218207115}
   - component: {fileID: 1876401415243230920}
   - component: {fileID: 1876401415243230921}
   m_Layer: 0
@@ -19460,36 +19458,6 @@ Transform:
   - {fileID: 1738845051988768308}
   m_Father: {fileID: 1875161216735787417}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1875161217450750284
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873605833755012893}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: -90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  isLocked: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217482913422
 Transform:
   m_ObjectHideFlags: 0
@@ -20752,36 +20720,6 @@ Transform:
   - {fileID: 6514518907797386943}
   m_Father: {fileID: 1875161216735787417}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1875161218218207115
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874620945477613161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: -90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  isLocked: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161218230787375 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 23045687377786592, guid: 4416d88702eb8a242be0cb14dabcd387,

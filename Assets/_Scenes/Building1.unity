@@ -2289,11 +2289,7 @@ PrefabInstance:
     - {fileID: 3335893597286940666, guid: db33d25094d109346b90b5f2c993c8ba, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 6849773654558260055, guid: db33d25094d109346b90b5f2c993c8ba,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 614929718}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db33d25094d109346b90b5f2c993c8ba, type: 3}
 --- !u!4 &362147265 stripped
 Transform:
@@ -3406,24 +3402,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 613872904}
   m_CullTransparentMesh: 1
---- !u!1 &614929714 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6849773654558260055, guid: db33d25094d109346b90b5f2c993c8ba,
-    type: 3}
-  m_PrefabInstance: {fileID: 362147264}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &614929718
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 614929714}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91acacdd6e2bcbf4cbb872181ba058d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &708511222
 GameObject:
   m_ObjectHideFlags: 0
@@ -40950,7 +40928,7 @@ MonoBehaviour:
   isLocked: 1
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
-  isUnlockable: 1
+  isUnlockable: 0
   isRoomCompleted: 0
   doorID: 1
   shouldStartTimer: 1

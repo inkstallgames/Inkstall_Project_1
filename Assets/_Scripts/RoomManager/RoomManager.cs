@@ -52,16 +52,6 @@ public class RoomManager : MonoBehaviour
         {
             // Check if this door is marked as completed in the online database
             var doorData = ProgressManager.Instance.GetDoorData(doorId);
-            if (doorData != null && doorData.isRoomCompleted)
-            {
-                Debug.Log($"[RoomManager] Room with door ID {doorId} already completed. Unlocking next door.");
-                if (nextDoorToUnlock != null)
-                {
-                    thisRoomDoor.SetRoomCompleted(true);
-                    nextDoorToUnlock.SetUnlockable(true);    
-                }
-                return;
-            }
         }
 
         for (int i = 0; i < alienCount; i++)
@@ -118,6 +108,8 @@ public class RoomManager : MonoBehaviour
             {
                 // Mark the room as completed in the online database
                 ProgressManager.Instance.MarkRoomAsCompleted(doorId);
+                thisRoomDoor.SetRoomCompleted(true);
+                nextDoorToUnlock.SetUnlockable(true);  
                 Debug.Log($"[RoomManager] Saved room completion status for door ID {doorId} to online database");
             }
             else

@@ -394,22 +394,4 @@ public class DoorInteraction : MonoBehaviour
             Debug.LogWarning($"[DoorInteraction] ProgressManager not available, couldn't save door {doorID} states");
         }
     }
-
-#if UNITY_EDITOR
-    private void OnValidate()
-    {
-        // This will only run in the Unity Editor
-        if (doorID == 0)
-        {
-            Debug.LogWarning($"[DoorInteraction] WARNING: Door {gameObject.name} has ID 0. Please set a unique door ID in the inspector.", this);
-            
-            // Try to get a unique ID based on the scene hierarchy
-            int newId = GetInstanceID();
-            Debug.Log($"[DoorInteraction] Suggested new ID for {gameObject.name}: {newId}");
-            
-            // Uncomment the line below to automatically assign a new ID
-            // doorID = newId;
-        }
-    }
-#endif
 }

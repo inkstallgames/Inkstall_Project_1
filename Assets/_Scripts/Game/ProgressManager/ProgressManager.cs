@@ -209,18 +209,10 @@ public class ProgressManager : MonoBehaviour
         // Find all door interactions in the scene
         DoorInteraction[] doorInteractions = FindObjectsOfType<DoorInteraction>();
         
-        Debug.Log($"[ProgressManager] Found {doorInteractions.Length} doors in scene");
+        Debug.Log($"[ProgressManager] Updating {doorInteractions.Length} doors with database values");
         
         foreach (DoorInteraction door in doorInteractions)
         {
-            if (door.doorID == 0)
-            {
-                Debug.LogError($"[ProgressManager] Found door with ID 0 in scene: {door.gameObject.name}");
-                // Skip this door as it has an invalid ID
-                continue;
-            }
-            
-            Debug.Log($"[ProgressManager] Updating door ID: {door.doorID} ({door.gameObject.name})");
             UpdateDoorInteraction(door);
         }
     }

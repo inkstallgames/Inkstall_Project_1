@@ -201,7 +201,7 @@ MonoBehaviour:
   nextDoorToUnlock: {fileID: 6096234473738546704}
   isFinalRoom: 0
   roomID: 
-  doorId: 0
+  doorId: 1
 --- !u!1 &33735638
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,6 +1084,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114649959237634244, guid: 0ff98eeb9bb99e5478390555bd891392,
         type: 3}
+      propertyPath: doorID
+      value: 623856
+      objectReference: {fileID: 0}
+    - target: {fileID: 114649959237634244, guid: 0ff98eeb9bb99e5478390555bd891392,
+        type: 3}
       propertyPath: doorOpenSound
       value: 
       objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
@@ -1636,6 +1641,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114865460635196722, guid: 4416d88702eb8a242be0cb14dabcd387,
         type: 3}
+      propertyPath: doorID
+      value: 627326
+      objectReference: {fileID: 0}
+    - target: {fileID: 114865460635196722, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
       propertyPath: doorOpenSound
       value: 
       objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
@@ -1648,6 +1658,11 @@ PrefabInstance:
         type: 3}
       propertyPath: YAngle
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: doorID
+      value: 627250
       objectReference: {fileID: 0}
     - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
         type: 3}
@@ -1740,6 +1755,11 @@ PrefabInstance:
     - target: {fileID: 4528681997937634, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114097176944761904, guid: cde875813fb5ee54c8770e39c214453b,
+        type: 3}
+      propertyPath: doorID
+      value: 624422
       objectReference: {fileID: 0}
     - target: {fileID: 114097176944761904, guid: cde875813fb5ee54c8770e39c214453b,
         type: 3}
@@ -1962,6 +1982,11 @@ PrefabInstance:
         type: 3}
       propertyPath: YAngle
       value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 114649959237634244, guid: 0ff98eeb9bb99e5478390555bd891392,
+        type: 3}
+      propertyPath: doorID
+      value: 624042
       objectReference: {fileID: 0}
     - target: {fileID: 114649959237634244, guid: 0ff98eeb9bb99e5478390555bd891392,
         type: 3}
@@ -2466,6 +2491,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114865460635196722, guid: 4416d88702eb8a242be0cb14dabcd387,
         type: 3}
+      propertyPath: doorID
+      value: 623952
+      objectReference: {fileID: 0}
+    - target: {fileID: 114865460635196722, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
       propertyPath: doorOpenSound
       value: 
       objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
@@ -2478,6 +2508,11 @@ PrefabInstance:
         type: 3}
       propertyPath: YAngle
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
+        type: 3}
+      propertyPath: doorID
+      value: 624352
       objectReference: {fileID: 0}
     - target: {fileID: 114970917636476220, guid: 4416d88702eb8a242be0cb14dabcd387,
         type: 3}
@@ -3305,6 +3340,11 @@ PrefabInstance:
         type: 3}
       propertyPath: YAngle
       value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4957322451614726213, guid: 52247c4c064dd874fabf7eb71c4b4b88,
+        type: 3}
+      propertyPath: doorID
+      value: 624196
       objectReference: {fileID: 0}
     - target: {fileID: 4957322451614726213, guid: 52247c4c064dd874fabf7eb71c4b4b88,
         type: 3}
@@ -5023,6 +5063,11 @@ PrefabInstance:
     - target: {fileID: 4528681997937634, guid: cde875813fb5ee54c8770e39c214453b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114097176944761904, guid: cde875813fb5ee54c8770e39c214453b,
+        type: 3}
+      propertyPath: doorID
+      value: 624384
       objectReference: {fileID: 0}
     - target: {fileID: 114097176944761904, guid: cde875813fb5ee54c8770e39c214453b,
         type: 3}
@@ -7257,6 +7302,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114004310969659868, guid: 9fca9fb036f984445927918582183eac,
         type: 3}
+      propertyPath: doorID
+      value: 624102
+      objectReference: {fileID: 0}
+    - target: {fileID: 114004310969659868, guid: 9fca9fb036f984445927918582183eac,
+        type: 3}
       propertyPath: doorOpenSound
       value: 
       objectReference: {fileID: 8300000, guid: bae8631a302896f4dae5bf4fe7590326, type: 3}
@@ -7525,6 +7575,11 @@ PrefabInstance:
         type: 3}
       propertyPath: YAngle
       value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 114735950387043822, guid: 4ef5b485c0abb3f4e82680e350437b64,
+        type: 3}
+      propertyPath: doorID
+      value: 623974
       objectReference: {fileID: 0}
     - target: {fileID: 114735950387043822, guid: 4ef5b485c0abb3f4e82680e350437b64,
         type: 3}
@@ -9490,6 +9545,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 7ac047e1b4168b7489bab58ed4930324, type: 2}
+    - target: {fileID: 114649972994238284, guid: aa950a0fff2eccd408b3447dcb8b7f21,
+        type: 3}
+      propertyPath: doorID
+      value: 624320
+      objectReference: {fileID: 0}
+    - target: {fileID: 114824586577753486, guid: aa950a0fff2eccd408b3447dcb8b7f21,
+        type: 3}
+      propertyPath: doorID
+      value: 624022
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 106921735120633346, guid: aa950a0fff2eccd408b3447dcb8b7f21, type: 3}
     m_RemovedGameObjects: []
@@ -12669,7 +12734,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 623348
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -15003,7 +15068,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 623554
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -16817,8 +16882,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1879629539234302637}
   - component: {fileID: 1791447220727236853}
-  - component: {fileID: 1879629539234302638}
-  - component: {fileID: 1879629539234302639}
   m_Layer: 0
   m_Name: Door_Balkon_LOD (2)
   m_TagString: Untagged
@@ -18079,8 +18142,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1876401415243230919}
   - component: {fileID: 1791760863833185981}
-  - component: {fileID: 1876401415243230920}
-  - component: {fileID: 1876401415243230921}
   m_Layer: 0
   m_Name: Door_Balkon_LOD (1)
   m_TagString: Untagged
@@ -18503,7 +18564,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 623928
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -18590,7 +18651,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 623934
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -19140,7 +19201,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 624056
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -19170,7 +19231,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 624058
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -19364,7 +19425,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 624078
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -21142,7 +21203,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 624428
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -21532,123 +21593,6 @@ Transform:
   - {fileID: 1876619604525861947}
   m_Father: {fileID: 1876665683138981543}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!82 &1876401415243230920
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874620945477613161}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!95 &1876401415243230921
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874620945477613161}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &1876420607574754421
 Transform:
   m_ObjectHideFlags: 0
@@ -21814,7 +21758,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 624494
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -22376,7 +22320,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 624542
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -22555,7 +22499,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 624552
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -23454,7 +23398,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 624616
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -24081,7 +24025,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 624660
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -24687,7 +24631,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 624702
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -24829,123 +24773,6 @@ Transform:
   - {fileID: 1879369235431698907}
   m_Father: {fileID: 1876665683138981543}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!82 &1879629539234302638
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873605833755012893}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!95 &1879629539234302639
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873605833755012893}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &1879637343120039559
 Transform:
   m_ObjectHideFlags: 0
@@ -33800,7 +33627,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 625482
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -34894,7 +34721,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 625584
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -36697,7 +36524,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 625744
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -37646,7 +37473,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 625830
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -39067,7 +38894,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 625958
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -40039,7 +39866,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 626044
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -40866,7 +40693,7 @@ MonoBehaviour:
   isLocked: 1
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
-  isUnlockable: 0
+  isUnlockable: 1
   isRoomCompleted: 0
   doorID: 1
   shouldStartTimer: 1
@@ -42487,7 +42314,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 626266
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -45726,7 +45553,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 626512
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -46886,7 +46713,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 626620
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -47329,7 +47156,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 626656
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
@@ -53050,7 +52877,7 @@ MonoBehaviour:
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
-  doorID: 0
+  doorID: 627198
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}

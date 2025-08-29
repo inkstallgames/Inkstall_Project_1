@@ -40,7 +40,7 @@ public class ProgressManager : MonoBehaviour
         }
     }
 
-    private string studentId = "68931b31207ee46ce8769a1d"; // This should be set from login or player prefs
+    private string studentId = "681ee0e6198ad04bf6c1c733"; // This should be set from login or player prefs
     private string baseUrl = "https://api.inkstall.in/api/student-portal/doors";
     
     public StudentDoorsData studentData;

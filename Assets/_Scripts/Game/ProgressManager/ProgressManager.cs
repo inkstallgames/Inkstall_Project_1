@@ -214,18 +214,16 @@ public class ProgressManager : MonoBehaviour
             return;
             
         // Get the door ID from the door interaction
-        int doorId;
-        if (int.TryParse(door.GetDoorID(), out doorId))
+        int doorId = door.GetDoorID();
+        
+        // Find the corresponding door data
+        DoorData doorData = studentData.doors.Find(d => d.doorId == doorId);
+        
+        if (doorData != null)
         {
-            // Find the corresponding door data
-            DoorData doorData = studentData.doors.Find(d => d.doorId == doorId);
-            
-            if (doorData != null)
-            {
-                // Update the door interaction with the data from the server
-                door.SetUnlockable(doorData.isUnlockable);
-                door.SetRoomCompleted(doorData.isRoomCompleted);
-            }
+            // Update the door interaction with the data from the server
+            door.SetUnlockable(doorData.isUnlockable);
+            door.SetRoomCompleted(doorData.isRoomCompleted);
         }
     }
 

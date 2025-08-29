@@ -20,7 +20,7 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private AudioClip doorUnlockSound;
     [SerializeField] private bool isUnlockable = false;
     [SerializeField] public bool isRoomCompleted = false;
-    [SerializeField] private string doorID; // Unique identifier for this door
+    [SerializeField] private int doorID; // Unique identifier for this door (now an int to match ProgressManager)
 
     [Header("Timer Settings")]
     [SerializeField] private bool shouldStartTimer = false;
@@ -60,18 +60,11 @@ public class DoorInteraction : MonoBehaviour
 
         // Get the GameTimer component if it exists
         attachedTimer = GetComponent<GameTimer>();
-        
-        // Generate a doorID if not set
-        if (string.IsNullOrEmpty(doorID))
-        {
-            doorID = gameObject.name + "_" + gameObject.GetInstanceID();
-            Debug.Log($"[DoorInteraction] Generated doorID: {doorID}");
-        }
     }
 
     private void Start()
     {
-        // Load door states from database
+        // Load door states from online database
         if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
         {
             // Use ProgressManager to get door state
@@ -79,8 +72,7 @@ public class DoorInteraction : MonoBehaviour
         }
         else
         {
-            // Fallback to local DataManager if ProgressManager is not available
-            LoadDoorStatesFromDatabase();
+            Debug.LogWarning($"[DoorInteraction] ProgressManager not ready, using default door states for door {doorID}");
         }
     }
 
@@ -117,7 +109,7 @@ public class DoorInteraction : MonoBehaviour
         Debug.Log($"[DoorInteraction] Door {gameObject.name} room completion status set to: {completed}");
     }
 
-    public string GetDoorID()
+    public int GetDoorID()
     {
         return doorID;
     }
@@ -220,13 +212,16 @@ public class DoorInteraction : MonoBehaviour
             isLocked = false;
             lockedDoorAnimator.enabled = false;
             
-            // Update the door status in the database
-            int doorIdInt;
-            if (int.TryParse(doorID, out doorIdInt) && ProgressManager.Instance != null)
+            // Update the door status in the online database
+            if (ProgressManager.Instance != null)
             {
                 ProgressManager.Instance.StartCoroutine(
-                    ProgressManager.Instance.UpdateDoorStatus(doorIdInt, isUnlockable, isRoomCompleted)
+                    ProgressManager.Instance.UpdateDoorStatus(doorID, isUnlockable, isRoomCompleted)
                 );
+            }
+            else
+            {
+                Debug.LogWarning($"[DoorInteraction] ProgressManager not available, couldn't update door {doorID} status");
             }
         }
     }
@@ -248,16 +243,15 @@ public class DoorInteraction : MonoBehaviour
         // If this is the first time opening the door and it's not already marked as completed
         if (isDoorOpen && !isRoomCompleted)
         {
-            // Try to parse the door ID to an integer
-            int doorIdInt;
-            if (int.TryParse(doorID, out doorIdInt))
+            // Mark the room as completed in the database
+            if (ProgressManager.Instance != null)
             {
-                // Mark the room as completed in the database
-                if (ProgressManager.Instance != null)
-                {
-                    ProgressManager.Instance.MarkRoomAsCompleted(doorIdInt);
-                    isRoomCompleted = true;
-                }
+                ProgressManager.Instance.MarkRoomAsCompleted(doorID);
+                isRoomCompleted = true;
+            }
+            else
+            {
+                Debug.LogWarning($"[DoorInteraction] ProgressManager not available, couldn't mark room for door {doorID} as completed");
             }
         }
     }
@@ -318,44 +312,19 @@ public class DoorInteraction : MonoBehaviour
         gameElementsActivated = false;
     }
 
-    // Load door states from database
-    private void LoadDoorStatesFromDatabase()
-    {
-        if (DataManager.Instance != null)
-        {
-            isUnlockable = DataManager.Instance.LoadDoorUnlockableState(doorID);
-            isRoomCompleted = DataManager.Instance.LoadRoomCompletionState(doorID);
-            Debug.Log($"[DoorInteraction] Loaded door states for {doorID}: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
-        }
-        else
-        {
-            Debug.LogWarning("[DoorInteraction] DataManager instance not found. Using default door states.");
-        }
-    }
-    
-    // Save door states to database
+    // Save door states to online database
     private void SaveDoorStatesToDatabase()
     {
-        // Try to save to ProgressManager first
-        int doorIdInt;
-        if (int.TryParse(doorID, out doorIdInt) && ProgressManager.Instance != null)
+        if (ProgressManager.Instance != null)
         {
             ProgressManager.Instance.StartCoroutine(
-                ProgressManager.Instance.UpdateDoorStatus(doorIdInt, isUnlockable, isRoomCompleted)
+                ProgressManager.Instance.UpdateDoorStatus(doorID, isUnlockable, isRoomCompleted)
             );
-            return;
-        }
-        
-        // Fallback to local DataManager
-        if (DataManager.Instance != null)
-        {
-            DataManager.Instance.SaveDoorUnlockableState(doorID, isUnlockable);
-            DataManager.Instance.SaveRoomCompletionState(doorID, isRoomCompleted);
-            Debug.Log($"[DoorInteraction] Saved door states for {doorID}: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+            Debug.Log($"[DoorInteraction] Saved door states for {doorID} to online database: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
         }
         else
         {
-            Debug.LogWarning("[DoorInteraction] DataManager instance not found. Door states not saved.");
+            Debug.LogWarning($"[DoorInteraction] ProgressManager not available, couldn't save door {doorID} states");
         }
     }
 }

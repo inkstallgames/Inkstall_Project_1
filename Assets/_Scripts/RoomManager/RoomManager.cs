@@ -13,6 +13,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private DoorInteraction nextDoorToUnlock;  // Reference to the next door to unlock
     [SerializeField] private bool isFinalRoom = false;          // Is this the final room in the level?
     [SerializeField] private string roomID;                     // Unique identifier for this room
+    [SerializeField] private int doorId;                        // Door ID for ProgressManager
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props
 
@@ -46,15 +47,20 @@ public class RoomManager : MonoBehaviour
         }
         
         // Check if room is already completed in database
-        if (DataManager.Instance != null && DataManager.Instance.LoadRoomCompletionState(roomID))
+        if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
         {
-            Debug.Log($"[RoomManager] Room {roomID} already completed. Unlocking next door.");
-            if (nextDoorToUnlock != null)
+            // Check if this door is marked as completed in the online database
+            var doorData = ProgressManager.Instance.GetDoorData(doorId);
+            if (doorData != null && doorData.isRoomCompleted)
             {
-                nextDoorToUnlock.SetUnlockable(true);
-                nextDoorToUnlock.SetRoomCompleted(true);
+                Debug.Log($"[RoomManager] Room with door ID {doorId} already completed. Unlocking next door.");
+                if (nextDoorToUnlock != null)
+                {
+                    nextDoorToUnlock.SetUnlockable(true);
+                    nextDoorToUnlock.SetRoomCompleted(true);
+                }
+                return;
             }
-            return;
         }
 
         for (int i = 0; i < alienCount; i++)
@@ -106,11 +112,16 @@ public class RoomManager : MonoBehaviour
         {
             Debug.Log($"All aliens caught in room {gameObject.name}! Room completed!");
             
-            // Save room completion status to database
-            if (DataManager.Instance != null)
+            // Save room completion status to online database
+            if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
             {
-                DataManager.Instance.SaveRoomCompletionState(roomID, true);
-                Debug.Log($"[RoomManager] Saved room completion status for {roomID}");
+                // Mark the room as completed in the online database
+                ProgressManager.Instance.MarkRoomAsCompleted(doorId);
+                Debug.Log($"[RoomManager] Saved room completion status for door ID {doorId} to online database");
+            }
+            else
+            {
+                Debug.LogWarning("[RoomManager] ProgressManager not ready, couldn't save room completion status");
             }
             
             // Add 200 coins/points for completing the room

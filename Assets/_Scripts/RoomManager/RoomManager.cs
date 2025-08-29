@@ -6,7 +6,7 @@ using UnityEngine;
 public class RoomManager : MonoBehaviour
 {
     private string alienTag = "AlienProp";   // Tag to assign
-    [SerializeField] private int numberOfAliens = 3;          // How many props to turn into aliens
+    [SerializeField] private int numberOfAliens;          // How many props to turn into aliens
     
     [Header("Room Completion")]
     [SerializeField] private DoorInteraction nextDoorToUnlock;  // Reference to the next door to unlock

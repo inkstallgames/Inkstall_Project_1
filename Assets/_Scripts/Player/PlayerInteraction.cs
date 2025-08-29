@@ -181,7 +181,7 @@ public class PlayerInteraction : MonoBehaviour
                                 if (interactionText != null)
                                 {
                                     interactionText.gameObject.SetActive(true);
-                                    interactionText.text = "Press [Key] to Unlock the Door";
+                                    interactionText.text = "Press [Key] to Unlock Door";
                                     
                                     // Hide crosshair when showing interaction text
                                     if (crosshairImage != null)

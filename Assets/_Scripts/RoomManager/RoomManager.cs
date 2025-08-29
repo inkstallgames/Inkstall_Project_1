@@ -7,6 +7,7 @@ public class RoomManager : MonoBehaviour
 {
     private string alienTag = "AlienProp";   // Tag to assign
     [SerializeField] private int numberOfAliens;          // How many props to turn into aliens
+    [SerializeField] private int aliensRemaining;                 // Counter for remaining aliens
     
     [Header("Room Completion")]
     [SerializeField] private DoorInteraction nextDoorToUnlock;  // Reference to the next door to unlock
@@ -14,7 +15,6 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private string roomID;                     // Unique identifier for this room
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props
-    [SerializeField] private int aliensRemaining;                 // Counter for remaining aliens
 
     void Start()
     {

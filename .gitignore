@@ -70,3 +70,13 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+
+# Firebase large files and generated files
+Assets/Firebase/Plugins/x86_64/FirebaseCppApp-*
+Assets/Firebase/m2repository/
+Assets/GeneratedLocalRepo/
+Assets/Firebase/Editor/generated_xml/
+Assets/Firebase/Editor/generated_xml.meta
+Assets/Firebase/Editor/generated_xml_v2/
+Assets/Firebase/Editor/generated_xml_v2.meta

@@ -5,13 +5,13 @@ using UnityEngine.Networking;
 using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using TMPro;
 
 public class AuthManager : MonoBehaviour
 {
     public static AuthManager Instance { get; private set; }
     public FirebaseUser CurrentUser { get; private set; }
-    public Text statusText; // Assign in inspector
+    public TMP_Text statusText; // Assign in inspector
 
     private FirebaseAuth auth;
 

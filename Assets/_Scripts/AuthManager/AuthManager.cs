@@ -140,7 +140,7 @@ public class AuthManager : MonoBehaviour
     
     // Firebase sign-in completed successfully
     CurrentUser = authTask.Result;
-    Debug.Log("Firebase sign-in completed successfully: " + CurrentUser.DisplayName);
+    Debug.Log("Firebase sign-in completed successfully: " + CurrentUser.Email);
     
     // Check if user exists in your database - no need for dispatcher since we're on main thread
     StartCoroutine(CheckUserInDatabase(CurrentUser.Email));

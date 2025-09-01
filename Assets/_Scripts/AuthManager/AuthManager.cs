@@ -46,6 +46,8 @@ public class AuthManager : MonoBehaviour
 
     public void SignInWithGoogle()
 {
+    Debug.Log("Button clicked!");
+    if (statusText) statusText.text = "Button clicked!";
     if (statusText) statusText.text = "Signing in...";
     
     // Use GoogleAuthProvider directly

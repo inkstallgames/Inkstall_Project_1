@@ -18,7 +18,7 @@ public class AuthManager : MonoBehaviour
     
     private FirebaseAuth auth;
     private string webClientId = "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com"; // Replace with your Web Client ID
-    private string apiEndpoint = "https://api.inkstall.com/api/auth/check-user.php"; // Replace with your actual API endpoint
+    private string apiEndpoint = "https://api.inkstall.com/api/auth/student/google-login"; // Replace with your actual API endpoint
 
     private void Awake()
     {

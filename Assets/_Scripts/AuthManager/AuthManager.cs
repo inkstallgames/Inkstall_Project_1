@@ -21,7 +21,6 @@ public class AuthManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            InitializeFirebase();
         }
         else
         {
@@ -29,20 +28,35 @@ public class AuthManager : MonoBehaviour
         }
     }
 
-    void InitializeFirebase()
+    void Start()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
-            if (task.Result == DependencyStatus.Available)
-            {
-                auth = FirebaseAuth.DefaultInstance;
-                Debug.Log("Firebase initialized");
-            }
-            else
-            {
-                Debug.LogError("Could not resolve Firebase dependencies");
-            }
-        });
+        InitializeFirebase();
     }
+
+    void InitializeFirebase()
+{
+    Debug.Log("Initializing Firebase...");
+    FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+        Debug.Log("Dependency check complete");
+        if (task.Result == DependencyStatus.Available)
+        {
+            auth = FirebaseAuth.DefaultInstance;
+            Debug.Log("Firebase initialized successfully");
+            
+            // Test if auth is working
+            if (auth != null)
+            {
+                Debug.Log("Firebase Auth is ready");
+                if (statusText) statusText.text = "Ready to sign in";
+            }
+        }
+        else
+        {
+            Debug.LogError("Could not resolve Firebase dependencies: " + task.Result);
+            if (statusText) statusText.text = "Failed to initialize authentication.";
+        }
+    });
+}
 
     public void SignInWithGoogle()
 {

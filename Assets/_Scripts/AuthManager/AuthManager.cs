@@ -8,16 +8,17 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using Firebase.Extensions;
 
 public class AuthManager : MonoBehaviour
 {
     public static AuthManager Instance { get; private set; }
     public TMP_Text statusText;
-    public Firebase.Auth.FirebaseUser CurrentUser { get; private set; }
+    public FirebaseUser CurrentUser { get; private set; }
     
     private FirebaseAuth auth;
     private string webClientId = "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com"; // Replace with your Web Client ID
-    private string apiEndpoint = "https://yourwebsite.com/check-user.php"; // Replace with your actual API endpoint
+    private string apiEndpoint = "https://api.inkstall.com/api/auth/check-user.php"; // Replace with your actual API endpoint
 
     private void Awake()
     {
@@ -85,7 +86,7 @@ public class AuthManager : MonoBehaviour
             };
             
             // Start the Google Sign-In process
-            GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnGoogleSignInCompleted);
+            GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(OnGoogleSignInCompleted);
         }
         catch (Exception e)
         {
@@ -122,34 +123,29 @@ public class AuthManager : MonoBehaviour
         Credential credential = GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
         
         // Sign in to Firebase with the Google credential
-        auth.SignInWithCredentialAsync(credential).ContinueWith(authTask => {
-            if (authTask.IsCanceled)
-            {
-                Debug.LogError("Firebase sign-in was canceled");
-                UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    if (statusText) statusText.text = "Authentication was canceled";
-                });
-                return;
-            }
-            
-            if (authTask.IsFaulted)
-            {
-                Debug.LogError("Firebase sign-in encountered an error: " + authTask.Exception);
-                UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    if (statusText) statusText.text = "Authentication failed";
-                });
-                return;
-            }
-            
-            // Firebase sign-in completed successfully
-            CurrentUser = authTask.Result.User;
-            Debug.Log("Firebase sign-in completed successfully: " + CurrentUser.Email);
-            
-            // Check if user exists in your database
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                StartCoroutine(CheckUserInDatabase(CurrentUser.Email));
-            });
-        });
+        auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(authTask => {
+    if (authTask.IsCanceled)
+    {
+        Debug.LogError("Firebase sign-in was canceled");
+        if (statusText) statusText.text = "Authentication was canceled";
+        return;
+    }
+    
+    if (authTask.IsFaulted)
+    {
+        Debug.LogError("Firebase sign-in encountered an error: " + authTask.Exception);
+        if (statusText) statusText.text = "Authentication failed";
+        return;
+    }
+    
+    // Firebase sign-in completed successfully
+    CurrentUser = authTask.Result;
+    Debug.Log("Firebase sign-in completed successfully: " + CurrentUser.DisplayName);
+    
+    // Check if user exists in your database - no need for dispatcher since we're on main thread
+    StartCoroutine(CheckUserInDatabase(CurrentUser.Email));
+});
+
     }
     
     private IEnumerator CheckUserInDatabase(string email)

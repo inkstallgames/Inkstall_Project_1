@@ -125,61 +125,74 @@ public class GoogleAuthManager : MonoBehaviour
     Debug.Log("[GoogleAuth] Starting Google Sign-In...");
     
     #if UNITY_EDITOR
-    // Simulate a successful login in the editor
-    Debug.LogWarning("[GoogleAuth] Running in Unity Editor - using test credentials");
-    var testEmail = "lauren@inkatall.com";
-    Debug.Log($"[GoogleAuth] Using test email: {testEmail}");
-    
-    // Skip Google Sign-In and directly check database
+    // Simulate login in editor
+    var testEmail = "lauren@inkstall.com";
+    Debug.Log($"[GoogleAuth] Editor mode - using test email: {testEmail}");
     CheckUserInDatabase(testEmail);
     return;
     #endif
 
-    if (auth == null)
+    #if UNITY_ANDROID
+    try 
     {
-        Debug.LogError("[GoogleAuth] Firebase Auth is not initialized!");
-        return;
-    }
-
-    GoogleSignIn.Configuration = config;
-    GoogleSignIn.Configuration.UseGameSignIn = false;
-    GoogleSignIn.Configuration.RequestIdToken = true;
-
-    Debug.Log("[GoogleAuth] Starting Google Sign-In...");
-    GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(task => {
-        if (task.IsFaulted)
+        if (auth == null)
         {
-            Debug.LogError($"[GoogleAuth] SignInWithGoogle: Error: {task.Exception}");
-            foreach (var exception in task.Exception.Flatten().InnerExceptions)
-            {
-                Debug.LogError($"[GoogleAuth] Inner Exception: {exception}");
-            }
+            Debug.LogError("[GoogleAuth] Firebase Auth is not initialized!");
             return;
         }
 
-        if (task.IsCanceled)
+        // Configure Google Sign-In
+        GoogleSignIn.Configuration = new GoogleSignInConfiguration
         {
-            Debug.LogWarning("[GoogleAuth] Google Sign-In was canceled");
-            return;
-        }
+            WebClientId = GoogleWebAPI,
+            RequestIdToken = true,
+            RequestEmail = true,
+            RequestProfile = true,
+            UseGameSignIn = false
+        };
 
-        var googleUser = task.Result;
-        Debug.Log($"[GoogleAuth] Google user authenticated: {googleUser.DisplayName} ({googleUser.Email})");
+        Debug.Log("[GoogleAuth] Starting Google Sign-In with account picker...");
         
-        // Continue with Firebase authentication
-        var credential = Firebase.Auth.GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
-        auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(authTask => {
-            if (authTask.IsCanceled || authTask.IsFaulted)
+        // This will show the account picker
+        GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(task => {
+            if (task.IsCanceled)
             {
-                Debug.LogError($"[GoogleAuth] Firebase sign-in failed: {authTask.Exception}");
+                Debug.LogWarning("[GoogleAuth] Google Sign-In was canceled");
+                return;
+            }
+            
+            if (task.IsFaulted)
+            {
+                Debug.LogError($"[GoogleAuth] Google Sign-In failed: {task.Exception}");
                 return;
             }
 
-            user = authTask.Result;
-            Debug.Log($"[GoogleAuth] Firebase user logged in: {user.DisplayName} ({user.Email})");
-            CheckUserInDatabase(user.Email);
+            var googleUser = task.Result;
+            Debug.Log($"[GoogleAuth] Google user authenticated: {googleUser.DisplayName} ({googleUser.Email})");
+
+            // Continue with Firebase authentication
+            var credential = Firebase.Auth.GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
+            auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(authTask => {
+                if (authTask.IsCanceled || authTask.IsFaulted)
+                {
+                    Debug.LogError($"[GoogleAuth] Firebase sign-in failed: {authTask.Exception}");
+                    return;
+                }
+
+                user = authTask.Result;
+                Debug.Log($"[GoogleAuth] Firebase user logged in: {user.DisplayName} ({user.Email})");
+                CheckUserInDatabase(user.Email);
+            });
         });
-    });
+    }
+    catch (Exception e)
+    {
+        Debug.LogError($"[GoogleAuth] Error in SignInWithGoogle: {e.Message}\n{e.StackTrace}");
+        UpdateStatus("Error during sign in. Please try again.");
+    }
+    #else
+    Debug.LogError("[GoogleAuth] Google Sign-In is only supported on Android platform");
+    #endif
 }
 
     void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)

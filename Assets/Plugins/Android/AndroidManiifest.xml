@@ -11,10 +11,6 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
             
         <meta-data
-            android:name="com.google.android.gms.games.APP_ID"
-            android:value="\ 123456789012" />
-            
-        <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
     </application>

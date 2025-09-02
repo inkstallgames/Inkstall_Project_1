@@ -8,8 +8,11 @@ public class GetUserIDBridge : MonoBehaviour
     // Default user ID to use if none is found in local storage
     public string defaultUserId = "681ee0e6198ad04bf6c1c733"; // Same as the one in KeyManager
 
+#if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
     private static extern void GetUserIdFromLocalStorage();
+#endif
+
 
     void Start()
     {

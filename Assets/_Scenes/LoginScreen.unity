@@ -271,7 +271,6 @@ GameObject:
   - component: {fileID: 386351084}
   - component: {fileID: 386351083}
   - component: {fileID: 386351082}
-  - component: {fileID: 386351085}
   m_Layer: 5
   m_Name: SignIn_Btn
   m_TagString: Untagged
@@ -342,7 +341,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 386351083}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1071335562}
+        m_TargetAssemblyTypeName: GoogleAuthManager, Assembly-CSharp
+        m_MethodName: SignInWithGoogle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &386351083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,19 +392,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 386351080}
   m_CullTransparentMesh: 1
---- !u!114 &386351085
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 386351080}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abd554ae3c053484ab877cdf5abeb279, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  signInButton: {fileID: 0}
 --- !u!1 &466551657
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,6 +423,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 386351081}
+  - {fileID: 1975876566}
   m_Father: {fileID: 1142506437}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -772,7 +771,6 @@ MonoBehaviour:
   LoginScreen: {fileID: 0}
   ProfileScreen: {fileID: 0}
   userProfilePic: {fileID: 0}
-  GoogleWebAPI: 187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com
   statusText: {fileID: 1975876567}
   signInButton: {fileID: 386351082}
 --- !u!1 &1142506433
@@ -870,7 +868,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 466551658}
-  - {fileID: 1975876566}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -971,12 +968,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1975876565}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1142506437}
+  m_Father: {fileID: 466551658}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}

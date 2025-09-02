@@ -24,7 +24,7 @@ public class GoogleAuthManager : MonoBehaviour
     public Button signInButton;
 
     [Header("API Settings")]
-    public string GoogleWebAPI = "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com";
+    public string GoogleWebAPI = "187710511438-f3f88n5kp87lui3gvpj332lmu32h1389.apps.googleusercontent.com";
     [SerializeField] private string databaseCheckUrl = "https://api.inkstall.in/api/auth/student/google-login";
 
     private GoogleSignInConfiguration config;
@@ -37,19 +37,36 @@ public class GoogleAuthManager : MonoBehaviour
         Debug.Log("[GoogleAuth] Starting initialization...");
 
         // Initialize Firebase
-        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
-            var dependencyStatus = task.Result;
-            if (dependencyStatus == Firebase.DependencyStatus.Available)
+        var dependencyStatus = await Firebase.FirebaseApp.CheckAndFixDependenciesAsync();
+        if (dependencyStatus == Firebase.DependencyStatus.Available)
+        {
+            auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+            Debug.Log("[GoogleAuth] Firebase initialized successfully");
+        }
+        else
+        {
+            Debug.LogError($"[GoogleAuth] Could not resolve all Firebase dependencies: {dependencyStatus}");
+            return;
+        }
+
+        // Then your existing Google Sign-In config
+        try
+        {
+            config = new GoogleSignInConfiguration()
             {
-                auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
-                Debug.Log("[GoogleAuth] Firebase initialized successfully");
-            }
-            else
-            {
-                Debug.LogError($"[GoogleAuth] Could not resolve all Firebase dependencies: {dependencyStatus}");
-                return;
-            }
-        });
+                WebClientId = GoogleWebAPI,
+                RequestIdToken = true,
+                RequestEmail = true,
+                RequestProfile = true,
+                UseGameSignIn = false,
+                ForceTokenRefresh = true
+            };
+            Debug.Log("[GoogleAuth] Google Sign-In configuration created");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GoogleAuth] Error creating config: {e.Message}");
+        }
     }
 
     private void Start()
@@ -130,7 +147,14 @@ public class GoogleAuthManager : MonoBehaviour
             }
 
             // First sign out to clear any previous state and force account picker
-            GoogleSignIn.DefaultInstance.SignOut();
+            try {
+                GoogleSignIn.DefaultInstance.SignOut();
+                Debug.Log("[GoogleAuth] Successfully signed out previous Google session");
+            }
+            catch (Exception e) {
+                Debug.LogWarning($"[GoogleAuth] Error during sign out (non-critical): {e.Message}");
+                // Continue with sign-in even if sign-out fails
+            }
             
             // Configure with correct settings
             GoogleSignInConfiguration gsc = new GoogleSignInConfiguration
@@ -158,7 +182,32 @@ public class GoogleAuthManager : MonoBehaviour
                     {
                         foreach (var ex in task.Exception.Flatten().InnerExceptions)
                         {
-                            Debug.LogError($"[GoogleAuth] Detailed error: {ex.GetType().Name}: {ex.Message}");
+                            string errorDetails = "";
+                            
+                            // Check for specific Google Sign-In errors
+                            if (ex is GoogleSignIn.SignInException signInException)
+                            {
+                                errorDetails = $"Status code: {signInException.Status}";
+                                
+                                // Common error codes and troubleshooting advice
+                                switch (signInException.Status)
+                                {
+                                    case GoogleSignInStatusCode.DeveloperError:
+                                        errorDetails += " - Check SHA-1 fingerprint in Firebase console";
+                                        break;
+                                    case GoogleSignInStatusCode.NetworkError:
+                                        errorDetails += " - Check internet connection";
+                                        break;
+                                    case GoogleSignInStatusCode.Canceled:
+                                        errorDetails += " - User canceled sign-in";
+                                        break;
+                                    case GoogleSignInStatusCode.ApiNotConnected:
+                                        errorDetails += " - Google Play Services not available";
+                                        break;
+                                }
+                            }
+                            
+                            Debug.LogError($"[GoogleAuth] Detailed error: {ex.GetType().Name}: {ex.Message} {errorDetails}");
                             Debug.LogError($"[GoogleAuth] Stack trace: {ex.StackTrace}");
                         }
                     }

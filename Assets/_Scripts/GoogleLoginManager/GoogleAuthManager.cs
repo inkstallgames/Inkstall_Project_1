@@ -37,33 +37,19 @@ public class GoogleAuthManager : MonoBehaviour
         Debug.Log("[GoogleAuth] Starting initialization...");
 
         // Initialize Firebase
-        var dependencyStatus = await Firebase.FirebaseApp.CheckAndFixDependenciesAsync();
-        if (dependencyStatus == Firebase.DependencyStatus.Available)
-        {
-            auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
-            Debug.Log("[GoogleAuth] Firebase initialized successfully");
-        }
-        else
-        {
-            Debug.LogError($"[GoogleAuth] Could not resolve all Firebase dependencies: {dependencyStatus}");
-            return;
-        }
-
-        // Then your existing Google Sign-In config
-        try
-        {
-            config = new GoogleSignInConfiguration()
+        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
+            var dependencyStatus = task.Result;
+            if (dependencyStatus == Firebase.DependencyStatus.Available)
             {
-                WebClientId = GoogleWebAPI,
-                RequestIdToken = true,
-                RequestEmail = true
-            };
-            Debug.Log("[GoogleAuth] Google Sign-In configuration created");
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[GoogleAuth] Error creating config: {e.Message}");
-        }
+                auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+                Debug.Log("[GoogleAuth] Firebase initialized successfully");
+            }
+            else
+            {
+                Debug.LogError($"[GoogleAuth] Could not resolve all Firebase dependencies: {dependencyStatus}");
+                return;
+            }
+        });
     }
 
     private void Start()
@@ -123,7 +109,7 @@ public class GoogleAuthManager : MonoBehaviour
         Debug.Log("[GoogleAuth] Starting Google Sign-In...");
         UpdateStatus("Starting Google Sign-In...");
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         // Simulate a successful login in the editor
         Debug.LogWarning("[GoogleAuth] Running in Unity Editor - using test credentials");
         var testEmail = "lauren@inkatall.com";
@@ -132,7 +118,7 @@ public class GoogleAuthManager : MonoBehaviour
         // Skip Google Sign-In and directly check database
         CheckUserInDatabase(testEmail);
         return;
-        #endif
+#endif
 
         try 
         {
@@ -143,20 +129,24 @@ public class GoogleAuthManager : MonoBehaviour
                 return;
             }
 
-            // First, sign out to ensure we get the account picker
+            // First sign out to clear any previous state and force account picker
             GoogleSignIn.DefaultInstance.SignOut();
             
             // Configure with correct settings
-            GoogleSignIn.Configuration = new GoogleSignInConfiguration
+            GoogleSignInConfiguration gsc = new GoogleSignInConfiguration
             {
                 WebClientId = GoogleWebAPI,
                 RequestIdToken = true,
                 RequestEmail = true,
-                // Force account picker to show every time
+                RequestProfile = true,
+                UseGameSignIn = false,
                 ForceTokenRefresh = true
             };
             
+            GoogleSignIn.Configuration = gsc;
+            
             Debug.Log($"[GoogleAuth] Using WebClientId: {GoogleWebAPI}");
+            Debug.Log("[GoogleAuth] Configured Google Sign-In with ForceTokenRefresh=true");
             
             // This will show the account picker
             GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(task => {

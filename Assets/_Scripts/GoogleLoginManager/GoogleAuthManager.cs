@@ -68,11 +68,9 @@ public class GoogleAuthManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("[GoogleAuth] Start: Setting up button listener and initializing Firebase");
         try
         {
             signInButton.onClick.AddListener(SignInWithGoogle);
-            Debug.Log("[GoogleAuth] Sign in button listener added");
             InitializeFirebase();
         }
         catch (Exception e)
@@ -121,79 +119,95 @@ public class GoogleAuthManager : MonoBehaviour
     }
 
     public void SignInWithGoogle()
-{
-    Debug.Log("[GoogleAuth] Starting Google Sign-In...");
-    
-    #if UNITY_EDITOR
-    // Simulate login in editor
-    var testEmail = "lauren@inkstall.com";
-    Debug.Log($"[GoogleAuth] Editor mode - using test email: {testEmail}");
-    CheckUserInDatabase(testEmail);
-    return;
-    #endif
-
-    #if UNITY_ANDROID
-    try 
     {
-        if (auth == null)
-        {
-            Debug.LogError("[GoogleAuth] Firebase Auth is not initialized!");
-            return;
-        }
+        Debug.Log("[GoogleAuth] Starting Google Sign-In...");
+        UpdateStatus("Starting Google Sign-In...");
 
-        // Configure Google Sign-In
-        GoogleSignIn.Configuration = new GoogleSignInConfiguration
-        {
-            WebClientId = GoogleWebAPI,
-            RequestIdToken = true,
-            RequestEmail = true,
-            RequestProfile = true,
-            UseGameSignIn = false
-        };
-
-        Debug.Log("[GoogleAuth] Starting Google Sign-In with account picker...");
+        #if UNITY_EDITOR
+        // Simulate a successful login in the editor
+        Debug.LogWarning("[GoogleAuth] Running in Unity Editor - using test credentials");
+        var testEmail = "lauren@inkatall.com";
+        Debug.Log($"[GoogleAuth] Using test email: {testEmail}");
         
-        // This will show the account picker
-        GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(task => {
-            if (task.IsCanceled)
+        // Skip Google Sign-In and directly check database
+        CheckUserInDatabase(testEmail);
+        return;
+        #endif
+
+        try 
+        {
+            if (auth == null)
             {
-                Debug.LogWarning("[GoogleAuth] Google Sign-In was canceled");
+                Debug.LogError("[GoogleAuth] Firebase Auth not initialized!");
+                UpdateStatus("Authentication service not ready");
                 return;
             }
+
+            // First, sign out to ensure we get the account picker
+            GoogleSignIn.DefaultInstance.SignOut();
             
-            if (task.IsFaulted)
+            // Configure with correct settings
+            GoogleSignIn.Configuration = new GoogleSignInConfiguration
             {
-                Debug.LogError($"[GoogleAuth] Google Sign-In failed: {task.Exception}");
-                return;
-            }
-
-            var googleUser = task.Result;
-            Debug.Log($"[GoogleAuth] Google user authenticated: {googleUser.DisplayName} ({googleUser.Email})");
-
-            // Continue with Firebase authentication
-            var credential = Firebase.Auth.GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
-            auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(authTask => {
-                if (authTask.IsCanceled || authTask.IsFaulted)
+                WebClientId = GoogleWebAPI,
+                RequestIdToken = true,
+                RequestEmail = true,
+                // Force account picker to show every time
+                ForceTokenRefresh = true
+            };
+            
+            Debug.Log($"[GoogleAuth] Using WebClientId: {GoogleWebAPI}");
+            
+            // This will show the account picker
+            GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(task => {
+                if (task.IsFaulted)
                 {
-                    Debug.LogError($"[GoogleAuth] Firebase sign-in failed: {authTask.Exception}");
+                    Debug.LogError($"[GoogleAuth] Sign-in error: {task.Exception}");
+                    // Add detailed error logging
+                    if (task.Exception != null)
+                    {
+                        foreach (var ex in task.Exception.Flatten().InnerExceptions)
+                        {
+                            Debug.LogError($"[GoogleAuth] Detailed error: {ex.GetType().Name}: {ex.Message}");
+                            Debug.LogError($"[GoogleAuth] Stack trace: {ex.StackTrace}");
+                        }
+                    }
+                    UpdateStatus("Sign-in failed. Please try again.");
                     return;
                 }
-
-                user = authTask.Result;
-                Debug.Log($"[GoogleAuth] Firebase user logged in: {user.DisplayName} ({user.Email})");
-                CheckUserInDatabase(user.Email);
+                
+                if (task.IsCanceled)
+                {
+                    Debug.LogWarning("[GoogleAuth] Sign-in was canceled");
+                    UpdateStatus("Sign-in canceled");
+                    return;
+                }
+                
+                var googleUser = task.Result;
+                Debug.Log($"[GoogleAuth] Google user: {googleUser.DisplayName} ({googleUser.Email})");
+                
+                // Continue with Firebase auth
+                var credential = Firebase.Auth.GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
+                auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(authTask => {
+                    if (authTask.IsCanceled || authTask.IsFaulted)
+                    {
+                        Debug.LogError($"[GoogleAuth] Firebase auth failed: {authTask.Exception}");
+                        UpdateStatus("Authentication failed");
+                        return;
+                    }
+                    
+                    user = authTask.Result;
+                    Debug.Log($"[GoogleAuth] Firebase user: {user.DisplayName}");
+                    CheckUserInDatabase(user.Email);
+                });
             });
-        });
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GoogleAuth] Error: {e.Message}");
+            UpdateStatus("Error during sign-in");
+        }
     }
-    catch (Exception e)
-    {
-        Debug.LogError($"[GoogleAuth] Error in SignInWithGoogle: {e.Message}\n{e.StackTrace}");
-        UpdateStatus("Error during sign in. Please try again.");
-    }
-    #else
-    Debug.LogError("[GoogleAuth] Google Sign-In is only supported on Android platform");
-    #endif
-}
 
     void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
     {
@@ -278,21 +292,21 @@ public class GoogleAuthManager : MonoBehaviour
     }
 
     private void CheckUserInDatabase(string email)
-{
-    Debug.Log($"[GoogleAuth] CheckUserInDatabase: Checking if email {email} exists in database");
-    UpdateStatus("Verifying account...");
+    {
+        Debug.Log($"[GoogleAuth] CheckUserInDatabase: Checking if email {email} exists in database");
+        UpdateStatus("Verifying account...");
 
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     Debug.Log($"[GoogleAuth] Editor mode - simulating database check for {email}");
     // Simulate a successful database check in the editor
     UpdateStatus("Account verified successfully!");
     UpdateUIWithUserInfo();
     InitializeGameWithUserData("editor_test_user_id");
     return;
-    #endif
+#endif
 
-    StartCoroutine(CheckUserInDatabaseCoroutine(email));
-}
+        StartCoroutine(CheckUserInDatabaseCoroutine(email));
+    }
 
     private IEnumerator CheckUserInDatabaseCoroutine(string email)
     {
@@ -427,30 +441,26 @@ public class GoogleAuthManager : MonoBehaviour
         return string.IsNullOrEmpty(url) ? "" : url;
     }
 
-    IEnumerator LoadImage(string imageUri)
+    private IEnumerator LoadImage(string imageUri)
     {
-        Debug.Log($"[GoogleAuth] LoadImage: Loading image from {imageUri}");
-        if (string.IsNullOrEmpty(imageUri))
-        {
-            Debug.LogWarning("[GoogleAuth] Image URI is empty");
-            yield break;
-        }
+        if (string.IsNullOrEmpty(imageUri)) yield break;
 
-        using (WWW www = new WWW(imageUri))
+        using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(imageUri))
         {
-            yield return www;
+            yield return request.SendWebRequest();
 
-            if (!string.IsNullOrEmpty(www.error))
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError($"[GoogleAuth] Error loading image: {www.error}");
+                Debug.LogError("[GoogleAuth] Error loading image: " + request.error);
             }
             else
             {
-                Debug.Log("[GoogleAuth] Image loaded successfully");
-                userProfilePic.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
+                Texture2D tex = DownloadHandlerTexture.GetContent(request);
+                userProfilePic.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
             }
         }
     }
+
 
     private void UpdateStatus(string message)
     {

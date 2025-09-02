@@ -22,19 +22,34 @@ public class GoogleAuthManager : MonoBehaviour
     public Image userProfilePic;
     public TMP_Text statusText;
     public Button signInButton;
-    
+
     [Header("API Settings")]
     public string GoogleWebAPI = "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com";
-    [SerializeField] private string databaseCheckUrl = "https://api.inkstall.com/api/student-portal/auth";
+    [SerializeField] private string databaseCheckUrl = "https://api.inkstall.in/api/auth/student/google-login";
 
     private GoogleSignInConfiguration config;
     private Firebase.DependencyStatus dependencyStatus = Firebase.DependencyStatus.UnavailableOther;
     private Firebase.Auth.FirebaseAuth auth;
     private Firebase.Auth.FirebaseUser user;
 
-    private void Awake()
+    private async void Awake()
     {
-        Debug.Log("[GoogleAuth] Awake: Initializing Google Sign-In configuration");
+        Debug.Log("[GoogleAuth] Starting initialization...");
+
+        // Initialize Firebase
+        var dependencyStatus = await Firebase.FirebaseApp.CheckAndFixDependenciesAsync();
+        if (dependencyStatus == Firebase.DependencyStatus.Available)
+        {
+            auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+            Debug.Log("[GoogleAuth] Firebase initialized successfully");
+        }
+        else
+        {
+            Debug.LogError($"[GoogleAuth] Could not resolve all Firebase dependencies: {dependencyStatus}");
+            return;
+        }
+
+        // Then your existing Google Sign-In config
         try
         {
             config = new GoogleSignInConfiguration()
@@ -43,11 +58,11 @@ public class GoogleAuthManager : MonoBehaviour
                 RequestIdToken = true,
                 RequestEmail = true
             };
-            Debug.Log("[GoogleAuth] Configuration created successfully with WebClientId: " + GoogleWebAPI);
+            Debug.Log("[GoogleAuth] Google Sign-In configuration created");
         }
         catch (Exception e)
         {
-            Debug.LogError($"[GoogleAuth] Error in Awake: {e.Message}\n{e.StackTrace}");
+            Debug.LogError($"[GoogleAuth] Error creating config: {e.Message}");
         }
     }
 
@@ -72,13 +87,14 @@ public class GoogleAuthManager : MonoBehaviour
         try
         {
             // Check Firebase dependencies
-            FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task => {
+            FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
+            {
                 dependencyStatus = task.Result;
                 if (dependencyStatus == DependencyStatus.Available)
                 {
                     Debug.Log("[GoogleAuth] Firebase dependencies resolved successfully");
                     auth = FirebaseAuth.DefaultInstance;
-                    
+
                     // Check if user is already logged in
                     if (auth.CurrentUser != null)
                     {
@@ -104,32 +120,72 @@ public class GoogleAuthManager : MonoBehaviour
         }
     }
 
-    private void SignInWithGoogle()
-    {
-        Debug.Log("[GoogleAuth] SignInWithGoogle: Starting Google Sign-In process");
-        UpdateStatus("Starting Google Sign-In...");
-        
-        try
-        {
-            GoogleSignIn.Configuration = config;
-            GoogleSignIn.Configuration.UseGameSignIn = false;
-            GoogleSignIn.Configuration.RequestIdToken = true;
-            GoogleSignIn.Configuration.RequestEmail = true;
+    public void SignInWithGoogle()
+{
+    Debug.Log("[GoogleAuth] Starting Google Sign-In...");
+    
+    #if UNITY_EDITOR
+    // Simulate a successful login in the editor
+    Debug.LogWarning("[GoogleAuth] Running in Unity Editor - using test credentials");
+    var testEmail = "test@example.com";
+    Debug.Log($"[GoogleAuth] Using test email: {testEmail}");
+    
+    // Skip Google Sign-In and directly check database
+    CheckUserInDatabase(testEmail);
+    return;
+    #endif
 
-            Debug.Log("[GoogleAuth] Configured Google Sign-In and showing account picker");
-            GoogleSignIn.DefaultInstance.SignIn().ContinueWith(OnGoogleAuthenticatedFinished);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[GoogleAuth] Error in SignInWithGoogle: {e.Message}\n{e.StackTrace}");
-            UpdateStatus("Error during sign in. Please try again.");
-        }
+    if (auth == null)
+    {
+        Debug.LogError("[GoogleAuth] Firebase Auth is not initialized!");
+        return;
     }
+
+    GoogleSignIn.Configuration = config;
+    GoogleSignIn.Configuration.UseGameSignIn = false;
+    GoogleSignIn.Configuration.RequestIdToken = true;
+
+    Debug.Log("[GoogleAuth] Starting Google Sign-In...");
+    GoogleSignIn.DefaultInstance.SignIn().ContinueWithOnMainThread(task => {
+        if (task.IsFaulted)
+        {
+            Debug.LogError($"[GoogleAuth] SignInWithGoogle: Error: {task.Exception}");
+            foreach (var exception in task.Exception.Flatten().InnerExceptions)
+            {
+                Debug.LogError($"[GoogleAuth] Inner Exception: {exception}");
+            }
+            return;
+        }
+
+        if (task.IsCanceled)
+        {
+            Debug.LogWarning("[GoogleAuth] Google Sign-In was canceled");
+            return;
+        }
+
+        var googleUser = task.Result;
+        Debug.Log($"[GoogleAuth] Google user authenticated: {googleUser.DisplayName} ({googleUser.Email})");
+        
+        // Continue with Firebase authentication
+        var credential = Firebase.Auth.GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
+        auth.SignInWithCredentialAsync(credential).ContinueWithOnMainThread(authTask => {
+            if (authTask.IsCanceled || authTask.IsFaulted)
+            {
+                Debug.LogError($"[GoogleAuth] Firebase sign-in failed: {authTask.Exception}");
+                return;
+            }
+
+            user = authTask.Result;
+            Debug.Log($"[GoogleAuth] Firebase user logged in: {user.DisplayName} ({user.Email})");
+            CheckUserInDatabase(user.Email);
+        });
+    });
+}
 
     void OnGoogleAuthenticatedFinished(Task<GoogleSignInUser> task)
     {
         Debug.Log("[GoogleAuth] OnGoogleAuthenticatedFinished: Google authentication completed");
-        
+
         try
         {
             if (task.IsFaulted)
@@ -145,7 +201,7 @@ public class GoogleAuthManager : MonoBehaviour
                 UpdateStatus("Google Sign-In failed. Please try again.");
                 return;
             }
-            
+
             if (task.IsCanceled)
             {
                 Debug.LogWarning("[GoogleAuth] Google Sign-In was canceled by user");
@@ -156,7 +212,7 @@ public class GoogleAuthManager : MonoBehaviour
             var googleUser = task.Result;
             Debug.Log($"[GoogleAuth] Google user authenticated: {googleUser.DisplayName} ({googleUser.Email})");
             Debug.Log($"[GoogleAuth] ID Token length: {googleUser.IdToken?.Length ?? 0}");
-            
+
             // Create Firebase credential
             var credential = Firebase.Auth.GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
             Debug.Log("[GoogleAuth] Firebase credential created, signing in to Firebase");
@@ -170,7 +226,7 @@ public class GoogleAuthManager : MonoBehaviour
                     UpdateStatus("Sign-in was canceled");
                     return;
                 }
-                
+
                 if (authTask.IsFaulted)
                 {
                     Debug.LogError($"[GoogleAuth] Firebase sign-in failed: {authTask.Exception}");
@@ -190,7 +246,7 @@ public class GoogleAuthManager : MonoBehaviour
                 {
                     Debug.Log($"[GoogleAuth] Firebase user logged in: {user.DisplayName} ({user.Email})");
                     Debug.Log($"[GoogleAuth] User ID: {user.UserId}");
-                    
+
                     // Check if user exists in your database
                     CheckUserInDatabase(user.Email);
                 }
@@ -208,37 +264,45 @@ public class GoogleAuthManager : MonoBehaviour
         }
     }
 
-    private async void CheckUserInDatabase(string email)
+    private void CheckUserInDatabase(string email)
     {
         Debug.Log($"[GoogleAuth] CheckUserInDatabase: Checking if email {email} exists in database");
         UpdateStatus("Verifying account...");
-        
+
+        StartCoroutine(CheckUserInDatabaseCoroutine(email));
+    }
+
+    private IEnumerator CheckUserInDatabaseCoroutine(string email)
+    {
+        // Create request to check if user exists in your database
+        string jsonData = JsonUtility.ToJson(new EmailCheckRequest { email = email });
+
+        UnityWebRequest request = new UnityWebRequest(databaseCheckUrl, "POST");
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        Debug.Log($"[GoogleAuth] Sending request to {databaseCheckUrl}");
+        yield return request.SendWebRequest();
+
         try
         {
-            // Create request to check if user exists in your database
-            string jsonData = JsonUtility.ToJson(new EmailCheckRequest { email = email });
-            
-            using (UnityWebRequest request = new UnityWebRequest(databaseCheckUrl, "POST"))
+            Debug.Log($"[GoogleAuth] Request completed with status: {request.result}");
+
+            if (request.result == UnityWebRequest.Result.Success)
             {
-                byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-                request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-                request.downloadHandler = new DownloadHandlerBuffer();
-                request.SetRequestHeader("Content-Type", "application/json");
-
-                Debug.Log($"[GoogleAuth] Sending request to {databaseCheckUrl}");
-                request.SendWebRequest();
-
-                if (request.result == UnityWebRequest.Result.Success)
+                Debug.Log($"[GoogleAuth] Database check response: {request.downloadHandler.text}");
+                // Remember: MongoDB JSON needs special parsing
+                try
                 {
-                    Debug.Log($"[GoogleAuth] Database check response: {request.downloadHandler.text}");
                     var response = JsonUtility.FromJson<DatabaseCheckResponse>(request.downloadHandler.text);
-                    
+
                     if (response.exists)
                     {
                         Debug.Log($"[GoogleAuth] User exists in database with ID: {response.userId}");
                         UpdateStatus("Account verified successfully!");
-                        
-                        // Update UI and initialize game with user data
+
                         UpdateUIWithUserInfo();
                         InitializeGameWithUserData(response.userId);
                     }
@@ -246,21 +310,24 @@ public class GoogleAuthManager : MonoBehaviour
                     {
                         Debug.LogWarning("[GoogleAuth] User does not exist in database");
                         UpdateStatus("Account not found. Please register on our website first.");
-                        // Optionally sign out the user
                         auth.SignOut();
                     }
                 }
-                else
+                catch (Exception e)
                 {
-                    Debug.LogError($"[GoogleAuth] Database check failed: {request.error}");
-                    UpdateStatus("Could not verify account. Please try again.");
+                    Debug.LogError($"[GoogleAuth] JSON parsing error: {e.Message}");
+                    UpdateStatus("Error processing server response");
                 }
             }
+            else
+            {
+                Debug.LogError($"[GoogleAuth] Database check failed: {request.error}");
+                UpdateStatus("Could not verify account. Please try again.");
+            }
         }
-        catch (Exception e)
+        finally
         {
-            Debug.LogError($"[GoogleAuth] Error in CheckUserInDatabase: {e.Message}\n{e.StackTrace}");
-            UpdateStatus("Verification error. Please try again.");
+            request.Dispose();
         }
     }
 
@@ -314,7 +381,7 @@ public class GoogleAuthManager : MonoBehaviour
             {
                 Debug.LogWarning("[GoogleAuth] KeyManager.Instance is null");
             }
-            
+
             if (CoinsManager.Instance != null)
             {
                 Debug.Log($"[GoogleAuth] Setting CoinsManager.studentId to {userId}");

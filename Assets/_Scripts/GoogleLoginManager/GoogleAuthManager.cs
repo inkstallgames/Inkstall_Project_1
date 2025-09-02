@@ -127,7 +127,7 @@ public class GoogleAuthManager : MonoBehaviour
     #if UNITY_EDITOR
     // Simulate a successful login in the editor
     Debug.LogWarning("[GoogleAuth] Running in Unity Editor - using test credentials");
-    var testEmail = "test@example.com";
+    var testEmail = "lauren@inkatall.com";
     Debug.Log($"[GoogleAuth] Using test email: {testEmail}");
     
     // Skip Google Sign-In and directly check database

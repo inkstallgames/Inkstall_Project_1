@@ -343,8 +343,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1071335562}
-        m_TargetAssemblyTypeName: GoogleAuthManager, Assembly-CSharp
-        m_MethodName: SignInWithGoogle
+        m_TargetAssemblyTypeName: LoginWithGoogle, Assembly-CSharp
+        m_MethodName: Login
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -763,16 +763,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1071335559}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6987c8151a8e22d4c9369f4f0a584aa6, type: 3}
+  m_Script: {fileID: 11500000, guid: b2456b506f8598a41a529b4b0d52b23b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UsernameTxt: {fileID: 0}
-  UserEmailTxt: {fileID: 0}
-  LoginScreen: {fileID: 0}
-  ProfileScreen: {fileID: 0}
-  userProfilePic: {fileID: 0}
-  statusText: {fileID: 1975876567}
-  signInButton: {fileID: 386351082}
+  GoogleAPI: 187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com
+  Username: {fileID: 0}
+  UserEmail: {fileID: 0}
+  UserProfilePic: {fileID: 0}
 --- !u!1 &1142506433
 GameObject:
   m_ObjectHideFlags: 0

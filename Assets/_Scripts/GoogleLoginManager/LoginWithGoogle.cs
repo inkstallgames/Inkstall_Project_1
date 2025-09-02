@@ -1,0 +1,114 @@
+using System.Collections;
+using System.Collections.Generic;
+using Firebase.Extensions;
+using Google;
+using System.Threading.Tasks;
+using UnityEngine;
+using TMPro;
+using Firebase.Auth;
+using UnityEngine.UI;
+
+public class LoginWithGoogle : MonoBehaviour
+{
+    public string GoogleAPI = "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com";
+    private GoogleSignInConfiguration configuration;
+
+    //Firebase.DependencyStatus dependencyStatus = Firebase.DependencyStatus.UnavailableOther;
+    Firebase.Auth.FirebaseAuth auth;
+    Firebase.Auth.FirebaseUser user;
+
+    public Text Username, UserEmail;
+
+    //public GameObject LoginScreen, ProfileScreen;
+    public Image UserProfilePic;
+    private string imageUrl;
+
+    private void Awake()
+    {
+        configuration = new GoogleSignInConfiguration
+        {
+            WebClientId = GoogleAPI,
+            RequestIdToken = true,
+        };
+    }
+
+    private void Start()
+    {
+        InitFirebase();
+    }
+
+    void InitFirebase()
+    {
+        auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+    }
+
+    public void Login()
+    {
+        GoogleSignIn.Configuration = new GoogleSignInConfiguration
+        {
+            RequestIdToken = true,
+            // Copy this value from the google-service.json file.
+            // oauth_client with type == 3
+            WebClientId = GoogleAPI
+        };
+        GoogleSignIn.Configuration.RequestEmail = true;
+
+        Task<GoogleSignInUser> signIn = GoogleSignIn.DefaultInstance.SignIn();
+
+        TaskCompletionSource<FirebaseUser> signInCompleted = new TaskCompletionSource<FirebaseUser>();
+        signIn.ContinueWith(task => {
+            if (task.IsCanceled)
+            {
+                signInCompleted.SetCanceled();
+                Debug.Log("Cancelled");
+            }
+            else if (task.IsFaulted)
+            {
+                signInCompleted.SetException(task.Exception);
+
+                Debug.Log("Faulted " + task.Exception);
+            }
+            else
+            {
+                Credential credential = Firebase.Auth.GoogleAuthProvider.GetCredential(((Task<GoogleSignInUser>)task).Result.IdToken, null);
+                auth.SignInWithCredentialAsync(credential).ContinueWith(authTask => {
+                    if (authTask.IsCanceled)
+                    {
+                        signInCompleted.SetCanceled();
+                    }
+                    else if (authTask.IsFaulted)
+                    {
+                        signInCompleted.SetException(authTask.Exception);
+                        Debug.Log("Faulted In Auth " + task.Exception);
+                    }
+                    else
+                    {
+                        signInCompleted.SetResult(((Task<FirebaseUser>)authTask).Result);
+                        Debug.Log("Success");
+                        user = auth.CurrentUser;
+                        Username.text = user.DisplayName;
+                        UserEmail.text = user.Email;
+
+                        StartCoroutine(LoadImage(CheckImageUrl(user.PhotoUrl.ToString())));
+                    }
+                });
+            }
+        });
+    }
+    private string CheckImageUrl(string url)
+    {
+        if (!string.IsNullOrEmpty(url))
+        {
+            return url;
+        }
+        return imageUrl;
+    }
+
+    IEnumerator LoadImage(string imageUri)
+    {
+        WWW www = new WWW(imageUri);
+        yield return www;
+
+        UserProfilePic.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
+    }
+}

@@ -265,12 +265,21 @@ public class GoogleAuthManager : MonoBehaviour
     }
 
     private void CheckUserInDatabase(string email)
-    {
-        Debug.Log($"[GoogleAuth] CheckUserInDatabase: Checking if email {email} exists in database");
-        UpdateStatus("Verifying account...");
+{
+    Debug.Log($"[GoogleAuth] CheckUserInDatabase: Checking if email {email} exists in database");
+    UpdateStatus("Verifying account...");
 
-        StartCoroutine(CheckUserInDatabaseCoroutine(email));
-    }
+    #if UNITY_EDITOR
+    Debug.Log($"[GoogleAuth] Editor mode - simulating database check for {email}");
+    // Simulate a successful database check in the editor
+    UpdateStatus("Account verified successfully!");
+    UpdateUIWithUserInfo();
+    InitializeGameWithUserData("editor_test_user_id");
+    return;
+    #endif
+
+    StartCoroutine(CheckUserInDatabaseCoroutine(email));
+}
 
     private IEnumerator CheckUserInDatabaseCoroutine(string email)
     {

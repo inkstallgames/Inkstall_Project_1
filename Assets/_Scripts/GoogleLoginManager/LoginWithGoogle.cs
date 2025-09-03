@@ -11,8 +11,6 @@ using UnityEngine.UI;
 public class LoginWithGoogle : MonoBehaviour
 {
     public string GoogleAPI = "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com";
-    [SerializeField] private string databaseCheckUrl = "https://api.inkstall.in/api/auth/student/google-login";
-    
     private GoogleSignInConfiguration configuration;
 
     //Firebase.DependencyStatus dependencyStatus = Firebase.DependencyStatus.UnavailableOther;

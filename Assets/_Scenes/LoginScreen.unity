@@ -767,6 +767,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GoogleAPI: 187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com
+  databaseCheckUrl: https://api.inkstall.in/api/auth/student/google-login
   Username: {fileID: 0}
   UserEmail: {fileID: 0}
   UserProfilePic: {fileID: 0}

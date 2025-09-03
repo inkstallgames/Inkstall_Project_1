@@ -18,7 +18,7 @@ public class GoogleLoginManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private TMP_Text statusText;
-    [SerializeField] private string nextSceneName = "MainScene";
+    [SerializeField] private string nextSceneName = "Main";
 
     private FirebaseAuth auth;
     private FirebaseUser user;

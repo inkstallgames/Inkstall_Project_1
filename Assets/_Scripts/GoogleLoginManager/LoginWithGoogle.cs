@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Threading.Tasks;
+using Firebase;
 using Firebase.Auth;
 using Google;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Text;
+using System;
 
 public class GoogleLoginManager : MonoBehaviour
 {
@@ -23,14 +25,40 @@ public class GoogleLoginManager : MonoBehaviour
     private FirebaseAuth auth;
     private FirebaseUser user;
     private string idToken;
+    private bool firebaseInitialized = false;
 
     private void Start()
     {
-        auth = FirebaseAuth.DefaultInstance;
+        InitializeFirebase();
+    }
+
+    private void InitializeFirebase()
+    {
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+            var dependencyStatus = task.Result;
+            if (dependencyStatus == DependencyStatus.Available)
+            {
+                auth = FirebaseAuth.DefaultInstance;
+                firebaseInitialized = true;
+                Debug.Log("Firebase initialized successfully");
+            }
+            else
+            {
+                Debug.LogError($"Could not resolve all Firebase dependencies: {dependencyStatus}");
+                UpdateStatus("Failed to initialize Firebase services");
+            }
+        });
     }
 
     public void OnLoginButtonClicked()
     {
+        if (!firebaseInitialized)
+        {
+            UpdateStatus("Firebase not initialized. Please try again.");
+            InitializeFirebase();
+            return;
+        }
+
         UpdateStatus("Starting Google Sign-In...");
         GoogleSignIn.Configuration = new GoogleSignInConfiguration
         {
@@ -44,48 +72,55 @@ public class GoogleLoginManager : MonoBehaviour
             Task<GoogleSignInUser> signIn = GoogleSignIn.DefaultInstance.SignIn();
             signIn.ContinueWith(HandleGoogleSignIn);
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             UpdateStatus("Google Sign-In Error: " + ex.Message);
+            Debug.LogException(ex);
         }
     }
 
     private void HandleGoogleSignIn(Task<GoogleSignInUser> task)
-{
-    if (task.IsCanceled)
     {
-        UpdateStatus("Google Sign-In Cancelled");
-        return;
-    }
-    if (task.IsFaulted)
-    {
-        UpdateStatus("Google Sign-In Failed: " + task.Exception?.Flatten().Message);
-        return;
-    }
-
-    try
-    {
-        GoogleSignInUser googleUser = task.Result;
-        if (googleUser != null && !string.IsNullOrEmpty(googleUser.IdToken))
+        if (task.IsCanceled)
         {
-            idToken = googleUser.IdToken; // Store the ID token
-            UpdateStatus("Google Sign-In Success: " + googleUser.Email);
-
-            Credential credential = GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
-            auth.SignInWithCredentialAsync(credential).ContinueWith(HandleFirebaseSignIn);
+            UpdateStatus("Google Sign-In Cancelled");
+            return;
         }
-        else
+        if (task.IsFaulted)
         {
-            UpdateStatus("Google Sign-In Failed: Missing ID token");
-            Debug.LogError("Google Sign-In returned null user or empty ID token");
+            UpdateStatus("Google Sign-In Failed: " + task.Exception?.Flatten().Message);
+            return;
+        }
+
+        try
+        {
+            GoogleSignInUser googleUser = task.Result;
+            if (googleUser != null && !string.IsNullOrEmpty(googleUser.IdToken))
+            {
+                idToken = googleUser.IdToken;
+                UpdateStatus("Google Sign-In Success: " + googleUser.Email);
+
+                if (auth == null)
+                {
+                    UpdateStatus("Firebase Auth not initialized");
+                    return;
+                }
+
+                Credential credential = GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
+                auth.SignInWithCredentialAsync(credential).ContinueWith(HandleFirebaseSignIn);
+            }
+            else
+            {
+                UpdateStatus("Google Sign-In Failed: Missing ID token");
+                Debug.LogError("Google Sign-In returned null user or empty ID token");
+            }
+        }
+        catch (Exception ex)
+        {
+            UpdateStatus("Google Sign-In Error: " + ex.Message);
+            Debug.LogException(ex);
         }
     }
-    catch (System.Exception ex)
-    {
-        UpdateStatus("Google Sign-In Error: " + ex.Message);
-        Debug.LogException(ex);
-    }
-}
 
     private void HandleFirebaseSignIn(Task<FirebaseUser> task)
     {
@@ -101,20 +136,26 @@ public class GoogleLoginManager : MonoBehaviour
         }
 
         user = task.Result;
-        UpdateStatus("Firebase Auth Success: " + user.Email);
-        StartCoroutine(CheckUserInDatabase(user.Email, user.UserId));
+        if (user != null)
+        {
+            UpdateStatus("Firebase Auth Success: " + user.Email);
+            StartCoroutine(CheckUserInDatabase(user.Email, user.UserId));
+        }
+        else
+        {
+            UpdateStatus("Firebase Auth Failed: User is null");
+        }
     }
 
     private IEnumerator CheckUserInDatabase(string email, string googleId)
     {
         UpdateStatus("Checking user registration...");
 
-        // Create request body with the expected format
         var requestData = new GoogleLoginRequest
         {
             email = email,
             googleId = googleId,
-            idToken = idToken // Use the ID token from Google Sign-In
+            idToken = idToken
         };
 
         string jsonData = JsonUtility.ToJson(requestData);
@@ -125,15 +166,13 @@ public class GoogleLoginManager : MonoBehaviour
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
-            request.timeout = 10; // 10 seconds timeout
+            request.timeout = 10;
 
-            // Add debug logging
             Debug.Log($"Sending request to: {databaseCheckUrl}");
             Debug.Log($"Request data: {jsonData}");
 
             yield return request.SendWebRequest();
 
-            // Log the raw response
             string rawResponse = request.downloadHandler?.text ?? "null";
             Debug.Log($"Raw API Response: {rawResponse}");
 
@@ -143,12 +182,10 @@ public class GoogleLoginManager : MonoBehaviour
                 Debug.LogError($"Request failed: {request.error}");
                 Debug.LogError($"Response code: {request.responseCode}");
                 
-                // Try to parse error response even on HTTP error
                 try {
                     var errorResponse = JsonUtility.FromJson<ErrorResponse>(rawResponse);
                     if (errorResponse != null && !string.IsNullOrEmpty(errorResponse.error)) {
                         UpdateStatus($"Error: {errorResponse.error}");
-                        Debug.LogError($"Server error message: {errorResponse.error}");
                     }
                 } catch {}
                 
@@ -157,45 +194,22 @@ public class GoogleLoginManager : MonoBehaviour
 
             try
             {
-                // Try to parse as successful response
                 var response = JsonUtility.FromJson<DatabaseResponse>(rawResponse);
-                if (response != null)
+                if (response != null && response.registered)
                 {
-                    if (response.registered)
-                    {
-                        UpdateStatus("Login successful! Loading...");
-                        SceneManager.LoadScene(nextSceneName);
-                    }
-                    else
-                    {
-                        UpdateStatus("❌ Not a registered user");
-                    }
-                    yield break;
+                    UpdateStatus("Login successful! Loading...");
+                    SceneManager.LoadScene(nextSceneName);
+                }
+                else
+                {
+                    UpdateStatus("❌ Not a registered user");
                 }
             }
-            catch (System.Exception jsonEx)
+            catch (Exception ex)
             {
-                Debug.LogWarning($"Failed to parse response as DatabaseResponse: {jsonEx.Message}");
+                UpdateStatus("Error processing server response");
+                Debug.LogException(ex);
             }
-
-            try
-            {
-                // Try to parse as error response
-                var errorResponse = JsonUtility.FromJson<ErrorResponse>(rawResponse);
-                if (errorResponse != null && !string.IsNullOrEmpty(errorResponse.error))
-                {
-                    UpdateStatus($"Error: {errorResponse.error}");
-                    yield break;
-                }
-            }
-            catch (System.Exception jsonEx)
-            {
-                Debug.LogWarning($"Failed to parse response as ErrorResponse: {jsonEx.Message}");
-            }
-
-            // If we get here, the response format is unexpected
-            UpdateStatus("Unexpected server response");
-            Debug.LogWarning($"Unexpected response format: {rawResponse}");
         }
     }
 
@@ -213,7 +227,7 @@ public class GoogleLoginManager : MonoBehaviour
     {
         public string email;
         public string googleId;
-        public string idToken; // Changed from client_id to idToken
+        public string idToken;
     }
 
     [System.Serializable]
@@ -226,6 +240,6 @@ public class GoogleLoginManager : MonoBehaviour
     private class ErrorResponse
     {
         public string error;
-        public string message; // Added to capture more error details
+        public string message;
     }
 }

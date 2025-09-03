@@ -19,10 +19,6 @@ public class LoginWithGoogle : MonoBehaviour
 
     public Text Username, UserEmail;
 
-    //public GameObject LoginScreen, ProfileScreen;
-    public Image UserProfilePic;
-    private string imageUrl;
-
     private void Awake()
     {
         configuration = new GoogleSignInConfiguration
@@ -88,27 +84,10 @@ public class LoginWithGoogle : MonoBehaviour
                         user = auth.CurrentUser;
                         Username.text = user.DisplayName;
                         UserEmail.text = user.Email;
-
-                        StartCoroutine(LoadImage(CheckImageUrl(user.PhotoUrl.ToString())));
                     }
                 });
             }
         });
     }
-    private string CheckImageUrl(string url)
-    {
-        if (!string.IsNullOrEmpty(url))
-        {
-            return url;
-        }
-        return imageUrl;
-    }
 
-    IEnumerator LoadImage(string imageUri)
-    {
-        WWW www = new WWW(imageUri);
-        yield return www;
-
-        UserProfilePic.sprite = Sprite.Create(www.texture, new Rect(0, 0, www.texture.width, www.texture.height), new Vector2(0, 0));
-    }
 }

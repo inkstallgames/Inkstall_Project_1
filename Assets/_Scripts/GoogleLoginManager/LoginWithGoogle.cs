@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Firebase.Auth;
 using Firebase.Extensions;
 using Google;
 using System.Threading.Tasks;
 using UnityEngine;
 using TMPro;
-using Firebase.Auth;
-using UnityEngine.UI;
 
 public class LoginWithGoogle : MonoBehaviour
 {
@@ -17,8 +16,6 @@ public class LoginWithGoogle : MonoBehaviour
     //Firebase.DependencyStatus dependencyStatus = Firebase.DependencyStatus.UnavailableOther;
     Firebase.Auth.FirebaseAuth auth;
     Firebase.Auth.FirebaseUser user;
-
-    public Text Username, UserEmail;
 
     private void Awake()
     {
@@ -83,8 +80,6 @@ public class LoginWithGoogle : MonoBehaviour
                         signInCompleted.SetResult(((Task<FirebaseUser>)authTask).Result);
                         Debug.Log("Success");
                         user = auth.CurrentUser;
-                        Username.text = user.DisplayName;
-                        UserEmail.text = user.Email;
                     }
                 });
             }

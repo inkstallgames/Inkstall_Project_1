@@ -18,7 +18,7 @@ public class GoogleLoginManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private TMP_Text statusText;
-    [SerializeField] private string nextSceneName = "MainScene";
+    [SerializeField] private string nextSceneName = "Main";
 
     private FirebaseAuth auth;
     private FirebaseUser user;
@@ -84,34 +84,22 @@ public class GoogleLoginManager : MonoBehaviour
 
         user = task.Result;
         UpdateStatus("Firebase Auth Success: " + user.Email);
-        StartCoroutine(CheckUserInDatabase(user.Email, user.UserId));
+        StartCoroutine(CheckUserInDatabase(user.Email));
     }
 
-    private IEnumerator CheckUserInDatabase(string email, string googleId)
+    private IEnumerator CheckUserInDatabase(string email)
     {
         UpdateStatus("Checking user registration...");
 
-        // Create request body
-        var requestData = new GoogleLoginRequest
-        {
-            email = email,
-            googleId = googleId
-        };
+        // Build the URL with query parameters
+        string url = $"{databaseCheckUrl}?email={UnityWebRequest.EscapeURL(email)}";
+        
+        Debug.Log($"Sending GET request to: {url}");
 
-        string jsonData = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
-
-        using (UnityWebRequest request = new UnityWebRequest(databaseCheckUrl, "POST"))
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
             request.timeout = 10; // 10 seconds timeout
-
-            // Add debug logging
-            Debug.Log($"Sending request to: {databaseCheckUrl}");
-            Debug.Log($"Request data: {jsonData}");
-
+            
             yield return request.SendWebRequest();
 
             // Log the raw response
@@ -121,6 +109,8 @@ public class GoogleLoginManager : MonoBehaviour
             if (request.result != UnityWebRequest.Result.Success)
             {
                 UpdateStatus($"Server Error: {request.error}");
+                Debug.LogError($"Request failed: {request.error}");
+                Debug.LogError($"Response code: {request.responseCode}");
                 yield break;
             }
 
@@ -175,13 +165,6 @@ public class GoogleLoginManager : MonoBehaviour
         {
             statusText.text = message;
         }
-    }
-
-    [System.Serializable]
-    private class GoogleLoginRequest
-    {
-        public string email;
-        public string googleId;
     }
 
     [System.Serializable]

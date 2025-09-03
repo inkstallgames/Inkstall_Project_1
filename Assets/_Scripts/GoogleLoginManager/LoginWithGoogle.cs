@@ -22,6 +22,7 @@ public class GoogleLoginManager : MonoBehaviour
 
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private string idToken;
 
     private void Start()
     {
@@ -63,6 +64,7 @@ public class GoogleLoginManager : MonoBehaviour
         }
 
         GoogleSignInUser googleUser = task.Result;
+        idToken = googleUser.IdToken; // Store the ID token
         UpdateStatus("Google Sign-In Success: " + googleUser.Email);
 
         Credential credential = GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
@@ -91,11 +93,12 @@ public class GoogleLoginManager : MonoBehaviour
     {
         UpdateStatus("Checking user registration...");
 
-        // Create request body
+        // Create request body with the expected format
         var requestData = new GoogleLoginRequest
         {
             email = email,
-            googleId = googleId
+            googleId = googleId,
+            idToken = idToken // Use the ID token from Google Sign-In
         };
 
         string jsonData = JsonUtility.ToJson(requestData);
@@ -121,6 +124,18 @@ public class GoogleLoginManager : MonoBehaviour
             if (request.result != UnityWebRequest.Result.Success)
             {
                 UpdateStatus($"Server Error: {request.error}");
+                Debug.LogError($"Request failed: {request.error}");
+                Debug.LogError($"Response code: {request.responseCode}");
+                
+                // Try to parse error response even on HTTP error
+                try {
+                    var errorResponse = JsonUtility.FromJson<ErrorResponse>(rawResponse);
+                    if (errorResponse != null && !string.IsNullOrEmpty(errorResponse.error)) {
+                        UpdateStatus($"Error: {errorResponse.error}");
+                        Debug.LogError($"Server error message: {errorResponse.error}");
+                    }
+                } catch {}
+                
                 yield break;
             }
 
@@ -182,6 +197,7 @@ public class GoogleLoginManager : MonoBehaviour
     {
         public string email;
         public string googleId;
+        public string idToken; // Changed from client_id to idToken
     }
 
     [System.Serializable]
@@ -194,5 +210,6 @@ public class GoogleLoginManager : MonoBehaviour
     private class ErrorResponse
     {
         public string error;
+        public string message; // Added to capture more error details
     }
 }

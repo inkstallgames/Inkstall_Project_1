@@ -418,7 +418,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1071335562}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GoogleLoginManager, Assembly-CSharp
         m_MethodName: OnLoginButtonClicked
         m_Mode: 1
@@ -846,7 +846,7 @@ MonoBehaviour:
   webClientId: 187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com
   databaseCheckUrl: https://api.inkstall.in/api/auth/student/google-login
   statusText: {fileID: 1975876567}
-  nextSceneName: Main
+  nextSceneName: MainScene
 --- !u!1 &1142506433
 GameObject:
   m_ObjectHideFlags: 0

@@ -151,19 +151,16 @@ public class GoogleLoginManager : MonoBehaviour
     }
 
     private IEnumerator CheckUserInDatabase(string email, string googleId)
+{
+    UpdateStatus("Checking user registration...");
+
+    var requestData = new GoogleLoginRequest
     {
-        UpdateStatus("Checking user registration...");
+        token = idToken  // This is the only field your backend expects
+    };
 
-        var requestData = new GoogleLoginRequest
-        {
-            email = email,
-            googleId = googleId,
-            idToken = idToken,
-            client_id = webClientId
-        };
-
-        string jsonData = JsonUtility.ToJson(requestData);
-        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+    string jsonData = JsonUtility.ToJson(requestData);
+    byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
 
         using (UnityWebRequest request = new UnityWebRequest(databaseCheckUrl, "POST"))
         {

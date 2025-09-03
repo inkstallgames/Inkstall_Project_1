@@ -419,8 +419,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1071335562}
-        m_TargetAssemblyTypeName: LoginWithGoogle, Assembly-CSharp
-        m_MethodName: Login
+        m_TargetAssemblyTypeName: GoogleLoginManager, Assembly-CSharp
+        m_MethodName: OnLoginButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -843,11 +843,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2456b506f8598a41a529b4b0d52b23b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GoogleAPI: 187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com
+  webClientId: 187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com
   databaseCheckUrl: https://api.inkstall.in/api/auth/student/google-login
   statusText: {fileID: 1975876567}
-  nextSceneName: MainScene
-  notRegisteredPanel: {fileID: 0}
+  nextSceneName: Main
 --- !u!1 &1142506433
 GameObject:
   m_ObjectHideFlags: 0
@@ -1110,7 +1109,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1975876566
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1150,7 +1149,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Not Registered User!!
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2e829049ae7c4f45b0011f28184394c, type: 2}
   m_sharedMaterial: {fileID: 1299900020183333244, guid: e2e829049ae7c4f45b0011f28184394c,

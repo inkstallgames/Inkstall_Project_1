@@ -1,187 +1,198 @@
 using System.Collections;
-using System.Collections.Generic;
-using Firebase.Auth;
-using Firebase.Extensions;
-using Google;
 using System.Threading.Tasks;
+using Firebase.Auth;
+using Google;
 using UnityEngine;
-using TMPro;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using TMPro;
+using System.Text;
 
-public class LoginWithGoogle : MonoBehaviour
+public class GoogleLoginManager : MonoBehaviour
 {
-    public string GoogleAPI = "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com";
+    [Header("Google / Firebase")]
+    [SerializeField] private string webClientId = "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com";
+
+    [Header("Backend")]
     [SerializeField] private string databaseCheckUrl = "https://api.inkstall.in/api/auth/student/google-login";
+
+    [Header("UI")]
     [SerializeField] private TMP_Text statusText;
-    [SerializeField] private string nextSceneName = "Main"; // Name of the scene to load if user is registered
-    [SerializeField] private GameObject notRegisteredPanel; // Panel to show if user is not registered
-    
-    private GoogleSignInConfiguration configuration;
+    [SerializeField] private string nextSceneName = "MainScene";
 
-    //Firebase.DependencyStatus dependencyStatus = Firebase.DependencyStatus.UnavailableOther;
-    Firebase.Auth.FirebaseAuth auth;
-    Firebase.Auth.FirebaseUser user;
-
-    private void Awake()
-    {
-        configuration = new GoogleSignInConfiguration
-        {
-            WebClientId = GoogleAPI,
-            RequestIdToken = true,
-        };
-        
-        // // Hide the not registered panel at start
-        // if (notRegisteredPanel != null)
-        //     notRegisteredPanel.SetActive(false);
-    }
+    private FirebaseAuth auth;
+    private FirebaseUser user;
 
     private void Start()
     {
-        InitFirebase();
+        auth = FirebaseAuth.DefaultInstance;
     }
 
-    void InitFirebase()
+    public void OnLoginButtonClicked()
     {
-        auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
-    }
-
-    public void Login()
-    {
+        UpdateStatus("Starting Google Sign-In...");
         GoogleSignIn.Configuration = new GoogleSignInConfiguration
         {
+            WebClientId = webClientId,
             RequestIdToken = true,
-            // Copy this value from the google-service.json file.
-            // oauth_client with type == 3
-            WebClientId = GoogleAPI
+            RequestEmail = true
         };
-        GoogleSignIn.Configuration.RequestEmail = true;
 
-        Task<GoogleSignInUser> signIn = GoogleSignIn.DefaultInstance.SignIn();
+        try
+        {
+            Task<GoogleSignInUser> signIn = GoogleSignIn.DefaultInstance.SignIn();
+            signIn.ContinueWith(HandleGoogleSignIn);
+        }
+        catch (System.Exception ex)
+        {
+            UpdateStatus("Google Sign-In Error: " + ex.Message);
+        }
+    }
 
-        TaskCompletionSource<FirebaseUser> signInCompleted = new TaskCompletionSource<FirebaseUser>();
-        signIn.ContinueWith(task => {
-            if (task.IsCanceled)
+    private void HandleGoogleSignIn(Task<GoogleSignInUser> task)
+    {
+        if (task.IsCanceled)
+        {
+            UpdateStatus("Google Sign-In Cancelled");
+            return;
+        }
+        if (task.IsFaulted)
+        {
+            UpdateStatus("Google Sign-In Failed: " + task.Exception?.Flatten().Message);
+            return;
+        }
+
+        GoogleSignInUser googleUser = task.Result;
+        UpdateStatus("Google Sign-In Success: " + googleUser.Email);
+
+        Credential credential = GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
+        auth.SignInWithCredentialAsync(credential).ContinueWith(HandleFirebaseSignIn);
+    }
+
+    private void HandleFirebaseSignIn(Task<FirebaseUser> task)
+    {
+        if (task.IsCanceled)
+        {
+            UpdateStatus("Firebase Auth Cancelled");
+            return;
+        }
+        if (task.IsFaulted)
+        {
+            UpdateStatus("Firebase Auth Failed: " + task.Exception?.Flatten().Message);
+            return;
+        }
+
+        user = task.Result;
+        UpdateStatus("Firebase Auth Success: " + user.Email);
+        StartCoroutine(CheckUserInDatabase(user.Email, user.UserId));
+    }
+
+    private IEnumerator CheckUserInDatabase(string email, string googleId)
+    {
+        UpdateStatus("Checking user registration...");
+
+        // Create request body
+        var requestData = new GoogleLoginRequest
+        {
+            email = email,
+            googleId = googleId
+        };
+
+        string jsonData = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+
+        using (UnityWebRequest request = new UnityWebRequest(databaseCheckUrl, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.timeout = 10; // 10 seconds timeout
+
+            // Add debug logging
+            Debug.Log($"Sending request to: {databaseCheckUrl}");
+            Debug.Log($"Request data: {jsonData}");
+
+            yield return request.SendWebRequest();
+
+            // Log the raw response
+            string rawResponse = request.downloadHandler?.text ?? "null";
+            Debug.Log($"Raw API Response: {rawResponse}");
+
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                signInCompleted.SetCanceled();
-                Debug.Log("Cancelled");
+                UpdateStatus($"Server Error: {request.error}");
+                yield break;
             }
-            else if (task.IsFaulted)
+
+            try
             {
-                signInCompleted.SetException(task.Exception);
-                Debug.Log("Faulted " + task.Exception);
-            }
-            else
-            {
-                Credential credential = Firebase.Auth.GoogleAuthProvider.GetCredential(((Task<GoogleSignInUser>)task).Result.IdToken, null);
-                auth.SignInWithCredentialAsync(credential).ContinueWith(authTask => {
-                    if (authTask.IsCanceled)
+                // Try to parse as successful response
+                var response = JsonUtility.FromJson<DatabaseResponse>(rawResponse);
+                if (response != null)
+                {
+                    if (response.registered)
                     {
-                        signInCompleted.SetCanceled();
-                    }
-                    else if (authTask.IsFaulted)
-                    {
-                        signInCompleted.SetException(authTask.Exception);
-                        Debug.Log("Faulted In Auth " + task.Exception);
+                        UpdateStatus("Login successful! Loading...");
+                        SceneManager.LoadScene(nextSceneName);
                     }
                     else
                     {
-                        signInCompleted.SetResult(((Task<FirebaseUser>)authTask).Result);
-                        Debug.Log("Success");
-                        user = auth.CurrentUser;
-                        
-                        // Check if user exists in database
-                        CheckUserInDatabase(user);
+                        UpdateStatus("❌ Not a registered user");
                     }
-                });
-            }
-        });
-    }
-    
-    // Method to check if the user exists in the database
-    private void CheckUserInDatabase(FirebaseUser firebaseUser)
-    {
-        if (firebaseUser == null)
-        {
-            if (statusText != null)
-                statusText.text = "Authentication failed";
-            return;
-        }
-        
-        StartCoroutine(CheckUserCoroutine(firebaseUser));
-    }
-    
-    private IEnumerator CheckUserCoroutine(FirebaseUser firebaseUser)
-    {
-        // Create the form data for the request
-        WWWForm form = new WWWForm();
-        form.AddField("googleId", firebaseUser.UserId);
-        form.AddField("email", firebaseUser.Email);
-        form.AddField("displayName", firebaseUser.DisplayName);
-        
-        // Create and send the request
-        using (UnityWebRequest www = UnityWebRequest.Post(databaseCheckUrl, form))
-        {
-            if (statusText != null)
-                statusText.text = "Checking registration...";
-            
-            yield return www.SendWebRequest();
-            
-            if (www.result == UnityWebRequest.Result.ConnectionError || 
-                www.result == UnityWebRequest.Result.ProtocolError)
-            {
-                Debug.LogError("Database check error: " + www.error);
-                if (statusText != null)
-                    statusText.text = "Connection error. Please try again.";
-            }
-            else
-            {
-                // Parse the response
-                string responseText = www.downloadHandler.text;
-                Debug.Log("Response: " + responseText);
-                
-                // Check if user exists in database
-                // Assuming the API returns a JSON with a "exists" field
-                bool userExists = responseText.Contains("\"exists\":true");
-                
-                if (userExists)
-                {
-                    // User exists, load the next scene
-                    if (statusText != null)
-                        statusText.text = "Login successful!";
-                    LoadNextScene();
-                }
-                else
-                {
-                    // User doesn't exist, show not registered message
-                    ShowNotRegisteredMessage();
+                    yield break;
                 }
             }
+            catch (System.Exception jsonEx)
+            {
+                Debug.LogWarning($"Failed to parse response as DatabaseResponse: {jsonEx.Message}");
+            }
+
+            try
+            {
+                // Try to parse as error response
+                var errorResponse = JsonUtility.FromJson<ErrorResponse>(rawResponse);
+                if (errorResponse != null && !string.IsNullOrEmpty(errorResponse.error))
+                {
+                    UpdateStatus($"Error: {errorResponse.error}");
+                    yield break;
+                }
+            }
+            catch (System.Exception jsonEx)
+            {
+                Debug.LogWarning($"Failed to parse response as ErrorResponse: {jsonEx.Message}");
+            }
+
+            // If we get here, the response format is unexpected
+            UpdateStatus("Unexpected server response");
+            Debug.LogWarning($"Unexpected response format: {rawResponse}");
         }
     }
-    
-    private void LoadNextScene()
+
+    private void UpdateStatus(string message)
     {
-        if (!string.IsNullOrEmpty(nextSceneName))
-        {
-            SceneManager.LoadScene(nextSceneName);
-        }
-        else
-        {
-            Debug.LogError("Next scene name is not set!");
-        }
-    }
-    
-    private void ShowNotRegisteredMessage()
-    {
-        // if (notRegisteredPanel != null)
-        // {
-        //     notRegisteredPanel.SetActive(true);
-        // }
-        // else
+        Debug.Log($"[GoogleLogin] {message}");
         if (statusText != null)
         {
-            statusText.text = "Not Registered User";
+            statusText.text = message;
         }
+    }
+
+    [System.Serializable]
+    private class GoogleLoginRequest
+    {
+        public string email;
+        public string googleId;
+    }
+
+    [System.Serializable]
+    private class DatabaseResponse
+    {
+        public bool registered;
+    }
+
+    [System.Serializable]
+    private class ErrorResponse
+    {
+        public string error;
     }
 }

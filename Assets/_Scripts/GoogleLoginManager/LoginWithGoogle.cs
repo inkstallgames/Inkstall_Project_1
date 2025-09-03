@@ -13,13 +13,15 @@ using System;
 public class GoogleLoginManager : MonoBehaviour
 {
     [Header("Google / Firebase")]
-    [SerializeField] private string webClientId = "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com";
+    [SerializeField] private string webClientId =
+        "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com"; // use Web client ID from Google Cloud
 
     [Header("Backend")]
-    [SerializeField] private string databaseCheckUrl = "https://api.inkstall.in/api/auth/student/google-login";
+    [SerializeField] private string databaseCheckUrl =
+        "https://api.inkstall.in/api/auth/student/google-login";
 
     [Header("UI")]
-    [SerializeField] private TMP_Text statusText;
+    [SerializeField] private TMP_Text statusText; 
     [SerializeField] private string nextSceneName = "MainScene";
 
     private FirebaseAuth auth;
@@ -34,7 +36,8 @@ public class GoogleLoginManager : MonoBehaviour
 
     private void InitializeFirebase()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+        {
             var dependencyStatus = task.Result;
             if (dependencyStatus == DependencyStatus.Available)
             {
@@ -155,7 +158,8 @@ public class GoogleLoginManager : MonoBehaviour
         {
             email = email,
             googleId = googleId,
-            idToken = idToken
+            idToken = idToken,
+            client_id = webClientId
         };
 
         string jsonData = JsonUtility.ToJson(requestData);
@@ -181,14 +185,17 @@ public class GoogleLoginManager : MonoBehaviour
                 UpdateStatus($"Server Error: {request.error}");
                 Debug.LogError($"Request failed: {request.error}");
                 Debug.LogError($"Response code: {request.responseCode}");
-                
-                try {
+
+                try
+                {
                     var errorResponse = JsonUtility.FromJson<ErrorResponse>(rawResponse);
-                    if (errorResponse != null && !string.IsNullOrEmpty(errorResponse.error)) {
+                    if (errorResponse != null && !string.IsNullOrEmpty(errorResponse.error))
+                    {
                         UpdateStatus($"Error: {errorResponse.error}");
                     }
-                } catch {}
-                
+                }
+                catch { }
+
                 yield break;
             }
 
@@ -228,6 +235,7 @@ public class GoogleLoginManager : MonoBehaviour
         public string email;
         public string googleId;
         public string idToken;
+        public string client_id;
     }
 
     [System.Serializable]

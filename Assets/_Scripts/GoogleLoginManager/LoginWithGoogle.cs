@@ -51,25 +51,41 @@ public class GoogleLoginManager : MonoBehaviour
     }
 
     private void HandleGoogleSignIn(Task<GoogleSignInUser> task)
+{
+    if (task.IsCanceled)
     {
-        if (task.IsCanceled)
-        {
-            UpdateStatus("Google Sign-In Cancelled");
-            return;
-        }
-        if (task.IsFaulted)
-        {
-            UpdateStatus("Google Sign-In Failed: " + task.Exception?.Flatten().Message);
-            return;
-        }
-
-        GoogleSignInUser googleUser = task.Result;
-        idToken = googleUser.IdToken; // Store the ID token
-        UpdateStatus("Google Sign-In Success: " + googleUser.Email);
-
-        Credential credential = GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
-        auth.SignInWithCredentialAsync(credential).ContinueWith(HandleFirebaseSignIn);
+        UpdateStatus("Google Sign-In Cancelled");
+        return;
     }
+    if (task.IsFaulted)
+    {
+        UpdateStatus("Google Sign-In Failed: " + task.Exception?.Flatten().Message);
+        return;
+    }
+
+    try
+    {
+        GoogleSignInUser googleUser = task.Result;
+        if (googleUser != null && !string.IsNullOrEmpty(googleUser.IdToken))
+        {
+            idToken = googleUser.IdToken; // Store the ID token
+            UpdateStatus("Google Sign-In Success: " + googleUser.Email);
+
+            Credential credential = GoogleAuthProvider.GetCredential(googleUser.IdToken, null);
+            auth.SignInWithCredentialAsync(credential).ContinueWith(HandleFirebaseSignIn);
+        }
+        else
+        {
+            UpdateStatus("Google Sign-In Failed: Missing ID token");
+            Debug.LogError("Google Sign-In returned null user or empty ID token");
+        }
+    }
+    catch (System.Exception ex)
+    {
+        UpdateStatus("Google Sign-In Error: " + ex.Message);
+        Debug.LogException(ex);
+    }
+}
 
     private void HandleFirebaseSignIn(Task<FirebaseUser> task)
     {

@@ -207,6 +207,21 @@ public class GoogleLoginManager : MonoBehaviour
                 var response = JsonUtility.FromJson<DatabaseResponse>(rawResponse);
                 if (response != null && response.registered)
                 {
+                    // 1. Store login data
+                    GameDataManager.Instance.SaveLoginData(
+                        response.studentId,
+                        email,
+                        googleId
+                    );
+
+                    // 2. Initialize ID in KeyManager and CoinsManager
+                    if (KeyManager.Instance != null)
+                        KeyManager.Instance.studentId = response.studentId;
+
+                    if (CoinsManager.Instance != null)
+                        CoinsManager.Instance.userId = response.studentId;
+
+                    // 3. Update Status & Load next scene
                     UpdateStatus("Login successful! Loading...");
                     SceneManager.LoadScene(nextSceneName);
                 }
@@ -220,27 +235,6 @@ public class GoogleLoginManager : MonoBehaviour
                 UpdateStatus("Error processing server response");
                 Debug.LogException(ex);
             }
-        }
-
-        if (response != null && response.registered)
-        {
-            // 1. Store login data
-            GameDataManager.Instance.SaveLoginData(
-            response.studentId,
-            email,
-            googleId
-        );
-
-            // 2. Initialize ID in KeyManager and CoinsManager
-            if (KeyManager.Instance != null)
-                KeyManager.Instance.studentId = response.studentId;
-
-            if (CoinsManager.Instance != null)
-                CoinsManager.Instance.userId = response.studentId;
-
-            // 3. Update Status & Load next scene
-            UpdateStatus("Loading successfull! Loading Game...");
-            SceneManager.LoadScene("MainScene");
         }
     }
 

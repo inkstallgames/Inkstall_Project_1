@@ -3,11 +3,11 @@ using UnityEngine;
 public class GameDataManager : MonoBehaviour
 {
     public static GameDataManager Instance { get; private set; }
-    
+
     // Keys for PlayerPrefs
     private const string STUDENT_ID_KEY = "StudentID";
     private const string IS_LOGGED_IN_KEY = "IsLoggedIn";
-    
+
     public string StudentId { get; private set; }
     public bool IsLoggedIn { get; private set; }
 
@@ -25,13 +25,16 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
-    public void SaveLoginData(string studentId)
+    public void SaveLoginData(string studentId, string email = "", string googleId = "")
     {
         StudentId = studentId;
         IsLoggedIn = true;
-        
+
+        // Save to PlayerPrefs
         PlayerPrefs.SetString(STUDENT_ID_KEY, studentId);
-        PlayerPrefs.SetInt(IS_LOGGED_IN_KEY, 1); // 1 for true
+        PlayerPrefs.SetString("UserEmail", email);
+        PlayerPrefs.SetString("GoogleId", googleId);
+        PlayerPrefs.SetInt(IS_LOGGED_IN_KEY, 1);
         PlayerPrefs.Save();
     }
 
@@ -39,7 +42,7 @@ public class GameDataManager : MonoBehaviour
     {
         StudentId = "";
         IsLoggedIn = false;
-        
+
         PlayerPrefs.DeleteKey(STUDENT_ID_KEY);
         PlayerPrefs.DeleteKey(IS_LOGGED_IN_KEY);
         PlayerPrefs.Save();

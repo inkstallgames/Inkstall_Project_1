@@ -13,11 +13,11 @@ using System;
 public class GoogleLoginManager : MonoBehaviour
 {
     [Header("Google / Firebase")]
-    [SerializeField] private string webClientId =
+    private string webClientId =
         "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com"; // use Web client ID from Google Cloud
 
     [Header("Backend")]
-    [SerializeField] private string databaseCheckUrl =
+    private string databaseCheckUrl =
         "https://api.inkstall.in/api/auth/student/google-login";
 
     [Header("UI")]

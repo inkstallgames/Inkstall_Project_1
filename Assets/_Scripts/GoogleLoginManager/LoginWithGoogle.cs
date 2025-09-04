@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Firebase;
 using Firebase.Auth;
@@ -218,6 +219,22 @@ public class GoogleLoginManager : MonoBehaviour
                 Debug.LogException(ex);
             }
         }
+
+        if (response != null && response.registered)
+    {
+        // Save login data
+        GameDataManager.Instance.SaveLoginData(response.studentId);
+        
+        // Initialize KeyManager and CoinsManager
+        if (KeyManager.Instance != null)
+            KeyManager.Instance.studentId = response.studentId;
+            
+        if (CoinsManager.Instance != null)
+            CoinsManager.Instance.userId = response.studentId;
+        
+        // Load next scene
+        SceneManager.LoadScene("MainScene");
+    }
     }
 
     private void UpdateStatus(string message)
@@ -242,6 +259,8 @@ public class GoogleLoginManager : MonoBehaviour
     private class DatabaseResponse
     {
         public bool registered;
+        public string studentId;  // Ensure this matches your API response
+        public string name;
     }
 
     [System.Serializable]

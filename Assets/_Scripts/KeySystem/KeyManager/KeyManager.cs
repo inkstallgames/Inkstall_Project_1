@@ -79,7 +79,17 @@ public class KeyManager : MonoBehaviour
             keyText.text = totalKeys.ToString();
         }
         
-        FetchKeysFromDB();
+        // If studentId is not set, try to get it from GameDataManager
+    if (string.IsNullOrEmpty(studentId) && GameDataManager.Instance != null)
+    {
+        studentId = GameDataManager.Instance.StudentId;
+    }
+    
+    // Now fetch the data
+    if (!string.IsNullOrEmpty(studentId))
+    {
+        FetchKeysFromDB();  // Or FetchCoins() for CoinsManager
+    }
         
         // Schedule periodic refresh of keys (every 30 seconds)
         InvokeRepeating("FetchKeysFromDB", 30f, 30f);

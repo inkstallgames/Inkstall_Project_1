@@ -32,6 +32,21 @@ public class CoinsManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        // If studentId is not set, try to get it from GameDataManager
+        if (string.IsNullOrEmpty(userId) && GameDataManager.Instance != null)
+        {
+            userId = GameDataManager.Instance.StudentId;
+        }
+        
+        // Now fetch the data
+        if (!string.IsNullOrEmpty(userId))
+        {
+            FetchCoins();
+        }
+    }
+
     public void FetchCoins()
     {
         Debug.Log("[CoinsManager] FetchCoins called");

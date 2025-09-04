@@ -100,10 +100,17 @@ public class KeyManager : MonoBehaviour
     private void GetStudentId()
     {
         // First try GameDataManager
-        if (string.IsNullOrEmpty(studentId) && GameDataManager.Instance != null)
+        try
         {
-            studentId = GameDataManager.Instance.StudentId;
-            Debug.Log($"[KeyManager] Got student ID from GameDataManager: {studentId}");
+            if (string.IsNullOrEmpty(studentId) && GameDataManager.Instance != null)
+            {
+                studentId = GameDataManager.Instance.StudentId;
+                Debug.Log($"[KeyManager] Got student ID from GameDataManager: {studentId}");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[KeyManager] Error accessing GameDataManager: {e.Message}");
         }
         
         // If still empty, try PlayerPrefs directly

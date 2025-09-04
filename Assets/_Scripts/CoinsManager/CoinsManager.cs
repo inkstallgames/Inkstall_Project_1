@@ -34,16 +34,44 @@ public class CoinsManager : MonoBehaviour
 
     private void Start()
     {
-        // If studentId is not set, try to get it from GameDataManager
-        if (string.IsNullOrEmpty(userId) && GameDataManager.Instance != null)
-        {
-            userId = GameDataManager.Instance.StudentId;
-        }
+        // Get the user ID from GameDataManager or PlayerPrefs
+        GetUserId();
 
         // Now fetch the data
         if (!string.IsNullOrEmpty(userId))
         {
             FetchCoins();
+        }
+        else
+        {
+            Debug.LogWarning("[CoinsManager] No user ID available. Coins cannot be fetched.");
+        }
+    }
+
+    // Get user ID from GameDataManager or directly from PlayerPrefs
+    private void GetUserId()
+    {
+        // First try GameDataManager
+        if (string.IsNullOrEmpty(userId) && GameDataManager.Instance != null)
+        {
+            userId = GameDataManager.Instance.StudentId;
+            Debug.Log($"[CoinsManager] Got user ID from GameDataManager: {userId}");
+        }
+        
+        // If still empty, try PlayerPrefs directly
+        if (string.IsNullOrEmpty(userId))
+        {
+            userId = PlayerPrefs.GetString("StudentID", "");
+            if (!string.IsNullOrEmpty(userId))
+            {
+                Debug.Log($"[CoinsManager] Got user ID from PlayerPrefs: {userId}");
+            }
+        }
+        
+        // Log if we still don't have a user ID
+        if (string.IsNullOrEmpty(userId))
+        {
+            Debug.LogWarning("[CoinsManager] No user ID found in GameDataManager or PlayerPrefs");
         }
     }
 

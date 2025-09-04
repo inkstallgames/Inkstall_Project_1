@@ -204,30 +204,68 @@ public class GoogleLoginManager : MonoBehaviour
 
             try
             {
+                // Try parsing as the expected response format
                 var response = JsonUtility.FromJson<DatabaseResponse>(rawResponse);
                 if (response != null && response.registered)
                 {
-                    // 1. Store login data
+                    // Save login data to GameDataManager
                     GameDataManager.Instance.SaveLoginData(
                         response.studentId,
                         email,
                         googleId
                     );
 
-                    // 2. Initialize ID in KeyManager and CoinsManager
-                    if (KeyManager.Instance != null)
-                        KeyManager.Instance.studentId = response.studentId;
-
-                    if (CoinsManager.Instance != null)
-                        CoinsManager.Instance.userId = response.studentId;
-
-                    // 3. Update Status & Load next scene
+                    // Log success
+                    Debug.Log($"Login successful. Student ID: {response.studentId}");
+                    
+                    // Update Status & Load next scene
                     UpdateStatus("Login successful! Loading...");
                     SceneManager.LoadScene(nextSceneName);
                 }
-                else
+                else if (response != null)
                 {
                     UpdateStatus("❌ Not a registered user");
+                    Debug.LogWarning("User not registered in database");
+                }
+                else
+                {
+                    // Try parsing as alternative response format (mobile endpoint)
+                    try {
+                        var mobileResponse = JsonUtility.FromJson<MobileLoginResponse>(rawResponse);
+                        if (mobileResponse != null && mobileResponse.success)
+                        {
+                            string studentId = mobileResponse.data.studentId;
+                            
+                            // Save login data
+                            GameDataManager.Instance.SaveLoginData(
+                                studentId,
+                                email,
+                                googleId
+                            );
+                            
+                            // Save JWT token if provided
+                            if (!string.IsNullOrEmpty(mobileResponse.token)) {
+                                PlayerPrefs.SetString("AuthToken", mobileResponse.token);
+                                PlayerPrefs.Save();
+                            }
+                            
+                            // Log success
+                            Debug.Log($"Login successful via mobile endpoint. Student ID: {studentId}");
+                            
+                            // Update Status & Load next scene
+                            UpdateStatus("Login successful! Loading...");
+                            SceneManager.LoadScene(nextSceneName);
+                        }
+                        else
+                        {
+                            UpdateStatus("❌ Authentication failed");
+                            Debug.LogError("Mobile authentication failed: " + (mobileResponse?.message ?? "Unknown error"));
+                        }
+                    }
+                    catch (Exception ex) {
+                        UpdateStatus("Error processing server response");
+                        Debug.LogException(ex);
+                    }
                 }
             }
             catch (Exception ex)
@@ -260,7 +298,7 @@ public class GoogleLoginManager : MonoBehaviour
     private class DatabaseResponse
     {
         public bool registered;
-        public string studentId;  // Ensure this matches your API response
+        public string studentId;
         public string name;
     }
 
@@ -269,5 +307,27 @@ public class GoogleLoginManager : MonoBehaviour
     {
         public string error;
         public string message;
+    }
+
+    // New response class for mobile endpoint
+    [System.Serializable]
+    private class MobileLoginResponse
+    {
+        public bool success;
+        public string message;
+        public UserData data;
+        public string token;
+    }
+
+    [System.Serializable]
+    private class UserData
+    {
+        public string _id;
+        public string email;
+        public string fullName;
+        public string profilePhotoUrl;
+        public string[] roles;
+        public string studentId;
+        public bool isStudent;
     }
 }

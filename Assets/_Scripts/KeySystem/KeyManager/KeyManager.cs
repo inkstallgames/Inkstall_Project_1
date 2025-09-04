@@ -39,7 +39,7 @@ public class KeyManager : MonoBehaviour
     [SerializeField] private string useKeysUrl = "https://api.inkstall.in/api/slot/use-keys/";
 
     // Hardcoded user ID for testing purposes
-    public string studentId = "681ee0e6198ad04bf6c1c733";
+    public string studentId = "";
 
     // Store the full key data for potential future use
     private KeyResponse keyData;
@@ -79,20 +79,48 @@ public class KeyManager : MonoBehaviour
             keyText.text = totalKeys.ToString();
         }
 
-        // If studentId is not set, try to get it from GameDataManager
-        if (string.IsNullOrEmpty(studentId) && GameDataManager.Instance != null)
-        {
-            studentId = GameDataManager.Instance.StudentId;
-        }
+        // Get the student ID from GameDataManager or PlayerPrefs
+        GetStudentId();
 
         // Now fetch the data
         if (!string.IsNullOrEmpty(studentId))
         {
-            FetchKeysFromDB();  // Or FetchCoins() for CoinsManager
+            FetchKeysFromDB();
+        }
+        else
+        {
+            Debug.LogWarning("[KeyManager] No student ID available. Keys cannot be fetched.");
         }
 
         // Schedule periodic refresh of keys (every 30 seconds)
         InvokeRepeating("FetchKeysFromDB", 30f, 30f);
+    }
+
+    // Get student ID from GameDataManager or directly from PlayerPrefs
+    private void GetStudentId()
+    {
+        // First try GameDataManager
+        if (string.IsNullOrEmpty(studentId) && GameDataManager.Instance != null)
+        {
+            studentId = GameDataManager.Instance.StudentId;
+            Debug.Log($"[KeyManager] Got student ID from GameDataManager: {studentId}");
+        }
+        
+        // If still empty, try PlayerPrefs directly
+        if (string.IsNullOrEmpty(studentId))
+        {
+            studentId = PlayerPrefs.GetString("StudentID", "");
+            if (!string.IsNullOrEmpty(studentId))
+            {
+                Debug.Log($"[KeyManager] Got student ID from PlayerPrefs: {studentId}");
+            }
+        }
+        
+        // Log if we still don't have a student ID
+        if (string.IsNullOrEmpty(studentId))
+        {
+            Debug.LogWarning("[KeyManager] No student ID found in GameDataManager or PlayerPrefs");
+        }
     }
 
     // This will be called by UserIDBridge after it sets userId

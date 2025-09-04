@@ -39,7 +39,7 @@ public class CoinsManager : MonoBehaviour
         {
             userId = GameDataManager.Instance.StudentId;
         }
-        
+
         // Now fetch the data
         if (!string.IsNullOrEmpty(userId))
         {
@@ -65,18 +65,18 @@ public class CoinsManager : MonoBehaviour
     {
         Debug.Log("[CoinsManager] Starting API call to fetch coins...");
         Debug.Log("[CoinsManager] Current coins BEFORE fetch: " + currentCoins);
-        
+
         string url = getCoinsURL + userId;
         Debug.Log($"[CoinsManager] URL: {url}");
-        
+
         UnityWebRequest request = UnityWebRequest.Get(url);
         request.timeout = 15; // Set timeout to 15 seconds
         Debug.Log("[CoinsManager] Web request created, sending...");
-        
+
         float startTime = Time.time;
         yield return request.SendWebRequest();
         float endTime = Time.time;
-        
+
         Debug.Log("[CoinsManager] Request completed in " + (endTime - startTime).ToString("F2") + " seconds");
         Debug.Log("[CoinsManager] Response code: " + request.responseCode);
 
@@ -84,23 +84,23 @@ public class CoinsManager : MonoBehaviour
         {
             string json = request.downloadHandler.text;
             Debug.Log("[CoinsManager] API Response received: " + json);
-            
+
             try
             {
                 // Parse the response to get the currentMonthPoints.totalPoints value
                 CoinResponse res = JsonUtility.FromJson<CoinResponse>(json);
                 Debug.Log("[CoinsManager] Successfully parsed JSON response");
-                
+
                 if (res != null && res.currentMonthPoints != null)
                 {
                     Debug.Log("[CoinsManager] COINS FETCHED FROM API: " + res.currentMonthPoints.totalPoints);
-                    
+
                     int oldCoins = currentCoins;
                     currentCoins = res.currentMonthPoints.totalPoints;
-                    
+
                     Debug.Log("[CoinsManager] Coins updated: " + oldCoins + " → " + currentCoins);
                     UpdateCoinUI();
-                    
+
                     // Notify listeners that coins have been updated
                     OnCoinsUpdated?.Invoke();
                     Debug.Log("[CoinsManager] OnCoinsUpdated event invoked");
@@ -126,12 +126,12 @@ public class CoinsManager : MonoBehaviour
             }
         }
     }
-    
+
     public void SpendCoins(int amount, string reason, System.Action<bool> onComplete = null)
     {
         Debug.Log("[CoinsManager] SpendCoins called with amount: " + amount);
         Debug.Log("[CoinsManager] Current coins before spending: " + currentCoins);
-        
+
         if (currentCoins >= amount)
         {
             // First, update the UI immediately for better responsiveness
@@ -140,9 +140,10 @@ public class CoinsManager : MonoBehaviour
             UpdateCoinUI();
             // Notify listeners that coins have been updated
             OnCoinsUpdated?.Invoke();
-            
+
             // Then send the request to the server
-            StartCoroutine(SendSpendRequest(amount, reason, (success) => {
+            StartCoroutine(SendSpendRequest(amount, reason, (success) =>
+            {
                 if (!success)
                 {
                     Debug.LogError("[CoinsManager] Server request failed, reverting coin change");
@@ -166,7 +167,7 @@ public class CoinsManager : MonoBehaviour
             onComplete?.Invoke(false);
         }
     }
-    
+
     public void UpdateCoinUI()
     {
         if (coinText != null)
@@ -184,15 +185,16 @@ public class CoinsManager : MonoBehaviour
     {
         // Format the month as yyyy-MM
         string currentMonth = System.DateTime.Now.ToString("yyyy-MM");
-        
-        CoinSpendRequest body = new CoinSpendRequest { 
-            studentId = userId, 
-            points = amount, 
+
+        CoinSpendRequest body = new CoinSpendRequest
+        {
+            studentId = userId,
+            points = amount,
             reason = reason,
             month = currentMonth
         };
         string json = JsonUtility.ToJson(body);
-        
+
         Debug.Log("[CoinsManager] Sending spend request with data: " + json);
         Debug.Log("[CoinsManager] URL: " + spendCoinsURL);
 
@@ -201,7 +203,7 @@ public class CoinsManager : MonoBehaviour
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
-        
+
         // Add Authorization header if we have a token
         string studentToken = PlayerPrefs.GetString("studenttoken", "");
         if (!string.IsNullOrEmpty(studentToken))
@@ -229,7 +231,7 @@ public class CoinsManager : MonoBehaviour
             onComplete?.Invoke(false);
             yield break;
         }
-        
+
         Debug.Log("[CoinsManager] Spend successful");
         onComplete?.Invoke(true);
     }
@@ -239,22 +241,22 @@ public class CoinsManager : MonoBehaviour
         // Wait a longer delay to ensure the server has processed the deduction
         Debug.Log("[CoinsManager] Waiting for server to process deduction...");
         yield return new WaitForSeconds(3.0f);
-        
+
         Debug.Log("[CoinsManager] Fetching updated coins after spend...");
-        
+
         // Create a new web request to fetch the latest coin count
         UnityWebRequest request = UnityWebRequest.Get(getCoinsURL + userId);
         yield return request.SendWebRequest();
-        
+
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError("[CoinsManager] Failed to fetch updated coins: " + request.error);
             yield break;
         }
-        
+
         string responseJson = request.downloadHandler.text;
         Debug.Log("[CoinsManager] Fetch response after spend: " + responseJson);
-        
+
         try
         {
             CoinsResponse response = JsonUtility.FromJson<CoinsResponse>(responseJson);
@@ -262,9 +264,9 @@ public class CoinsManager : MonoBehaviour
             {
                 CurrentMonthPoints currentMonthData = response.data[0];
                 int updatedCoins = currentMonthData.points;
-                
+
                 Debug.Log("[CoinsManager] Updated coins from server: " + updatedCoins);
-                
+
                 // Update the local coin count and UI
                 currentCoins = updatedCoins;
                 UpdateCoinUI();
@@ -290,11 +292,11 @@ public class CoinsManager : MonoBehaviour
     {
         Debug.Log($"[CoinsManager] Adding {amount} coins for reason: {reason}");
         Debug.Log($"[CoinsManager] Current coins before adding: {currentCoins}");
-        
+
         // Update local coins immediately for better UX
         currentCoins += amount;
         UpdateCoinUI();
-        
+
         // Start coroutine to update server
         StartCoroutine(SendAddCoinsRequest(amount, reason));
     }
@@ -302,7 +304,7 @@ public class CoinsManager : MonoBehaviour
     IEnumerator SendAddCoinsRequest(int amount, string reason)
     {
         string currentDate = System.DateTime.Now.ToString("yyyy-MM-dd");
-        
+
         // Create request object matching the API's expected format
         var addRequest = new AddPointsRequest
         {
@@ -315,13 +317,13 @@ public class CoinsManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(addRequest);
         Debug.Log($"[CoinsManager] Sending add coins request: {json}");
-        
+
         var request = new UnityWebRequest("https://api.inkstall.in/api/student-portal/studentpoints/add-game-points", "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
-        
+
         string studentToken = PlayerPrefs.GetString("studenttoken", "");
         if (!string.IsNullOrEmpty(studentToken))
         {
@@ -331,7 +333,7 @@ public class CoinsManager : MonoBehaviour
         yield return request.SendWebRequest();
 
         Debug.Log($"[CoinsManager] Request completed with status: {request.responseCode}");
-        
+
         if (request.result != UnityWebRequest.Result.Success)
         {
             Debug.LogError($"[CoinsManager] Failed to add coins: {request.error}");
@@ -353,8 +355,8 @@ public class CoinsManager : MonoBehaviour
     }
 
     [System.Serializable]
-    public class CoinResponse 
-    { 
+    public class CoinResponse
+    {
         public bool success;
         public CurrentMonthPoints currentMonthPoints;
     }

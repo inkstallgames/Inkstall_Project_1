@@ -14,15 +14,17 @@ using System;
 public class GoogleLoginManager : MonoBehaviour
 {
     [Header("Google / Firebase")]
-    [SerializeField] private string webClientId =
+    [SerializeField]
+    private string webClientId =
         "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com"; // use Web client ID from Google Cloud
 
     [Header("Backend")]
-    [SerializeField] private string databaseCheckUrl =
+    [SerializeField]
+    private string databaseCheckUrl =
         "https://api.inkstall.in/api/auth/student/google-login";
 
     [Header("UI")]
-    [SerializeField] private TMP_Text statusText; 
+    [SerializeField] private TMP_Text statusText;
     [SerializeField] private string nextSceneName = "MainScene";
 
     private FirebaseAuth auth;
@@ -221,20 +223,25 @@ public class GoogleLoginManager : MonoBehaviour
         }
 
         if (response != null && response.registered)
-    {
-        // Save login data
-        GameDataManager.Instance.SaveLoginData(response.studentId);
-        
-        // Initialize KeyManager and CoinsManager
-        if (KeyManager.Instance != null)
-            KeyManager.Instance.studentId = response.studentId;
-            
-        if (CoinsManager.Instance != null)
-            CoinsManager.Instance.userId = response.studentId;
-        
-        // Load next scene
-        SceneManager.LoadScene("MainScene");
-    }
+        {
+            // 1. Store login data
+            GameDataManager.Instance.SaveLoginData(
+            response.studentId,
+            email,
+            googleId
+        );
+
+            // 2. Initialize ID in KeyManager and CoinsManager
+            if (KeyManager.Instance != null)
+                KeyManager.Instance.studentId = response.studentId;
+
+            if (CoinsManager.Instance != null)
+                CoinsManager.Instance.userId = response.studentId;
+
+            // 3. Update Status & Load next scene
+            UpdateStatus("Loading successfull! Loading Game...");
+            SceneManager.LoadScene("MainScene");
+        }
     }
 
     private void UpdateStatus(string message)

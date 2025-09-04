@@ -14,7 +14,7 @@ public class GoogleLoginManager : MonoBehaviour
 {
     [Header("Google / Firebase")]
     [SerializeField] private string webClientId =
-        "187710511438-jej75f8qn7k8c2h4md576e1cktuaqgb1.apps.googleusercontent.com"; // use Web client ID from Google Cloud
+        "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com"; // use Web client ID from Google Cloud
 
     [Header("Backend")]
     [SerializeField] private string databaseCheckUrl =
@@ -151,16 +151,19 @@ public class GoogleLoginManager : MonoBehaviour
     }
 
     private IEnumerator CheckUserInDatabase(string email, string googleId)
-{
-    UpdateStatus("Checking user registration...");
-
-    var requestData = new GoogleLoginRequest
     {
-        token = idToken  // This is the only field your backend expects
-    };
+        UpdateStatus("Checking user registration...");
 
-    string jsonData = JsonUtility.ToJson(requestData);
-    byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+        var requestData = new GoogleLoginRequest
+        {
+            email = email,
+            googleId = googleId,
+            idToken = idToken,
+            client_id = webClientId
+        };
+
+        string jsonData = JsonUtility.ToJson(requestData);
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
 
         using (UnityWebRequest request = new UnityWebRequest(databaseCheckUrl, "POST"))
         {

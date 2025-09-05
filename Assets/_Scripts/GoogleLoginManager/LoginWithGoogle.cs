@@ -161,7 +161,7 @@ public class GoogleLoginManager : MonoBehaviour
             email = email,
             googleId = googleId,
             idToken = idToken,
-            client_id = webClientId
+            clientId = webClientId   // 👈 changed to camelCase
         };
 
         string jsonData = JsonUtility.ToJson(requestData);
@@ -203,21 +203,16 @@ public class GoogleLoginManager : MonoBehaviour
 
             try
             {
-                // Try parsing as the expected response format
                 var response = JsonUtility.FromJson<DatabaseResponse>(rawResponse);
                 if (response != null && response.registered)
                 {
-                    // Save login data to GameDataManager
                     GameDataManager.Instance.SaveLoginData(
                         response.studentId,
                         email,
                         googleId
                     );
 
-                    // Log success
                     Debug.Log($"Login successful. Student ID: {response.studentId}");
-                    
-                    // Update Status & Load next scene
                     UpdateStatus("Login successful! Loading...");
                     SceneManager.LoadScene(nextSceneName);
                 }
@@ -228,30 +223,24 @@ public class GoogleLoginManager : MonoBehaviour
                 }
                 else
                 {
-                    // Try parsing as alternative response format (mobile endpoint)
                     try {
                         var mobileResponse = JsonUtility.FromJson<MobileLoginResponse>(rawResponse);
                         if (mobileResponse != null && mobileResponse.success)
                         {
                             string studentId = mobileResponse.data.studentId;
-                            
-                            // Save login data
+
                             GameDataManager.Instance.SaveLoginData(
                                 studentId,
                                 email,
                                 googleId
                             );
-                            
-                            // Save JWT token if provided
+
                             if (!string.IsNullOrEmpty(mobileResponse.token)) {
                                 PlayerPrefs.SetString("AuthToken", mobileResponse.token);
                                 PlayerPrefs.Save();
                             }
-                            
-                            // Log success
+
                             Debug.Log($"Login successful via mobile endpoint. Student ID: {studentId}");
-                            
-                            // Update Status & Load next scene
                             UpdateStatus("Login successful! Loading...");
                             SceneManager.LoadScene(nextSceneName);
                         }
@@ -290,7 +279,7 @@ public class GoogleLoginManager : MonoBehaviour
         public string email;
         public string googleId;
         public string idToken;
-        public string client_id;
+        public string clientId;   // 👈 camelCase now
     }
 
     [System.Serializable]
@@ -308,7 +297,6 @@ public class GoogleLoginManager : MonoBehaviour
         public string message;
     }
 
-    // New response class for mobile endpoint
     [System.Serializable]
     private class MobileLoginResponse
     {

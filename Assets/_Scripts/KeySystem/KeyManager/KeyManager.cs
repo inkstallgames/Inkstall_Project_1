@@ -137,9 +137,6 @@ public class KeyManager : MonoBehaviour
         {
             StartCoroutine(FetchDBKeyCount());
         }
-        else
-        {
-        }
     }
 
     // Fetch the key count from the API

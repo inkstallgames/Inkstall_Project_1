@@ -173,6 +173,13 @@ public class GoogleLoginManager : MonoBehaviour
                     PlayerPrefs.SetString("StudentId", response.user.studentId);
                 PlayerPrefs.Save();
 
+                // Save user data to StudentIdManager
+                StudentIdManager.Instance.SaveUserDataFromGoogleAuth(
+                    response.user.email,
+                    response.user.studentId ?? response.user.id,
+                    response.token
+                );
+
                 UpdateStatus("Login successful! Loading...");
                 SceneManager.LoadScene(nextSceneName);
             }

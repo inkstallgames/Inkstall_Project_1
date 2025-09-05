@@ -2849,12 +2849,12 @@ PrefabInstance:
     - target: {fileID: 883613485747621303, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
       propertyPath: m_Size.y
-      value: 1.3798199
+      value: 2.2389624
       objectReference: {fileID: 0}
     - target: {fileID: 883613485747621303, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
       propertyPath: m_Center.y
-      value: 0.7001951
+      value: 1.1297663
       objectReference: {fileID: 0}
     - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
@@ -5792,7 +5792,7 @@ MonoBehaviour:
   totalTime: 180
   timerText: {fileID: 1194441157}
   timerRunning: 0
-  tickSound: {fileID: 8300000, guid: bbb7c848b236a994a835f80c489027d3, type: 3}
+  tickSound: {fileID: 0}
   tickVolume: 1
 --- !u!1 &1206205651
 GameObject:
@@ -16983,7 +16983,6 @@ GameObject:
   - component: {fileID: 1876630031721721799}
   - component: {fileID: 1528809689062972323}
   - component: {fileID: 1876630031721721795}
-  - component: {fileID: 1876630031721721798}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (3)
   m_TagString: Door
@@ -17220,7 +17219,6 @@ GameObject:
   - component: {fileID: 1879614732177390110}
   - component: {fileID: 1498214080562857700}
   - component: {fileID: 1879614732177390107}
-  - component: {fileID: 1879614732177390109}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (4)
   m_TagString: Door
@@ -17754,7 +17752,6 @@ GameObject:
   - component: {fileID: 1875161218498077181}
   - component: {fileID: 5411702062035160465}
   - component: {fileID: 5411702062035160467}
-  - component: {fileID: 5411702062035160470}
   - component: {fileID: 5411702062035160471}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (1)
@@ -22095,23 +22092,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1876630031721721798
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873769200726274311}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalTime: 180
-  timerText: {fileID: 0}
-  timerRunning: 0
-  tickSound: {fileID: 0}
-  tickVolume: 1
 --- !u!95 &1876630031721721799
 Animator:
   serializedVersion: 5
@@ -24376,23 +24356,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1879614732177390109
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873888420683840239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalTime: 180
-  timerText: {fileID: 0}
-  timerRunning: 0
-  tickSound: {fileID: 0}
-  tickVolume: 1
 --- !u!95 &1879614732177390110
 Animator:
   serializedVersion: 5
@@ -41369,23 +41332,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &5411702062035160470
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874491473996026743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalTime: 180
-  timerText: {fileID: 0}
-  timerRunning: 0
-  tickSound: {fileID: 0}
-  tickVolume: 1
 --- !u!95 &5411702062035160471
 Animator:
   serializedVersion: 5
@@ -56125,6 +56071,7 @@ MonoBehaviour:
   interactButton: {fileID: 4370096595425205733}
   useKeyButton: {fileID: 5376026593118847093}
   interactionText: {fileID: 1574232838}
+  gameTimer: {fileID: 1194441155}
   crosshairImage: {fileID: 1981799375}
 --- !u!82 &8997996947364382294
 AudioSource:

@@ -12,6 +12,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private GameObject interactButton;
     [SerializeField] private GameObject useKeyButton; // Reference to the use key button
     [SerializeField] private TextMeshProUGUI interactionText; // Text to show when room is completed
+    [SerializeField] private GameObject gameTimer; // Reference to the game timer
     [SerializeField] private Image crosshairImage;  // Reference the crosshair Image component
 
     private DoorInteraction currentDoor;   // Track which door we're looking at
@@ -221,21 +222,25 @@ public class PlayerInteraction : MonoBehaviour
                 float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
                 if (distanceToObject <= interactDistance)
                 {
-                    // Show building collider message
-                    if (interactionText != null)
+                    if (gameTimer != null && gameTimer.activeInHierarchy)
                     {
-                        interactionText.gameObject.SetActive(true);
-                        interactionText.text = "if you Enter you will lose your progress";
-                        // Hide crosshair when showing interaction text
-                        if (crosshairImage != null)
+                        // Show building collider message
+                        if (interactionText != null)
                         {
-                            crosshairImage.gameObject.SetActive(false);
+                            interactionText.gameObject.SetActive(true);
+                            interactionText.text = "if you Enter you will lose your progress";
+                            // Hide crosshair when showing interaction text
+                            if (crosshairImage != null)
+                            {
+                                crosshairImage.gameObject.SetActive(false);
+                            }
                         }
                     }
+                    
                 }
             }
             // Check for drawer 
-            else if (hitObject.CompareTag("SlidingDoor") && GameTimer.instance.timerRunning)
+            else if (hitObject.CompareTag("SlidingDoor"))
             {
                 // Get the drawer interaction component
                 DrawerMech drawerInteraction = hitObject.GetComponent<DrawerMech>();

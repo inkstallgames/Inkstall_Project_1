@@ -16,7 +16,7 @@ public class GoogleLoginManager : MonoBehaviour
     [Header("Google / Firebase")]
     [SerializeField]
     private string webClientId =
-        "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com"; // use Web client ID from Google Cloud
+        "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com";
 
     [Header("Backend")]
     [SerializeField]

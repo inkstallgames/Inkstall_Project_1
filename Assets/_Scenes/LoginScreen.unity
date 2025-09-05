@@ -843,8 +843,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2456b506f8598a41a529b4b0d52b23b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  webClientId: 383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com
-  databaseCheckUrl: https://api.inkstall.in/api/auth/student/google-login
   statusText: {fileID: 1975876567}
   nextSceneName: MainScene
 --- !u!1 &1142506433

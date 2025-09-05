@@ -20,8 +20,7 @@ public class GoogleLoginManager : MonoBehaviour
 
     [Header("Backend")]
     [SerializeField]
-    private string databaseCheckUrl =
-        "https://api.inkstall.in/api/auth/student/google-login";
+    private string databaseCheckUrl = "https://api.inkstall.in/api/auth/unity-login";
 
     [Header("UI")]
     [SerializeField] private TMP_Text statusText;

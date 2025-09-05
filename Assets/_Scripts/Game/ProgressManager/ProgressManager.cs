@@ -18,8 +18,6 @@ public class DoorData
 [Serializable]
 public class StudentDoorsData
 {
-    public string _id;
-    public string studentId;
     public List<DoorData> doors;
 }
 
@@ -63,7 +61,7 @@ public class ProgressManager : MonoBehaviour
 
     private void Start()
     {
-        // Load student door data
+        // Load student door data from db
         StartCoroutine(LoadStudentDoorData());
     }
 
@@ -313,7 +311,6 @@ public class ProgressManager : MonoBehaviour
                 name = doorName,
                 isUnlockable = false,
                 isRoomCompleted = false,
-                description = "Auto-generated door data"
             };
             
             // Add to the student data

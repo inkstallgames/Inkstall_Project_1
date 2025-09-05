@@ -2871,6 +2871,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: FX_Blue_Flipbook
       objectReference: {fileID: 0}
+    - target: {fileID: 4347093295648580978, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: m_TagString
+      value: BuildingPortal
+      objectReference: {fileID: 0}
     - target: {fileID: 4347093295648580979, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
       propertyPath: m_LocalScale.x

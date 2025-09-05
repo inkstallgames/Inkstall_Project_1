@@ -214,8 +214,28 @@ public class PlayerInteraction : MonoBehaviour
                     }
                 }
             }
+            // Check if we hit a building collider
+            else if (hitObject.CompareTag("BuildingPortal"))
+            {
+                // Check if we're within interaction distance
+                float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
+                if (distanceToObject <= interactDistance)
+                {
+                    // Show building collider message
+                    if (interactionText != null)
+                    {
+                        interactionText.gameObject.SetActive(true);
+                        interactionText.text = "if you Enter you will lose your progress";
+                        // Hide crosshair when showing interaction text
+                        if (crosshairImage != null)
+                        {
+                            crosshairImage.gameObject.SetActive(false);
+                        }
+                    }
+                }
+            }
             // Check for drawer 
-            else if (hitObject.CompareTag("SlidingDoor"))
+            else if (hitObject.CompareTag("SlidingDoor") && GameTimer.instance.timerRunning)
             {
                 // Get the drawer interaction component
                 DrawerMech drawerInteraction = hitObject.GetComponent<DrawerMech>();

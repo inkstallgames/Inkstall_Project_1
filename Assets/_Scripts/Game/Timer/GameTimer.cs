@@ -4,6 +4,8 @@ using System.Text;
 
 public class GameTimer : MonoBehaviour
 {
+    public static GameTimer instance;
+    
     [Header("Timer Settings")]
     public float totalTime = 180f;
     private float currentTime;

@@ -3867,7 +3867,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   studentData:
-    doors: []
+    doors:
+    - doorId: 1
+      name: 
+      isUnlockable: 0
+      isRoomCompleted: 0
+      description: 
+    - doorId: 2
+      name: 
+      isUnlockable: 0
+      isRoomCompleted: 0
+      description: 
+    - doorId: 3
+      name: 
+      isUnlockable: 0
+      isRoomCompleted: 0
+      description: 
+    - doorId: 4
+      name: 
+      isUnlockable: 0
+      isRoomCompleted: 0
+      description: 
+    - doorId: 5
+      name: 
+      isUnlockable: 0
+      isRoomCompleted: 0
+      description: 
+    - doorId: 6
+      name: 
+      isUnlockable: 0
+      isRoomCompleted: 0
+      description: 
   isDataLoaded: 0
 --- !u!1 &823488689
 GameObject:
@@ -9218,7 +9248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coinText: {fileID: 1505732595}
   userId: 
-  currentCoins: 10
+  currentCoins: 0
 --- !u!1 &2049626417
 GameObject:
   m_ObjectHideFlags: 0
@@ -40661,7 +40691,7 @@ MonoBehaviour:
   throwButton: {fileID: 1536972007016953564}
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
-  remainingAliensCount: {fileID: 0}
+  remainingAliensCount: {fileID: 8352893770727911888}
   lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:

@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
                 ProgressManager.Instance.SetStudentId(studentId);
                 
                 // Load door data from the server
-                StartCoroutine(ProgressManager.Instance.LoadStudentDoorData());
+                ProgressManager.Instance.LoadStudentDoorData();
             }
             else
             {

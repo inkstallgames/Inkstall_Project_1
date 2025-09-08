@@ -39,6 +39,18 @@ public class StudentIdManager : MonoBehaviour
             if (string.IsNullOrEmpty(_studentId))
             {
                 _studentId = GetStudentIdFromStorage();
+                if (!string.IsNullOrEmpty(_studentId))
+                {
+                    Debug.Log($"[StudentIdManager] Retrieved student ID from storage: {_studentId}");
+                }
+                else
+                {
+                    Debug.LogWarning("[StudentIdManager] No student ID found in storage");
+                }
+            }
+            else
+            {
+                Debug.Log($"[StudentIdManager] Returning cached student ID: {_studentId}");
             }
             return _studentId;
         }
@@ -119,6 +131,7 @@ public class StudentIdManager : MonoBehaviour
         #endif
         
         Debug.Log($"[StudentIdManager] Saved student ID: {studentId}");
+        Debug.Log($"[StudentIdManager] Student ID saved to storage. Notifying {OnStudentIdLoaded?.GetInvocationList().Length ?? 0} subscribers.");
         OnStudentIdLoaded?.Invoke(studentId);
     }
 
@@ -140,6 +153,7 @@ public class StudentIdManager : MonoBehaviour
         PlayerPrefs.Save();
         
         Debug.Log($"[StudentIdManager] Saved user data from Google Auth - Email: {email}, StudentId: {studentId}");
+        Debug.Log($"[StudentIdManager] User data saved to storage. Notifying {OnStudentIdLoaded?.GetInvocationList().Length ?? 0} subscribers.");
         OnStudentIdLoaded?.Invoke(studentId);
     }
 

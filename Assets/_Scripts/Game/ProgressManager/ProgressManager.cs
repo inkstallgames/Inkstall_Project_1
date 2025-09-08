@@ -61,68 +61,106 @@ public class ProgressManager : MonoBehaviour
 
     private void Start()
     {
-        // Get student ID from StudentIdManager
+        Debug.Log("[ProgressManager] Starting ProgressManager...");
+        // Get the student ID from StudentIdManager or PlayerPrefs
         GetStudentId();
-        
-        // Load student door data from db if we have a student ID
+
+        // If we have a student ID, load the data
         if (!string.IsNullOrEmpty(studentId))
         {
-            StartCoroutine(LoadStudentDoorData());
+            Debug.Log($"[ProgressManager] Student ID available: {studentId}. Loading door data...");
+            LoadStudentDoorData();
         }
         else
         {
-            Debug.LogWarning("[ProgressManager] No student ID available. Cannot load door data.");
+            Debug.LogWarning("[ProgressManager] No student ID available at Start(). Data will be loaded when ID becomes available.");
         }
     }
     
+    // Get student ID from StudentIdManager or directly from PlayerPrefs
     private void GetStudentId()
     {
-        // Try to get student ID from StudentIdManager
+        Debug.Log("[ProgressManager] Attempting to get student ID...");
+        
+        // First try StudentIdManager
         if (StudentIdManager.Instance != null)
         {
             string id = StudentIdManager.Instance.GetStudentId();
             if (!string.IsNullOrEmpty(id))
             {
-                SetStudentId(id);
-                Debug.Log($"[ProgressManager] Got student ID from StudentIdManager: {studentId}");
+                studentId = id;
+                Debug.Log($"[ProgressManager] Successfully got student ID from StudentIdManager: {studentId}");
                 return;
             }
             
+            Debug.Log("[ProgressManager] No student ID available in StudentIdManager yet. Subscribing to OnStudentIdLoaded event.");
             // Subscribe to StudentIdManager events to get the ID when it becomes available
             StudentIdManager.Instance.OnStudentIdLoaded += HandleStudentIdLoaded;
+            return;
         }
-        else
+        
+        Debug.LogWarning("[ProgressManager] StudentIdManager.Instance is null. Trying PlayerPrefs...");
+        
+        // If still empty, try PlayerPrefs directly
+        studentId = PlayerPrefs.GetString("StudentId", "");
+        if (!string.IsNullOrEmpty(studentId))
         {
-            // If still empty, try PlayerPrefs directly
-            studentId = PlayerPrefs.GetString("StudentId", "");
-            if (!string.IsNullOrEmpty(studentId))
-            {
-                Debug.Log($"[ProgressManager] Got student ID from PlayerPrefs: {studentId}");
-                return;
-            }
-            
-            Debug.LogWarning("[ProgressManager] No student ID found in StudentIdManager or PlayerPrefs");
+            Debug.Log($"[ProgressManager] Got student ID from PlayerPrefs: {studentId}");
+            return;
         }
+        
+        // Log if we still don't have a student ID
+        Debug.LogWarning("[ProgressManager] No student ID found in StudentIdManager or PlayerPrefs");
     }
     
     private void HandleStudentIdLoaded(string id)
     {
+        Debug.Log("[ProgressManager] HandleStudentIdLoaded called");
+        
+        if (string.IsNullOrEmpty(id))
+        {
+            Debug.LogError("[ProgressManager] Received null or empty student ID in HandleStudentIdLoaded");
+            return;
+        }
+        
         // Unsubscribe to avoid multiple calls
         if (StudentIdManager.Instance != null)
         {
+            Debug.Log("[ProgressManager] Unsubscribing from OnStudentIdLoaded event");
             StudentIdManager.Instance.OnStudentIdLoaded -= HandleStudentIdLoaded;
         }
         
-        // Set the student ID and load data
-        SetStudentId(id);
-        Debug.Log($"[ProgressManager] Student ID loaded from event: {studentId}");
-        StartCoroutine(LoadStudentDoorData());
+        // Set the student ID and load the data
+        studentId = id;
+        Debug.Log($"[ProgressManager] Student ID loaded from event. New ID: {studentId}. Loading door data...");
+        LoadStudentDoorData();
     }
 
-    public IEnumerator LoadStudentDoorData()
+    public void LoadStudentDoorData()
     {
+        if (!string.IsNullOrEmpty(studentId))
+        {
+            Debug.Log($"[ProgressManager] Loading door data for student ID: {studentId}");
+            StartCoroutine(LoadStudentDoorDataCoroutine());
+        }
+        else
+        {
+            Debug.LogError("[ProgressManager] Cannot load door data: studentId is null or empty");
+        }
+    }
+
+    private IEnumerator LoadStudentDoorDataCoroutine()
+    {
+        if (string.IsNullOrEmpty(studentId))
+        {
+            Debug.LogError("[ProgressManager] Cannot load door data: studentId is null or empty");
+            yield break;
+        }
+        
+        Debug.Log($"[ProgressManager] Loading door data for student ID: {studentId}");
         isDataLoaded = false;
         string url = $"{baseUrl}/student/{studentId}";
+        Debug.Log($"[ProgressManager] API URL: {url}");
         
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
@@ -184,7 +222,7 @@ public class ProgressManager : MonoBehaviour
             {
                 Debug.Log("Student data created successfully");
                 // Load the newly created data
-                yield return LoadStudentDoorData();
+                yield return LoadStudentDoorDataCoroutine();
             }
         }
     }

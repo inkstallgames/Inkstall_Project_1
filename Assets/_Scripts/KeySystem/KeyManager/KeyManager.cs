@@ -79,64 +79,64 @@ public class KeyManager : MonoBehaviour
             keyText.text = totalKeys.ToString();
         }
 
-        // Get the student ID from GameDataManager or PlayerPrefs
+        // Get student ID from StudentIdManager or PlayerPrefs
         GetStudentId();
 
-        // Now fetch the data
+        // If we have a student ID, fetch keys from the database
         if (!string.IsNullOrEmpty(studentId))
         {
+            Debug.Log($"[KeyManager] Student ID available: {studentId}. Fetching keys...");
             FetchKeysFromDB();
         }
         else
         {
-            Debug.LogWarning("[KeyManager] No student ID available. Keys cannot be fetched.");
+            Debug.LogWarning("[KeyManager] No student ID available at Start(). Keys cannot be fetched yet.");
         }
 
         // Schedule periodic refresh of keys (every 30 seconds)
+        Debug.Log("[KeyManager] Scheduling periodic key refresh every 30 seconds");
         InvokeRepeating("FetchKeysFromDB", 30f, 30f);
     }
 
     // Get student ID from StudentIdManager or directly from PlayerPrefs
     private void GetStudentId()
     {
+        Debug.Log("[KeyManager] Attempting to get student ID...");
+
         // First try StudentIdManager
-        try
+        if (StudentIdManager.Instance != null)
         {
-            if (string.IsNullOrEmpty(studentId) && StudentIdManager.Instance != null)
+            string id = StudentIdManager.Instance.GetStudentId();
+            if (!string.IsNullOrEmpty(id))
             {
-                studentId = StudentIdManager.Instance.GetStudentId();
-                if (!string.IsNullOrEmpty(studentId))
-                {
-                    Debug.Log($"[KeyManager] Got student ID from StudentIdManager: {studentId}");
-                    return;
-                }
+                studentId = id;
+                Debug.Log($"[KeyManager] Successfully got student ID from StudentIdManager: {studentId}");
+                return;
             }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"[KeyManager] Error accessing StudentIdManager: {e.Message}");
-        }
-        
-        // If still empty, try PlayerPrefs directly
-        if (string.IsNullOrEmpty(studentId))
-        {
-            studentId = PlayerPrefs.GetString("StudentId", "");
-            if (!string.IsNullOrEmpty(studentId))
-            {
-                Debug.Log($"[KeyManager] Got student ID from PlayerPrefs: {studentId}");
-            }
-        }
-        
-        // Log if we still don't have a student ID
-        if (string.IsNullOrEmpty(studentId))
-        {
-            Debug.LogWarning("[KeyManager] No student ID found in StudentIdManager or PlayerPrefs");
-            
+
+            Debug.Log("[KeyManager] No student ID available in StudentIdManager yet. Subscribing to OnStudentIdLoaded event.");
             // Subscribe to StudentIdManager events to get the ID when it becomes available
-            if (StudentIdManager.Instance != null)
-            {
-                StudentIdManager.Instance.OnStudentIdLoaded += HandleStudentIdLoaded;
-            }
+            StudentIdManager.Instance.OnStudentIdLoaded += HandleStudentIdLoaded;
+            return;
+        }
+
+        Debug.LogWarning("[KeyManager] StudentIdManager.Instance is null. Trying PlayerPrefs...");
+
+        // If still empty, try PlayerPrefs directly
+        studentId = PlayerPrefs.GetString("StudentId", "");
+        if (!string.IsNullOrEmpty(studentId))
+        {
+            Debug.Log($"[KeyManager] Got student ID from PlayerPrefs: {studentId}");
+            return;
+        }
+
+        // Log if we still don't have a student ID
+        Debug.LogWarning("[KeyManager] No student ID found in StudentIdManager or PlayerPrefs");
+
+        // Subscribe to StudentIdManager events to get the ID when it becomes available
+        if (StudentIdManager.Instance != null)
+        {
+            StudentIdManager.Instance.OnStudentIdLoaded += HandleStudentIdLoaded;
         }
     }
     
@@ -151,12 +151,17 @@ public class KeyManager : MonoBehaviour
         FetchKeysFromDB();
     }
 
-    // This will be called by UserIDBridge after it sets userId
+    // This will be called when we need to fetch keys from the database
     public void FetchKeysFromDB()
     {
         if (!string.IsNullOrEmpty(studentId))
         {
+            Debug.Log($"[KeyManager] Fetching keys for student ID: {studentId}");
             StartCoroutine(FetchDBKeyCount());
+        }
+        else
+        {
+            Debug.LogError("[KeyManager] Cannot fetch keys: studentId is null or empty");
         }
     }
 

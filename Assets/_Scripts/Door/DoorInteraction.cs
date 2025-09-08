@@ -20,7 +20,7 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private AudioClip doorUnlockSound;
     [SerializeField] public bool isUnlockable = false;
     [SerializeField] public bool isRoomCompleted = false;
-    [SerializeField] public int doorID; // Unique identifier for this door (now an int to match ProgressManager)
+    [SerializeField] public int doorID; // Unique identifier int to match ProgressManager
 
     [Header("Timer Settings")]
     [SerializeField] private bool shouldStartTimer = false;

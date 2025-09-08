@@ -96,27 +96,31 @@ public class KeyManager : MonoBehaviour
         InvokeRepeating("FetchKeysFromDB", 30f, 30f);
     }
 
-    // Get student ID from GameDataManager or directly from PlayerPrefs
+    // Get student ID from StudentIdManager or directly from PlayerPrefs
     private void GetStudentId()
     {
-        // First try GameDataManager
+        // First try StudentIdManager
         try
         {
-            if (string.IsNullOrEmpty(studentId) && GameDataManager.Instance != null)
+            if (string.IsNullOrEmpty(studentId) && StudentIdManager.Instance != null)
             {
-                studentId = GameDataManager.Instance.StudentId;
-                Debug.Log($"[KeyManager] Got student ID from GameDataManager: {studentId}");
+                studentId = StudentIdManager.Instance.GetStudentId();
+                if (!string.IsNullOrEmpty(studentId))
+                {
+                    Debug.Log($"[KeyManager] Got student ID from StudentIdManager: {studentId}");
+                    return;
+                }
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogWarning($"[KeyManager] Error accessing GameDataManager: {e.Message}");
+            Debug.LogWarning($"[KeyManager] Error accessing StudentIdManager: {e.Message}");
         }
         
         // If still empty, try PlayerPrefs directly
         if (string.IsNullOrEmpty(studentId))
         {
-            studentId = PlayerPrefs.GetString("StudentID", "");
+            studentId = PlayerPrefs.GetString("StudentId", "");
             if (!string.IsNullOrEmpty(studentId))
             {
                 Debug.Log($"[KeyManager] Got student ID from PlayerPrefs: {studentId}");
@@ -126,8 +130,25 @@ public class KeyManager : MonoBehaviour
         // Log if we still don't have a student ID
         if (string.IsNullOrEmpty(studentId))
         {
-            Debug.LogWarning("[KeyManager] No student ID found in GameDataManager or PlayerPrefs");
+            Debug.LogWarning("[KeyManager] No student ID found in StudentIdManager or PlayerPrefs");
+            
+            // Subscribe to StudentIdManager events to get the ID when it becomes available
+            if (StudentIdManager.Instance != null)
+            {
+                StudentIdManager.Instance.OnStudentIdLoaded += HandleStudentIdLoaded;
+            }
         }
+    }
+    
+    private void HandleStudentIdLoaded(string id)
+    {
+        // Unsubscribe to avoid multiple calls
+        StudentIdManager.Instance.OnStudentIdLoaded -= HandleStudentIdLoaded;
+        
+        // Set the student ID and fetch keys
+        studentId = id;
+        Debug.Log($"[KeyManager] Student ID loaded from event: {studentId}");
+        FetchKeysFromDB();
     }
 
     // This will be called by UserIDBridge after it sets userId

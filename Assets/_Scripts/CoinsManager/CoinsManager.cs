@@ -48,31 +48,53 @@ public class CoinsManager : MonoBehaviour
         }
     }
 
-    // Get user ID from GameDataManager or directly from PlayerPrefs
+    // Get user ID from StudentIdManager or directly from PlayerPrefs
     private void GetUserId()
     {
-        // First try GameDataManager
-        if (string.IsNullOrEmpty(userId) && GameDataManager.Instance != null)
+        // First try StudentIdManager
+        if (string.IsNullOrEmpty(userId) && StudentIdManager.Instance != null)
         {
-            userId = GameDataManager.Instance.StudentId;
-            Debug.Log($"[CoinsManager] Got user ID from GameDataManager: {userId}");
+            userId = StudentIdManager.Instance.GetStudentId();
+            if (!string.IsNullOrEmpty(userId))
+            {
+                Debug.Log($"[CoinsManager] Got user ID from StudentIdManager: {userId}");
+                return;
+            }
         }
         
         // If still empty, try PlayerPrefs directly
         if (string.IsNullOrEmpty(userId))
         {
-            userId = PlayerPrefs.GetString("StudentID", "");
+            userId = PlayerPrefs.GetString("StudentId", "");
             if (!string.IsNullOrEmpty(userId))
             {
                 Debug.Log($"[CoinsManager] Got user ID from PlayerPrefs: {userId}");
+                return;
             }
         }
         
         // Log if we still don't have a user ID
         if (string.IsNullOrEmpty(userId))
         {
-            Debug.LogWarning("[CoinsManager] No user ID found in GameDataManager or PlayerPrefs");
+            Debug.LogWarning("[CoinsManager] No user ID found in StudentIdManager or PlayerPrefs");
+            
+            // Subscribe to StudentIdManager events to get the ID when it becomes available
+            if (StudentIdManager.Instance != null)
+            {
+                StudentIdManager.Instance.OnStudentIdLoaded += HandleStudentIdLoaded;
+            }
         }
+    }
+    
+    private void HandleStudentIdLoaded(string id)
+    {
+        // Unsubscribe to avoid multiple calls
+        StudentIdManager.Instance.OnStudentIdLoaded -= HandleStudentIdLoaded;
+        
+        // Set the user ID and fetch coins
+        userId = id;
+        Debug.Log($"[CoinsManager] User ID loaded from event: {userId}");
+        FetchCoins();
     }
 
     public void FetchCoins()

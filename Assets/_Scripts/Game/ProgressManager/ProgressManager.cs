@@ -38,7 +38,7 @@ public class ProgressManager : MonoBehaviour
         }
     }
 
-    private string studentId = "681ee0e6198ad04bf6c1c733"; // This should be set from login or player prefs
+    private string studentId = ""; // Will be set from StudentIdManager
     private string baseUrl = "https://api.inkstall.in/api/student-portal/doors";
     
     public StudentDoorsData studentData;
@@ -61,7 +61,61 @@ public class ProgressManager : MonoBehaviour
 
     private void Start()
     {
-        // Load student door data from db
+        // Get student ID from StudentIdManager
+        GetStudentId();
+        
+        // Load student door data from db if we have a student ID
+        if (!string.IsNullOrEmpty(studentId))
+        {
+            StartCoroutine(LoadStudentDoorData());
+        }
+        else
+        {
+            Debug.LogWarning("[ProgressManager] No student ID available. Cannot load door data.");
+        }
+    }
+    
+    private void GetStudentId()
+    {
+        // Try to get student ID from StudentIdManager
+        if (StudentIdManager.Instance != null)
+        {
+            string id = StudentIdManager.Instance.GetStudentId();
+            if (!string.IsNullOrEmpty(id))
+            {
+                SetStudentId(id);
+                Debug.Log($"[ProgressManager] Got student ID from StudentIdManager: {studentId}");
+                return;
+            }
+            
+            // Subscribe to StudentIdManager events to get the ID when it becomes available
+            StudentIdManager.Instance.OnStudentIdLoaded += HandleStudentIdLoaded;
+        }
+        else
+        {
+            // If still empty, try PlayerPrefs directly
+            studentId = PlayerPrefs.GetString("StudentId", "");
+            if (!string.IsNullOrEmpty(studentId))
+            {
+                Debug.Log($"[ProgressManager] Got student ID from PlayerPrefs: {studentId}");
+                return;
+            }
+            
+            Debug.LogWarning("[ProgressManager] No student ID found in StudentIdManager or PlayerPrefs");
+        }
+    }
+    
+    private void HandleStudentIdLoaded(string id)
+    {
+        // Unsubscribe to avoid multiple calls
+        if (StudentIdManager.Instance != null)
+        {
+            StudentIdManager.Instance.OnStudentIdLoaded -= HandleStudentIdLoaded;
+        }
+        
+        // Set the student ID and load data
+        SetStudentId(id);
+        Debug.Log($"[ProgressManager] Student ID loaded from event: {studentId}");
         StartCoroutine(LoadStudentDoorData());
     }
 

@@ -10,7 +10,7 @@ public class LoadBuildingScene : MonoBehaviour
     [SerializeField] private bool isEntrance = true;
 
     [Tooltip("Optional delay before loading the scene")]
-    [SerializeField] private float loadDelay = 0.2f;
+    [SerializeField] private float loadDelay = 0.5f;
 
     [Tooltip("The main city scene index (used when exiting buildings)")]
     [SerializeField] private int mainCitySceneIndex = 0;
@@ -38,11 +38,11 @@ public class LoadBuildingScene : MonoBehaviour
             {
                 audioSource.PlayOneShot(portalEnterSound);
             }
-            Invoke("LoadTargetScene", loadDelay);
+            Invoke("LoadNextScene", loadDelay);
         }
     }
 
-    private void LoadTargetScene()
+    private void LoadNextScene()
     {
         int sceneToLoad = isEntrance ? targetSceneIndex : mainCitySceneIndex;
         SceneManager.LoadScene(sceneToLoad);

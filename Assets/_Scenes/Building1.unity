@@ -2864,7 +2864,12 @@ PrefabInstance:
     - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
       propertyPath: targetSceneIndex
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
+        type: 3}
+      propertyPath: mainCitySceneIndex
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4347093295648580978, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
@@ -12590,6 +12595,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &975421949430823410
 Transform:
@@ -14924,6 +14930,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1609635412495604071
 MeshRenderer:
@@ -18205,6 +18212,7 @@ MonoBehaviour:
   throwButton: {fileID: 1536972007016953564}
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 1879614732177390110}
 --- !u!4 &1875161216612700763
 Transform:
@@ -18417,6 +18425,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161216722088320
 MeshRenderer:
@@ -18504,6 +18513,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216731409326
 Transform:
@@ -18805,6 +18815,7 @@ MonoBehaviour:
   throwButton: {fileID: 1536972007016953564}
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 1876630031721721799}
 --- !u!4 &1875161216913999824
 Transform:
@@ -19054,6 +19065,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161217056796249
 MonoBehaviour:
@@ -19084,6 +19096,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217121920507
 Transform:
@@ -19278,6 +19291,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!1 &1875161217394332177
 GameObject:
@@ -20885,6 +20899,7 @@ MonoBehaviour:
   throwButton: {fileID: 1536972007016953564}
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 5411702062035160471}
 --- !u!4 &1875161218516245653
 Transform:
@@ -21056,6 +21071,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218673369673
 Transform:
@@ -21611,6 +21627,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876481243523332479
 AudioSource:
@@ -22156,6 +22173,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876635991172028075
 AudioSource:
@@ -22335,6 +22353,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876640084607535165
 AudioSource:
@@ -23234,6 +23253,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879301797568630687
 AudioSource:
@@ -23861,6 +23881,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879530183016443165
 AudioSource:
@@ -24450,6 +24471,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879628717615984171
 AudioSource:
@@ -33483,6 +33505,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3231434512211610070
 AudioSource:
@@ -34577,6 +34600,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3531443653390167215
 AudioSource:
@@ -36398,6 +36422,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4095303726235316411
 AudioSource:
@@ -37347,6 +37372,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4323376261421865388
 AudioSource:
@@ -38819,6 +38845,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4722926279912086933
 AudioSource:
@@ -39791,6 +39818,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &4985833862760063991
 Transform:
@@ -40620,6 +40648,7 @@ MonoBehaviour:
   throwButton: {fileID: 1536972007016953564}
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:
@@ -42230,6 +42259,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &5660267529715239442
 AudioSource:
@@ -43997,6 +44027,7 @@ MonoBehaviour:
   throwButton: {fileID: 1536972007016953564}
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 6096234473738546706}
 --- !u!95 &6096234473738546706
 Animator:
@@ -45469,6 +45500,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6370389251489606861
 AudioSource:
@@ -46629,6 +46661,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6734199790238685268
 AudioSource:
@@ -47072,6 +47105,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &6823987876855903344
 MeshRenderer:
@@ -52698,6 +52732,7 @@ MonoBehaviour:
   throwButton: {fileID: 1536972007016953564}
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 8128831679578322680}
 --- !u!95 &8128831679578322680
 Animator:
@@ -52842,6 +52877,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &8176039784201981259
 AudioSource:

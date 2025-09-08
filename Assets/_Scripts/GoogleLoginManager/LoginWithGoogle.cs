@@ -52,8 +52,8 @@ public class GoogleLoginManager : MonoBehaviour
     }
 
     public void OnLoginButtonClicked()
-{
-    if (!firebaseInitialized)
+    {
+        if (!firebaseInitialized)
     {
         UpdateStatus("Firebase not initialized. Please try again.");
         InitializeFirebase();
@@ -66,9 +66,9 @@ public class GoogleLoginManager : MonoBehaviour
         WebClientId = webClientId,
         RequestIdToken = true,
         RequestEmail = true,
-        RequestAuthCode = true,
-        RequestProfile = true,  // Add profile info request
-        UseGameSignIn = false   // Use web authentication flow
+        RequestAuthCode = false,   //no need for AuthCode anymore
+        RequestProfile = true,
+        UseGameSignIn = false
     };
 
     try
@@ -83,40 +83,53 @@ public class GoogleLoginManager : MonoBehaviour
     }
 }
 
-    private void HandleGoogleSignIn(Task<GoogleSignInUser> task)
+private void HandleGoogleSignIn(Task<GoogleSignInUser> task)
 {
     if (task.IsCanceled)
     {
         UpdateStatus("Google Sign-In Cancelled");
+        // Reset sign-in state
+        GoogleSignIn.DefaultInstance.SignOut();
         return;
     }
     if (task.IsFaulted)
     {
-        UpdateStatus("Google Sign-In Failed: " + task.Exception?.Flatten().Message);
+        // Handle specific exceptions
+        var exception = task.Exception?.Flatten().InnerException;
+        if (exception != null && exception.GetType().ToString().Contains("GoogleSignIn"))
+        {
+            UpdateStatus("Google Sign-In Cancelled");
+        }
+        else
+        {
+            UpdateStatus("Ready to sign in");
+            Debug.LogError("Google Sign-In Error: " + exception?.Message);
+        }
+        
+        // Reset sign-in state
+        GoogleSignIn.DefaultInstance.SignOut();
         return;
     }
 
     try
     {
         GoogleSignInUser googleUser = task.Result;
-        if (googleUser != null && !string.IsNullOrEmpty(googleUser.AuthCode))
+        if (googleUser != null && !string.IsNullOrEmpty(googleUser.IdToken))
         {
-            string authCode = googleUser.AuthCode;
-            
-            // Add debug information
-            Debug.Log($"Auth Code: {(authCode.Length > 10 ? authCode.Substring(0, 10) + "..." : authCode)}");
-            Debug.Log($"ID Token: {(googleUser.IdToken?.Length > 10 ? googleUser.IdToken.Substring(0, 10) + "..." : googleUser.IdToken)}");
+            string idToken = googleUser.IdToken;
+
+            Debug.Log($"ID Token: {(idToken.Length > 10 ? idToken.Substring(0, 10) + "..." : idToken)}");
             Debug.Log($"Email: {googleUser.Email}");
-            
+
             UpdateStatus("Google Sign-In Success: " + googleUser.Email);
 
-            // Send AuthCode to backend
-            StartCoroutine(CheckUserInDatabase(authCode));
+            // Send IdToken (not AuthCode) to backend
+            StartCoroutine(CheckUserInDatabase(idToken));
         }
         else
         {
-            UpdateStatus("Google Sign-In Failed: Missing AuthCode");
-            Debug.LogError("Google Sign-In returned null user or empty AuthCode");
+            UpdateStatus("Google Sign-In Failed: Missing IdToken");
+            Debug.LogError("Google Sign-In returned null user or empty IdToken");
         }
     }
     catch (Exception ex)
@@ -126,11 +139,11 @@ public class GoogleLoginManager : MonoBehaviour
     }
 }
 
-    private IEnumerator CheckUserInDatabase(string authCode)
+private IEnumerator CheckUserInDatabase(string idToken)
 {
     UpdateStatus("Verifying with server...");
 
-    var requestData = new AuthCodeRequest { code = authCode };
+    var requestData = new IdTokenRequest { idToken = idToken };
     string jsonData = JsonUtility.ToJson(requestData);
     byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
 
@@ -139,7 +152,7 @@ public class GoogleLoginManager : MonoBehaviour
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
-        request.timeout = 30; // Increased timeout to 30 seconds
+        request.timeout = 30;
 
         Debug.Log($"Sending request to: {databaseCheckUrl}");
         Debug.Log($"Request data: {jsonData}");
@@ -151,10 +164,19 @@ public class GoogleLoginManager : MonoBehaviour
 
         if (request.result != UnityWebRequest.Result.Success)
         {
-            UpdateStatus($"Server Error: {request.error}");
-            Debug.LogError($"Request failed: {request.error}");
-            Debug.LogError($"Response code: {request.responseCode}");
-            Debug.LogError($"Response body: {rawResponse}");
+            if (request.responseCode == 404 || request.responseCode == 401)
+            {
+                UpdateStatus("Student Not Registered!");
+                // Sign out from Google to allow account picker to appear again
+                GoogleSignIn.DefaultInstance.SignOut();
+            }
+            else
+            {
+                UpdateStatus($"Server Error: {request.error}");
+                Debug.LogError($"Request failed: {request.error}");
+                Debug.LogError($"Response code: {request.responseCode}");
+                Debug.LogError($"Response body: {rawResponse}");
+            }
             yield break;
         }
 
@@ -164,16 +186,15 @@ public class GoogleLoginManager : MonoBehaviour
 
             if (response != null && response.success)
             {
-                Debug.Log("✅ Login successful for " + response.user.email);
+                Debug.Log("Login successful for " + response.user.email);
 
-                // Save user data
+                // Save user data for persistence
                 PlayerPrefs.SetString("AuthToken", response.token);
                 PlayerPrefs.SetString("UserEmail", response.user.email);
                 if (!string.IsNullOrEmpty(response.user.studentId))
                     PlayerPrefs.SetString("StudentId", response.user.studentId);
                 PlayerPrefs.Save();
 
-                // Save user data to StudentIdManager
                 StudentIdManager.Instance.SaveUserDataFromGoogleAuth(
                     response.user.email,
                     response.user.studentId ?? response.user.id,
@@ -181,13 +202,14 @@ public class GoogleLoginManager : MonoBehaviour
                 );
 
                 UpdateStatus("Login successful! Loading...");
-                SceneManager.LoadScene(nextSceneName);
+                Invoke("LoadScene", 2f);
             }
             else
             {
-                string errorMsg = response?.message ?? "Authentication failed";
-                UpdateStatus("❌ " + errorMsg);
-                Debug.LogError($"Authentication failed: {errorMsg}");
+                UpdateStatus("Student Not Registered!");
+                Debug.LogError($"Authentication failed: {response?.message ?? "User not found"}");
+                // Sign out from Google to allow account picker to appear again
+                GoogleSignIn.DefaultInstance.SignOut();
             }
         }
         catch (Exception ex)
@@ -199,37 +221,42 @@ public class GoogleLoginManager : MonoBehaviour
     }
 }
 
-    private void UpdateStatus(string message)
-    {
-        Debug.Log($"[GoogleLogin] {message}");
-        if (statusText != null) statusText.text = message;
-    }
+private void LoadScene()
+{
+    SceneManager.LoadScene(nextSceneName);
+}
 
-    // === Request/Response Models ===
-    [Serializable]
-    private class AuthCodeRequest
-    {
-        public string code;
-    }
+// === Request/Response Models ===
+[Serializable]
+private class IdTokenRequest
+{
+    public string idToken;
+}
 
-    [Serializable]
-    private class BackendResponse
-    {
-        public bool success;
-        public string message;
-        public string token;
-        public UserData user;
-    }
+[Serializable]
+private class BackendResponse
+{
+    public bool success;
+    public string message;
+    public string token;
+    public UserData user;
+}
 
-    [Serializable]
-    private class UserData
-    {
-        public string id;
-        public string email;
-        public string name;
-        public string[] roles;
-        public string profilePhotoUrl;
-        public string studentId;
-        public bool isStudent;
-    }
+[Serializable]
+private class UserData
+{
+    public string id;
+    public string email;
+    public string name;
+    public string[] roles;
+    public string profilePhotoUrl;
+    public string studentId;
+    public bool isStudent;
+}
+
+private void UpdateStatus(string message)
+{
+    Debug.Log($"[GoogleLogin] {message}");
+    if (statusText != null) statusText.text = message;
+}
 }

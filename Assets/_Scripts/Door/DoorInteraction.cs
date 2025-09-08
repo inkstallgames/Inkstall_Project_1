@@ -30,6 +30,7 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private Button throwButton;
     [SerializeField] private TextMeshProUGUI gameTimer;
     [SerializeField] private GameObject bombsUI;
+    [SerializeField] private GameObject remainingAliensCount;
 
     // State
     private bool isDoorOpen = false;
@@ -204,6 +205,10 @@ public class DoorInteraction : MonoBehaviour
             {
                 gameTimer.gameObject.SetActive(true);
             }
+        }
+        if(remainingAliensCount != null)
+        {
+            remainingAliensCount.gameObject.SetActive(true);
         }
     }
 

@@ -13,7 +13,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private DoorInteraction thisRoomDoor;
     [SerializeField] private DoorInteraction nextDoorToUnlock;  // Reference to the next door to unlock
     private bool isFinalRoom = false;          // Is this the final room in the level?
-    private string roomID;                     // Unique identifier for this room
+    public string roomID;                     // Unique identifier for this room
     private int doorId;                        // Door ID for ProgressManager
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props

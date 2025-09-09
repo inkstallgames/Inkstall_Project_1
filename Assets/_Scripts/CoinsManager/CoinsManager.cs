@@ -14,9 +14,11 @@ public class CoinsManager : MonoBehaviour
     public string userId;
     public int currentCoins;
 
-    private string getCoinsURL = "https://api.inkstall.in/api/student-portal/studentpoints/";
-    private string spendCoinsURL = "https://api.inkstall.in/api/student-portal/studentpoints/deduct-points";
-
+    // API Endpoints - make sure these match your backend configuration
+    private const string BASE_URL = "https://api.inkstall.in";
+    private string getCoinsURL => $"{BASE_URL}/api/student-portal/studentpoints/";
+    private string spendCoinsURL => $"{BASE_URL}/api/student-portal/studentpoints/deduct-points";
+    
     void Awake()
     {
         if (Instance == null)
@@ -33,18 +35,21 @@ public class CoinsManager : MonoBehaviour
     }
 
     private void Start()
-    {
-        // Get the user ID from GameDataManager or PlayerPrefs
+    {        
+        // Get the user ID from StudentIdManager or PlayerPrefs
         GetUserId();
 
         // Now fetch the data
         if (!string.IsNullOrEmpty(userId))
         {
+            Debug.Log($"[CoinsManager] Starting to fetch coins for user: {userId}");
             FetchCoins();
         }
         else
         {
-            Debug.LogWarning("[CoinsManager] No user ID available. Coins cannot be fetched.");
+            Debug.LogError("[CoinsManager] No user ID available. Coins cannot be fetched.");
+            // Try to get user ID again after a delay
+            StartCoroutine(DelayedFetchAttempt());
         }
     }
 
@@ -89,12 +94,31 @@ public class CoinsManager : MonoBehaviour
     private void HandleStudentIdLoaded(string id)
     {
         // Unsubscribe to avoid multiple calls
-        StudentIdManager.Instance.OnStudentIdLoaded -= HandleStudentIdLoaded;
+        if (StudentIdManager.Instance != null)
+        {
+            StudentIdManager.Instance.OnStudentIdLoaded -= HandleStudentIdLoaded;
+        }
         
         // Set the user ID and fetch coins
         userId = id;
         Debug.Log($"[CoinsManager] User ID loaded from event: {userId}");
+        
         FetchCoins();
+    }
+    
+    private IEnumerator DelayedFetchAttempt()
+    {
+        Debug.Log("[CoinsManager] Will retry fetching user ID in 2 seconds...");
+        yield return new WaitForSeconds(2f);
+        
+        // Try to get user ID again
+        GetUserId();
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+            FetchCoins();
+        }
+
     }
 
     public void FetchCoins()
@@ -113,57 +137,130 @@ public class CoinsManager : MonoBehaviour
 
     IEnumerator FetchCoinsFromServer()
     {
-        Debug.Log("[CoinsManager] Starting API call to fetch coins...");
-        Debug.Log("[CoinsManager] Current coins BEFORE fetch: " + currentCoins);
+        Debug.Log("[CoinsManager] ===== Starting API Request =====");
+        Debug.Log($"[CoinsManager] User ID being used: {userId}");
+        Debug.Log($"[CoinsManager] Current coins BEFORE fetch: {currentCoins}");
 
         string url = getCoinsURL + userId;
-        Debug.Log($"[CoinsManager] URL: {url}");
+        Debug.Log($"[CoinsManager] Full API Endpoint: {url}");
+        
+        // Log environment information
+        Debug.Log($"[CoinsManager] Application Version: {Application.version}");
+        Debug.Log($"[CoinsManager] Platform: {Application.platform}");
+        Debug.Log($"[CoinsManager] Is Editor: {Application.isEditor}");
 
         UnityWebRequest request = UnityWebRequest.Get(url);
-        request.timeout = 15; // Set timeout to 15 seconds
-        Debug.Log("[CoinsManager] Web request created, sending...");
+        request.timeout = 15;
+        
+        // Add headers for debugging
+        request.SetRequestHeader("X-Debug-Request-ID", System.Guid.NewGuid().ToString());
+        request.SetRequestHeader("X-Client-Version", Application.version);
+        
+        // Check if we have an auth token
+        string authToken = PlayerPrefs.GetString("auth_token", "");
+        if (!string.IsNullOrEmpty(authToken))
+        {
+            request.SetRequestHeader("Authorization", $"Bearer {authToken}");
+            Debug.Log("[CoinsManager] Added Authorization header to request");
+        }
+        else
+        {
+            Debug.LogWarning("[CoinsManager] No auth token found in PlayerPrefs");
+        }
 
+        Debug.Log("[CoinsManager] Sending request to server...");
         float startTime = Time.time;
         yield return request.SendWebRequest();
         float endTime = Time.time;
 
-        Debug.Log("[CoinsManager] Request completed in " + (endTime - startTime).ToString("F2") + " seconds");
-        Debug.Log("[CoinsManager] Response code: " + request.responseCode);
+        Debug.Log($"[CoinsManager] Request completed in {(endTime - startTime):F2} seconds");
+        Debug.Log($"[CoinsManager] Response Code: {request.responseCode}");
+        Debug.Log($"[CoinsManager] Response Error: {request.error}");
+        
+        // Log response headers if available
+        if (request.GetResponseHeaders() != null)
+        {
+            Debug.Log("[CoinsManager] Response Headers:");
+            foreach (var header in request.GetResponseHeaders())
+            {
+                Debug.Log($"[CoinsManager]   {header.Key}: {header.Value}");
+            }
+        }
+        Debug.Log($"[CoinsManager] Response code: {request.responseCode}");
+        Debug.Log($"[CoinsManager] Error (if any): {request.error}");
 
         if (request.result == UnityWebRequest.Result.Success)
         {
             string json = request.downloadHandler.text;
-            Debug.Log("[CoinsManager] API Response received: " + json);
+            Debug.Log($"[CoinsManager] Raw API Response: {json}");
+            
+            // Log the raw response for debugging
+            Debug.Log($"[CoinsManager] Response Length: {json.Length} characters");
+            Debug.Log($"[CoinsManager] Response Contains 'error': {json.ToLower().Contains("error")}");
+            Debug.Log($"[CoinsManager] Response Contains 'not found': {json.ToLower().Contains("not found")}");
+            
+            // Check if the response is valid JSON
+            if (string.IsNullOrWhiteSpace(json) || !json.Trim().StartsWith("{"))
+            {
+                Debug.LogError("[CoinsManager] Invalid JSON response received");
+                yield break;
+            }
 
             try
             {
-                // Parse the response to get the currentMonthPoints.totalPoints value
+                Debug.Log("[CoinsManager] Attempting to parse JSON response...");
                 CoinResponse res = JsonUtility.FromJson<CoinResponse>(json);
-                Debug.Log("[CoinsManager] Successfully parsed JSON response");
-
-                if (res != null && res.currentMonthPoints != null)
+                
+                if (res == null)
                 {
-                    Debug.Log("[CoinsManager] COINS FETCHED FROM API: " + res.currentMonthPoints.totalPoints);
+                    Debug.LogError("[CoinsManager] Failed to parse JSON - res is null");
+                    yield break;
+                }
+
+                Debug.Log($"[CoinsManager] JSON parsed successfully. Success: {res.success}");
+                Debug.Log($"[CoinsManager] currentMonthPoints is null: {res.currentMonthPoints == null}");
+
+                if (res.currentMonthPoints != null)
+                {
+                    Debug.Log("[CoinsManager] Current Month Points Data:");
+                    Debug.Log($"- _id: {res.currentMonthPoints._id}");
+                    Debug.Log($"- studentId: {res.currentMonthPoints.studentId}");
+                    Debug.Log($"- month: {res.currentMonthPoints.month}");
+                    Debug.Log($"- totalPoints: {res.currentMonthPoints.totalPoints}");
+                    Debug.Log($"- points: {res.currentMonthPoints.points}");
 
                     int oldCoins = currentCoins;
-                    currentCoins = res.currentMonthPoints.totalPoints;
-
-                    Debug.Log("[CoinsManager] Coins updated: " + oldCoins + " → " + currentCoins);
+                    int newCoins = res.currentMonthPoints.totalPoints;
+                    Debug.Log($"[CoinsManager] Updating coins: {oldCoins} → {newCoins}");
+                    
+                    currentCoins = newCoins;
+                    
+                    // Force immediate UI update
+                    Debug.Log("[CoinsManager] Calling UpdateCoinUI...");
                     UpdateCoinUI();
-
-                    // Notify listeners that coins have been updated
+                    
+                    // Notify listeners
+                    Debug.Log("[CoinsManager] Invoking OnCoinsUpdated event...");
                     OnCoinsUpdated?.Invoke();
                     Debug.Log("[CoinsManager] OnCoinsUpdated event invoked");
+                    
+                    // Double check the UI was updated
+                    if (coinText != null)
+                    {
+                        Debug.Log($"[CoinsManager] Final UI check - coinText.text: {coinText.text}");
+                    }
                 }
                 else
                 {
-                    Debug.LogError("[CoinsManager] Failed to get currentMonthPoints from response");
+                    Debug.LogError("[CoinsManager] currentMonthPoints is null in the response");
+                    Debug.LogError($"[CoinsManager] Full response: {json}");
                 }
             }
             catch (System.Exception e)
             {
-                Debug.LogError("[CoinsManager] Error parsing JSON response: " + e.Message);
-                Debug.LogError("[CoinsManager] JSON that failed to parse: " + json);
+                Debug.LogError($"[CoinsManager] Exception while processing response: {e}");
+                Debug.LogError($"[CoinsManager] Stack trace: {e.StackTrace}");
+                Debug.LogError($"[CoinsManager] Raw JSON that caused error: {json}");
             }
         }
         else
@@ -220,14 +317,44 @@ public class CoinsManager : MonoBehaviour
 
     public void UpdateCoinUI()
     {
-        if (coinText != null)
+        Debug.Log($"[CoinsManager] UpdateCoinUI called. Current coins: {currentCoins}");
+        
+        if (coinText == null)
         {
-            coinText.text = currentCoins.ToString();
-            Debug.Log("[CoinsManager] UI updated with coins: " + currentCoins);
+            Debug.LogError("[CoinsManager] ERROR: coinText reference is null! Cannot update UI.");
+            
+            // Try to find the TextMeshProUGUI component if it's missing
+            coinText = FindObjectOfType<TextMeshProUGUI>();
+            if (coinText != null)
+            {
+                Debug.Log("[CoinsManager] Found TextMeshProUGUI component in scene");
+            }
+            else
+            {
+                Debug.LogError("[CoinsManager] Could not find TextMeshProUGUI component in scene");
+                return;
+            }
         }
-        else
+        
+        string newTextValue = currentCoins.ToString();
+        Debug.Log($"[CoinsManager] Setting coinText.text to: {newTextValue}");
+        
+        try
         {
-            Debug.LogWarning("[CoinsManager] coinText is null, cannot update UI");
+            coinText.text = newTextValue;
+            Debug.Log($"[CoinsManager] UI updated successfully. New value: {coinText.text}");
+            
+            // Force update the canvas
+            if (coinText.canvas != null)
+            {
+                Canvas.ForceUpdateCanvases();
+                Debug.Log("[CoinsManager] Canvas update forced");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[CoinsManager] ERROR updating UI: {e.Message}");
+            Debug.LogError($"[CoinsManager] Stack trace: {e.StackTrace}");
         }
     }
 

@@ -101,8 +101,6 @@ public class RoomManager : MonoBehaviour
     {
         if (aliensRemaining <= 0)
         {
-            Debug.Log($"All aliens caught in room {gameObject.name}! Room completed!");
-            
             // Save room completion status to online database
             if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
             {

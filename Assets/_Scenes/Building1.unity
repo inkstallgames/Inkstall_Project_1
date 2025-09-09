@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306a4b653742dd24eb770f020132ae08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfAliens: 2
+  numberOfAliens: 1
   aliensRemaining: 0
   thisRoomDoor: {fileID: 5248679429457064833}
   nextDoorToUnlock: {fileID: 6096234473738546704}

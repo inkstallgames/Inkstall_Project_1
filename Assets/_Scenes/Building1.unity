@@ -3867,37 +3867,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   studentData:
-    doors:
-    - doorId: 1
-      name: 
-      isUnlockable: 0
-      isRoomCompleted: 0
-      description: 
-    - doorId: 2
-      name: 
-      isUnlockable: 0
-      isRoomCompleted: 0
-      description: 
-    - doorId: 3
-      name: 
-      isUnlockable: 0
-      isRoomCompleted: 0
-      description: 
-    - doorId: 4
-      name: 
-      isUnlockable: 0
-      isRoomCompleted: 0
-      description: 
-    - doorId: 5
-      name: 
-      isUnlockable: 0
-      isRoomCompleted: 0
-      description: 
-    - doorId: 6
-      name: 
-      isUnlockable: 0
-      isRoomCompleted: 0
-      description: 
+    doors: []
   isDataLoaded: 0
 --- !u!1 &823488689
 GameObject:

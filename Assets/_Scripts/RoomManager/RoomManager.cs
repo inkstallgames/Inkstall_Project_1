@@ -114,32 +114,51 @@ public class RoomManager : MonoBehaviour
     {
         if (aliensRemaining <= 0)
         {
+            Debug.Log("[RoomManager] Room completed! All aliens caught.");
+            
             // Save room completion status to online database
             if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded && thisRoomDoor != null)
             {
                 int currentDoorID = thisRoomDoor.GetDoorID();
                 
-                // Mark the room as completed in the online database
-                thisRoomDoor.SetRoomCompleted(true);
+                // Mark the current door's room as completed in the database
+                // This will set isUnlockable=false and isRoomCompleted=true
+                ProgressManager.Instance.StartCoroutine(
+                    ProgressManager.Instance.UpdateDoorStatus(currentDoorID, false, true)
+                );
                 
-                // If we have a next door to unlock, set it as unlockable
+                Debug.Log("[RoomManager] Updated current door " + currentDoorID + " status: isUnlockable=false, isRoomCompleted=true");
+                
+                // If we have a next door to unlock, set it as unlockable in the database
                 if (nextDoorToUnlock != null)
                 {
                     int nextDoorID = nextDoorToUnlock.GetDoorID();
-                    nextDoorToUnlock.SetUnlockable(true);
-                    Debug.Log($"[RoomManager] Next door {nextDoorToUnlock.gameObject.name} (ID: {nextDoorID}) is now unlockable!");
                     
-                    // Use ProgressManager to update both doors in the database
-                    ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
-                    Debug.Log($"[RoomManager] Saved room completion status for door ID {currentDoorID} to online database");
+                    // Update the next door to be unlockable but not completed
+                    // This will set isUnlockable=true and keep isRoomCompleted=false
+                    ProgressManager.Instance.StartCoroutine(
+                        ProgressManager.Instance.UpdateDoorStatus(nextDoorID, true, false)
+                    );
+                    
+                    Debug.Log("[RoomManager] Updated next door " + nextDoorID + " status: isUnlockable=true, isRoomCompleted=false");
+                    
+                    // Update the door objects to reflect the new state
+                    thisRoomDoor.isUnlockable = false;
+                    thisRoomDoor.isRoomCompleted = true;
+                    thisRoomDoor.UpdateDoorVisuals();
+                    
+                    nextDoorToUnlock.isUnlockable = true;
+                    nextDoorToUnlock.isRoomCompleted = false;
+                    nextDoorToUnlock.UpdateDoorVisuals();
                 }
                 else
                 {
                     // Just update the current door if there's no next door
-                    ProgressManager.Instance.StartCoroutine(
-                        ProgressManager.Instance.UpdateDoorStatus(currentDoorID, thisRoomDoor.isUnlockable, true)
-                    );
-                    Debug.Log($"[RoomManager] Updated completion status for door ID {currentDoorID} (no next door found)");
+                    thisRoomDoor.isUnlockable = false;
+                    thisRoomDoor.isRoomCompleted = true;
+                    thisRoomDoor.UpdateDoorVisuals();
+                    
+                    Debug.Log("[RoomManager] No next door found to unlock");
                 }
             }
             else
@@ -151,7 +170,7 @@ public class RoomManager : MonoBehaviour
             if (CoinsManager.Instance != null)
             {
                 CoinsManager.Instance.AddCoins(200, "Room Completed");
-                Debug.Log($"[RoomManager] Added 200 coins for completing room {roomID}");
+                Debug.Log("[RoomManager] Added 200 coins for completing room " + roomID);
             }
             else
             {

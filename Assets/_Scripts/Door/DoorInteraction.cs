@@ -139,10 +139,27 @@ public class DoorInteraction : MonoBehaviour
                 {
                     ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
                     
-                    // Update door state
-                    Debug.Log("[DoorInteraction] ProgressManager now ready after " + elapsed + "s, updating door " + doorID + ", current isUnlockable=" + isUnlockable);
-                    ProgressManager.Instance.UpdateDoorInteraction(this);
-                    Debug.Log("[DoorInteraction] Door " + doorID + " - After delayed DB update: isUnlockable=" + isUnlockable);
+                    // Get door data directly from ProgressManager
+                    DoorData doorData = ProgressManager.Instance.GetDoorData(doorID);
+                    
+                    if (doorData != null)
+                    {
+                        // Update door state from database
+                        Debug.Log("[DoorInteraction] ProgressManager now ready after " + elapsed + "s, updating door " + doorID + ", current isUnlockable=" + isUnlockable);
+                        
+                        isUnlockable = doorData.isUnlockable;
+                        isRoomCompleted = doorData.isRoomCompleted;
+                        
+                        // Update visuals based on the new state
+                        UpdateDoorVisuals();
+                        
+                        Debug.Log("[DoorInteraction] Door " + doorID + " - After delayed DB update: isUnlockable=" + isUnlockable + ", isRoomCompleted=" + isRoomCompleted);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[DoorInteraction] Door " + doorID + " - No door data found in database after waiting");
+                    }
+                    
                     yield break;
                 }
             }
@@ -404,12 +421,13 @@ public class DoorInteraction : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogWarning("[DoorInteraction] Animator on door " + doorID + " doesn't have 'IsUnlockable' parameter!");
+                    // Add the parameter if it doesn't exist (for runtime created animators)
+                    Debug.LogWarning("[DoorInteraction] Animator on door " + doorID + " doesn't have 'IsUnlockable' parameter! This is expected for some doors.");
                 }
             }
             else
             {
-                Debug.LogWarning("[DoorInteraction] No animator found on door " + doorID + "!");
+                Debug.LogWarning("[DoorInteraction] No animator found on door " + doorID + "! This is expected for some doors.");
             }
             
             // If the door is unlockable, make sure it's properly set up

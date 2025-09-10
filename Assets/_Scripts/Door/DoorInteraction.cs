@@ -264,9 +264,14 @@ public class DoorInteraction : MonoBehaviour
             if (gameTimer != null)
             {
                 gameTimer.gameObject.SetActive(true);
+                // Initialize the timer if it exists
+                if (attachedTimer != null)
+                {
+                    attachedTimer.ResumeTimer();
+                }
             }
         }
-        if(remainingAliensCount != null)
+        if (remainingAliensCount != null)
         {
             remainingAliensCount.gameObject.SetActive(true);
         }
@@ -316,18 +321,6 @@ public class DoorInteraction : MonoBehaviour
             audioSource.PlayOneShot(doorUnlockSound);
             isLocked = false;
             lockedDoorAnimator.enabled = false;
-            
-            // Update the door status in the online database
-            if (ProgressManager.Instance != null)
-            {
-                ProgressManager.Instance.StartCoroutine(
-                    ProgressManager.Instance.UpdateDoorStatus(doorID, isUnlockable, isRoomCompleted)
-                );
-            }
-            else
-            {
-                Debug.LogWarning("[DoorInteraction] ProgressManager not available, couldn't update door " + doorID + " status");
-            }
         }
     }
 
@@ -358,7 +351,9 @@ public class DoorInteraction : MonoBehaviour
 
             if (isDoorOpen && shouldStartTimer && attachedTimer != null && attachedTimer.HasBeenTriggered())
             {
-
+                // Timer update logic can go here if needed
+                // For example, you might want to update the timer UI or perform other actions
+                // when the door is open and the timer is running
             }
         }
     }

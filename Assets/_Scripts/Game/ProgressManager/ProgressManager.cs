@@ -244,7 +244,7 @@ public class ProgressManager : MonoBehaviour
     public IEnumerator UpdateDoorStatus(int doorId, bool isUnlockable, bool isRoomCompleted)
     {
         // Correct API endpoint format - this is the key fix
-        string url = $"{baseUrl}/update-door/{studentId}/{doorId}";
+        string url = $"{baseUrl}/{studentId}/{doorId}";
         
         // Create a proper JSON structure that matches the API expectations
         string jsonPayload = $"{{\"isUnlockable\": {isUnlockable.ToString().ToLower()}, \"isRoomCompleted\": {isRoomCompleted.ToString().ToLower()}}}";
@@ -351,6 +351,7 @@ public class ProgressManager : MonoBehaviour
         }
     }
     
+    // Mark a room as completed and unlock the next door
     public void MarkRoomAsCompleted(int doorId)
     {
         Debug.Log($"[ProgressManager] MarkRoomAsCompleted called for door {doorId}");
@@ -369,7 +370,7 @@ public class ProgressManager : MonoBehaviour
         }
         
         // First update the current door (set isUnlockable=false, isRoomCompleted=true)
-        StartCoroutine(UpdateDoorStatusWithRetry(doorId, false, true, 3));
+        UpdateDoorStatusDirect(doorId, false, true);
         
         // Find the next door by ID
         int nextDoorId = doorId + 1;
@@ -379,7 +380,7 @@ public class ProgressManager : MonoBehaviour
         {
             Debug.Log($"[ProgressManager] Found next door {nextDoorId}, updating to unlockable");
             // Update the next door (set isUnlockable=true, keep isRoomCompleted as is)
-            StartCoroutine(UpdateDoorStatusWithRetry(nextDoorId, true, nextDoor.isRoomCompleted, 3));
+            UpdateDoorStatusDirect(nextDoorId, true, nextDoor.isRoomCompleted);
         }
         else
         {
@@ -387,72 +388,195 @@ public class ProgressManager : MonoBehaviour
         }
         
         // Force reload data from server after updates
-        StartCoroutine(ReloadDataAfterDelay(1.5f));
+        StartCoroutine(ReloadDataAfterDelay(1.0f));
+        
+        // Verify the updates were applied
+        StartCoroutine(VerifyDatabaseUpdates(doorId, false, true));
+        if (nextDoor != null)
+        {
+            StartCoroutine(VerifyDatabaseUpdates(nextDoorId, true, nextDoor.isRoomCompleted));
+        }
     }
     
-    // Update door status with retry mechanism
-    private IEnumerator UpdateDoorStatusWithRetry(int doorId, bool isUnlockable, bool isRoomCompleted, int maxRetries)
+    // Verify that database updates were applied correctly
+    private IEnumerator VerifyDatabaseUpdates(int doorId, bool expectedUnlockable, bool expectedCompleted)
     {
-        int retries = 0;
-        bool success = false;
+        // Wait a bit to ensure the server has processed the update
+        yield return new WaitForSeconds(2.0f);
         
-        while (!success && retries < maxRetries)
+        string url = $"{baseUrl}/student/{studentId}";
+        Debug.Log($"[ProgressManager] Verifying database updates for door {doorId} at URL: {url}");
+        
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
-            string url = $"{baseUrl}/update-door/{studentId}/{doorId}";
+            yield return webRequest.SendWebRequest();
             
-            // Create a proper JSON structure that matches the API expectations
-            string jsonPayload = $"{{\"isUnlockable\": {isUnlockable.ToString().ToLower()}, \"isRoomCompleted\": {isRoomCompleted.ToString().ToLower()}}}";
-            
-            Debug.Log($"[ProgressManager] Attempt {retries+1}: Sending update to URL: {url}");
-            Debug.Log($"[ProgressManager] Payload: {jsonPayload}");
-            
-            using (UnityWebRequest webRequest = UnityWebRequest.Put(url, jsonPayload))
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
+                webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
-                webRequest.SetRequestHeader("Content-Type", "application/json");
+                Debug.LogError($"[ProgressManager] Error verifying database updates: {webRequest.error}");
+            }
+            else
+            {
+                string jsonResponse = webRequest.downloadHandler.text;
+                Debug.Log($"[ProgressManager] Database verification response: {jsonResponse}");
                 
-                yield return webRequest.SendWebRequest();
-                
-                if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
-                    webRequest.result == UnityWebRequest.Result.ProtocolError)
+                try
                 {
-                    Debug.LogError($"[ProgressManager] Error updating door status: {webRequest.error}");
-                    Debug.LogError($"[ProgressManager] Response code: {webRequest.responseCode}");
-                    if (!string.IsNullOrEmpty(webRequest.downloadHandler.text))
-                    {
-                        Debug.LogError($"[ProgressManager] Response: {webRequest.downloadHandler.text}");
-                    }
+                    StudentDoorsData verifiedData = JsonConvert.DeserializeObject<StudentDoorsData>(jsonResponse);
+                    DoorData verifiedDoor = verifiedData.doors.Find(d => d.doorId == doorId);
                     
-                    retries++;
-                    yield return new WaitForSeconds(0.5f);
-                }
-                else
-                {
-                    Debug.Log($"[ProgressManager] Door {doorId} status updated successfully");
-                    Debug.Log($"[ProgressManager] Response: {webRequest.downloadHandler.text}");
-                    
-                    // Update local data
-                    if (studentData != null && studentData.doors != null)
+                    if (verifiedDoor != null)
                     {
-                        DoorData door = studentData.doors.Find(d => d.doorId == doorId);
-                        if (door != null)
+                        bool updateSuccessful = verifiedDoor.isUnlockable == expectedUnlockable && 
+                                               verifiedDoor.isRoomCompleted == expectedCompleted;
+                        
+                        Debug.Log($"[ProgressManager] Verification for door {doorId} - " +
+                                 $"Expected: isUnlockable={expectedUnlockable}, isRoomCompleted={expectedCompleted}, " +
+                                 $"Actual: isUnlockable={verifiedDoor.isUnlockable}, isRoomCompleted={verifiedDoor.isRoomCompleted}, " +
+                                 $"Success: {updateSuccessful}");
+                        
+                        if (!updateSuccessful)
                         {
-                            door.isUnlockable = isUnlockable;
-                            door.isRoomCompleted = isRoomCompleted;
-                            Debug.Log($"[ProgressManager] Local data updated for door {doorId}: isUnlockable={door.isUnlockable}, isRoomCompleted={door.isRoomCompleted}");
+                            Debug.LogError($"[ProgressManager] Door {doorId} update verification failed! Database values don't match expected values.");
+                            Debug.LogError($"[ProgressManager] Attempting to update again with direct API call...");
+                            
+                            // Try a different API endpoint as a fallback
+                            StartCoroutine(UpdateDoorStatusFallback(doorId, expectedUnlockable, expectedCompleted));
                         }
+                        else
+                        {
+                            Debug.Log($"[ProgressManager] Door {doorId} update verified successfully!");
+                        }
+                        
+                        // Update our local data with the verified data
+                        studentData = verifiedData;
+                        isDataLoaded = true;
+                        
+                        // Notify subscribers that data has been updated
+                        OnDataLoaded?.Invoke();
                     }
-                    
-                    success = true;
+                    else
+                    {
+                        Debug.LogWarning($"[ProgressManager] Door {doorId} not found in verification data");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"[ProgressManager] Error parsing verification data: {e.Message}");
                 }
             }
         }
+    }
+    
+    // Fallback method to update door status using a different API endpoint
+    private IEnumerator UpdateDoorStatusFallback(int doorId, bool isUnlockable, bool isRoomCompleted)
+    {
+        // Try a different API endpoint format
+        string url = $"{baseUrl}/student/{studentId}";
         
-        if (!success)
+        // Create a proper JSON structure that matches the API expectations
+        string jsonPayload = $"{{\"isUnlockable\": {isUnlockable.ToString().ToLower()}, \"isRoomCompleted\": {isRoomCompleted.ToString().ToLower()}}}";
+        
+        Debug.Log($"[ProgressManager] Fallback - Sending update to URL: {url}");
+        Debug.Log($"[ProgressManager] Fallback - Payload: {jsonPayload}");
+        
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonPayload);
+        
+        using (UnityWebRequest webRequest = new UnityWebRequest(url, "PUT"))
         {
-            Debug.LogError($"[ProgressManager] Failed to update door {doorId} after {maxRetries} attempts");
+            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+            
+            yield return webRequest.SendWebRequest();
+            
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
+                webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError($"[ProgressManager] Fallback - Error updating door status: {webRequest.error}");
+                Debug.LogError($"[ProgressManager] Fallback - Response code: {webRequest.responseCode}");
+                if (!string.IsNullOrEmpty(webRequest.downloadHandler.text))
+                {
+                    Debug.LogError($"[ProgressManager] Fallback - Response: {webRequest.downloadHandler.text}");
+                }
+            }
+            else
+            {
+                Debug.Log($"[ProgressManager] Fallback - Door {doorId} status updated successfully");
+                Debug.Log($"[ProgressManager] Fallback - Response: {webRequest.downloadHandler.text}");
+                
+                // Force reload data to verify changes
+                StartCoroutine(ReloadDataAfterDelay(1.0f));
+            }
         }
     }
     
+    // Update door status with direct HTTP request
+    private void UpdateDoorStatusDirect(int doorId, bool isUnlockable, bool isRoomCompleted)
+    {
+        // Exact API endpoint format from the screenshot
+        string url = $"{baseUrl}/{studentId}/{doorId}";
+        
+        // Create the exact JSON structure from the screenshot
+        string jsonPayload = "{\n" +
+            $"  \"isUnlockable\": {isUnlockable.ToString().ToLower()},\n" +
+            $"  \"isRoomCompleted\": {isRoomCompleted.ToString().ToLower()}\n" +
+            "}";
+        
+        Debug.Log($"[ProgressManager] Sending update to URL: {url}");
+        Debug.Log($"[ProgressManager] Payload: {jsonPayload}");
+        
+        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonPayload);
+        
+        using (UnityWebRequest webRequest = new UnityWebRequest(url, "PUT"))
+        {
+            webRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+            
+            webRequest.SendWebRequest();
+            
+            // Wait for completion (this is not ideal but ensures sequential execution)
+            while (!webRequest.isDone)
+            {
+                // Small delay to prevent freezing
+                System.Threading.Thread.Sleep(50);
+            }
+            
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
+                webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError($"[ProgressManager] Error updating door status: {webRequest.error}");
+                Debug.LogError($"[ProgressManager] Response code: {webRequest.responseCode}");
+                if (!string.IsNullOrEmpty(webRequest.downloadHandler.text))
+                {
+                    Debug.LogError($"[ProgressManager] Response: {webRequest.downloadHandler.text}");
+                }
+            }
+            else
+            {
+                Debug.Log($"[ProgressManager] Door {doorId} status updated successfully");
+                Debug.Log($"[ProgressManager] Response: {webRequest.downloadHandler.text}");
+                
+                // Update local data
+                if (studentData != null && studentData.doors != null)
+                {
+                    DoorData door = studentData.doors.Find(d => d.doorId == doorId);
+                    if (door != null)
+                    {
+                        door.isUnlockable = isUnlockable;
+                        door.isRoomCompleted = isRoomCompleted;
+                        Debug.Log($"[ProgressManager] Local data updated for door {doorId}: isUnlockable={door.isUnlockable}, isRoomCompleted={door.isRoomCompleted}");
+                    }
+                }
+            }
+            
+            // Dispose of the request
+            webRequest.Dispose();
+        }
+    }
+
     // Force reload data from server after a delay
     private IEnumerator ReloadDataAfterDelay(float delay)
     {

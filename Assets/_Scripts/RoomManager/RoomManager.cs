@@ -12,14 +12,20 @@ public class RoomManager : MonoBehaviour
     [Header("Door & Room Setting")]
     [SerializeField] private DoorInteraction thisRoomDoor;
     [SerializeField] private DoorInteraction nextDoorToUnlock;  // Reference to the next door to unlock
-    private bool isFinalRoom = false;          // Is this the final room in the level?
+    [SerializeField] private bool isFinalRoom = false;          // Is this the final room in the level?
     public string roomID;                     // Unique identifier for this room
-    private int doorId;                        // Door ID for ProgressManager
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props
 
     void Start()
     {
+        // Validate door references
+        if (thisRoomDoor == null)
+        {
+            Debug.LogError($"[RoomManager] {gameObject.name} is missing thisRoomDoor reference!");
+            return;
+        }
+
         // Collect all children
         List<Transform> children = new List<Transform>();
         foreach (Transform child in transform)
@@ -48,10 +54,17 @@ public class RoomManager : MonoBehaviour
         }
         
         // Check if room is already completed in database
-        if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
+        if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded && thisRoomDoor != null)
         {
             // Check if this door is marked as completed in the online database
-            var doorData = ProgressManager.Instance.GetDoorData(doorId);
+            int doorID = thisRoomDoor.GetDoorID();
+            var doorData = ProgressManager.Instance.GetDoorData(doorID);
+            
+            if (doorData != null && doorData.isRoomCompleted)
+            {
+                Debug.Log($"[RoomManager] Room with door ID {doorID} is already completed in database");
+                aliensRemaining = 0; // Room is already completed
+            }
         }
 
         for (int i = 0; i < alienCount; i++)
@@ -102,17 +115,36 @@ public class RoomManager : MonoBehaviour
         if (aliensRemaining <= 0)
         {
             // Save room completion status to online database
-            if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
+            if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded && thisRoomDoor != null)
             {
+                int currentDoorID = thisRoomDoor.GetDoorID();
+                
                 // Mark the room as completed in the online database
-                ProgressManager.Instance.MarkRoomAsCompleted(doorId);
                 thisRoomDoor.SetRoomCompleted(true);
-                nextDoorToUnlock.SetUnlockable(true);  
-                Debug.Log($"[RoomManager] Saved room completion status for door ID {doorId} to online database");
+                
+                // If we have a next door to unlock, set it as unlockable
+                if (nextDoorToUnlock != null)
+                {
+                    int nextDoorID = nextDoorToUnlock.GetDoorID();
+                    nextDoorToUnlock.SetUnlockable(true);
+                    Debug.Log($"[RoomManager] Next door {nextDoorToUnlock.gameObject.name} (ID: {nextDoorID}) is now unlockable!");
+                    
+                    // Use ProgressManager to update both doors in the database
+                    ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
+                    Debug.Log($"[RoomManager] Saved room completion status for door ID {currentDoorID} to online database");
+                }
+                else
+                {
+                    // Just update the current door if there's no next door
+                    ProgressManager.Instance.StartCoroutine(
+                        ProgressManager.Instance.UpdateDoorStatus(currentDoorID, thisRoomDoor.isUnlockable, true)
+                    );
+                    Debug.Log($"[RoomManager] Updated completion status for door ID {currentDoorID} (no next door found)");
+                }
             }
             else
             {
-                Debug.LogWarning("[RoomManager] ProgressManager not ready, couldn't save room completion status");
+                Debug.LogWarning("[RoomManager] ProgressManager not ready or door reference missing, couldn't save room completion status");
             }
             
             // Add 200 coins/points for completing the room
@@ -124,14 +156,6 @@ public class RoomManager : MonoBehaviour
             else
             {
                 Debug.LogWarning("[RoomManager] CoinsManager instance not found, couldn't add coins");
-            }
-            
-            // Unlock the next door if specified
-            if (nextDoorToUnlock != null)
-            {
-                nextDoorToUnlock.SetUnlockable(true);
-                nextDoorToUnlock.SetRoomCompleted(true);
-                Debug.Log($"Next door {nextDoorToUnlock.gameObject.name} is now unlockable!");
             }
             
             // If this is the final room, trigger game win

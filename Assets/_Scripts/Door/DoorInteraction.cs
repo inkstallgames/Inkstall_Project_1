@@ -65,56 +65,99 @@ public class DoorInteraction : MonoBehaviour
 
     private void Start()
     {
-        // Load door states from online database
-        if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
+        try
         {
-            // Use ProgressManager to get door state
-            Debug.Log($"[DoorInteraction] Door {doorID} - ProgressManager already ready at Start, current isUnlockable={isUnlockable}");
+            // Subscribe to the OnDataLoaded event to update door state when data is loaded
+            ProgressManager.OnDataLoaded += OnProgressDataLoaded;
             
-            // Ensure door data exists in database
-            ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
-            
-            // Update door state from database
-            ProgressManager.Instance.UpdateDoorInteraction(this);
-            
-            Debug.Log($"[DoorInteraction] Door {doorID} - After immediate DB update: isUnlockable={isUnlockable}");
+            // Load door states from online database
+            if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
+            {
+                // Use ProgressManager to get door state
+                Debug.Log("[DoorInteraction] Door " + doorID + " - ProgressManager already ready at Start, current isUnlockable=" + isUnlockable);
+                
+                // Ensure door data exists in database
+                ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
+                
+                // Update door state from database
+                ProgressManager.Instance.UpdateDoorInteraction(this);
+                
+                Debug.Log("[DoorInteraction] Door " + doorID + " - After immediate DB update: isUnlockable=" + isUnlockable);
+            }
+            else
+            {
+                Debug.LogWarning("[DoorInteraction] Door " + doorID + " - ProgressManager not ready at Start, will update when data is loaded");
+                StartCoroutine(WaitForProgressManager());
+            }
         }
-        else
+        catch (System.Exception e)
         {
-            Debug.LogWarning($"[DoorInteraction] Door {doorID} - ProgressManager not ready at Start, will update when data is loaded");
-            StartCoroutine(WaitForProgressManager());
+            Debug.LogError("[DoorInteraction] Error in Start: " + e.Message);
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        // Unsubscribe from the event when this object is destroyed
+        ProgressManager.OnDataLoaded -= OnProgressDataLoaded;
+    }
+    
+    private void OnProgressDataLoaded()
+    {
+        try
+        {
+            Debug.Log("[DoorInteraction] Door " + doorID + " - OnProgressDataLoaded event received");
+            if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
+            {
+                // Ensure door data exists in database
+                ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
+                
+                // Update door state from database
+                ProgressManager.Instance.UpdateDoorInteraction(this);
+                
+                Debug.Log("[DoorInteraction] Door " + doorID + " - After event update: isUnlockable=" + isUnlockable + ", isRoomCompleted=" + isRoomCompleted);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("[DoorInteraction] Error in OnProgressDataLoaded: " + e.Message);
         }
     }
     
     private IEnumerator WaitForProgressManager()
     {
-        // Wait for ProgressManager to be ready (up to 10 seconds)
         float timeout = 10f;
         float elapsed = 0f;
         
-        Debug.Log($"[DoorInteraction] Door {doorID} - Starting to wait for ProgressManager, current isUnlockable={isUnlockable}");
+        Debug.Log("[DoorInteraction] Door " + doorID + " - Starting to wait for ProgressManager, current isUnlockable=" + isUnlockable);
         
         while (elapsed < timeout)
         {
-            if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
+            try
             {
-                // ProgressManager is ready, ensure door data exists
-                ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
-                
-                // Update door state
-                Debug.Log($"[DoorInteraction] ProgressManager now ready after {elapsed}s, updating door {doorID}, current isUnlockable={isUnlockable}");
-                ProgressManager.Instance.UpdateDoorInteraction(this);
-                Debug.Log($"[DoorInteraction] Door {doorID} - After delayed DB update: isUnlockable={isUnlockable}");
-                yield break;
+                if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
+                {
+                    ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
+                    
+                    // Update door state
+                    Debug.Log("[DoorInteraction] ProgressManager now ready after " + elapsed + "s, updating door " + doorID + ", current isUnlockable=" + isUnlockable);
+                    ProgressManager.Instance.UpdateDoorInteraction(this);
+                    Debug.Log("[DoorInteraction] Door " + doorID + " - After delayed DB update: isUnlockable=" + isUnlockable);
+                    yield break;
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("[DoorInteraction] Error in WaitForProgressManager: " + e.Message);
+                // Continue waiting even if there's an error
             }
             
-            // Wait before checking again
-            yield return new WaitForSeconds(0.5f);
-            elapsed += 0.5f;
+            elapsed += Time.deltaTime;
+            yield return null;
         }
         
         // If we get here, ProgressManager didn't become ready within the timeout period
-        Debug.LogWarning($"[DoorInteraction] Timed out waiting for ProgressManager for door {doorID}");
+        Debug.LogWarning("[DoorInteraction] Timed out waiting for ProgressManager for door " + doorID);
     }
 
     private void Update()
@@ -140,14 +183,14 @@ public class DoorInteraction : MonoBehaviour
     {
         isUnlockable = unlockable;
         SaveDoorStatesToDatabase();
-        Debug.Log($"[DoorInteraction] Door {gameObject.name} unlockable status set to: {unlockable}");
+        Debug.Log("[DoorInteraction] Door " + gameObject.name + " unlockable status set to: " + unlockable);
     }
 
     public void SetRoomCompleted(bool completed)
     {
         isRoomCompleted = completed;
         SaveDoorStatesToDatabase();
-        Debug.Log($"[DoorInteraction] Door {gameObject.name} room completion status set to: {completed}");
+        Debug.Log("[DoorInteraction] Door " + gameObject.name + " room completion status set to: " + completed);
     }
 
     public int GetDoorID()
@@ -266,7 +309,7 @@ public class DoorInteraction : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"[DoorInteraction] ProgressManager not available, couldn't update door {doorID} status");
+                Debug.LogWarning("[DoorInteraction] ProgressManager not available, couldn't update door " + doorID + " status");
             }
         }
     }
@@ -345,28 +388,59 @@ public class DoorInteraction : MonoBehaviour
     // Update door visuals based on current state
     public void UpdateDoorVisuals()
     {
-        Debug.Log($"[DoorInteraction] === Updating visuals for door {doorID} ===");
-        Debug.Log($"[DoorInteraction] Current state - isUnlockable: {isUnlockable}, isRoomCompleted: {isRoomCompleted}, isLocked: {isLocked}");
-        
-        // If the door has an animator, update its parameters
-        if (lockedDoorAnimator != null)
+        try
         {
-            Debug.Log($"[DoorInteraction] Found animator. Current animator state - IsUnlockable: {lockedDoorAnimator.GetBool("IsUnlockable")}");
-            lockedDoorAnimator.SetBool("IsUnlockable", isUnlockable);
+            Debug.Log("[DoorInteraction] === Updating visuals for door " + doorID + " ===");
+            Debug.Log("[DoorInteraction] Current state - isUnlockable: " + isUnlockable + ", isRoomCompleted: " + isRoomCompleted + ", isLocked: " + isLocked);
+            
+            // If the door has an animator, update its parameters
+            if (lockedDoorAnimator != null)
+            {
+                // Check if the animator has the parameter before trying to access it
+                if (HasAnimatorParameter("IsUnlockable"))
+                {
+                    Debug.Log("[DoorInteraction] Found animator. Current animator state - IsUnlockable: " + lockedDoorAnimator.GetBool("IsUnlockable"));
+                    lockedDoorAnimator.SetBool("IsUnlockable", isUnlockable);
+                }
+                else
+                {
+                    Debug.LogWarning("[DoorInteraction] Animator on door " + doorID + " doesn't have 'IsUnlockable' parameter!");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[DoorInteraction] No animator found on door " + doorID + "!");
+            }
+            
+            // If the door is unlockable, make sure it's properly set up
+            if (isUnlockable)
+            {
+                Debug.Log("[DoorInteraction] Door " + doorID + " is unlockable - performing unlockable door setup");
+                // Additional setup for unlockable doors if needed
+                isLocked = false; // Ensure unlockable doors are not locked
+            }
+            
+            Debug.Log("[DoorInteraction] === Finished updating visuals for door " + doorID + " ===");
         }
-        else
+        catch (System.Exception e)
         {
-            Debug.LogWarning("[DoorInteraction] No animator found on door!");
+            Debug.LogError("[DoorInteraction] Error in UpdateDoorVisuals: " + e.Message);
         }
+    }
+    
+    // Helper method to check if animator has a parameter
+    private bool HasAnimatorParameter(string paramName)
+    {
+        if (lockedDoorAnimator == null) return false;
         
-        // If the door is unlockable, make sure it's properly set up
-        if (isUnlockable)
+        foreach (AnimatorControllerParameter param in lockedDoorAnimator.parameters)
         {
-            Debug.Log($"[DoorInteraction] Door {doorID} is unlockable - performing unlockable door setup");
-            // Additional setup for unlockable doors if needed
+            if (param.name == paramName)
+            {
+                return true;
+            }
         }
-        
-        Debug.Log($"[DoorInteraction] === Finished updating visuals for door {doorID} ===\n");
+        return false;
     }
 
     // Save door states to online database
@@ -377,11 +451,11 @@ public class DoorInteraction : MonoBehaviour
             ProgressManager.Instance.StartCoroutine(
                 ProgressManager.Instance.UpdateDoorStatus(doorID, isUnlockable, isRoomCompleted)
             );
-            Debug.Log($"[DoorInteraction] Saved door states for {doorID} to online database: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+            Debug.Log("[DoorInteraction] Saved door states for " + doorID + " to online database: isUnlockable=" + isUnlockable + ", isRoomCompleted=" + isRoomCompleted);
         }
         else
         {
-            Debug.LogWarning($"[DoorInteraction] ProgressManager not available, couldn't save door {doorID} states");
+            Debug.LogWarning("[DoorInteraction] ProgressManager not available, couldn't save door " + doorID + " states");
         }
     }
 }

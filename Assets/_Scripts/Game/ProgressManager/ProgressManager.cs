@@ -45,7 +45,7 @@ public class ProgressManager : MonoBehaviour
     public bool isDataLoaded = false;
     
     // Add a static event that doors can subscribe to
-    public static event Action OnDataLoaded;
+    public static event Action OnDataLoaded = delegate { };
     
     private void Awake()
     {
@@ -62,6 +62,14 @@ public class ProgressManager : MonoBehaviour
     private void Start()
     {
         Debug.Log("[ProgressManager] Starting ProgressManager...");
+        
+        // Initialize the student data if it's null
+        if (studentData == null)
+        {
+            studentData = new StudentDoorsData();
+            studentData.doors = new List<DoorData>();
+        }
+        
         // Get the student ID from StudentIdManager or PlayerPrefs
         GetStudentId();
 
@@ -74,6 +82,12 @@ public class ProgressManager : MonoBehaviour
         else
         {
             Debug.LogWarning("[ProgressManager] No student ID available at Start(). Data will be loaded when ID becomes available.");
+            // For testing/development, use a default student ID if none is available
+            #if UNITY_EDITOR
+            studentId = "default_test_id";
+            Debug.Log($"[ProgressManager] Using default test ID in Editor: {studentId}");
+            LoadStudentDoorData();
+            #endif
         }
     }
     
@@ -293,80 +307,109 @@ public class ProgressManager : MonoBehaviour
 
     private void UpdateAllDoorInteractions()
     {
-        if (!isDataLoaded || studentData == null || studentData.doors == null)
-            return;
-            
-        // Find all door interactions in the scene
-        DoorInteraction[] doorInteractions = FindObjectsOfType<DoorInteraction>();
-        
-        Debug.Log($"[ProgressManager] Updating {doorInteractions.Length} doors with database values");
-        
-        foreach (DoorInteraction door in doorInteractions)
+        try
         {
-            UpdateDoorInteraction(door);
+            if (!isDataLoaded || studentData == null || studentData.doors == null)
+            {
+                Debug.LogWarning("[ProgressManager] Cannot update doors: Data not loaded or null");
+                return;
+            }
+                
+            // Find all door interactions in the scene
+            DoorInteraction[] doorInteractions = FindObjectsOfType<DoorInteraction>();
+            
+            Debug.Log($"[ProgressManager] Updating {doorInteractions.Length} doors with database values");
+            
+            foreach (DoorInteraction door in doorInteractions)
+            {
+                if (door != null)
+                {
+                    UpdateDoorInteraction(door);
+                }
+            }
+            
+            // Notify subscribers that all doors have been updated
+            OnDataLoaded?.Invoke();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[ProgressManager] Error in UpdateAllDoorInteractions: {e.Message}");
         }
     }
 
     public void UpdateDoorInteraction(DoorInteraction door)
     {
-        Debug.Log($"[ProgressManager] === Starting UpdateDoorInteraction for door {door.doorID} ===");
-        
-        if (!isDataLoaded || studentData == null || studentData.doors == null)
+        try
         {
-            Debug.LogWarning($"[ProgressManager] Data not loaded yet or null. isDataLoaded: {isDataLoaded}, studentData: {studentData != null}, doors: {(studentData != null && studentData.doors != null)}");
-            return;
-        }
+            if (door == null)
+            {
+                Debug.LogError("[ProgressManager] Cannot update null door reference");
+                return;
+            }
             
-        int doorId = door.doorID;
-        Debug.Log($"[ProgressManager] Looking for door ID {doorId} in database with {studentData.doors.Count} doors");
-        
-        // Print all available door IDs and their unlockable states
-        foreach (var d in studentData.doors)
-        {
-            Debug.Log($"[ProgressManager] DB Door - ID: {d.doorId}, Name: {d.name}, Unlockable: {d.isUnlockable}, Completed: {d.isRoomCompleted}");
-        }
-        
-        DoorData doorData = studentData.doors.Find(d => d.doorId == doorId);
-        
-        if (doorData != null)
-        {
-            Debug.Log($"[ProgressManager] Found door {doorId} in database. Setting values - Unlockable: {doorData.isUnlockable}, Completed: {doorData.isRoomCompleted}");
+            Debug.Log($"[ProgressManager] === Starting UpdateDoorInteraction for door {door.doorID} ===");
             
-            // Log current door state before update
-            Debug.Log($"[ProgressManager] Before update - Door {doorId} state - isUnlockable: {door.isUnlockable}, isRoomCompleted: {door.isRoomCompleted}");
+            if (!isDataLoaded || studentData == null || studentData.doors == null)
+            {
+                Debug.LogWarning($"[ProgressManager] Data not loaded yet or null. isDataLoaded: {isDataLoaded}, studentData: {studentData != null}, doors: {(studentData != null && studentData.doors != null)}");
+                return;
+            }
+                
+            int doorId = door.doorID;
+            Debug.Log($"[ProgressManager] Looking for door ID {doorId} in database with {studentData.doors.Count} doors");
             
-            // Update the door properties
-            door.isUnlockable = doorData.isUnlockable;
-            door.isRoomCompleted = doorData.isRoomCompleted;
-            
-            // Log after update
-            Debug.Log($"[ProgressManager] After update - Door {doorId} state - isUnlockable: {door.isUnlockable}, isRoomCompleted: {door.isRoomCompleted}");
-            
-            door.UpdateDoorVisuals();
-        }
-        else
-        {
-            string availableDoorIds = "";
+            // Print all available door IDs and their unlockable states
             foreach (var d in studentData.doors)
             {
-                if (!string.IsNullOrEmpty(availableDoorIds)) availableDoorIds += ", ";
-                availableDoorIds += d.doorId;
+                Debug.Log($"[ProgressManager] DB Door - ID: {d.doorId}, Name: {d.name}, Unlockable: {d.isUnlockable}, Completed: {d.isRoomCompleted}");
             }
-            Debug.LogWarning($"[ProgressManager] Door {doorId} not found in database. Available door IDs: {availableDoorIds}");
             
-            EnsureDoorDataExists(doorId, door.gameObject.name);
+            DoorData doorData = studentData.doors.Find(d => d.doorId == doorId);
             
-            // Try to find the door again after ensuring it exists
-            doorData = studentData.doors.Find(d => d.doorId == doorId);
             if (doorData != null)
             {
-                Debug.Log($"[ProgressManager] After creation - Found door {doorId}. Setting values - Unlockable: {doorData.isUnlockable}, Completed: {doorData.isRoomCompleted}");
+                Debug.Log($"[ProgressManager] Found door {doorId} in database. Setting values - Unlockable: {doorData.isUnlockable}, Completed: {doorData.isRoomCompleted}");
+                
+                // Log current door state before update
+                Debug.Log($"[ProgressManager] Before update - Door {doorId} state - isUnlockable: {door.isUnlockable}, isRoomCompleted: {door.isRoomCompleted}");
+                
+                // Update the door properties
                 door.isUnlockable = doorData.isUnlockable;
                 door.isRoomCompleted = doorData.isRoomCompleted;
+                
+                // Log after update
+                Debug.Log($"[ProgressManager] After update - Door {doorId} state - isUnlockable: {door.isUnlockable}, isRoomCompleted: {door.isRoomCompleted}");
+                
                 door.UpdateDoorVisuals();
             }
+            else
+            {
+                string availableDoorIds = "";
+                foreach (var d in studentData.doors)
+                {
+                    if (!string.IsNullOrEmpty(availableDoorIds)) availableDoorIds += ", ";
+                    availableDoorIds += d.doorId;
+                }
+                Debug.LogWarning($"[ProgressManager] Door {doorId} not found in database. Available door IDs: {availableDoorIds}");
+                
+                EnsureDoorDataExists(doorId, door.gameObject.name);
+                
+                // Try to find the door again after ensuring it exists
+                doorData = studentData.doors.Find(d => d.doorId == doorId);
+                if (doorData != null)
+                {
+                    Debug.Log($"[ProgressManager] After creation - Found door {doorId}. Setting values - Unlockable: {doorData.isUnlockable}, Completed: {doorData.isRoomCompleted}");
+                    door.isUnlockable = doorData.isUnlockable;
+                    door.isRoomCompleted = doorData.isRoomCompleted;
+                    door.UpdateDoorVisuals();
+                }
+            }
+            Debug.Log($"[ProgressManager] === Finished UpdateDoorInteraction for door {door.doorID} ===\n");
         }
-        Debug.Log($"[ProgressManager] === Finished UpdateDoorInteraction for door {door.doorID} ===\n");
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[ProgressManager] Error in UpdateDoorInteraction: {e.Message}");
+        }
     }
 
     // Helper method to get door data by ID

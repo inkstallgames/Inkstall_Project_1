@@ -59,11 +59,6 @@ public class GameTimer : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        StartTimer();
-    }
-
     void Update()
     {
         // Only update if timer is running
@@ -102,19 +97,42 @@ public class GameTimer : MonoBehaviour
 
     void StartTimer()
     {
+        try
         {
+            Debug.Log("[GameTimer] Starting timer");
+            
+            // Show the timer UI if available
             if (timerText != null)
             {
-                timerText.gameObject.SetActive(true); // Show UI
+                try 
+                {
+                    timerText.gameObject.SetActive(true);
+                    Debug.Log("[GameTimer] Timer UI activated in StartTimer");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[GameTimer] Failed to activate timer UI in StartTimer: {e.Message}");
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[GameTimer] No timerText reference assigned in the inspector (StartTimer)");
             }
 
-            currentTime = totalTime;  // Reset time
-            timerRunning = true;      // Start ticking
-            hasBeenTriggered = true;  // Mark as triggered
+            // Reset timer state
+            currentTime = totalTime;
+            timerRunning = true;
+            hasBeenTriggered = true;
             warningTriggered = false;
             tickingStarted = false;
 
-            UpdateTimerUI(); // Update immediately so it shows correct starting time
+            // Update UI immediately
+            UpdateTimerUI();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[GameTimer] Error in StartTimer: {e.Message}");
+            Debug.LogException(e);
         }
     }
 
@@ -123,44 +141,68 @@ public class GameTimer : MonoBehaviour
     {
         try
         {
-            // Only update UI if timer text exists and is active
-            if (timerText == null)
+            // Double null check with additional debug info
+            if (timerText == null || timerText.gameObject == null)
             {
-                Debug.LogWarning("Timer Text reference is missing in GameTimer. Please assign a TextMeshProUGUI component in the inspector.");
+                Debug.LogWarning($"[GameTimer] Timer Text reference is missing or destroyed. Please assign a TextMeshProUGUI component in the inspector. Current state: timerText={timerText != null}, gameObject={(timerText != null ? timerText.gameObject : null)}");
                 return;
             }
 
+            // Ensure the text component is active
             if (!timerText.gameObject.activeInHierarchy)
             {
-                timerText.gameObject.SetActive(true);
+                try
+                {
+                    timerText.gameObject.SetActive(true);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[GameTimer] Failed to activate timer text: {e.Message}");
+                    return;
+                }
             }
 
-            int minutes = Mathf.FloorToInt(currentTime / 60f);
-            int seconds = Mathf.FloorToInt(currentTime % 60f);
+            // Update the timer display
+            try
+            {
+                int minutes = Mathf.FloorToInt(currentTime / 60f);
+                int seconds = Mathf.FloorToInt(currentTime % 60f);
 
-            // Store current values to avoid redundant updates
-            lastDisplayedMinutes = minutes;
-            lastDisplayedSeconds = seconds;
+                // Store current values to avoid redundant updates
+                lastDisplayedMinutes = minutes;
+                lastDisplayedSeconds = seconds;
 
-            // Use cached StringBuilder and pre-cached strings to avoid GC allocations
-            timerStringBuilder.Clear();
-            timerStringBuilder.Append(digitStrings[Mathf.Clamp(minutes, 0, 59)]);
-            timerStringBuilder.Append(':');
-            timerStringBuilder.Append(digitStrings[Mathf.Clamp(seconds, 0, 59)]);
+                // Use cached StringBuilder and pre-cached strings to avoid GC allocations
+                if (timerStringBuilder != null)
+                {
+                    timerStringBuilder.Clear();
+                    timerStringBuilder.Append(digitStrings[Mathf.Clamp(minutes, 0, 59)]);
+                    timerStringBuilder.Append(':');
+                    timerStringBuilder.Append(digitStrings[Mathf.Clamp(seconds, 0, 59)]);
 
-            timerText.text = timerStringBuilder.ToString();
+                    if (timerText != null) // Additional null check
+                    {
+                        timerText.text = timerStringBuilder.ToString();
 
-            // Use cached colors to avoid GC allocations
-            if (currentTime <= 30f)
-                timerText.color = dangerColor;
-            else if (currentTime <= 60f)
-                timerText.color = warningColor;
-            else
-                timerText.color = normalColor;
+                        // Update text color based on time remaining
+                        if (currentTime <= 30f)
+                            timerText.color = dangerColor;
+                        else if (currentTime <= 60f)
+                            timerText.color = warningColor;
+                        else
+                            timerText.color = normalColor;
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[GameTimer] Error updating timer display: {e.Message}");
+            }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Error in UpdateTimerUI: {e.Message}");
+            Debug.LogError($"[GameTimer] Critical error in UpdateTimerUI: {e.Message}");
+            Debug.LogException(e);
         }
     }
 
@@ -192,24 +234,46 @@ public class GameTimer : MonoBehaviour
     // Modified to only allow starting the timer once and show UI when started
     public void ResumeTimer()
     {
-        // Only start the timer if it hasn't been triggered before
-        if (!hasBeenTriggered)
+        try
         {
-            // Show the timer UI
-            if (timerText != null)
+            // Only start the timer if it hasn't been triggered before
+            if (!hasBeenTriggered)
             {
-                timerText.gameObject.SetActive(true);
+                Debug.Log("[GameTimer] Starting timer for the first time");
+                
+                // Show the timer UI if available
+                if (timerText != null)
+                {
+                    try 
+                    {
+                        timerText.gameObject.SetActive(true);
+                        Debug.Log("[GameTimer] Timer UI activated");
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogError($"[GameTimer] Failed to activate timer UI: {e.Message}");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("[GameTimer] No timerText reference assigned in the inspector");
+                }
+
+                timerRunning = true;
+                hasBeenTriggered = true;
+
+                // Update UI immediately
+                UpdateTimerUI();
             }
-
-            timerRunning = true;
-            hasBeenTriggered = true;
-
-            // Update UI immediately
-            UpdateTimerUI();
+            else
+            {
+                Debug.Log("[GameTimer] Timer has already been triggered, ignoring additional start attempts");
+            }
         }
-        else
+        catch (System.Exception e)
         {
-            Debug.Log("Timer has already been triggered once, ignoring additional start attempts.");
+            Debug.LogError($"[GameTimer] Error in ResumeTimer: {e.Message}");
+            Debug.LogException(e);
         }
     }
 

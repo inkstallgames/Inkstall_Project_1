@@ -30,7 +30,7 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private Button throwButton;
     [SerializeField] private TextMeshProUGUI gameTimer;
     [SerializeField] private GameObject bombsUI;
-    [SerializeField] private GameObject remainingAliensCount;
+    [SerializeField] private TextMeshProUGUI remainingAliensCount;
 
     // State
     private bool isDoorOpen = false;
@@ -247,33 +247,101 @@ public class DoorInteraction : MonoBehaviour
 
     private void ActivateGameElements()
     {
-        if (remainingAliensCount != null)
+        try
         {
-            remainingAliensCount.SetActive(true);
-        }
-        if (chemicalBomb != null)
-        {
-            chemicalBomb.SetActive(true);
-        }
-        if (throwButton != null)
-        {
-            throwButton.gameObject.SetActive(true);
-        }
-        if (bombsUI != null)
-        {
-            bombsUI.gameObject.SetActive(true);
-        }
-        if (shouldStartTimer)
-        {
-            if (gameTimer != null)
+            Debug.Log("[DoorInteraction] Activating game elements for door " + doorID);
+            
+            // Activate remaining aliens counter if available
+            if (remainingAliensCount != null)
             {
-                gameTimer.gameObject.SetActive(true);
-                // Initialize the timer if it exists
-                if (attachedTimer != null)
+                try 
                 {
-                    attachedTimer.ResumeTimer();
+                    remainingAliensCount.gameObject.SetActive(true);
+                    Debug.Log("[DoorInteraction] Activated remaining aliens counter");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[DoorInteraction] Error activating remaining aliens counter: {e.Message}");
                 }
             }
+            
+            // Activate chemical bomb if available
+            if (chemicalBomb != null)
+            {
+                try 
+                {
+                    chemicalBomb.SetActive(true);
+                    Debug.Log("[DoorInteraction] Activated chemical bomb");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[DoorInteraction] Error activating chemical bomb: {e.Message}");
+                }
+            }
+            
+            // Activate throw button if available
+            if (throwButton != null)
+            {
+                try 
+                {
+                    throwButton.gameObject.SetActive(true);
+                    Debug.Log("[DoorInteraction] Activated throw button");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[DoorInteraction] Error activating throw button: {e.Message}");
+                }
+            }
+            
+            // Activate bombs UI if available
+            if (bombsUI != null)
+            {
+                try 
+                {
+                    bombsUI.gameObject.SetActive(true);
+                    Debug.Log("[DoorInteraction] Activated bombs UI");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[DoorInteraction] Error activating bombs UI: {e.Message}");
+                }
+            }
+            
+            // Handle timer activation if needed
+            if (shouldStartTimer)
+            {
+                try
+                {
+                    if (gameTimer != null)
+                    {
+                        gameTimer.gameObject.SetActive(true);
+                        Debug.Log("[DoorInteraction] Activated game timer UI");
+                        
+                        // Initialize the timer if it exists
+                        if (attachedTimer != null)
+                        {
+                            Debug.Log("[DoorInteraction] Starting game timer");
+                            attachedTimer.ResumeTimer();
+                        }
+                        else
+                        {
+                            Debug.LogWarning("[DoorInteraction] No GameTimer component found on this door");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning("[DoorInteraction] Game timer UI reference is null");
+                    }
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"[DoorInteraction] Error initializing timer: {e.Message}");
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[DoorInteraction] Error activating game elements: {e.Message}");
         }
     }
 

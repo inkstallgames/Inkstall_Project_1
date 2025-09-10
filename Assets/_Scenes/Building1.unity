@@ -4435,7 +4435,6 @@ GameObject:
   m_Component:
   - component: {fileID: 962220123}
   - component: {fileID: 962220127}
-  - component: {fileID: 962220129}
   - component: {fileID: 962220128}
   m_Layer: 0
   m_Name: GameManager
@@ -4570,23 +4569,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &962220129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962220122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  totalTime: 180
-  timerText: {fileID: 1194441157}
-  timerRunning: 0
-  tickSound: {fileID: 8300000, guid: bbb7c848b236a994a835f80c489027d3, type: 3}
-  tickVolume: 1
 --- !u!1 &974389389
 GameObject:
   m_ObjectHideFlags: 0
@@ -5685,6 +5667,7 @@ GameObject:
   - component: {fileID: 1194441156}
   - component: {fileID: 1194441158}
   - component: {fileID: 1194441157}
+  - component: {fileID: 1194441159}
   m_Layer: 5
   m_Name: GameTimer_Text
   m_TagString: Untagged
@@ -5808,6 +5791,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1194441155}
   m_CullTransparentMesh: 1
+--- !u!114 &1194441159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194441155}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalTime: 180
+  timerText: {fileID: 1194441157}
+  timerRunning: 0
+  tickSound: {fileID: 8300000, guid: bbb7c848b236a994a835f80c489027d3, type: 3}
+  tickVolume: 1
 --- !u!1 &1206205651
 GameObject:
   m_ObjectHideFlags: 0

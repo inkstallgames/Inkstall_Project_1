@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 // This script is responsible for managing the room logic and turning props into aliens
 public class RoomManager : MonoBehaviour
@@ -8,6 +9,9 @@ public class RoomManager : MonoBehaviour
     private string alienTag = "AlienProp";   // Tag to assign
     [SerializeField] private int numberOfAliens;          // How many props to turn into aliens
     [SerializeField] private int aliensRemaining;                 // Counter for remaining aliens
+    
+    [Header("UI References")]
+    [SerializeField] private TextMeshProUGUI remainingAliensText; // UI Text to display remaining aliens count
     
     [Header("Door & Room Setting")]
     [SerializeField] private DoorInteraction thisRoomDoor;
@@ -45,6 +49,7 @@ public class RoomManager : MonoBehaviour
         // Select first N children as aliens
         int alienCount = Mathf.Min(numberOfAliens, children.Count);  // Avoid overflow
         aliensRemaining = alienCount;  // Initialize counter
+        UpdateRemainingAliensUI();
         
         // Generate roomID if not set
         if (string.IsNullOrEmpty(roomID))
@@ -104,6 +109,9 @@ public class RoomManager : MonoBehaviour
             
             Debug.Log($"Alien caught! {aliensRemaining} aliens remaining in room {gameObject.name}");
             
+            // Update the remaining aliens UI
+            UpdateRemainingAliensUI();
+            
             // Check if all aliens are caught
             CheckRoomCompletion();
         }
@@ -112,6 +120,9 @@ public class RoomManager : MonoBehaviour
     // Check if all aliens in this room have been caught
     private void CheckRoomCompletion()
     {
+        // Update UI one last time when room is completed
+        UpdateRemainingAliensUI();
+        
         if (aliensRemaining <= 0)
         {
             Debug.Log("[RoomManager] Room completed! All aliens caught.");
@@ -189,6 +200,18 @@ public class RoomManager : MonoBehaviour
                 GameManager.Instance.LevelWin();
                 Debug.Log("[RoomManager] Room completed! Level win triggered.");
             }
+        }
+    }
+    
+    // Updates the remaining aliens count UI
+    private void UpdateRemainingAliensUI()
+    {
+        if (remainingAliensText != null)
+        {
+            remainingAliensText.text = aliensRemaining.ToString();
+            
+            // Show/hide the text based on remaining aliens
+            remainingAliensText.gameObject.SetActive(aliensRemaining > 0);
         }
     }
 }

@@ -198,6 +198,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfAliens: 1
   aliensRemaining: 0
+  remainingAliensText: {fileID: 8776028938661637781}
   thisRoomDoor: {fileID: 5248679429457064833}
   nextDoorToUnlock: {fileID: 6096234473738546704}
   isFinalRoom: 0
@@ -916,6 +917,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfAliens: 3
   aliensRemaining: 0
+  remainingAliensText: {fileID: 0}
   thisRoomDoor: {fileID: 0}
   nextDoorToUnlock: {fileID: 1875161218498077181}
   isFinalRoom: 0
@@ -40675,7 +40677,7 @@ MonoBehaviour:
   throwButton: {fileID: 1536972007016953564}
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
-  remainingAliensCount: {fileID: 8352893770727911888}
+  remainingAliensCount: {fileID: 1926253851142356454}
   lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:

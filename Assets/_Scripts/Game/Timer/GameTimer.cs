@@ -121,31 +121,47 @@ public class GameTimer : MonoBehaviour
 
     void UpdateTimerUI()
     {
-        // Only update UI if timer text exists
-        if (timerText == null) return;
+        try
+        {
+            // Only update UI if timer text exists and is active
+            if (timerText == null)
+            {
+                Debug.LogWarning("Timer Text reference is missing in GameTimer. Please assign a TextMeshProUGUI component in the inspector.");
+                return;
+            }
 
-        int minutes = Mathf.FloorToInt(currentTime / 60f);
-        int seconds = Mathf.FloorToInt(currentTime % 60f);
+            if (!timerText.gameObject.activeInHierarchy)
+            {
+                timerText.gameObject.SetActive(true);
+            }
 
-        // Store current values to avoid redundant updates
-        lastDisplayedMinutes = minutes;
-        lastDisplayedSeconds = seconds;
+            int minutes = Mathf.FloorToInt(currentTime / 60f);
+            int seconds = Mathf.FloorToInt(currentTime % 60f);
 
-        // Use cached StringBuilder and pre-cached strings to avoid GC allocations
-        timerStringBuilder.Clear();
-        timerStringBuilder.Append(digitStrings[Mathf.Clamp(minutes, 0, 59)]);
-        timerStringBuilder.Append(':');
-        timerStringBuilder.Append(digitStrings[Mathf.Clamp(seconds, 0, 59)]);
+            // Store current values to avoid redundant updates
+            lastDisplayedMinutes = minutes;
+            lastDisplayedSeconds = seconds;
 
-        timerText.text = timerStringBuilder.ToString();
+            // Use cached StringBuilder and pre-cached strings to avoid GC allocations
+            timerStringBuilder.Clear();
+            timerStringBuilder.Append(digitStrings[Mathf.Clamp(minutes, 0, 59)]);
+            timerStringBuilder.Append(':');
+            timerStringBuilder.Append(digitStrings[Mathf.Clamp(seconds, 0, 59)]);
 
-        // Use cached colors to avoid GC allocations
-        if (currentTime <= 30f)
-            timerText.color = dangerColor;
-        else if (currentTime <= 60f)
-            timerText.color = warningColor;
-        else
-            timerText.color = normalColor;
+            timerText.text = timerStringBuilder.ToString();
+
+            // Use cached colors to avoid GC allocations
+            if (currentTime <= 30f)
+                timerText.color = dangerColor;
+            else if (currentTime <= 60f)
+                timerText.color = warningColor;
+            else
+                timerText.color = normalColor;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error in UpdateTimerUI: {e.Message}");
+        }
     }
 
 

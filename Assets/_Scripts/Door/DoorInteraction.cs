@@ -69,19 +69,19 @@ public class DoorInteraction : MonoBehaviour
         {
             // Subscribe to the OnDataLoaded event to update door state when data is loaded
             ProgressManager.OnDataLoaded += OnProgressDataLoaded;
-            
+
             // Load door states from online database
             if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
             {
                 // Use ProgressManager to get door state
                 Debug.Log("[DoorInteraction] Door " + doorID + " - ProgressManager already ready at Start, current isUnlockable=" + isUnlockable);
-                
+
                 // Ensure door data exists in database
                 ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
-                
+
                 // Update door state from database
                 ProgressManager.Instance.UpdateDoorInteraction(this);
-                
+
                 Debug.Log("[DoorInteraction] Door " + doorID + " - After immediate DB update: isUnlockable=" + isUnlockable);
             }
             else
@@ -95,13 +95,13 @@ public class DoorInteraction : MonoBehaviour
             Debug.LogError("[DoorInteraction] Error in Start: " + e.Message);
         }
     }
-    
+
     private void OnDestroy()
     {
         // Unsubscribe from the event when this object is destroyed
         ProgressManager.OnDataLoaded -= OnProgressDataLoaded;
     }
-    
+
     private void OnProgressDataLoaded()
     {
         try
@@ -111,10 +111,10 @@ public class DoorInteraction : MonoBehaviour
             {
                 // Ensure door data exists in database
                 ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
-                
+
                 // Update door state from database
                 ProgressManager.Instance.UpdateDoorInteraction(this);
-                
+
                 Debug.Log("[DoorInteraction] Door " + doorID + " - After event update: isUnlockable=" + isUnlockable + ", isRoomCompleted=" + isRoomCompleted);
             }
         }
@@ -123,14 +123,14 @@ public class DoorInteraction : MonoBehaviour
             Debug.LogError("[DoorInteraction] Error in OnProgressDataLoaded: " + e.Message);
         }
     }
-    
+
     private IEnumerator WaitForProgressManager()
     {
         float timeout = 10f;
         float elapsed = 0f;
-        
+
         Debug.Log("[DoorInteraction] Door " + doorID + " - Starting to wait for ProgressManager, current isUnlockable=" + isUnlockable);
-        
+
         while (elapsed < timeout)
         {
             try
@@ -138,28 +138,28 @@ public class DoorInteraction : MonoBehaviour
                 if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
                 {
                     ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
-                    
+
                     // Get door data directly from ProgressManager
                     DoorData doorData = ProgressManager.Instance.GetDoorData(doorID);
-                    
+
                     if (doorData != null)
                     {
                         // Update door state from database
                         Debug.Log("[DoorInteraction] ProgressManager now ready after " + elapsed + "s, updating door " + doorID + ", current isUnlockable=" + isUnlockable);
-                        
+
                         isUnlockable = doorData.isUnlockable;
                         isRoomCompleted = doorData.isRoomCompleted;
-                        
+
                         // Update visuals based on the new state
                         UpdateDoorVisuals();
-                        
+
                         Debug.Log("[DoorInteraction] Door " + doorID + " - After delayed DB update: isUnlockable=" + isUnlockable + ", isRoomCompleted=" + isRoomCompleted);
                     }
                     else
                     {
                         Debug.LogWarning("[DoorInteraction] Door " + doorID + " - No door data found in database after waiting");
                     }
-                    
+
                     yield break;
                 }
             }
@@ -168,11 +168,11 @@ public class DoorInteraction : MonoBehaviour
                 Debug.LogError("[DoorInteraction] Error in WaitForProgressManager: " + e.Message);
                 // Continue waiting even if there's an error
             }
-            
+
             elapsed += Time.deltaTime;
             yield return null;
         }
-        
+
         // If we get here, ProgressManager didn't become ready within the timeout period
         Debug.LogWarning("[DoorInteraction] Timed out waiting for ProgressManager for door " + doorID);
     }
@@ -247,6 +247,10 @@ public class DoorInteraction : MonoBehaviour
 
     private void ActivateGameElements()
     {
+        if (remainingAliensCount != null)
+        {
+            remainingAliensCount.SetActive(true);
+        }
         if (chemicalBomb != null)
         {
             chemicalBomb.SetActive(true);
@@ -270,10 +274,6 @@ public class DoorInteraction : MonoBehaviour
                     attachedTimer.ResumeTimer();
                 }
             }
-        }
-        if (remainingAliensCount != null)
-        {
-            remainingAliensCount.gameObject.SetActive(true);
         }
     }
 
@@ -386,13 +386,13 @@ public class DoorInteraction : MonoBehaviour
     public void LockDoor()
     {
         isLocked = true;
-        
+
         // Re-enable the animator if it was disabled during unlock
         if (lockedDoorAnimator != null)
         {
             lockedDoorAnimator.enabled = true;
         }
-        
+
         // Reset game elements activation state
         gameElementsActivated = false;
     }
@@ -404,7 +404,7 @@ public class DoorInteraction : MonoBehaviour
         {
             Debug.Log("[DoorInteraction] === Updating visuals for door " + doorID + " ===");
             Debug.Log("[DoorInteraction] Current state - isUnlockable: " + isUnlockable + ", isRoomCompleted: " + isRoomCompleted + ", isLocked: " + isLocked);
-            
+
             // If the door has an animator, update its parameters
             if (lockedDoorAnimator != null)
             {
@@ -424,7 +424,7 @@ public class DoorInteraction : MonoBehaviour
             {
                 Debug.LogWarning("[DoorInteraction] No animator found on door " + doorID + "! This is expected for some doors.");
             }
-            
+
             // If the door is unlockable, make sure it's properly set up
             if (isUnlockable)
             {
@@ -432,7 +432,7 @@ public class DoorInteraction : MonoBehaviour
                 // Additional setup for unlockable doors if needed
                 isLocked = false; // Ensure unlockable doors are not locked
             }
-            
+
             Debug.Log("[DoorInteraction] === Finished updating visuals for door " + doorID + " ===");
         }
         catch (System.Exception e)
@@ -440,12 +440,12 @@ public class DoorInteraction : MonoBehaviour
             Debug.LogError("[DoorInteraction] Error in UpdateDoorVisuals: " + e.Message);
         }
     }
-    
+
     // Helper method to check if animator has a parameter
     private bool HasAnimatorParameter(string paramName)
     {
         if (lockedDoorAnimator == null) return false;
-        
+
         foreach (AnimatorControllerParameter param in lockedDoorAnimator.parameters)
         {
             if (param.name == paramName)

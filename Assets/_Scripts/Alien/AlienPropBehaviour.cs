@@ -9,7 +9,7 @@ public class AlienPropBehaviour : MonoBehaviour
     public enum BehaviourType { Random, Wiggle, FlickerLight, RotateTowardsPlayer, Breathing, ChangeSize }
     [SerializeField] private BehaviourType behaviour = BehaviourType.Random;  // visible in inspector
 
-    private Light lampLight; // for flicker if it's a lamp
+    private Light light; // for flicker if it's a lamp
     private Quaternion originalRotation;
 
     void Start()
@@ -18,7 +18,7 @@ public class AlienPropBehaviour : MonoBehaviour
         originalRotation = transform.rotation;
 
         // Check if this object has a Light (useful for lamp props)
-        lampLight = GetComponentInChildren<Light>();
+        light = GetComponentInChildren<Light>();
 
         // If set to Random, pick a random behaviour at runtime
         if (behaviour == BehaviourType.Random)
@@ -27,7 +27,7 @@ public class AlienPropBehaviour : MonoBehaviour
         }
 
         // If Flicker chosen but no Light exists → reassign another behaviour
-        if (behaviour == BehaviourType.FlickerLight && lampLight == null)
+        if (behaviour == BehaviourType.FlickerLight && light == null)
         {
             do
             {
@@ -64,7 +64,7 @@ public class AlienPropBehaviour : MonoBehaviour
                 break;
 
             case BehaviourType.FlickerLight:
-                if (lampLight != null) StartCoroutine(FlickerLight());
+                if (light != null) StartCoroutine(FlickerLight());
                 break;
 
             case BehaviourType.RotateTowardsPlayer:
@@ -107,10 +107,10 @@ public class AlienPropBehaviour : MonoBehaviour
     {
         for (int i = 0; i < 5; i++)
         {
-            lampLight.enabled = !lampLight.enabled;
+            light.enabled = !light.enabled;
             yield return new WaitForSeconds(Random.Range(0.05f, 0.2f));
         }
-        lampLight.enabled = true;
+        light.enabled = true;
     }
 
     void RotateTowardsPlayer()

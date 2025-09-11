@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 6458065016548029968}
   - component: {fileID: 9113966933629731546}
   - component: {fileID: 7618618335102148188}
-  - component: {fileID: 1243184795304824667}
   m_Layer: 0
   m_Name: Prop_HomeLamp_04
   m_TagString: Untagged
@@ -106,16 +105,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5936821, y: 1.4866054, z: 0.5936821}
   m_Center: {x: 0, y: 0.745064, z: 0}
---- !u!114 &1243184795304824667
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7312628443597218575}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a00c660a06c6558409881ca30be91691, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isFake: 0

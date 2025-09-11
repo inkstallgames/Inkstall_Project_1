@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1800921234675628998}
   m_Layer: 0
   m_Name: Cabinet3_Drawer_1
-  m_TagString: Untagged
+  m_TagString: SlidingDoor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 1596887961841172152}
   m_Layer: 0
   m_Name: Cabinet3_Door
-  m_TagString: Untagged
+  m_TagString: Door
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -347,6 +347,7 @@ MonoBehaviour:
   throwButton: {fileID: 0}
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
+  remainingAliensCount: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2000669298256703060
 BoxCollider:
@@ -544,7 +545,7 @@ GameObject:
   - component: {fileID: 7044477323457896091}
   m_Layer: 0
   m_Name: Cabinet3_Drawer_2
-  m_TagString: Untagged
+  m_TagString: SlidingDoor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

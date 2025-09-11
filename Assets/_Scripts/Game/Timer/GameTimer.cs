@@ -35,6 +35,11 @@ public class GameTimer : MonoBehaviour
     private int lastDisplayedMinutes = -1;
     private int lastDisplayedSeconds = -1;
 
+    void OnEnable()
+    {
+        StartTimer();
+    }
+
     void Start()
     {
         currentTime = totalTime;

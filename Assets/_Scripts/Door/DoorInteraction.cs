@@ -31,6 +31,8 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameTimer;
     [SerializeField] private Image bombsUI;
     [SerializeField] private Image remainingAliensCountContainer;
+    [SerializeField] private TextMeshProUGUI remainingAliensCountText;
+
 
     // State
     private bool isDoorOpen = false;
@@ -247,54 +249,45 @@ public class DoorInteraction : MonoBehaviour
 
     private void ActivateGameElements()
     {
+        // Activate chemical bomb if available
+        if (chemicalBomb != null)
+        {
+            Debug.LogWarning("Activating chemical bomb");
+            chemicalBomb.SetActive(true);
+        }
             
-            // Activate remaining aliens counter if available
-            if (remainingAliensCountContainer != null)
-            {
-                remainingAliensCountContainer.gameObject.SetActive(true);
-            }
+        // Activate throw button if available
+        if (throwButton != null)
+        {
+            Debug.LogWarning("Activating throw button");
+            throwButton.gameObject.SetActive(true);
+        }
             
-            // Activate chemical bomb if available
-            if (chemicalBomb != null)
-            {
-                chemicalBomb.SetActive(true);
-            }
+        // Activate bombs UI if available
+        if (bombsUI != null)
+        {
+            Debug.LogWarning("Activating bombs UI");
+            bombsUI.gameObject.SetActive(true);
+        }
             
-            // Activate throw button if available
-            if (throwButton != null)
+        // Activate remaining aliens count container if available
+        if (remainingAliensCountContainer != null)
+        {
+            Debug.LogWarning("Activating remaining aliens count container");
+            remainingAliensCountContainer.gameObject.SetActive(true);
+            remainingAliensCountText.gameObject.SetActive(true);
+        }
+        
+        // Handle timer activation if needed
+        if (shouldStartTimer)
+        {
+            Debug.LogWarning("Activating timer");
+            if (gameTimer != null)
             {
-                throwButton.gameObject.SetActive(true);
-            }
-            
-            // Activate bombs UI if available
-            if (bombsUI != null)
-            {
-                bombsUI.gameObject.SetActive(true);
-            }
-            
-            // Handle timer activation if needed
-            if (shouldStartTimer)
-            {
-                if (gameTimer != null)
-                {
-                    gameTimer.gameObject.SetActive(true);
-                        
-                        // Initialize the timer if it exists
-                        if (attachedTimer != null)
-                        {
-                            attachedTimer.ResumeTimer();
-                        }
-                        else
-                        {
-                            Debug.LogWarning("[DoorInteraction] No GameTimer component found on this door");
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("[DoorInteraction] Game timer UI reference is null");
-                }
+                gameTimer.gameObject.SetActive(true);
             }
         }
+    }
 
     public void PlayDoorLockedAnimation()
     {

@@ -31,7 +31,6 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameTimer;
     [SerializeField] private Image bombsUI;
     [SerializeField] private Image remainingAliensCountContainer;
-    [SerializeField] private TextMeshProUGUI remainingAliensCountText;
 
 
     // State
@@ -275,7 +274,6 @@ public class DoorInteraction : MonoBehaviour
         {
             Debug.LogWarning("Activating remaining aliens count container");
             remainingAliensCountContainer.gameObject.SetActive(true);
-            remainingAliensCountText.gameObject.SetActive(true);
         }
         
         // Handle timer activation if needed

@@ -22,7 +22,7 @@ public class GameTimer : MonoBehaviour
     private string[] digitStrings = new string[60]; // For 0-59 seconds/minutes
 
     // Cache colors to avoid GC allocations
-    private readonly Color normalColor = Color.white;
+    private readonly Color normalColor = Color.green;
     private readonly Color warningColor = Color.yellow;
     private readonly Color dangerColor = Color.red;
 

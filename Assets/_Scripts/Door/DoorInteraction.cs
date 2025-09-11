@@ -248,38 +248,30 @@ public class DoorInteraction : MonoBehaviour
 
     private void ActivateGameElements()
     {
+        if (remainingAliensCountContainer != null)
+        {
+            remainingAliensCountContainer.gameObject.SetActive(true);
+        }
+
         // Activate chemical bomb if available
         if (chemicalBomb != null)
         {
-            Debug.LogWarning("Activating chemical bomb");
             chemicalBomb.SetActive(true);
         }
-            
+
         // Activate throw button if available
         if (throwButton != null)
         {
-            Debug.LogWarning("Activating throw button");
             throwButton.gameObject.SetActive(true);
         }
-            
+
         // Activate bombs UI if available
         if (bombsUI != null)
         {
-            Debug.LogWarning("Activating bombs UI");
             bombsUI.gameObject.SetActive(true);
         }
-            
-        // Activate remaining aliens count container if available
-        if (remainingAliensCountContainer != null)
-        {
-            Debug.LogWarning("Activating remaining aliens count container");
-            remainingAliensCountContainer.gameObject.SetActive(true);
-        }
-        
-        // Handle timer activation if needed
         if (shouldStartTimer)
         {
-            Debug.LogWarning("Activating timer");
             if (gameTimer != null)
             {
                 gameTimer.gameObject.SetActive(true);

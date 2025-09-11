@@ -251,7 +251,6 @@ public class PlayerInteraction : MonoBehaviour
                     if (distanceToObject <= interactDistance)
                     {
                         // We're looking at a drawer and within range
-                        Debug.Log("We are looking at the drawer and also wihin range");
                         currentDrawer = drawerInteraction;
                         interactButton.SetActive(true);
                     }

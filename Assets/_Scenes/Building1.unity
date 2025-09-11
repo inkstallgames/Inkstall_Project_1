@@ -196,9 +196,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306a4b653742dd24eb770f020132ae08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfAliens: 1
+  numberOfAliens: 2
   aliensRemaining: 0
-  remainingAliensText: {fileID: 0}
+  remainingAliensText: {fileID: 191323256}
   thisRoomDoor: {fileID: 5248679429457064833}
   nextDoorToUnlock: {fileID: 6096234473738546704}
   isFinalRoom: 0
@@ -910,7 +910,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 133244718}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 306a4b653742dd24eb770f020132ae08, type: 3}
   m_Name: 
@@ -4960,10 +4960,10 @@ RectTransform:
   - {fileID: 798612861}
   m_Father: {fileID: 90827215}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -1200, y: -160}
+  m_SizeDelta: {x: 720, y: 920}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1047451882
 MonoBehaviour:
@@ -5856,7 +5856,8 @@ MonoBehaviour:
   m_text: 00:00
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e2e829049ae7c4f45b0011f28184394c, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 1299900020183333244, guid: e2e829049ae7c4f45b0011f28184394c,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6728,11 +6729,11 @@ RectTransform:
   - {fileID: 1505732594}
   m_Father: {fileID: 1047451881}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 216}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -163}
   m_SizeDelta: {x: 600, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1358141897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7328,10 +7329,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1358141896}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.4716667, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -29.577393, y: 0}
-  m_SizeDelta: {x: -59.154907, y: 100}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 111.92261, y: 0}
+  m_SizeDelta: {x: 257.8451, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1505732595
 MonoBehaviour:
@@ -9178,7 +9179,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1949498768
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9196,11 +9197,11 @@ RectTransform:
   - {fileID: 191323255}
   m_Father: {fileID: 1217582467}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 357, y: 470}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -542, y: -35}
   m_SizeDelta: {x: 50, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &1949498769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12988,7 +12989,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &975421949430823410
 Transform:
@@ -13580,7 +13580,7 @@ GameObject:
   - component: {fileID: 1923560218215491642}
   - component: {fileID: 8324149297518319662}
   m_Layer: 5
-  m_Name: Canvas_OptionsMenu
+  m_Name: Canvas_PauseScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15324,7 +15324,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1609635412495604071
 MeshRenderer:
@@ -18607,7 +18606,6 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 1879614732177390110}
 --- !u!4 &1875161216612700763
 Transform:
@@ -18821,7 +18819,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161216722088320
 MeshRenderer:
@@ -18910,7 +18907,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216731409326
 Transform:
@@ -19213,7 +19209,6 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 1876630031721721799}
 --- !u!4 &1875161216913999824
 Transform:
@@ -19464,7 +19459,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161217056796249
 MonoBehaviour:
@@ -19496,7 +19490,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217121920507
 Transform:
@@ -19692,7 +19685,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!1 &1875161217394332177
 GameObject:
@@ -21301,7 +21293,6 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166880}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 5411702062035160471}
 --- !u!4 &1875161218516245653
 Transform:
@@ -21474,7 +21465,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218673369673
 Transform:
@@ -22031,7 +22021,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876481243523332479
 AudioSource:
@@ -22578,7 +22567,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876635991172028075
 AudioSource:
@@ -22759,7 +22747,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876640084607535165
 AudioSource:
@@ -23660,7 +23647,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879301797568630687
 AudioSource:
@@ -24289,7 +24275,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879530183016443165
 AudioSource:
@@ -24880,7 +24865,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879628717615984171
 AudioSource:
@@ -33878,7 +33862,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3231434512211610070
 AudioSource:
@@ -34974,7 +34957,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3531443653390167215
 AudioSource:
@@ -36779,7 +36761,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4095303726235316411
 AudioSource:
@@ -37730,7 +37711,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4323376261421865388
 AudioSource:
@@ -39153,7 +39133,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4722926279912086933
 AudioSource:
@@ -40127,7 +40106,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &4985833862760063991
 Transform:
@@ -40957,8 +40935,7 @@ MonoBehaviour:
   throwButton: {fileID: 1536972007016953564}
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166880}
-  remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
+  remainingAliensCountContainer: {fileID: 1949498769}
   lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:
@@ -42562,7 +42539,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &5660267529715239442
 AudioSource:
@@ -42849,10 +42825,10 @@ RectTransform:
   - {fileID: 1776391876122247324}
   m_Father: {fileID: 758386994974643637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -130.59961, y: 177}
-  m_SizeDelta: {x: 180, y: 180}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -208, y: -273}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5800314964552747296
 GameObject:
@@ -42907,11 +42883,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 758386994974643637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -493, y: -30}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 486, y: -7}
   m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 1, y: 1}
+  m_Pivot: {x: 0, y: 1}
 --- !u!1 &5825762309717236067
 GameObject:
   m_ObjectHideFlags: 0
@@ -44331,7 +44307,6 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 6096234473738546706}
 --- !u!95 &6096234473738546706
 Animator:
@@ -45805,7 +45780,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6370389251489606861
 AudioSource:
@@ -46967,7 +46941,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6734199790238685268
 AudioSource:
@@ -47412,7 +47385,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &6823987876855903344
 MeshRenderer:
@@ -49540,7 +49512,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -107, y: -75}
+  m_AnchoredPosition: {x: -118, y: -26}
   m_SizeDelta: {x: 140, y: 140}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!33 &7323899012097438061
@@ -52991,7 +52963,6 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166880}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 8128831679578322680}
 --- !u!95 &8128831679578322680
 Animator:
@@ -53137,7 +53108,6 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
-  remainingAliensCountText: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &8176039784201981259
 AudioSource:
@@ -55759,7 +55729,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -26, y: 0}
+  m_AnchoredPosition: {x: -47, y: -14}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &8859655343790820276

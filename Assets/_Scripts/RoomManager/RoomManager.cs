@@ -209,9 +209,6 @@ public class RoomManager : MonoBehaviour
         if (remainingAliensText != null)
         {
             remainingAliensText.text = aliensRemaining.ToString();
-            
-            // Show/hide the text based on remaining aliens
-            remainingAliensText.gameObject.SetActive(aliensRemaining > 0);
         }
     }
 }

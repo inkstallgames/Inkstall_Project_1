@@ -29,6 +29,8 @@ public class Alien : MonoBehaviour
         effect.Play();
         audioSource.PlayOneShot(alienDissappearedSound);
         Instantiate(coinPrefab, this.gameObject.transform.position, Quaternion.identity);
+
+        // Points Added UI
         
         // Add coins when alien is defeated
         if (CoinsManager.Instance != null)

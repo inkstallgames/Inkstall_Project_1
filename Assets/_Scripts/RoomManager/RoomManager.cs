@@ -132,45 +132,38 @@ public class RoomManager : MonoBehaviour
             {
                 int currentDoorID = thisRoomDoor.GetDoorID();
                 
-                // Mark the current door's room as completed in the database
-                // This will set isUnlockable=false and isRoomCompleted=true
-                ProgressManager.Instance.StartCoroutine(
-                    ProgressManager.Instance.UpdateDoorStatus(currentDoorID, false, true)
-                );
+                // Use the MarkRoomAsCompleted method which handles both current and next door updates
+                Debug.Log($"[RoomManager] <color=yellow>STARTING DATABASE UPDATE</color> - Marking room with door {currentDoorID} as completed");
+                ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
                 
-                Debug.Log("[RoomManager] Updated current door " + currentDoorID + " status: isUnlockable=false, isRoomCompleted=true");
+                Debug.Log($"[RoomManager] <color=green>DATABASE UPDATE INITIATED</color> - Called MarkRoomAsCompleted for door {currentDoorID}");
                 
-                // If we have a next door to unlock, set it as unlockable in the database
+                // Update the door objects to reflect the new state immediately
+                // This ensures visual feedback even before the database update completes
+                Debug.Log($"[RoomManager] <color=cyan>LOCAL UPDATE</color> - Setting door {currentDoorID} to: isUnlockable=false, isRoomCompleted=true");
+                thisRoomDoor.isUnlockable = false;
+                thisRoomDoor.isRoomCompleted = true;
+                thisRoomDoor.UpdateDoorVisuals();
+                Debug.Log($"[RoomManager] <color=cyan>LOCAL UPDATE</color> - Door {currentDoorID} visuals updated");
+                
+                // If we have a next door to unlock, update it visually too
                 if (nextDoorToUnlock != null)
                 {
                     int nextDoorID = nextDoorToUnlock.GetDoorID();
-                    
-                    // Update the next door to be unlockable but not completed
-                    // This will set isUnlockable=true and keep isRoomCompleted=false
-                    ProgressManager.Instance.StartCoroutine(
-                        ProgressManager.Instance.UpdateDoorStatus(nextDoorID, true, false)
-                    );
-                    
-                    Debug.Log("[RoomManager] Updated next door " + nextDoorID + " status: isUnlockable=true, isRoomCompleted=false");
-                    
-                    // Update the door objects to reflect the new state
-                    thisRoomDoor.isUnlockable = false;
-                    thisRoomDoor.isRoomCompleted = true;
-                    thisRoomDoor.UpdateDoorVisuals();
-                    
+                    Debug.Log($"[RoomManager] <color=cyan>LOCAL UPDATE</color> - Setting next door {nextDoorID} to: isUnlockable=true, isRoomCompleted=false");
                     nextDoorToUnlock.isUnlockable = true;
                     nextDoorToUnlock.isRoomCompleted = false;
                     nextDoorToUnlock.UpdateDoorVisuals();
+                    
+                    Debug.Log($"[RoomManager] <color=cyan>LOCAL UPDATE</color> - Next door {nextDoorID} visuals updated");
                 }
                 else
                 {
-                    // Just update the current door if there's no next door
-                    thisRoomDoor.isUnlockable = false;
-                    thisRoomDoor.isRoomCompleted = true;
-                    thisRoomDoor.UpdateDoorVisuals();
-                    
                     Debug.Log("[RoomManager] No next door found to unlock");
                 }
+                
+                // Force a refresh of all doors in the scene to ensure consistency
+                StartCoroutine(RefreshAllDoorsAfterDelay(1.5f));
             }
             else
             {
@@ -209,6 +202,34 @@ public class RoomManager : MonoBehaviour
         if (remainingAliensText != null)
         {
             remainingAliensText.text = aliensRemaining.ToString();
+        }
+    }
+    
+    // Refresh all doors in the scene after a delay to ensure database changes are reflected
+    private IEnumerator RefreshAllDoorsAfterDelay(float delay)
+    {
+        Debug.Log($"[RoomManager] <color=orange>REFRESH SCHEDULED</color> - Will refresh all doors after {delay} seconds");
+        yield return new WaitForSeconds(delay);
+        
+        if (ProgressManager.Instance != null)
+        {
+            Debug.Log($"[RoomManager] <color=orange>REFRESH STARTED</color> - Refreshing all doors in scene to ensure consistency");
+            
+            // Find all door interactions in the scene
+            DoorInteraction[] allDoors = FindObjectsOfType<DoorInteraction>();
+            Debug.Log($"[RoomManager] <color=orange>REFRESH INFO</color> - Found {allDoors.Length} doors in scene to refresh");
+            
+            foreach (DoorInteraction door in allDoors)
+            {
+                if (door != null)
+                {
+                    // Update door state from database
+                    Debug.Log($"[RoomManager] <color=orange>REFRESH DOOR</color> - Refreshing door {door.doorID} from database");
+                    ProgressManager.Instance.UpdateDoorInteraction(door);
+                }
+            }
+            
+            Debug.Log($"[RoomManager] <color=orange>REFRESH COMPLETE</color> - All doors have been refreshed from database");
         }
     }
 }

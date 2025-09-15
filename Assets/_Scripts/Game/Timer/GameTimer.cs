@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 using System.Text;
+using System.Collections;                                                                                                
+
 
 public class GameTimer : MonoBehaviour
 {
@@ -15,6 +17,7 @@ public class GameTimer : MonoBehaviour
     private bool warningTriggered = false;
     private bool tickingStarted = false;
     private bool hasBeenTriggered = false; // Track if timer has been triggered at least once
+    private bool useFastTicking = false;        
 
     // Cache for string formatting to avoid GC allocations
     private StringBuilder timerStringBuilder;
@@ -27,8 +30,9 @@ public class GameTimer : MonoBehaviour
     private readonly Color dangerColor = Color.red;
 
     [Header("Tick Sound Settings")]
-    [SerializeField] private AudioClip tickSound;
     [SerializeField] private float tickVolume = 1f;
+    [SerializeField] private AudioClip normalTickSound;
+    [SerializeField] private AudioClip fastTickSound;
     private AudioSource tickSource;
 
     // Track last displayed time to avoid unnecessary UI updates
@@ -44,15 +48,11 @@ public class GameTimer : MonoBehaviour
     {
         currentTime = totalTime;
 
-        // Setup audio but don't play yet
-        if (tickSound != null)
-        {
-            tickSource = gameObject.AddComponent<AudioSource>();
-            tickSource.clip = tickSound;
-            tickSource.volume = tickVolume;
-            tickSource.loop = true;
-            tickSource.playOnAwake = false;
-        }
+        // Initialize AudioSource
+        tickSource = gameObject.AddComponent<AudioSource>();
+        tickSource.volume = tickVolume;
+        tickSource.playOnAwake = false;
+        tickSource.spatialBlend = 0f; // Make sure it's 2D sound
 
         // Initialize string builder to avoid GC allocations
         timerStringBuilder = new StringBuilder(8);
@@ -70,6 +70,37 @@ public class GameTimer : MonoBehaviour
         if (!timerRunning) return;
 
         currentTime -= Time.deltaTime;
+        currentTime = Mathf.Max(0, currentTime); // Prevent negative time
+
+        // Handle ticking sounds
+        if (currentTime <= 60f && currentTime > 0f)
+        {
+            if (currentTime <= 30f && !useFastTicking)
+            {
+                // Switch to fast ticking
+                useFastTicking = true;
+                StartTicking();
+            }
+            else if (currentTime > 30f && useFastTicking)
+            {
+                // Switch to normal ticking
+                useFastTicking = false;
+                StartTicking();
+            }
+            else if (!tickingStarted)
+            {
+                // Start normal ticking if not started yet
+                tickingStarted = true;
+                useFastTicking = false;
+                StartTicking();
+            }
+        }
+        else if (tickingStarted)
+        {
+            // Stop ticking if time is up or above 60s
+            StopTicking();
+            tickingStarted = false;
+        }
 
         // Only update UI when the displayed time would change
         int minutes = Mathf.FloorToInt(currentTime / 60f);
@@ -78,16 +109,6 @@ public class GameTimer : MonoBehaviour
         if (minutes != lastDisplayedMinutes || seconds != lastDisplayedSeconds)
         {
             UpdateTimerUI();
-        }
-
-        if (!warningTriggered && currentTime <= 60f)
-        {
-            warningTriggered = true;
-        }
-
-        if (!tickingStarted && currentTime <= 30f)
-        {
-            StartTicking();
         }
 
         // Check if timer reached zero
@@ -217,16 +238,55 @@ public class GameTimer : MonoBehaviour
     {
         if (tickSource != null)
         {
-            tickSource.Play();
-            tickingStarted = true;
+            // Stop any currently playing sound
+            tickSource.Stop();
+            
+            // Set the appropriate clip based on current mode
+            AudioClip clipToPlay = useFastTicking ? fastTickSound : normalTickSound;
+            
+            if (clipToPlay != null)
+            {
+                tickSource.clip = clipToPlay;
+                // Configure loop settings
+                tickSource.loop = false; // We'll handle the looping manually
+                tickSource.volume = tickVolume;
+                
+                // Play the sound
+                tickSource.Play();
+                tickingStarted = true;
+                
+                // Start coroutine for next tick
+                StartCoroutine(PlayNextTick());
+            }
+        }
+    }
+
+    IEnumerator PlayNextTick()
+    {
+        if (tickSource != null && tickSource.clip != null && tickingStarted)
+        {
+            float waitTime = useFastTicking ? 0.25f : 1f;
+            yield return new WaitForSeconds(waitTime);
+            
+            if (tickingStarted && currentTime > 0f)
+            {
+                tickSource.Play();
+                StartCoroutine(PlayNextTick());
+            }
         }
     }
 
     void StopTicking()
     {
-        if (tickSource != null && tickSource.isPlaying)
+        if (tickSource != null)
         {
-            tickSource.Stop();
+            if (tickSource.isPlaying)
+            {
+                tickSource.Stop();
+            }
+            tickingStarted = false;
+            useFastTicking = false;
+            StopAllCoroutines();
         }
     }
 

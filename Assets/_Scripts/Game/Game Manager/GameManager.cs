@@ -9,9 +9,9 @@ public class GameManager : MonoBehaviour
 
     private AudioSource audioSource;
     [SerializeField] private AudioClip doorCloseSound;
-   
+    
     public AudioClip looseSound;
-    public AudioClip winSound;
+    public AudioClip levelCompleteSound;
     
     private string studentId; // Added missing variable declaration
 
@@ -36,6 +36,10 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
 
         // Get Student ID from StudentIdManager
         studentId = StudentIdManager.Instance.StudentId;
@@ -70,7 +74,9 @@ public class GameManager : MonoBehaviour
     public void LevelWin()
     {
         // Level Win effect
+        
         // Play Win Sound
+        audioSource.PlayOneShot(levelCompleteSound);
         
         StartCoroutine(ResetGame());
     }

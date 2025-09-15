@@ -4611,7 +4611,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   looseSound: {fileID: 0}
-  winSound: {fileID: 0}
+  levelCompleteSound: {fileID: 8300000, guid: c45dfb2b9b1bfc245ac8d455dc158827, type: 3}
 --- !u!82 &962220128
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5943,11 +5943,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalTime: 180
+  totalTime: 40
   timerText: {fileID: 1194441157}
   timerRunning: 0
-  tickSound: {fileID: 8300000, guid: bbb7c848b236a994a835f80c489027d3, type: 3}
+  tickSound: {fileID: 8300000, guid: 56142b65afa61f846bfe82c909c2c9ec, type: 3}
   tickVolume: 1
+  normalTickSound: {fileID: 8300000, guid: 56142b65afa61f846bfe82c909c2c9ec, type: 3}
+  fastTickSound: {fileID: 8300000, guid: 6b0be388e64d4434e9fd48055ba71a4c, type: 3}
 --- !u!1 &1206205651
 GameObject:
   m_ObjectHideFlags: 0

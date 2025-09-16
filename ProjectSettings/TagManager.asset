@@ -15,6 +15,7 @@ TagManager:
   - AlienProp
   - BuildingCollider
   - BuildingPortal
+  - CollectPointsTextTag
   layers:
   - Default
   - TransparentFX

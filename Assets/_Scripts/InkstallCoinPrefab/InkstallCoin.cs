@@ -8,7 +8,6 @@ public class InkstallCoin : MonoBehaviour
     private AudioSource audioSource;
 
     [SerializeField] private AudioClip collectSound;
-    [SerializeField] private string collectTextTag = "CollectPointsTextTag";   // Tag to find the TextMeshPro text in the scene
     private TextMeshProUGUI collectText;
     
     private void Start()
@@ -16,7 +15,8 @@ public class InkstallCoin : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         
         // Find the TextMeshPro text in the scene using the tag
-        GameObject textObj = GameObject.FindGameObjectWithTag(collectTextTag);
+        
+        GameObject textObj = GameObject.FindGameObjectWithTag("CollectPointsTextTag");
         if (textObj != null)
         {
             collectText = textObj.GetComponent<TextMeshProUGUI>();
@@ -38,12 +38,8 @@ public class InkstallCoin : MonoBehaviour
         {
             collectText.gameObject.SetActive(true);
             yield return new WaitForSeconds(1.5f);
-            collectText.gameObject.SetActive(false);
+            collectText.gameObject.SetActive(false); 
         }
-        else
-        {
-            yield return new WaitForSeconds(1.5f);
-        }   
         Destroy(gameObject);
     }
 }

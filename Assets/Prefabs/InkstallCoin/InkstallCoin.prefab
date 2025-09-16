@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collectSound: {fileID: 8300000, guid: 95598b2f6dc9a644099fbaa16ed33e9c, type: 3}
-  textMeshPro: {fileID: 0}
+  collectTextTag: CollectPointsTextTag
 --- !u!82 &-6229530422785089859
 AudioSource:
   m_ObjectHideFlags: 0

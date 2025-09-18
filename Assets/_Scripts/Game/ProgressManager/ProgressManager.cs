@@ -526,8 +526,7 @@ public class ProgressManager : MonoBehaviour
         string url = $"{baseUrl}/{studentId}/{doorId}";
         
         // Create the exact JSON structure from the screenshot
-        string jsonPayload =
-
+        string jsonPayload = "{\n" +
             $"  \"isUnlockable\": {isUnlockable.ToString().ToLower()},\n" +
             $"  \"isRoomCompleted\": {isRoomCompleted.ToString().ToLower()}\n" +
             "}";

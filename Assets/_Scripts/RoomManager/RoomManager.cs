@@ -125,60 +125,74 @@ public class RoomManager : MonoBehaviour
         
         if (aliensRemaining <= 0)
         {
-            Debug.Log("[RoomManager] Room completed! All aliens caught.");
+            int currentDoorID = thisRoomDoor != null ? thisRoomDoor.GetDoorID() : -1;
+            bool isValidDoor = currentDoorID >= 1 && currentDoorID <= 24;
+            
+            if (isValidDoor)
+            {
+                Debug.Log($"[RoomManager] Room {roomID} (Door {currentDoorID}) completed! All aliens caught.");
+            }
             
             // Save room completion status to online database
             if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded && thisRoomDoor != null)
             {
-                int currentDoorID = thisRoomDoor.GetDoorID();
-                
                 // Use the MarkRoomAsCompleted method which handles both current and next door updates
-                Debug.Log($"[RoomManager] <color=yellow>STARTING DATABASE UPDATE</color> - Marking room with door {currentDoorID} as completed");
-                ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
+                if (isValidDoor)
+                {
+                    Debug.Log($"[RoomManager] Marking room with door {currentDoorID} as completed in database");
+                }
                 
-                Debug.Log($"[RoomManager] <color=green>DATABASE UPDATE INITIATED</color> - Called MarkRoomAsCompleted for door {currentDoorID}");
+                ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
                 
                 // Update the door objects to reflect the new state immediately
                 // This ensures visual feedback even before the database update completes
-                Debug.Log($"[RoomManager] <color=cyan>LOCAL UPDATE</color> - Setting door {currentDoorID} to: isUnlockable=false, isRoomCompleted=true");
                 thisRoomDoor.isUnlockable = false;
                 thisRoomDoor.isRoomCompleted = true;
                 thisRoomDoor.UpdateDoorVisuals();
-                Debug.Log($"[RoomManager] <color=cyan>LOCAL UPDATE</color> - Door {currentDoorID} visuals updated");
                 
                 // If we have a next door to unlock, update it visually too
                 if (nextDoorToUnlock != null)
                 {
                     int nextDoorID = nextDoorToUnlock.GetDoorID();
-                    Debug.Log($"[RoomManager] <color=cyan>LOCAL UPDATE</color> - Setting next door {nextDoorID} to: isUnlockable=true, isRoomCompleted=false");
+                    bool isNextDoorValid = nextDoorID >= 1 && nextDoorID <= 24;
+                    
+                    if (isNextDoorValid)
+                    {
+                        Debug.Log($"[RoomManager] Updating next door {nextDoorID} to be unlockable");
+                    }
+                    
                     nextDoorToUnlock.isUnlockable = true;
                     nextDoorToUnlock.isRoomCompleted = false;
                     nextDoorToUnlock.UpdateDoorVisuals();
-                    
-                    Debug.Log($"[RoomManager] <color=cyan>LOCAL UPDATE</color> - Next door {nextDoorID} visuals updated");
-                }
-                else
-                {
-                    Debug.Log("[RoomManager] No next door found to unlock");
                 }
                 
                 // Force a refresh of all doors in the scene to ensure consistency
                 StartCoroutine(RefreshAllDoorsAfterDelay(1.5f));
             }
-            else
+            else if (isValidDoor)
             {
                 Debug.LogWarning("[RoomManager] ProgressManager not ready or door reference missing, couldn't save room completion status");
+                
+                // Try to find ProgressManager if it's not available
+                if (ProgressManager.Instance == null)
+                {
+                    Debug.LogWarning("[RoomManager] Trying to find or create ProgressManager instance");
+                    // This will create the instance if it doesn't exist
+                    var progressManager = ProgressManager.Instance;
+                    
+                    // Try again after ensuring the instance exists
+                    if (progressManager != null && thisRoomDoor != null)
+                    {
+                        Debug.Log($"[RoomManager] Found ProgressManager, marking room with door {currentDoorID} as completed");
+                        progressManager.MarkRoomAsCompleted(currentDoorID);
+                    }
+                }
             }
             
             // Add 200 coins/points for completing the room
             if (CoinsManager.Instance != null)
             {
                 CoinsManager.Instance.AddCoins(200, "Room Completed");
-                Debug.Log("[RoomManager] Added 200 coins for completing room " + roomID);
-            }
-            else
-            {
-                Debug.LogWarning("[RoomManager] CoinsManager instance not found, couldn't add coins");
             }
             
             // If this is the final room, trigger game win
@@ -191,7 +205,6 @@ public class RoomManager : MonoBehaviour
             {
                 // Call LevelWin for non-final rooms too
                 GameManager.Instance.LevelWin();
-                Debug.Log("[RoomManager] Room completed! Level win triggered.");
             }
         }
     }
@@ -208,28 +221,25 @@ public class RoomManager : MonoBehaviour
     // Refresh all doors in the scene after a delay to ensure database changes are reflected
     private IEnumerator RefreshAllDoorsAfterDelay(float delay)
     {
-        Debug.Log($"[RoomManager] <color=orange>REFRESH SCHEDULED</color> - Will refresh all doors after {delay} seconds");
+        Debug.Log($"[RoomManager] Will refresh all doors after {delay} seconds");
         yield return new WaitForSeconds(delay);
         
         if (ProgressManager.Instance != null)
         {
-            Debug.Log($"[RoomManager] <color=orange>REFRESH STARTED</color> - Refreshing all doors in scene to ensure consistency");
-            
             // Find all door interactions in the scene
             DoorInteraction[] allDoors = FindObjectsOfType<DoorInteraction>();
-            Debug.Log($"[RoomManager] <color=orange>REFRESH INFO</color> - Found {allDoors.Length} doors in scene to refresh");
+            Debug.Log($"[RoomManager] Refreshing {allDoors.Length} doors in scene from database");
             
             foreach (DoorInteraction door in allDoors)
             {
                 if (door != null)
                 {
                     // Update door state from database
-                    Debug.Log($"[RoomManager] <color=orange>REFRESH DOOR</color> - Refreshing door {door.doorID} from database");
                     ProgressManager.Instance.UpdateDoorInteraction(door);
                 }
             }
             
-            Debug.Log($"[RoomManager] <color=orange>REFRESH COMPLETE</color> - All doors have been refreshed from database");
+            Debug.Log("[RoomManager] Door refresh from database complete");
         }
     }
 }

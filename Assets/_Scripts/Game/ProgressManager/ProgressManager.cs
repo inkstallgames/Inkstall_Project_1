@@ -60,7 +60,7 @@ public class ProgressManager : MonoBehaviour
     private int currentRetryAttempt = 0;
 
     [Header("Door Settings")]
-    [SerializeField] private int maxDoorId = 16; // Maximum door ID in the game
+    [SerializeField] private int maxDoorId = 24; // Maximum door ID in the game (24 doors across 4 buildings)
     
     private string studentId = ""; // Will be set from StudentIdManager
     private string baseUrl = "https://api.inkstall.in/api/student-portal/doors";
@@ -339,36 +339,99 @@ public class ProgressManager : MonoBehaviour
     {
         bool isValidDoor = doorId >= 1 && doorId <= 24;
         
-        if (studentData?.doors == null) return;
+        if (!isValidDoor)
+        {
+            Debug.LogWarning($"[ProgressManager] Invalid door ID: {doorId}. Valid range is 1-24.");
+            return;
+        }
+        
+        if (studentData?.doors == null)
+        {
+            if (doorId >= 1 && doorId <= 24)
+            {
+                Debug.LogError($"[ProgressManager] Cannot mark room as completed: studentData or doors is null");
+            }
+            return;
+        }
+        
+        if (doorId >= 1 && doorId <= 24)
+        {
+            Debug.Log($"[ProgressManager] Marking room with door {doorId} as completed");
+        }
         
         DoorData door = studentData.doors.Find(d => d.doorId == doorId);
-        if (door == null || door.isRoomCompleted) return;
+        if (door == null)
+        {
+            if (doorId >= 1 && doorId <= 24)
+            {
+                Debug.LogWarning($"[ProgressManager] Door {doorId} not found in database. Creating it first.");
+            }
+            EnsureDoorDataExists(doorId, $"Door {doorId}");
+            door = studentData.doors.Find(d => d.doorId == doorId);
+            
+            if (door == null)
+            {
+                Debug.LogError($"[ProgressManager] Failed to create door {doorId} in database.");
+                return;
+            }
+        }
+        
+        if (door.isRoomCompleted)
+        {
+            if (doorId >= 1 && doorId <= 24)
+            {
+                Debug.Log($"[ProgressManager] Door {doorId} is already marked as completed. No action needed.");
+            }
+            return;
+        }
         
         // First update the current door (set isUnlockable=false, isRoomCompleted=true)
         UpdateDoorStatusDirect(doorId, false, true);
         
-        // Find the next door by ID
-        int nextDoorId = doorId + 1;
-        DoorData nextDoor = studentData.doors.Find(d => d.doorId == nextDoorId);
+        // Check if this is the last door in a building (doors 6, 12, 18, 24)
+        bool isLastDoorInBuilding = (doorId == 6 || doorId == 12 || doorId == 18 || doorId == 24);
         
-        if (nextDoor != null)
+        // If it's the last door in a building, we don't need to unlock the next door
+        if (!isLastDoorInBuilding && doorId < maxDoorId)
         {
-            // Update the next door (set isUnlockable=true, keep isRoomCompleted as is)
-            UpdateDoorStatusDirect(nextDoorId, true, nextDoor.isRoomCompleted);
+            // Find the next door by ID
+            int nextDoorId = doorId + 1;
+            DoorData nextDoor = studentData.doors.Find(d => d.doorId == nextDoorId);
+            
+            if (nextDoor != null)
+            {
+                if (doorId >= 1 && doorId <= 24 && nextDoorId >= 1 && nextDoorId <= 24)
+            {
+                Debug.Log($"[ProgressManager] Unlocking next door {nextDoorId} after completing door {doorId}");
+            }
+                // Update the next door (set isUnlockable=true, keep isRoomCompleted as is)
+                UpdateDoorStatusDirect(nextDoorId, true, nextDoor.isRoomCompleted);
+                
+                // Verify the updates were applied for the next door
+                StartCoroutine(VerifyDatabaseUpdates(nextDoorId, true, nextDoor.isRoomCompleted));
+                
+                // Update local door instances in the scene
+                UpdateDoorInstancesInScene(doorId, nextDoorId);
+            }
+            else
+            {
+                Debug.LogWarning($"[ProgressManager] Next door {nextDoorId} not found in database.");
+                // Try to create the next door
+                EnsureDoorDataExists(nextDoorId, $"Door {nextDoorId}");
+            }
+        }
+        else
+        {
+            Debug.Log($"[ProgressManager] Door {doorId} is the last door in its building. No next door to unlock.");
+            // Just update the current door instance in the scene
+            UpdateDoorInstancesInScene(doorId, -1);
         }
         
         // Force reload data from server after updates
         StartCoroutine(ReloadDataAfterDelay(1.0f));
         
-        // Verify the updates were applied
+        // Verify the updates were applied for the current door
         StartCoroutine(VerifyDatabaseUpdates(doorId, false, true));
-        if (nextDoor != null)
-        {
-            StartCoroutine(VerifyDatabaseUpdates(nextDoorId, true, nextDoor.isRoomCompleted));
-        }
-        
-        // Update local door instances in the scene
-        UpdateDoorInstancesInScene(doorId, nextDoorId);
     }
     
     // Verify that database updates were applied correctly
@@ -457,8 +520,11 @@ public class ProgressManager : MonoBehaviour
             }
             else
             {
-                Debug.Log($"[ProgressManager] Fallback - Door {doorId} status updated successfully");
-                Debug.Log($"[ProgressManager] Fallback - Response: {webRequest.downloadHandler.text}");
+                if (doorId >= 1 && doorId <= 24)
+                {
+                    Debug.Log($"[ProgressManager] Fallback - Door {doorId} status updated successfully");
+                    Debug.Log($"[ProgressManager] Fallback - Response: {webRequest.downloadHandler.text}");
+                }
                 
                 // Force reload data to verify changes
                 StartCoroutine(ReloadDataAfterDelay(1.0f));
@@ -490,7 +556,10 @@ public class ProgressManager : MonoBehaviour
             $"  \"isRoomCompleted\": {isRoomCompleted.ToString().ToLower()}\n" +
             "}";
         
-        Debug.Log($"[ProgressManager] Sending door {doorId} update to database: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+        if (doorId >= 1 && doorId <= 24)
+        {
+            Debug.Log($"[ProgressManager] Sending door {doorId} update to database: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+        }
         
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonPayload);
         
@@ -511,7 +580,10 @@ public class ProgressManager : MonoBehaviour
                 waitCount++;
                 if (waitCount % 20 == 0) // Log every ~1000ms
                 {
-                    Debug.Log($"[ProgressManager] Waiting for door {doorId} database update... ({waitCount * 50}ms)");
+                    if (doorId >= 1 && doorId <= 24 && waitCount % 4 == 0) // Only log every 4th update for doors 1-24
+                    {
+                        Debug.Log($"[ProgressManager] Waiting for door {doorId} database update... ({(waitCount * 50)}ms)");
+                    }
                 }
             }
             
@@ -526,7 +598,10 @@ public class ProgressManager : MonoBehaviour
             }
             else
             {
-                Debug.Log($"[ProgressManager] Door {doorId} successfully updated in database");
+                if (doorId >= 1 && doorId <= 24)
+                {
+                    Debug.Log($"[ProgressManager] Door {doorId} successfully updated in database");
+                }
                 
                 // Update local data
                 if (studentData != null && studentData.doors != null)
@@ -556,25 +631,54 @@ public class ProgressManager : MonoBehaviour
     {
         try
         {
-            if (!isDataLoaded || studentData?.doors == null) return;
+            if (!isDataLoaded || studentData?.doors == null)
+            {
+                Debug.LogWarning("[ProgressManager] Cannot update door interactions: data not loaded or studentData is null");
+                return;
+            }
                 
             // Find all door interactions in the scene
             DoorInteraction[] doorInteractions = FindObjectsOfType<DoorInteraction>();
+            
+            // Only log if we find doors 1-24 in the scene
+            if (doorInteractions.Any(d => d != null && d.doorID >= 1 && d.doorID <= 24))
+            {
+                Debug.Log($"[ProgressManager] Found {doorInteractions.Length} door interactions in the scene");
+            }
+            
+            int updatedCount = 0;
+            int invalidCount = 0;
             
             foreach (DoorInteraction door in doorInteractions)
             {
                 if (door != null)
                 {
-                    UpdateDoorInteraction(door);
+                    int doorId = door.doorID;
+                    
+                    if (doorId >= 1 && doorId <= 24)
+                    {
+                        UpdateDoorInteraction(door);
+                        updatedCount++;
+                    }
+                    else
+                    {
+                        invalidCount++;
+                        Debug.LogWarning($"[ProgressManager] Door has invalid ID: {doorId}. Valid range is 1-24.");
+                    }
                 }
+            }
+            
+            if (updatedCount > 0 || invalidCount > 0)
+            {
+                Debug.Log($"[ProgressManager] Updated {updatedCount} doors, skipped {invalidCount} invalid doors");
             }
             
             // Notify subscribers that all doors have been updated
             OnDataLoaded?.Invoke();
         }
-        catch (System.Exception)
+        catch (System.Exception e)
         {
-            // Silently handle the error
+            Debug.LogError($"[ProgressManager] Error updating all door interactions: {e.Message}");
         }
     }
 
@@ -587,21 +691,44 @@ public class ProgressManager : MonoBehaviour
         
         try
         {
-            if (!isDataLoaded || studentData?.doors == null) return;
-            if (doorId < 1 || doorId > 24) return;
+            if (!isDataLoaded || studentData?.doors == null) 
+            {
+                Debug.LogWarning($"[ProgressManager] Cannot update door {doorId}: data not loaded or studentData is null");
+                return;
+            }
+            
+            if (doorId < 1 || doorId > 24) 
+            {
+                Debug.LogWarning($"[ProgressManager] Invalid door ID: {doorId}. Valid range is 1-24.");
+                return;
+            }
             
             DoorData doorData = studentData.doors.Find(d => d.doorId == doorId);
             
             if (doorData != null)
             {
                 // Update the door properties
+                bool stateChanged = (door.isUnlockable != doorData.isUnlockable || door.isRoomCompleted != doorData.isRoomCompleted);
+                
                 door.isUnlockable = doorData.isUnlockable;
                 door.isRoomCompleted = doorData.isRoomCompleted;
                 door.UpdateDoorVisuals();
+                
+                if (stateChanged)
+                {
+                    if (doorId >= 1 && doorId <= 24)
+                    {
+                        Debug.Log($"[ProgressManager] Updated door {doorId} state: isUnlockable={doorData.isUnlockable}, isRoomCompleted={doorData.isRoomCompleted}");
+                    }
+                }
             }
             else
             {
                 // Create the door data with default values
+                if (doorId >= 1 && doorId <= 24)
+                {
+                    Debug.Log($"[ProgressManager] Door {doorId} not found in database. Creating it with default values.");
+                }
                 EnsureDoorDataExists(doorId, door.gameObject.name);
                 
                 // Try to find the door again after ensuring it exists
@@ -611,12 +738,21 @@ public class ProgressManager : MonoBehaviour
                     door.isUnlockable = doorData.isUnlockable;
                     door.isRoomCompleted = doorData.isRoomCompleted;
                     door.UpdateDoorVisuals();
+                    
+                    if (doorId >= 1 && doorId <= 24)
+                    {
+                        Debug.Log($"[ProgressManager] Created and updated door {doorId} state: isUnlockable={doorData.isUnlockable}, isRoomCompleted={doorData.isRoomCompleted}");
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"[ProgressManager] Failed to create door {doorId} in database.");
                 }
             }
         }
-        catch (System.Exception)
+        catch (System.Exception e)
         {
-            // Silently handle the error
+            Debug.LogError($"[ProgressManager] Error updating door {doorId}: {e.Message}");
         }
     }
 
@@ -636,11 +772,13 @@ public class ProgressManager : MonoBehaviour
         // Skip if door ID is not in valid range (1-24)
         if (doorId < 1 || doorId > 24)
         {
+            Debug.LogWarning($"[ProgressManager] Invalid door ID: {doorId}. Valid range is 1-24.");
             return;
         }
         
         if (!isDataLoaded || studentData?.doors == null)
         {
+            Debug.LogWarning($"[ProgressManager] Cannot ensure door {doorId} exists: data not loaded or studentData is null");
             return;
         }
         
@@ -649,17 +787,47 @@ public class ProgressManager : MonoBehaviour
         
         if (doorData == null)
         {
-            // Create new door data with default values
+            // Check if this is the first door in a building
+            bool isFirstDoorInBuilding = (doorId == 1 || doorId == 7 || doorId == 13 || doorId == 19);
+            
+            // For building 1, the first door is always unlockable
+            // For other buildings, check if the previous building's last door is completed
+            bool shouldBeUnlockable = false;
+            
+            if (doorId == 1)
+            {
+                // First door in the game is always unlockable
+                shouldBeUnlockable = true;
+            }
+            else if (isFirstDoorInBuilding)
+            {
+                // For other buildings' first doors, check if previous building is completed
+                int previousBuildingLastDoorId = doorId - 1;
+                DoorData previousBuildingLastDoor = studentData.doors.Find(d => d.doorId == previousBuildingLastDoorId);
+                
+                if (previousBuildingLastDoor != null && previousBuildingLastDoor.isRoomCompleted)
+                {
+                    shouldBeUnlockable = true;
+                }
+            }
+            
+            // Create new door data with appropriate values
             DoorData newDoorData = new DoorData
             {
                 doorId = doorId,
                 name = doorName,
-                isUnlockable = doorId == 1, // Only first door is unlockable by default
+                isUnlockable = shouldBeUnlockable,
                 isRoomCompleted = false,
+                description = $"Room behind Door {doorId}"
             };
             
             // Add to the student data
             studentData.doors.Add(newDoorData);
+            
+            if (doorId >= 1 && doorId <= 24)
+            {
+                Debug.Log($"[ProgressManager] Created door {doorId} in database: isUnlockable={newDoorData.isUnlockable}, isRoomCompleted={newDoorData.isRoomCompleted}");
+            }
             
             // Save the updated student data to the database
             StartCoroutine(SaveStudentDoorData());
@@ -690,7 +858,7 @@ public class ProgressManager : MonoBehaviour
     }
     
     // Ensures that all doors from 1 to maxDoorId exist in the database
-    private void EnsureAllDoorsExist()
+    public void EnsureAllDoorsExist()
     {
         if (studentData == null || studentData.doors == null)
         {
@@ -698,7 +866,10 @@ public class ProgressManager : MonoBehaviour
             return;
         }
         
-        Debug.Log($"[ProgressManager] Ensuring all doors from 1 to {maxDoorId} exist in database");
+        if (maxDoorId >= 1 && maxDoorId <= 24)
+        {
+            Debug.Log($"[ProgressManager] Ensuring all doors from 1 to {maxDoorId} exist in database");
+        }
         
         // Check for each door ID from 1 to maxDoorId
         for (int doorId = 1; doorId <= maxDoorId; doorId++)
@@ -709,30 +880,35 @@ public class ProgressManager : MonoBehaviour
             if (existingDoor == null)
             {
                 // Door doesn't exist, create it with default values
-                Debug.Log($"[ProgressManager] Door {doorId} not found in database, creating it");
+                if (doorId >= 1 && doorId <= 24)
+                {
+                    Debug.Log($"[ProgressManager] Door {doorId} not found in database, creating it");
+                }
                 
-                // Only the first door is unlockable by default
-                // All other doors start as locked and not unlockable until previous door is completed
-                bool isFirstDoor = (doorId == 1);
+                // Only the first door in each building is unlockable by default (doors 1, 7, 13, 19)
+                bool isFirstDoorInBuilding = (doorId == 1 || doorId == 7 || doorId == 13 || doorId == 19);
                 
                 DoorData newDoor = new DoorData
                 {
                     doorId = doorId,
                     name = $"Door {doorId}",
-                    isUnlockable = isFirstDoor, // Only first door is unlockable by default
+                    isUnlockable = doorId == 1, // Only the very first door is unlockable by default
                     isRoomCompleted = false,
-                    description = $"Door {doorId} Description"
+                    description = $"Room behind Door {doorId}"
                 };
                 
                 studentData.doors.Add(newDoor);
-                Debug.Log($"[ProgressManager] Created door {doorId} in database: isUnlockable={newDoor.isUnlockable}, isRoomCompleted={newDoor.isRoomCompleted}");
+                if (doorId >= 1 && doorId <= 24)
+                {
+                    Debug.Log($"[ProgressManager] Created door {doorId} in database: isUnlockable={newDoor.isUnlockable}, isRoomCompleted={newDoor.isRoomCompleted}");
+                }
             }
             else if (doorId == 1)
             {
                 // First door should always be unlockable if not completed
                 if (!existingDoor.isRoomCompleted && !existingDoor.isUnlockable)
                 {
-                    Debug.Log($"[ProgressManager] First door is not unlockable. Fixing door progression.");
+                    Debug.Log("[ProgressManager] First door is not unlockable. Fixing door progression.");
                     existingDoor.isUnlockable = true;
                 }
             }
@@ -742,11 +918,28 @@ public class ProgressManager : MonoBehaviour
                 // If a door is marked as completed, the next door should be unlockable
                 if (existingDoor.isRoomCompleted && doorId < maxDoorId)
                 {
-                    DoorData nextDoor = studentData.doors.Find(d => d.doorId == doorId + 1);
-                    if (nextDoor != null && !nextDoor.isUnlockable && !nextDoor.isRoomCompleted)
+                    // Check if this is the last door in a building (doors 6, 12, 18, 24)
+                    bool isLastDoorInBuilding = (doorId == 6 || doorId == 12 || doorId == 18 || doorId == 24);
+                    
+                    // If it's the last door in a building, we don't need to unlock the next door
+                    if (!isLastDoorInBuilding)
                     {
-                        Debug.Log($"[ProgressManager] Door {doorId} is completed but next door {doorId + 1} is not unlockable. Fixing progression.");
-                        nextDoor.isUnlockable = true;
+                        DoorData nextDoor = studentData.doors.Find(d => d.doorId == doorId + 1);
+                        if (nextDoor != null && !nextDoor.isUnlockable && !nextDoor.isRoomCompleted)
+                        {
+                            if (doorId >= 1 && doorId <= 24)
+                            {
+                                Debug.Log($"[ProgressManager] Door {doorId} is completed but next door {doorId + 1} is not unlockable. Fixing progression.");
+                            }
+                            nextDoor.isUnlockable = true;
+                        }
+                    }
+                    else
+                    {
+                        if (doorId >= 1 && doorId <= 24)
+                        {
+                            Debug.Log($"[ProgressManager] Door {doorId} is the last door in its building. No next door to unlock.");
+                        }
                     }
                 }
             }
@@ -893,11 +1086,36 @@ public class ProgressManager : MonoBehaviour
             changesNeeded = true;
         }
         
-        // Check each door's state and ensure proper progression
+        // First door in each building should be unlockable if all previous building doors are completed
+        int[] buildingFirstDoors = { 1, 7, 13, 19 };
+        for (int i = 1; i < buildingFirstDoors.Length; i++)
+        {
+            int currentFirstDoorId = buildingFirstDoors[i];
+            int previousBuildingLastDoorId = buildingFirstDoors[i] - 1;
+            
+            DoorData currentFirstDoor = studentData.doors.Find(d => d.doorId == currentFirstDoorId);
+            DoorData previousBuildingLastDoor = studentData.doors.Find(d => d.doorId == previousBuildingLastDoorId);
+            
+            if (currentFirstDoor != null && previousBuildingLastDoor != null && 
+                previousBuildingLastDoor.isRoomCompleted && !currentFirstDoor.isRoomCompleted && !currentFirstDoor.isUnlockable)
+            {
+                Debug.Log($"[ProgressManager] Building first door {currentFirstDoorId} should be unlockable since previous building is completed.");
+                currentFirstDoor.isUnlockable = true;
+                changesNeeded = true;
+            }
+        }
+        
+        // Check each door's state and ensure proper progression within each building
         for (int i = 0; i < studentData.doors.Count - 1; i++)
         {
             DoorData currentDoor = studentData.doors[i];
             DoorData nextDoor = studentData.doors[i + 1];
+            
+            // Skip validation between buildings (doors 6->7, 12->13, 18->19)
+            if (currentDoor.doorId == 6 || currentDoor.doorId == 12 || currentDoor.doorId == 18)
+            {
+                continue;
+            }
             
             // If current door is completed, next door should be unlockable
             if (currentDoor.isRoomCompleted && !nextDoor.isUnlockable && !nextDoor.isRoomCompleted)
@@ -927,7 +1145,14 @@ public class ProgressManager : MonoBehaviour
     // Update door instances in the scene after a room is completed
     private void UpdateDoorInstancesInScene(int completedDoorId, int nextDoorId)
     {
-        Debug.Log($"[ProgressManager] Updating door instances in scene for doors {completedDoorId} and {nextDoorId}");
+        if (nextDoorId > 0)
+        {
+            Debug.Log($"[ProgressManager] Updating door instances in scene for doors {completedDoorId} and {nextDoorId}");
+        }
+        else
+        {
+            Debug.Log($"[ProgressManager] Updating door instance in scene for door {completedDoorId} (no next door)");
+        }
         
         // Find all door interactions in the scene
         DoorInteraction[] allDoors = FindObjectsOfType<DoorInteraction>();
@@ -946,8 +1171,8 @@ public class ProgressManager : MonoBehaviour
                 door.isRoomCompleted = true;
                 door.UpdateDoorVisuals();
             }
-            // Update the next door
-            else if (doorId == nextDoorId)
+            // Update the next door if there is one
+            else if (nextDoorId > 0 && doorId == nextDoorId)
             {
                 Debug.Log($"[ProgressManager] Updating next door {doorId} in scene: isUnlockable=true");
                 door.isUnlockable = true;

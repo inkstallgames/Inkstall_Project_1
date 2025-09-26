@@ -255,32 +255,6 @@ public class DoorInteraction : MonoBehaviour
         isRoomCompleted = completed;
         SaveDoorStatesToDatabase();
     }
-    
-    // Method to be called by RoomManager when a room is completed
-    public void CompleteRoom()
-    {
-        if (ProgressManager.Instance != null)
-        {
-            // Tell ProgressManager this room is completed
-            ProgressManager.Instance.RoomCompleted(doorID);
-            
-            // Update our local state
-            isRoomCompleted = true;
-            isUnlockable = false;
-            
-            // Update visuals
-            UpdateDoorVisuals();
-            
-            if (doorID >= 1 && doorID <= 24)
-            {
-                Debug.Log($"[DoorInteraction] Door {doorID} - Room completed, door state updated");
-            }
-        }
-        else
-        {
-            Debug.LogError($"[DoorInteraction] Cannot complete room: ProgressManager.Instance is null");
-        }
-    }
 
     public int GetDoorID()
     {

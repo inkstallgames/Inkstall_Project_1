@@ -145,45 +145,77 @@ public class ProgressManager : MonoBehaviour
         studentId = id;
         LoadStudentDoorData();
     }
-
     public void LoadStudentDoorData(bool isRetry = false)
     {
-        if (!isRetry)
-        {
-            currentRetryAttempt = 0;
-        }
-
-        if (string.IsNullOrEmpty(studentId)) return;
-        if (isRetry && currentRetryAttempt >= maxRetryAttempts) return;
-        
         if (isRetry)
         {
             currentRetryAttempt++;
         }
-
+        else
+        {
+            currentRetryAttempt = 0;
+        }
+        
+        // Try to load from local cache first if we have it
+        if (!isRetry && LoadLocalDoorStates())
+        {
+            Debug.Log("[ProgressManager] Loaded door states from local cache while waiting for server response");
+            // Still load from server to get the latest data
+        }
+        
         StartCoroutine(LoadStudentDoorDataCoroutine(isRetry));
     }
 
     private IEnumerator LoadStudentDoorDataCoroutine(bool isRetry = false)
     {
-        if (string.IsNullOrEmpty(studentId)) yield break;
+        if (string.IsNullOrEmpty(studentId))
+        {
+            Debug.LogError("[ProgressManager] Cannot load data: studentId is empty");
+            yield break;
+        }
         
         isDataLoaded = false;
         string url = $"{baseUrl}/student/{studentId}";
+        Debug.Log($"[ProgressManager] Loading door data from: {url}");
         
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
+            webRequest.timeout = 10; // Set timeout to 10 seconds
             yield return webRequest.SendWebRequest();
             
             if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
                 webRequest.result == UnityWebRequest.Result.ProtocolError)
             {
+                Debug.LogError($"[ProgressManager] Error loading data: {webRequest.error}");
+                
                 // Retry with exponential backoff
                 if (currentRetryAttempt < maxRetryAttempts)
                 {
                     float retryDelay = initialRetryDelay * Mathf.Pow(2, currentRetryAttempt);
+                    Debug.Log($"[ProgressManager] Retrying in {retryDelay} seconds (attempt {currentRetryAttempt + 1}/{maxRetryAttempts})");
                     yield return new WaitForSeconds(retryDelay);
                     LoadStudentDoorData(true);
+                    yield break;
+                }
+                else
+                {
+                    Debug.LogWarning("[ProgressManager] Failed to load data after all retry attempts. Using local cache if available.");
+                    // If we've exhausted all retries, try to load from local cache
+                    if (LoadLocalDoorStates())
+                    {
+                        Debug.Log("[ProgressManager] Successfully loaded from local cache after server failure");
+                        // Even though we loaded from cache, we still want to update all doors
+                        UpdateAllDoorInteractions();
+                        OnDataLoaded?.Invoke();
+                    }
+                    else
+                    {
+                        // If no local cache, create default data
+                        Debug.LogWarning("[ProgressManager] No local cache available. Creating default door data.");
+                        CreateDefaultDoorData();
+                        UpdateAllDoorInteractions();
+                        OnDataLoaded?.Invoke();
+                    }
                     yield break;
                 }
                 
@@ -195,7 +227,8 @@ public class ProgressManager : MonoBehaviour
                 else
                 {
                     // Try to load from local cache if available
-                    LoadLocalDoorStates();
+                    bool localDataLoaded = LoadLocalDoorStates();
+                    Debug.Log($"[ProgressManager] Local data loaded: {localDataLoaded}");
                 }
             }
             else
@@ -205,25 +238,61 @@ public class ProgressManager : MonoBehaviour
                 
                 try
                 {
+                    Debug.Log($"[ProgressManager] Received JSON response: {jsonResponse}");
                     studentData = JsonConvert.DeserializeObject<StudentDoorsData>(jsonResponse);
-                    isDataLoaded = true;
                     
-                    // Ensure we have all door IDs from 1 to 16
-                    EnsureAllDoorsExist();
-                    
-                    // Update all door interactions in the scene
-                    UpdateAllDoorInteractions();
-                    
-                    // Save to local cache
-                    SaveLocalDoorStates();
-                    
-                    // Notify subscribers that data is loaded
-                    OnDataLoaded?.Invoke();
+                    if (studentData != null && studentData.doors != null)
+                    {
+                        Debug.Log($"[ProgressManager] Successfully parsed JSON. Found {studentData.doors.Count} doors.");
+                        isDataLoaded = true;
+                        
+                        // Ensure we have all door IDs from 1 to maxDoorId
+                        EnsureAllDoorsExist();
+                        
+                        // Update all door interactions in the scene
+                        UpdateAllDoorInteractions();
+                        
+                        // Save to local cache
+                        SaveLocalDoorStates();
+                        
+                        // Process any pending door updates
+                        ProcessPendingDoorUpdates();
+                        
+                        // Notify subscribers that data is loaded
+                        OnDataLoaded?.Invoke();
+                    }
+                    else
+                    {
+                        Debug.LogError("[ProgressManager] Parsed JSON resulted in null data or doors");
+                        CreateDefaultDoorData();
+                        UpdateAllDoorInteractions();
+                        OnDataLoaded?.Invoke();
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.LogError($"[ProgressManager] Error parsing JSON: {ex.Message}");
+                    // Try to manually parse the MongoDB JSON format
+                    try
+                    {
+                        ParseMongoDBJson(jsonResponse);
+                        isDataLoaded = true;
+                        EnsureAllDoorsExist();
+                        UpdateAllDoorInteractions();
+                        SaveLocalDoorStates();
+                        ProcessPendingDoorUpdates();
+                        OnDataLoaded?.Invoke();
+                    }
+                    catch (Exception parseEx)
+                    {
+                        Debug.LogError($"[ProgressManager] Manual parsing also failed: {parseEx.Message}");
+                        CreateDefaultDoorData();
+                        UpdateAllDoorInteractions();
+                        OnDataLoaded?.Invoke();
+                    }
                     // Try to load from local cache if available
-                    LoadLocalDoorStates();
+                    bool localDataLoaded = LoadLocalDoorStates();
+                    Debug.Log($"[ProgressManager] Local data loaded: {localDataLoaded}");
                 }
             }
         }
@@ -321,6 +390,9 @@ public class ProgressManager : MonoBehaviour
                         // Update our local data with the verified data
                         studentData = verifiedData;
                         isDataLoaded = true;
+                        
+                        // Process any pending door updates
+                        ProcessPendingDoorUpdates();
                         
                         // Notify subscribers that data has been updated
                         OnDataLoaded?.Invoke();
@@ -470,6 +542,9 @@ public class ProgressManager : MonoBehaviour
                         // Update our local data with the verified data
                         studentData = verifiedData;
                         isDataLoaded = true;
+                        
+                        // Process any pending door updates
+                        ProcessPendingDoorUpdates();
                         
                         // Notify subscribers that data has been updated
                         OnDataLoaded?.Invoke();
@@ -673,6 +748,9 @@ public class ProgressManager : MonoBehaviour
                 Debug.Log($"[ProgressManager] Updated {updatedCount} doors, skipped {invalidCount} invalid doors");
             }
             
+            // Process any pending door updates
+            ProcessPendingDoorUpdates();
+            
             // Notify subscribers that all doors have been updated
             OnDataLoaded?.Invoke();
         }
@@ -681,6 +759,9 @@ public class ProgressManager : MonoBehaviour
             Debug.LogError($"[ProgressManager] Error updating all door interactions: {e.Message}");
         }
     }
+
+    // List to keep track of doors that need updating once data is loaded
+    private List<DoorInteraction> pendingDoorUpdates = new List<DoorInteraction>();
 
     public void UpdateDoorInteraction(DoorInteraction door)
     {
@@ -693,33 +774,35 @@ public class ProgressManager : MonoBehaviour
         {
             if (!isDataLoaded || studentData?.doors == null) 
             {
-                Debug.LogWarning($"[ProgressManager] Cannot update door {doorId}: data not loaded or studentData is null");
+                if (doorId >= 1 && doorId <= 24)
+                {
+                    Debug.Log($"[ProgressManager] Door {doorId}: Data not loaded yet, queuing for later update");
+                }
+                
+                // Add to pending updates to process when data is loaded
+                if (!pendingDoorUpdates.Contains(door))
+                {
+                    pendingDoorUpdates.Add(door);
+                }
                 return;
             }
             
-            if (doorId < 1 || doorId > 24) 
-            {
-                Debug.LogWarning($"[ProgressManager] Invalid door ID: {doorId}. Valid range is 1-24.");
-                return;
-            }
-            
+            // Find the door data for this door ID
             DoorData doorData = studentData.doors.Find(d => d.doorId == doorId);
             
             if (doorData != null)
             {
-                // Update the door properties
-                bool stateChanged = (door.isUnlockable != doorData.isUnlockable || door.isRoomCompleted != doorData.isRoomCompleted);
+                // Update the door interaction with data from the database
                 
-                door.isUnlockable = doorData.isUnlockable;
-                door.isRoomCompleted = doorData.isRoomCompleted;
+                door.SetUnlockable(doorData.isUnlockable);
+                door.SetRoomCompleted(doorData.isRoomCompleted);
+                
+                // Make sure the door updates its visuals
                 door.UpdateDoorVisuals();
                 
-                if (stateChanged)
+                if (doorId >= 1 && doorId <= 24)
                 {
-                    if (doorId >= 1 && doorId <= 24)
-                    {
-                        Debug.Log($"[ProgressManager] Updated door {doorId} state: isUnlockable={doorData.isUnlockable}, isRoomCompleted={doorData.isRoomCompleted}");
-                    }
+                    Debug.Log($"[ProgressManager] Updated door {doorId}: isUnlockable={doorData.isUnlockable}, isRoomCompleted={doorData.isRoomCompleted}");
                 }
             }
             else
@@ -735,18 +818,9 @@ public class ProgressManager : MonoBehaviour
                 doorData = studentData.doors.Find(d => d.doorId == doorId);
                 if (doorData != null)
                 {
-                    door.isUnlockable = doorData.isUnlockable;
-                    door.isRoomCompleted = doorData.isRoomCompleted;
+                    door.SetUnlockable(doorData.isUnlockable);
+                    door.SetRoomCompleted(doorData.isRoomCompleted);
                     door.UpdateDoorVisuals();
-                    
-                    if (doorId >= 1 && doorId <= 24)
-                    {
-                        Debug.Log($"[ProgressManager] Created and updated door {doorId} state: isUnlockable={doorData.isUnlockable}, isRoomCompleted={doorData.isRoomCompleted}");
-                    }
-                }
-                else
-                {
-                    Debug.LogError($"[ProgressManager] Failed to create door {doorId} in database.");
                 }
             }
         }
@@ -988,8 +1062,190 @@ public class ProgressManager : MonoBehaviour
         }
     }
     
+    // Method to be called when a room is completed
+    public void RoomCompleted(int doorId)
+    {
+        if (!isDataLoaded || studentData == null || studentData.doors == null)
+        {
+            Debug.LogError($"[ProgressManager] Cannot update room completion: Data not loaded");
+            return;
+        }
+        
+        Debug.Log($"[ProgressManager] Processing room completion for door {doorId}");
+        
+        // Find the current door in our data
+        var currentDoor = studentData.doors.Find(d => d.doorId == doorId);
+        if (currentDoor == null)
+        {
+            Debug.LogError($"[ProgressManager] Door {doorId} not found in student data");
+            return;
+        }
+        
+        // Mark current door as completed
+        currentDoor.isRoomCompleted = true;
+        currentDoor.isUnlockable = false; // No longer needs to be unlockable
+        
+        // Find the next door to make unlockable
+        int nextDoorId = doorId + 1;
+        var nextDoor = studentData.doors.Find(d => d.doorId == nextDoorId);
+        if (nextDoor != null)
+        {
+            nextDoor.isUnlockable = true;
+            Debug.Log($"[ProgressManager] Making door {nextDoorId} unlockable");
+        }
+        
+        // Update the database
+        UpdateDoorStatusDirect(doorId, false, true); // Current door
+        if (nextDoor != null)
+        {
+            UpdateDoorStatusDirect(nextDoorId, true, false); // Next door
+        }
+        
+        // Update all door interactions in the scene
+        UpdateAllDoorInteractions();
+        
+        // Save to local cache
+        SaveLocalDoorStates();
+    }
+    
+    // Create default door data when no data is available
+    private void CreateDefaultDoorData()
+    {
+        Debug.Log("[ProgressManager] Creating default door data");
+        
+        if (studentData == null)
+        {
+            studentData = new StudentDoorsData();
+            studentData.doors = new List<DoorData>();
+        }
+        else if (studentData.doors == null)
+        {
+            studentData.doors = new List<DoorData>();
+        }
+        
+        // Clear existing data
+        studentData.doors.Clear();
+        
+        // Create default door data - only door 1 is unlockable initially
+        for (int i = 1; i <= maxDoorId; i++)
+        {
+            DoorData door = new DoorData
+            {
+                doorId = i,
+                name = $"Door {i}",
+                isUnlockable = (i == 1), // Only first door is unlockable
+                isRoomCompleted = false,
+                description = $"Room behind Door {i}"
+            };
+            
+            studentData.doors.Add(door);
+        }
+        
+        Debug.Log($"[ProgressManager] Created default data for {studentData.doors.Count} doors");
+        isDataLoaded = true;
+        
+        // Save the default data to local storage
+        SaveLocalDoorStates();
+    }
+    
+    // Parse MongoDB JSON format which contains $oid and $date fields
+    private void ParseMongoDBJson(string jsonResponse)
+    {
+        try
+        {
+            Debug.Log("[ProgressManager] Attempting manual parsing of MongoDB JSON format");
+            
+            // Create a new student data object if it doesn't exist
+            if (studentData == null)
+            {
+                studentData = new StudentDoorsData();
+                studentData.doors = new List<DoorData>();
+            }
+            
+            // Use regex to extract door data
+            System.Text.RegularExpressions.Regex doorRegex = new System.Text.RegularExpressions.Regex(@"doorId\s*:\s*(\d+)[^}]*isUnlockable\s*:\s*(true|false)[^}]*isRoomCompleted\s*:\s*(true|false)");
+            var matches = doorRegex.Matches(jsonResponse);
+            
+            Debug.Log($"[ProgressManager] Found {matches.Count} doors in MongoDB JSON");
+            
+            foreach (System.Text.RegularExpressions.Match match in matches)
+            {
+                if (match.Groups.Count >= 4)
+                {
+                    int doorId = int.Parse(match.Groups[1].Value);
+                    bool isUnlockable = bool.Parse(match.Groups[2].Value);
+                    bool isRoomCompleted = bool.Parse(match.Groups[3].Value);
+                    
+                    // Check if door already exists in our data
+                    DoorData existingDoor = studentData.doors.Find(d => d.doorId == doorId);
+                    if (existingDoor != null)
+                    {
+                        existingDoor.isUnlockable = isUnlockable;
+                        existingDoor.isRoomCompleted = isRoomCompleted;
+                        Debug.Log($"[ProgressManager] Updated door {doorId}: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+                    }
+                    else
+                    {
+                        // Create a new door data
+                        DoorData newDoor = new DoorData
+                        {
+                            doorId = doorId,
+                            isUnlockable = isUnlockable,
+                            isRoomCompleted = isRoomCompleted
+                        };
+                        studentData.doors.Add(newDoor);
+                        Debug.Log($"[ProgressManager] Added door {doorId}: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+                    }
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[ProgressManager] Error in manual MongoDB JSON parsing: {e.Message}");
+            throw; // Rethrow to be caught by the caller
+        }
+    }
+    
     // Load door states from local storage
-    private void LoadLocalDoorStates()
+    // Process any doors that were waiting for data to load
+    private void ProcessPendingDoorUpdates()
+    {
+        if (pendingDoorUpdates.Count > 0)
+        {
+            // Remove any null doors first (might have been destroyed)
+            pendingDoorUpdates.RemoveAll(door => door == null);
+            
+            if (pendingDoorUpdates.Count > 0)
+            {
+                Debug.Log($"[ProgressManager] Processing {pendingDoorUpdates.Count} pending door updates");
+                
+                // Create a copy of the list to avoid modification issues during iteration
+                List<DoorInteraction> doorsCopy = new List<DoorInteraction>(pendingDoorUpdates);
+                pendingDoorUpdates.Clear();
+                
+                int successCount = 0;
+                foreach (DoorInteraction door in doorsCopy)
+                {
+                    if (door != null)
+                    {
+                        UpdateDoorInteraction(door);
+                        successCount++;
+                    }
+                }
+                
+                if (successCount > 0 && successCount == doorsCopy.Count)
+                {
+                    Debug.Log($"[ProgressManager] Successfully updated all {successCount} pending doors");
+                }
+                else if (successCount > 0)
+                {
+                    Debug.Log($"[ProgressManager] Updated {successCount} of {doorsCopy.Count} pending doors (some were null)");
+                }
+            }
+        }
+    }
+    
+    private bool LoadLocalDoorStates()
     {
         try
         {
@@ -1042,22 +1298,29 @@ public class ProgressManager : MonoBehaviour
                     
                     Debug.Log("[ProgressManager] Successfully loaded door states from local storage");
                     
+                    // Process any pending door updates
+                    ProcessPendingDoorUpdates();
+                    
                     // Notify subscribers that data is loaded
                     OnDataLoaded?.Invoke();
+                    return true;
                 }
                 else
                 {
                     Debug.LogWarning("[ProgressManager] Local door states are null or empty");
+                    return false;
                 }
             }
             else
             {
                 Debug.LogWarning($"[ProgressManager] No local door states found for student ID: {studentId}");
+                return false;
             }
         }
         catch (System.Exception e)
         {
             Debug.LogError($"[ProgressManager] Error loading local door states: {e.Message}");
+            return false;
         }
     }
     

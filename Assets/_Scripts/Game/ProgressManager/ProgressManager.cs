@@ -248,6 +248,19 @@ public class ProgressManager : MonoBehaviour
 
     public IEnumerator UpdateDoorStatus(int doorId, bool isUnlockable, bool isRoomCompleted)
     {
+        // Skip if studentId is not set
+        if (string.IsNullOrEmpty(studentId))
+        {
+            Debug.LogWarning("[ProgressManager] Cannot update door status: studentId is not set");
+            yield break;
+        }
+
+        // Skip processing for invalid door IDs
+        if (doorId < 1 || doorId > 24)
+        {
+            yield break;
+        }
+
         string url = $"{baseUrl}/{studentId}/{doorId}";
         
         // Create a proper JSON structure that matches the API expectations
@@ -410,6 +423,12 @@ public class ProgressManager : MonoBehaviour
     // Fallback method to update door status using a different API endpoint
     private IEnumerator UpdateDoorStatusFallback(int doorId, bool isUnlockable, bool isRoomCompleted)
     {
+        // Skip processing for invalid door IDs
+        if (doorId < 1 || doorId > 24)
+        {
+            yield break;
+        }
+
         // Try a different API endpoint format
         string url = $"{baseUrl}/student/{studentId}";
         
@@ -450,6 +469,19 @@ public class ProgressManager : MonoBehaviour
     // Update door status with direct HTTP request
     private void UpdateDoorStatusDirect(int doorId, bool isUnlockable, bool isRoomCompleted)
     {
+        // Skip if studentId is not set
+        if (string.IsNullOrEmpty(studentId))
+        {
+            Debug.LogWarning("[ProgressManager] Cannot update door status: studentId is not set");
+            return;
+        }
+
+        // Skip processing for invalid door IDs
+        if (doorId < 1 || doorId > 24)
+        {
+            return;
+        }
+
         string url = $"{baseUrl}/{studentId}/{doorId}";
         
         // Create the JSON structure

@@ -4152,6 +4152,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a877fdf5399632408f36a5f6a6b2e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialRetryDelay: 2
+  maxRetryAttempts: 3
+  maxDoorId: 16
   studentData:
     doors: []
   isDataLoaded: 0
@@ -6078,7 +6081,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0afeabe999adb5479c712114fe5d82e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  totalTime: 40
+  totalTime: 80
   timerText: {fileID: 1194441157}
   timerRunning: 0
   tickVolume: 1

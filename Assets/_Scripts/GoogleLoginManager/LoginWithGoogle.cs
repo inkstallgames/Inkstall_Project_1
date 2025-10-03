@@ -29,11 +29,13 @@ public class GoogleLoginManager : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("[GoogleLogin] Starting LoginWithGoogle script");
         InitializeFirebase();
     }
 
     private void InitializeFirebase()
     {
+        Debug.Log("[GoogleLogin] Initializing Firebase...");
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
         {
             var dependencyStatus = task.Result;
@@ -53,6 +55,7 @@ public class GoogleLoginManager : MonoBehaviour
 
     public void OnLoginButtonClicked()
     {
+        Debug.Log("[GoogleLogin] Login button clicked");
         if (!firebaseInitialized)
     {
         UpdateStatus("Firebase not initialized. Please try again.");
@@ -61,6 +64,7 @@ public class GoogleLoginManager : MonoBehaviour
     }
 
     UpdateStatus("Starting Google Sign-In...");
+    Debug.Log("[GoogleLogin] Configuring GoogleSignIn");
     GoogleSignIn.Configuration = new GoogleSignInConfiguration
     {
         WebClientId = webClientId,
@@ -73,8 +77,11 @@ public class GoogleLoginManager : MonoBehaviour
 
     try
     {
+        Debug.Log("[GoogleLogin] Calling GoogleSignIn.DefaultInstance.SignIn()");
         Task<GoogleSignInUser> signIn = GoogleSignIn.DefaultInstance.SignIn();
+        Debug.Log("[GoogleLogin] SignIn task created, attaching continuation");
         signIn.ContinueWith(HandleGoogleSignIn);
+        Debug.Log("[GoogleLogin] Continuation attached to SignIn task");
     }
     catch (Exception ex)
     {
@@ -85,17 +92,26 @@ public class GoogleLoginManager : MonoBehaviour
 
 private void HandleGoogleSignIn(Task<GoogleSignInUser> task)
 {
+    Debug.Log("[GoogleLogin] HandleGoogleSignIn called");
+    Debug.Log($"[GoogleLogin] Task status: IsCanceled={task.IsCanceled}, IsFaulted={task.IsFaulted}, IsCompleted={task.IsCompleted}");
+    
     if (task.IsCanceled)
     {
         UpdateStatus("Google Sign-In Cancelled");
+        Debug.Log("[GoogleLogin] Google Sign-In was canceled by user");
         // Reset sign-in state
+        Debug.Log("[GoogleLogin] Calling GoogleSignIn.DefaultInstance.SignOut()");
         GoogleSignIn.DefaultInstance.SignOut();
         return;
     }
     if (task.IsFaulted)
     {
+        Debug.Log("[GoogleLogin] Google Sign-In task faulted");
         // Handle specific exceptions
         var exception = task.Exception?.Flatten().InnerException;
+        Debug.LogError($"[GoogleLogin] Exception details: {exception?.GetType().FullName}: {exception?.Message}");
+        if (exception?.StackTrace != null)
+            Debug.LogError($"[GoogleLogin] Stack trace: {exception.StackTrace}");
         if (exception != null && exception.GetType().ToString().Contains("GoogleSignIn"))
         {
             UpdateStatus("Google Sign-In Cancelled");
@@ -113,13 +129,18 @@ private void HandleGoogleSignIn(Task<GoogleSignInUser> task)
 
     try
     {
+        Debug.Log("[GoogleLogin] Attempting to get task.Result");
         GoogleSignInUser googleUser = task.Result;
+        Debug.Log("[GoogleLogin] Successfully got GoogleSignInUser result");
+        
         if (googleUser != null && !string.IsNullOrEmpty(googleUser.IdToken))
         {
             string idToken = googleUser.IdToken;
-
-            Debug.Log($"ID Token: {(idToken.Length > 10 ? idToken.Substring(0, 10) + "..." : idToken)}");
-            Debug.Log($"Email: {googleUser.Email}");
+            
+            Debug.Log($"[GoogleLogin] ID Token received (length: {idToken.Length}): {(idToken.Length > 10 ? idToken.Substring(0, 10) + "..." : idToken)}");
+            Debug.Log($"[GoogleLogin] Email: {googleUser.Email}");
+            Debug.Log($"[GoogleLogin] Display Name: {googleUser.DisplayName}");
+            Debug.Log($"[GoogleLogin] Authentication successful, proceeding with server verification");
 
             UpdateStatus("Google Sign-In Success: " + googleUser.Email);
 
@@ -141,12 +162,16 @@ private void HandleGoogleSignIn(Task<GoogleSignInUser> task)
 
 private IEnumerator CheckUserInDatabase(string idToken)
 {
+    Debug.Log("[GoogleLogin] Starting CheckUserInDatabase");
     UpdateStatus("Verifying with server...");
 
+    Debug.Log("[GoogleLogin] Preparing request data for server verification");
     var requestData = new IdTokenRequest { idToken = idToken };
     string jsonData = JsonUtility.ToJson(requestData);
     byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonData);
+    Debug.Log($"[GoogleLogin] Request data prepared, JSON length: {jsonData.Length}");
 
+    Debug.Log($"[GoogleLogin] Creating UnityWebRequest to URL: {databaseCheckUrl}");
     using (UnityWebRequest request = new UnityWebRequest(databaseCheckUrl, "POST"))
     {
         request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -157,11 +182,14 @@ private IEnumerator CheckUserInDatabase(string idToken)
         Debug.Log($"Sending request to: {databaseCheckUrl}");
         Debug.Log($"Request data: {jsonData}");
 
+        Debug.Log("[GoogleLogin] Sending web request to server...");
         yield return request.SendWebRequest();
+        Debug.Log("[GoogleLogin] Web request completed");
 
         string rawResponse = request.downloadHandler?.text ?? "null";
         Debug.Log($"Raw API Response: {rawResponse}");
 
+        Debug.Log($"[GoogleLogin] Request result: {request.result}, Response code: {request.responseCode}");
         if (request.result != UnityWebRequest.Result.Success)
         {
             if (request.responseCode == 404 || request.responseCode == 401)
@@ -182,10 +210,13 @@ private IEnumerator CheckUserInDatabase(string idToken)
 
         try
         {
+            Debug.Log("[GoogleLogin] Parsing server response JSON");
             var response = JsonUtility.FromJson<BackendResponse>(rawResponse);
+            Debug.Log($"[GoogleLogin] Response parsed, success: {response?.success}, message: {response?.message}");
 
             if (response != null && response.success)
             {
+                Debug.Log("[GoogleLogin] Authentication successful with backend");
                 Debug.Log("Login successful for " + response.user.email);
 
                 // Save user data for persistence
@@ -195,13 +226,16 @@ private IEnumerator CheckUserInDatabase(string idToken)
                     PlayerPrefs.SetString("StudentId", response.user.studentId);
                 PlayerPrefs.Save();
 
+                Debug.Log("[GoogleLogin] Saving user data to StudentIdManager");
                 StudentIdManager.Instance.SaveUserDataFromGoogleAuth(
                     response.user.email,
                     response.user.studentId ?? response.user.id,
                     response.token
                 );
+                Debug.Log("[GoogleLogin] User data saved successfully");
 
                 UpdateStatus("Login successful! Loading...");
+                Debug.Log("[GoogleLogin] Login successful, will load scene in 2 seconds");
                 Invoke("LoadScene", 2f);
             }
             else
@@ -223,6 +257,7 @@ private IEnumerator CheckUserInDatabase(string idToken)
 
 private void LoadScene()
 {
+    Debug.Log($"[GoogleLogin] Loading scene: {nextSceneName}");
     SceneManager.LoadScene(nextSceneName);
 }
 

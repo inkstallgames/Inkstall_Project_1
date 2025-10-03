@@ -68,10 +68,7 @@ public class DoorInteraction : MonoBehaviour
     {
         try
         {
-            if (doorID >= 1 && doorID <= 24)
-            {
-                Debug.Log($"[DoorInteraction] Door {doorID} - Starting with initial values: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
-            }
+            // Completely removed all debug logs
             
             // Subscribe to the OnDataLoaded event to update door state when data is loaded
             ProgressManager.OnDataLoaded += OnProgressDataLoaded;
@@ -81,10 +78,7 @@ public class DoorInteraction : MonoBehaviour
             {
                 if (ProgressManager.Instance.isDataLoaded)
                 {
-                    if (doorID >= 1 && doorID <= 24)
-                    {
-                        Debug.Log($"[DoorInteraction] Door {doorID} - ProgressManager data is already loaded, updating door state");
-                    }
+                    // Completely removed all debug logs
                     
                     // Ensure door data exists in database
                     ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
@@ -94,19 +88,13 @@ public class DoorInteraction : MonoBehaviour
                 }
                 else
                 {
-                    if (doorID >= 1 && doorID <= 24)
-                    {
-                        Debug.Log($"[DoorInteraction] Door {doorID} - ProgressManager exists but data not loaded yet, waiting for data");
-                    }
+                    // Completely removed all debug logs
                     StartCoroutine(WaitForProgressManager());
                 }
             }
             else
             {
-                if (doorID >= 1 && doorID <= 24)
-                {
-                    Debug.LogWarning($"[DoorInteraction] Door {doorID} - ProgressManager instance not found, waiting for it to initialize");
-                }
+                // Completely removed all debug logs
                 StartCoroutine(WaitForProgressManager());
             }
             
@@ -115,7 +103,7 @@ public class DoorInteraction : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[DoorInteraction] Error in Start (Door {doorID}): {e.Message}");
+            // Completely removed all debug logs
         }
     }
 
@@ -150,20 +138,17 @@ public class DoorInteraction : MonoBehaviour
                 // Log the updated state
                 if (doorID >= 1 && doorID <= 24)
                 {
-                    Debug.Log($"[DoorInteraction] Door {doorID} - State updated from database: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+                    // Debug.Log($"[DoorInteraction] Door {doorID} - State updated from database: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
                 }
             }
             else
             {
-                if (doorID >= 1 && doorID <= 24)
-                {
-                    Debug.LogWarning($"[DoorInteraction] Door {doorID} - OnProgressDataLoaded called but data is not ready yet");
-                }
+                // Completely removed all debug logs
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[DoorInteraction] Error in OnProgressDataLoaded (Door {doorID}): {e.Message}");
+            // Completely removed all debug logs
         }
     }
 
@@ -174,10 +159,7 @@ public class DoorInteraction : MonoBehaviour
         float logInterval = 2.0f; // Log every 2 seconds instead of every frame
         float lastLogTime = 0f;
         
-        if (doorID >= 1 && doorID <= 24)
-        {
-            Debug.Log($"[DoorInteraction] Door {doorID} - Starting WaitForProgressManager coroutine");
-        }
+        // Removed continuous debug log
         
         // First wait for the ProgressManager instance to be available
         while (ProgressManager.Instance == null && elapsed < timeout)
@@ -188,10 +170,7 @@ public class DoorInteraction : MonoBehaviour
             if (Time.time - lastLogTime > logInterval)
             {
                 lastLogTime = Time.time;
-                if (doorID >= 1 && doorID <= 24)
-                {
-                    Debug.Log($"[DoorInteraction] Door {doorID} - Waiting for ProgressManager instance... ({elapsed:F1}s)");
-                }
+                // Completely removed all debug logs
             }
             
             yield return null;
@@ -200,17 +179,11 @@ public class DoorInteraction : MonoBehaviour
         // If we still don't have a ProgressManager, exit
         if (ProgressManager.Instance == null)
         {
-            if (doorID >= 1 && doorID <= 24)
-            {
-                Debug.LogError($"[DoorInteraction] Door {doorID} - ProgressManager instance not found after {timeout}s");
-            }
+            // Completely removed all debug logs
             yield break;
         }
         
-        if (doorID >= 1 && doorID <= 24)
-        {
-            Debug.Log($"[DoorInteraction] Door {doorID} - ProgressManager instance found, now waiting for data to load");
-        }
+        // Removed continuous debug log
         
         // Now wait for data to be loaded
         elapsed = 0f;
@@ -223,10 +196,7 @@ public class DoorInteraction : MonoBehaviour
                 // Check if data is loaded
                 if (ProgressManager.Instance.isDataLoaded)
                 {
-                    if (doorID >= 1 && doorID <= 24)
-                    {
-                        Debug.Log($"[DoorInteraction] Door {doorID} - ProgressManager data is now loaded after {elapsed:F1}s");
-                    }
+                    // Removed continuous debug log
                     
                     // Ensure door data exists in database
                     ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
@@ -239,8 +209,8 @@ public class DoorInteraction : MonoBehaviour
                         // Log the current state before update
                         if (doorID >= 1 && doorID <= 24)
                         {
-                            Debug.Log($"[DoorInteraction] Door {doorID} - Current state before update: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
-                            Debug.Log($"[DoorInteraction] Door {doorID} - Database state: isUnlockable={doorData.isUnlockable}, isRoomCompleted={doorData.isRoomCompleted}");
+                            // Debug.Log($"[DoorInteraction] Door {doorID} - Current state before update: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+                            // Debug.Log($"[DoorInteraction] Door {doorID} - Database state: isUnlockable={doorData.isUnlockable}, isRoomCompleted={doorData.isRoomCompleted}");
                         }
                         
                         // Use setter methods to update properties
@@ -253,17 +223,14 @@ public class DoorInteraction : MonoBehaviour
                         // Log the state after update
                         if (doorID >= 1 && doorID <= 24)
                         {
-                            Debug.Log($"[DoorInteraction] Door {doorID} - State updated: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+                            // Debug.Log($"[DoorInteraction] Door {doorID} - State updated: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
                         }
                         
                         yield break; // Success! Exit the coroutine
                     }
                     else
                     {
-                        if (doorID >= 1 && doorID <= 24)
-                        {
-                            Debug.LogWarning($"[DoorInteraction] Door {doorID} - Door data not found in ProgressManager");
-                        }
+                        // Completely removed all debug logs
                         
                         // Request an update from ProgressManager
                         ProgressManager.Instance.UpdateDoorInteraction(this);
@@ -279,19 +246,13 @@ public class DoorInteraction : MonoBehaviour
                     if (Time.time - lastLogTime > logInterval)
                     {
                         lastLogTime = Time.time;
-                        if (doorID >= 1 && doorID <= 24)
-                        {
-                            Debug.Log($"[DoorInteraction] Door {doorID} - Waiting for ProgressManager data to load... ({elapsed:F1}s)");
-                        }
+                        // Completely removed all debug logs
                     }
                 }
             }
             catch (System.Exception e)
             {
-                if (doorID >= 1 && doorID <= 24)
-                {
-                    Debug.LogError($"[DoorInteraction] Door {doorID} - Error while waiting for data: {e.Message}");
-                }
+                // Completely removed all debug logs
             }
             
             elapsed += Time.deltaTime;
@@ -299,10 +260,7 @@ public class DoorInteraction : MonoBehaviour
         }
 
         // If we get here, ProgressManager didn't become ready within the timeout period
-        if (doorID >= 1 && doorID <= 24)
-        {
-            Debug.LogWarning($"[DoorInteraction] Door {doorID} - Timed out waiting for ProgressManager");
-        }
+        // Completely removed all debug logs
     }
 
     private void Update()
@@ -539,10 +497,7 @@ public class DoorInteraction : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            if (doorID >= 1 && doorID <= 24)
-            {
-                Debug.LogError($"[DoorInteraction] Error in UpdateDoorVisuals (Door {doorID}): {e.Message}");
-            }
+            // Completely removed all debug logs
         }
     }
 
@@ -570,9 +525,6 @@ public class DoorInteraction : MonoBehaviour
                 ProgressManager.Instance.UpdateDoorStatus(doorID, isUnlockable, isRoomCompleted)
             );
         }
-        else if (doorID >= 1 && doorID <= 24)
-        {
-            Debug.LogWarning($"[DoorInteraction] Door {doorID} - ProgressManager not available, couldn't save door states");
-        }
+        // Completely removed all debug logs
     }
 }

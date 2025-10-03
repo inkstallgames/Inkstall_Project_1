@@ -26,7 +26,7 @@ public class RoomManager : MonoBehaviour
         // Validate door references
         if (thisRoomDoor == null)
         {
-            Debug.LogError($"[RoomManager] {gameObject.name} is missing thisRoomDoor reference!");
+            // Removed all debug logs
             return;
         }
 
@@ -55,7 +55,7 @@ public class RoomManager : MonoBehaviour
         if (string.IsNullOrEmpty(roomID))
         {
             roomID = gameObject.name + "_" + gameObject.GetInstanceID();
-            Debug.Log($"[RoomManager] Generated roomID: {roomID}");
+            // Removed all debug logs
         }
         
         // Check if room is already completed in database
@@ -67,7 +67,7 @@ public class RoomManager : MonoBehaviour
             
             if (doorData != null && doorData.isRoomCompleted)
             {
-                Debug.Log($"[RoomManager] Room with door ID {doorID} is already completed in database");
+                // Removed all debug logs
                 aliensRemaining = 0; // Room is already completed
             }
         }
@@ -107,7 +107,7 @@ public class RoomManager : MonoBehaviour
             alienProps.Remove(alienObject);
             aliensRemaining--;
             
-            Debug.Log($"Alien caught! {aliensRemaining} aliens remaining in room {gameObject.name}");
+            // Removed all debug logs
             
             // Update the remaining aliens UI
             UpdateRemainingAliensUI();
@@ -130,7 +130,7 @@ public class RoomManager : MonoBehaviour
             
             if (isValidDoor)
             {
-                Debug.Log($"[RoomManager] Room {roomID} (Door {currentDoorID}) completed! All aliens caught.");
+                // Removed all debug logs
             }
             
             // Save room completion status to online database
@@ -139,7 +139,7 @@ public class RoomManager : MonoBehaviour
                 // Use the MarkRoomAsCompleted method which handles both current and next door updates
                 if (isValidDoor)
                 {
-                    Debug.Log($"[RoomManager] Marking room with door {currentDoorID} as completed in database");
+                    // Removed all debug logs
                 }
                 
                 ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
@@ -158,7 +158,7 @@ public class RoomManager : MonoBehaviour
                     
                     if (isNextDoorValid)
                     {
-                        Debug.Log($"[RoomManager] Updating next door {nextDoorID} to be unlockable");
+                        // Removed all debug logs
                     }
                     
                     nextDoorToUnlock.isUnlockable = true;
@@ -171,19 +171,19 @@ public class RoomManager : MonoBehaviour
             }
             else if (isValidDoor)
             {
-                Debug.LogWarning("[RoomManager] ProgressManager not ready or door reference missing, couldn't save room completion status");
+                // Removed all debug logs
                 
                 // Try to find ProgressManager if it's not available
                 if (ProgressManager.Instance == null)
                 {
-                    Debug.LogWarning("[RoomManager] Trying to find or create ProgressManager instance");
+                    // Removed all debug logs
                     // This will create the instance if it doesn't exist
                     var progressManager = ProgressManager.Instance;
                     
                     // Try again after ensuring the instance exists
                     if (progressManager != null && thisRoomDoor != null)
                     {
-                        Debug.Log($"[RoomManager] Found ProgressManager, marking room with door {currentDoorID} as completed");
+                        // Removed all debug logs
                         progressManager.MarkRoomAsCompleted(currentDoorID);
                     }
                 }
@@ -199,7 +199,7 @@ public class RoomManager : MonoBehaviour
             if (isFinalRoom && GameManager.Instance != null)
             {
                 GameManager.Instance.LevelWin();
-                Debug.Log("[RoomManager] Final room completed! Level win triggered.");
+                // Removed all debug logs
             }
             else if (GameManager.Instance != null)
             {
@@ -221,14 +221,14 @@ public class RoomManager : MonoBehaviour
     // Refresh all doors in the scene after a delay to ensure database changes are reflected
     private IEnumerator RefreshAllDoorsAfterDelay(float delay)
     {
-        Debug.Log($"[RoomManager] Will refresh all doors after {delay} seconds");
+        // Removed all debug logs
         yield return new WaitForSeconds(delay);
         
         if (ProgressManager.Instance != null)
         {
             // Find all door interactions in the scene
             DoorInteraction[] allDoors = FindObjectsOfType<DoorInteraction>();
-            Debug.Log($"[RoomManager] Refreshing {allDoors.Length} doors in scene from database");
+            // Removed all debug logs
             
             foreach (DoorInteraction door in allDoors)
             {
@@ -239,7 +239,7 @@ public class RoomManager : MonoBehaviour
                 }
             }
             
-            Debug.Log("[RoomManager] Door refresh from database complete");
+            // Removed all debug logs
         }
     }
 }

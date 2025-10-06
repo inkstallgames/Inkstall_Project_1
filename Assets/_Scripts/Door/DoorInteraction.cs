@@ -131,14 +131,14 @@ public class DoorInteraction : MonoBehaviour
         {
             if (doorID >= 1 && doorID <= 24)
             {
-                // Removed debug log
+                Debug.Log($"[DoorInteraction] Door {doorID} - OnProgressDataLoaded event received");
             }
             
             if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
             {
                 if (doorID >= 1 && doorID <= 24)
                 {
-                    // Removed debug log
+                    Debug.Log($"[DoorInteraction] Door {doorID} - Current state before update: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
                 }
                 
                 // Ensure door data exists in database
@@ -150,7 +150,7 @@ public class DoorInteraction : MonoBehaviour
                 // Log the updated state
                 if (doorID >= 1 && doorID <= 24)
                 {
-                    // Debug.Log($"[DoorInteraction] Door {doorID} - State updated from database: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+                    Debug.Log($"[DoorInteraction] Door {doorID} - State updated from database: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
                 }
             }
             else
@@ -239,8 +239,8 @@ public class DoorInteraction : MonoBehaviour
                         // Log the current state before update
                         if (doorID >= 1 && doorID <= 24)
                         {
-                            // Debug.Log($"[DoorInteraction] Door {doorID} - Current state before update: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
-                            // Debug.Log($"[DoorInteraction] Door {doorID} - Database state: isUnlockable={doorData.isUnlockable}, isRoomCompleted={doorData.isRoomCompleted}");
+                            Debug.Log($"[DoorInteraction] Door {doorID} - Current state before update: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+                            Debug.Log($"[DoorInteraction] Door {doorID} - Database state: isUnlockable={doorData.isUnlockable}, isRoomCompleted={doorData.isRoomCompleted}");
                         }
                         
                         // Use setter methods to update properties
@@ -253,7 +253,7 @@ public class DoorInteraction : MonoBehaviour
                         // Log the state after update
                         if (doorID >= 1 && doorID <= 24)
                         {
-                            // Debug.Log($"[DoorInteraction] Door {doorID} - State updated: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
+                            Debug.Log($"[DoorInteraction] Door {doorID} - State updated: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
                         }
                         
                         yield break; // Success! Exit the coroutine

@@ -758,7 +758,6 @@ public class ProgressManager : MonoBehaviour
                     else
                     {
                         invalidCount++;
-                        Debug.LogWarning($"[ProgressManager] Door has invalid ID: {doorId}. Valid range is 1-24.");
                     }
                 }
             }

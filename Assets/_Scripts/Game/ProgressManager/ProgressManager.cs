@@ -819,8 +819,8 @@ public class ProgressManager : MonoBehaviour
                 // Log the current state of the door before updating (only for doors 1-24)
                 if (doorId >= 1 && doorId <= 24)
                 {
-                    Debug.Log($"[ProgressManager] Door {doorId} before update - Door isUnlockable: {door.isUnlockable}, isRoomCompleted: {door.isRoomCompleted}");
-                    Debug.Log($"[ProgressManager] Door {doorId} data from DB - isUnlockable: {doorData.isUnlockable}, isRoomCompleted: {doorData.isRoomCompleted}");
+                    // Debug.Log($"[ProgressManager] Door {doorId} before update - Door isUnlockable: {door.isUnlockable}, isRoomCompleted: {door.isRoomCompleted}");
+                    // Debug.Log($"[ProgressManager] Door {doorId} data from DB - isUnlockable: {doorData.isUnlockable}, isRoomCompleted: {doorData.isRoomCompleted}");
                 }
                 
                 // Update the door properties using setter methods
@@ -833,7 +833,7 @@ public class ProgressManager : MonoBehaviour
                 // Log the state after update to verify changes were applied (only for doors 1-24)
                 if (doorId >= 1 && doorId <= 24)
                 {
-                    Debug.Log($"[ProgressManager] Door {doorId} after update - isUnlockable: {door.isUnlockable}, isRoomCompleted: {door.isRoomCompleted}");
+                    // Debug.Log($"[ProgressManager] Door {doorId} after update - isUnlockable: {door.isUnlockable}, isRoomCompleted: {door.isRoomCompleted}");
                 }
             }
             else

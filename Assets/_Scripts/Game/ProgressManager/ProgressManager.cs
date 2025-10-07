@@ -810,7 +810,6 @@ public class ProgressManager : MonoBehaviour
             
             if (doorId < 1 || doorId > 24) 
             {
-                Debug.LogWarning($"[ProgressManager] Invalid door ID: {doorId}. Valid range is 1-24.");
                 return;
             }
             
@@ -889,7 +888,6 @@ public class ProgressManager : MonoBehaviour
         // Skip if door ID is not in valid range (1-24)
         if (doorId < 1 || doorId > 24)
         {
-            Debug.LogWarning($"[ProgressManager] Invalid door ID: {doorId}. Valid range is 1-24.");
             return;
         }
         
@@ -1175,10 +1173,6 @@ public class ProgressManager : MonoBehaviour
                                 EnsureDoorDataExists(doorId, door.gameObject.name);
                                 UpdateDoorInteraction(door);
                             }
-                        }
-                        else
-                        {
-                            Debug.LogWarning($"[ProgressManager] Invalid door ID: {doorId}. Valid range is 1-24.");
                         }
                     }
                 }

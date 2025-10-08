@@ -10073,7 +10073,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 8616685848467102958}
         m_TargetAssemblyTypeName: 
         m_MethodName: 
         m_Mode: 1
@@ -13117,7 +13117,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -15452,7 +15452,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -18734,7 +18734,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 1
+  isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   isUnlockable: 0
@@ -18947,7 +18947,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   isUnlockable: 0
@@ -19035,7 +19035,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -19337,7 +19337,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 1
+  isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   isUnlockable: 0
@@ -19587,7 +19587,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -19618,7 +19618,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -19813,7 +19813,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -21421,7 +21421,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 1
+  isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   isUnlockable: 0
@@ -21593,7 +21593,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -22149,7 +22149,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   isUnlockable: 0
@@ -22695,7 +22695,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -22875,7 +22875,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -23775,7 +23775,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -24403,7 +24403,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -24993,7 +24993,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -33990,7 +33990,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -35085,7 +35085,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -36889,7 +36889,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -37839,7 +37839,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -39261,7 +39261,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -40234,7 +40234,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -41064,7 +41064,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 65537af5d6ca25b4682099e1a18c6d17, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 1
+  isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   isUnlockable: 1
@@ -42667,7 +42667,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -44435,7 +44435,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 1
+  isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   isUnlockable: 0
@@ -45908,7 +45908,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -47069,7 +47069,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -47337,7 +47337,7 @@ GameObject:
   - component: {fileID: 828003614533578203}
   - component: {fileID: 8520652854738157239}
   m_Layer: 5
-  m_Name: Multiply_Icon_Image
+  m_Name: Multiply_Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47513,7 +47513,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
@@ -51979,7 +51979,7 @@ GameObject:
   - component: {fileID: 5658234388710642157}
   - component: {fileID: 3130298712862170198}
   m_Layer: 5
-  m_Name: Keys Count_Text
+  m_Name: KeysCount_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -53091,7 +53091,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  isLocked: 1
+  isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
   isUnlockable: 0
@@ -53236,7 +53236,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0

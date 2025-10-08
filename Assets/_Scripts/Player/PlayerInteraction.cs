@@ -8,7 +8,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private float rayDistance = 50f;
     [SerializeField] private Camera playerMainCamera;
     [SerializeField] private float interactDistance = 3f;
-    
+
     [SerializeField] private GameObject interactButton;
     [SerializeField] private GameObject useKeyButton; // Reference to the use key button
     [SerializeField] private TextMeshProUGUI interactionText; // Text to show when room is completed
@@ -17,7 +17,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private DoorInteraction currentDoor;   // Track which door we're looking at
     private DrawerMech currentDrawer;      // Track which drawer we're looking at
-    
+
     private bool showUseKeyButton = false; // Flag to track if we should show the use key button
 
     private void Start()
@@ -65,7 +65,7 @@ public class PlayerInteraction : MonoBehaviour
                 Debug.LogError("Use Key button doesn't have a Button component!");
             }
         }
-        
+
         // Make sure the interaction text is initially hidden
         if (interactionText != null)
         {
@@ -104,7 +104,7 @@ public class PlayerInteraction : MonoBehaviour
         {
             useKeyButton.SetActive(false);
         }
-        
+
         if (interactionText != null)
         {
             interactionText.gameObject.SetActive(false);
@@ -135,7 +135,7 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         // We're looking at a door and within range
                         currentDoor = doorInteraction;
-                        
+
                         // Check if the room is completed
                         if (doorInteraction.isRoomCompleted)
                         {
@@ -177,13 +177,13 @@ public class PlayerInteraction : MonoBehaviour
                             if (doorInteraction.IsLocked() && showUseKeyButton && doorInteraction == previousDoor)
                             {
                                 useKeyButton.SetActive(true);
-                                
+
                                 // Show interaction text for using key
                                 if (interactionText != null)
                                 {
                                     interactionText.gameObject.SetActive(true);
                                     interactionText.text = "Press [Key] to Unlock Door";
-                                    
+
                                     // Hide crosshair when showing interaction text
                                     if (crosshairImage != null)
                                     {
@@ -236,7 +236,7 @@ public class PlayerInteraction : MonoBehaviour
                             }
                         }
                     }
-                    
+
                 }
             }
             // Check for drawer 
@@ -288,13 +288,13 @@ public class PlayerInteraction : MonoBehaviour
                 if (useKeyButton != null)
                 {
                     useKeyButton.SetActive(true);
-                    
+
                     // Show interaction text for using key
                     if (interactionText != null)
                     {
                         interactionText.gameObject.SetActive(true);
                         interactionText.text = "Press Key to Unlock the Door";
-                        
+
                         // Hide crosshair when showing interaction text
                         if (crosshairImage != null)
                         {

@@ -15,7 +15,7 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private AudioClip doorCloseSound;
 
     [Header("Lock Settings")]
-    [SerializeField] private bool isLocked = false;
+    [SerializeField] private bool isLockedDoor = false;
     [SerializeField] private AudioClip doorLockedSound;
     [SerializeField] private AudioClip doorUnlockSound;
     [SerializeField] public bool isUnlockable = false;
@@ -316,7 +316,7 @@ public class DoorInteraction : MonoBehaviour
 
     public bool IsLocked()
     {
-        return isLocked;
+        return isLockedDoor;
     }
 
     public bool IsUnlockable()
@@ -343,13 +343,13 @@ public class DoorInteraction : MonoBehaviour
 
     public void TryOpenDoor()
     {
-        if (isLocked)
+        if (isLockedDoor)
         {
             PlayDoorLockedAnimation();
             PlayDoorLockedSound();
             // The use key button will be enabled by PlayerInteraction
         }
-        else if (!isLocked)
+        else if (!isLockedDoor)
         {
             if (!isDoorOpen && !gameElementsActivated)
             {
@@ -438,11 +438,11 @@ public class DoorInteraction : MonoBehaviour
 
     public void UnlockDoor()
     {
-        if (isLocked)
+        if (isLockedDoor)
         {
             KeyManager.Instance.UseKey();
             audioSource.PlayOneShot(doorUnlockSound);
-            isLocked = false;
+            isLockedDoor = false;
             lockedDoorAnimator.enabled = false;
         }
     }
@@ -508,7 +508,7 @@ public class DoorInteraction : MonoBehaviour
     // Added for GameManager to lock doors during reset
     public void LockDoor()
     {
-        isLocked = true;
+        isLockedDoor = true;
 
         // Re-enable the animator if it was disabled during unlock
         if (lockedDoorAnimator != null)
@@ -534,7 +534,7 @@ public class DoorInteraction : MonoBehaviour
             // If the door is unlockable, make sure it's properly set up
             if (isUnlockable)
             {
-                isLocked = false; // Ensure unlockable doors are not locked
+                isLockedDoor = false; // Ensure unlockable doors are not locked
             }
         }
         catch (System.Exception e)

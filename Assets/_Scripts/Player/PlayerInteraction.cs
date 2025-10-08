@@ -195,6 +195,8 @@ public class PlayerInteraction : MonoBehaviour
                     }
                 }
             }
+            
+            
             // Check if we hit a building collider
             else if (hitObject.CompareTag("BuildingCollider"))
             {
@@ -215,6 +217,8 @@ public class PlayerInteraction : MonoBehaviour
                     }
                 }
             }
+            
+            
             // Check if we hit a building collider
             else if (hitObject.CompareTag("BuildingPortal"))
             {
@@ -239,6 +243,8 @@ public class PlayerInteraction : MonoBehaviour
 
                 }
             }
+            
+            
             // Check for drawer 
             else if (hitObject.CompareTag("SlidingDoor"))
             {

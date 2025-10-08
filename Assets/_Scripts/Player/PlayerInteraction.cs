@@ -151,6 +151,10 @@ public class PlayerInteraction : MonoBehaviour
                                 }
                             }
                         }
+                        else if (doorInteraction.IsLocked() && doorInteraction.IsUnlockable())
+                        {
+
+                        }
                         else if (doorInteraction.IsLocked() && !doorInteraction.IsUnlockable())
                         {
                             // Show message for locked and not yet unlockable door

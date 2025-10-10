@@ -68,10 +68,7 @@ public class DoorInteraction : MonoBehaviour
     {
         try
         {
-            if (doorID >= 1 && doorID <= 24)
-            {
-                Debug.Log($"[DoorInteraction] Door {doorID} - Starting with initial values: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
-            }
+            if (doorID >= 1 && doorI
             
             // Subscribe to the OnDataLoaded event to update door state when data is loaded
             ProgressManager.OnDataLoaded += OnProgressDataLoaded;

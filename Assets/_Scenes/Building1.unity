@@ -44510,7 +44510,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
-  useKeyButton: {fileID: 0}
+  useKeyButton: {fileID: 5376026593118847093}
   isLockedDoor: 1
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
@@ -44523,7 +44523,7 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166880}
   remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
+  interactionText: {fileID: 1574232838}
   crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 6096234473738546706}
 --- !u!95 &6096234473738546706

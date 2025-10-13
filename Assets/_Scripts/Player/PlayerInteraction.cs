@@ -76,23 +76,7 @@ public class PlayerInteraction : MonoBehaviour
         // Reset current door reference
         doorInteraction = null;
         drawerMech = null;
-
-        // Disable buttons and text by default
-        if (interactButton != null)
-        {
-            interactButton.SetActive(false);
-        }
-
-        if (interactionText != null)
-        {
-            interactionText.gameObject.SetActive(false);
-        }
-
-        // Show crosshair when no interaction text is showing
-        if (crosshairImage != null)
-        {
-            crosshairImage.gameObject.SetActive(true);
-        }
+        
 
         // Cast ray from camera center (where crosshair is)
         Ray ray = new Ray(playerMainCamera.transform.position, playerMainCamera.transform.forward);

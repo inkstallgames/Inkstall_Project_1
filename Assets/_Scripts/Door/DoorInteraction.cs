@@ -115,16 +115,6 @@ public class DoorInteraction : MonoBehaviour
                 Debug.LogError("Use Key button doesn't have a Button component!");
             }
         }
-
-        // Disable use key button by default
-        if (useKeyButton != null)
-        {
-            useKeyButton.SetActive(false);
-        }
-        else
-        {
-            Debug.LogError("Use Key button is not assigned!");
-        }
     }
 
     private void OnDestroy()
@@ -301,14 +291,13 @@ public class DoorInteraction : MonoBehaviour
         }
         else if (isLockedDoor)
         {
-            Debug.Log("Is Locked Door Called");
             if (isUnlockable)
             {
                 PlayDoorLockedAnimation();
                 PlayDoorLockedSound();
                 useKeyButton.SetActive(true);
             }
-            if (!isUnlockable)
+            else if (!isUnlockable)
             {
                 if (interactionText != null)
                 {
@@ -324,7 +313,6 @@ public class DoorInteraction : MonoBehaviour
         }
         else if (!isLockedDoor)
         {
-            Debug.Log("!isLockedDoor Called");
             ToggleDoorOpenClose();
         }
     }
@@ -498,12 +486,6 @@ public class DoorInteraction : MonoBehaviour
             if (lockedDoorAnimator != null && HasAnimatorParameter("IsUnlockable"))
             {
                 lockedDoorAnimator.SetBool("IsUnlockable", isUnlockable);
-            }
-
-            // If the door is unlockable, make sure it's properly set up
-            if (isUnlockable)
-            {
-                isLockedDoor = false; // Ensure unlockable doors are not locked
             }
         }
         catch (System.Exception e)

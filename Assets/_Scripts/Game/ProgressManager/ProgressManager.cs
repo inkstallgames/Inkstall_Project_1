@@ -689,7 +689,7 @@ public class ProgressManager : MonoBehaviour
         {
             if (!isDataLoaded || studentData?.doors == null)
             {
-                Debug.LogWarning("[ProgressManager] Cannot update door interactions: data not loaded or studentData is null");
+                // Debug.LogWarning("[ProgressManager] Cannot update door interactions: data not loaded or studentData is null");
                 return;
             }
                 
@@ -764,7 +764,7 @@ public class ProgressManager : MonoBehaviour
             {
                 if (doorId >= 1 && doorId <= 24)
                 {
-                    Debug.Log($"[ProgressManager] Door {doorId}: Data not loaded yet, queuing for later update");
+                    // Debug.Log($"[ProgressManager] Door {doorId}: Data not loaded yet, queuing for later update");
                 }
                 
                 // Add to pending updates if not already in the list
@@ -860,7 +860,7 @@ public class ProgressManager : MonoBehaviour
         
         if (!isDataLoaded || studentData?.doors == null)
         {
-            Debug.LogWarning($"[ProgressManager] Cannot ensure door {doorId} exists: data not loaded or studentData is null");
+            // Debug.LogWarning($"[ProgressManager] Cannot ensure door {doorId} exists: data not loaded or studentData is null");
             return;
         }
         
@@ -1040,7 +1040,7 @@ public class ProgressManager : MonoBehaviour
     {
         if (!isDataLoaded || studentData?.doors == null)
         {
-            Debug.LogWarning($"[ProgressManager] Cannot process pending door updates: data not loaded yet. Pending doors: {pendingDoorUpdates.Count}");
+            // Debug.LogWarning($"[ProgressManager] Cannot process pending door updates: data not loaded yet. Pending doors: {pendingDoorUpdates.Count}");
             return;
         }
         

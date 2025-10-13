@@ -15,12 +15,14 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private AudioClip doorCloseSound;
 
     [Header("Lock Settings")]
+
+    [SerializeField] private GameObject useKeyButton; // Reference to the use key button
     [SerializeField] private bool isLockedDoor = false;
     [SerializeField] private AudioClip doorLockedSound;
     [SerializeField] private AudioClip doorUnlockSound;
     [SerializeField] public bool isUnlockable = false;
     [SerializeField] public bool isRoomCompleted = false;
-    [SerializeField] public int doorID; // Unique identifier int to match ProgressManager
+    [SerializeField] public int doorID;   // Unique identifier int to match ProgressManager
 
     [Header("Timer Settings")]
     [SerializeField] private bool shouldStartTimer = false;
@@ -31,10 +33,13 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameTimer;
     [SerializeField] private Image bombsUI;
     [SerializeField] private Image remainingAliensCountContainer;
+    [SerializeField] private TextMeshProUGUI interactionText;
+    [SerializeField] private Image crosshairImage;
 
 
     // State
     private bool isDoorOpen = false;
+    private bool showUseKeyButton = false;      // Flag to track if we should show the use key button
     private bool gameElementsActivated = false;
     private bool isDoorMoving = false;
     private Quaternion closedRotation;
@@ -67,31 +72,59 @@ public class DoorInteraction : MonoBehaviour
     private void Start()
     {
         // Subscribe to the OnDataLoaded event to update door state when data is loaded
-            ProgressManager.OnDataLoaded += OnProgressDataLoaded;
+        ProgressManager.OnDataLoaded += OnProgressDataLoaded;
 
-            // Load door states from online database
-            if (ProgressManager.Instance != null)
+        // Load door states from online database
+        if (ProgressManager.Instance != null)
+        {
+            if (ProgressManager.Instance.isDataLoaded)
             {
-                if (ProgressManager.Instance.isDataLoaded)
-                {
-                    // Ensure door data exists in database
-                    ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
+                // Ensure door data exists in database
+                ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
 
-                    // Update door state from database
-                    ProgressManager.Instance.UpdateDoorInteraction(this);
-                }
-                else
-                {
-                    StartCoroutine(WaitForProgressManager());
-                }
+                // Update door state from database
+                ProgressManager.Instance.UpdateDoorInteraction(this);
             }
             else
             {
                 StartCoroutine(WaitForProgressManager());
             }
-            
-            // Update visuals based on current state (will be overridden when data loads)
-            UpdateDoorVisuals();
+        }
+        else
+        {
+            StartCoroutine(WaitForProgressManager());
+        }
+
+        // Update visuals based on current state (will be overridden when data loads)
+        UpdateDoorVisuals();
+
+
+        // Setup use key button
+        if (useKeyButton != null)
+        {
+            useKeyButton.SetActive(false);
+
+            // Add click listener to the use key button
+            Button useKeyButtonComponent = useKeyButton.GetComponent<Button>();
+            if (useKeyButtonComponent != null)
+            {
+                useKeyButtonComponent.onClick.AddListener(OnUseKeyButtonClicked);
+            }
+            else
+            {
+                Debug.LogError("Use Key button doesn't have a Button component!");
+            }
+        }
+
+        // Disable use key button by default
+        if (useKeyButton != null)
+        {
+            useKeyButton.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("Use Key button is not assigned!");
+        }
     }
 
     private void OnDestroy()
@@ -103,14 +136,14 @@ public class DoorInteraction : MonoBehaviour
     private void OnProgressDataLoaded()
     {
         if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
-            {
-                // Ensure door data exists in database
-                ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
+        {
+            // Ensure door data exists in database
+            ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
 
-                // Update door state from database
-                ProgressManager.Instance.UpdateDoorInteraction(this);
-                
-            }
+            // Update door state from database
+            ProgressManager.Instance.UpdateDoorInteraction(this);
+
+        }
 
 
     }
@@ -121,33 +154,33 @@ public class DoorInteraction : MonoBehaviour
         float elapsed = 0f;
         float logInterval = 2.0f; // Log every 2 seconds instead of every frame
         float lastLogTime = 0f;
-        
-        
+
+
         // First wait for the ProgressManager instance to be available
         while (ProgressManager.Instance == null && elapsed < timeout)
         {
             elapsed += Time.deltaTime;
-            
+
             // Log periodically instead of every frame
             if (Time.time - lastLogTime > logInterval)
             {
                 lastLogTime = Time.time;
             }
-            
+
             yield return null;
         }
-        
+
         // If we still don't have a ProgressManager, exit
         if (ProgressManager.Instance == null)
         {
             yield break;
         }
-        
-        
+
+
         // Now wait for data to be loaded
         elapsed = 0f;
         lastLogTime = 0f;
-        
+
         while (elapsed < timeout)
         {
             try
@@ -155,10 +188,10 @@ public class DoorInteraction : MonoBehaviour
                 // Check if data is loaded
                 if (ProgressManager.Instance.isDataLoaded)
                 {
-                   
+
                     // Ensure door data exists in database
                     ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
-                    
+
                     // Get door data directly from ProgressManager
                     DoorData doorData = ProgressManager.Instance.GetDoorData(doorID);
 
@@ -170,9 +203,9 @@ public class DoorInteraction : MonoBehaviour
 
                         // Update visuals based on the new state
                         UpdateDoorVisuals();
-                        
-                        
-                        
+
+
+
                         yield break; // Success! Exit the coroutine
                     }
                     else
@@ -186,11 +219,11 @@ public class DoorInteraction : MonoBehaviour
                 {
                     // Just request the update - ProgressManager will queue it if data isn't ready yet
                     ProgressManager.Instance.UpdateDoorInteraction(this);
-                    
+
                     // Log periodically
                     if (Time.time - lastLogTime > logInterval)
                     {
-                        lastLogTime = Time.time;  
+                        lastLogTime = Time.time;
                     }
                 }
             }
@@ -198,7 +231,7 @@ public class DoorInteraction : MonoBehaviour
             {
                 Debug.LogError($"[DoorInteraction] Door {doorID} - Error while waiting for data: {e.Message}");
             }
-            
+
             elapsed += Time.deltaTime;
             yield return null;
         }
@@ -235,29 +268,67 @@ public class DoorInteraction : MonoBehaviour
         SaveDoorStatesToDatabase();
     }
 
+    // Method to unlock the current door
+    private void OnUseKeyButtonClicked()
+    {
+        TryUnlockDoor();
+
+        // Reset the flag since the door is now unlocked
+        showUseKeyButton = false;
+    }
+
     public int GetDoorID()
     {
         return doorID;
     }
 
-    public void TryOpenDoor()
+    public void Interact()
     {
-        if (isLockedDoor)
+        if (isRoomCompleted)
         {
-            PlayDoorLockedAnimation();
-            PlayDoorLockedSound();
-            // The use key button will be enabled by PlayerInteraction
+            Debug.Log("Is Room completed Called");
+            // Show completed room message
+            if (interactionText != null)
+            {
+                interactionText.gameObject.SetActive(true);
+                interactionText.text = "Room Already Completed";
+
+                if (crosshairImage != null)
+                {
+                    crosshairImage.gameObject.SetActive(false);
+                }
+            }
+        }
+        else if (isLockedDoor)
+        {
+            Debug.Log("Is Locked Door Called");
+            if (isUnlockable)
+            {
+                PlayDoorLockedAnimation();
+                PlayDoorLockedSound();
+                useKeyButton.SetActive(true);
+            }
+            if (!isUnlockable)
+            {
+                if (interactionText != null)
+                {
+                    interactionText.gameObject.SetActive(true);
+                    interactionText.text = "Complete Previous Room First";
+
+                    if (crosshairImage != null)
+                    {
+                        crosshairImage.gameObject.SetActive(false);
+                    }
+                }
+            }
         }
         else if (!isLockedDoor)
         {
-            if (!isDoorOpen && !gameElementsActivated)
-            {
-                ActivateGameElements();
-                gameElementsActivated = true;
-            }
+            Debug.Log("!isLockedDoor Called");
             ToggleDoorOpenClose();
         }
     }
+
 
     private void PlayDoorLockedSound()
     {
@@ -343,6 +414,10 @@ public class DoorInteraction : MonoBehaviour
 
     private void ToggleDoorOpenClose()
     {
+        if(lockedDoorAnimator.enabled)
+        {
+            lockedDoorAnimator.enabled = false;
+        }
         isDoorOpen = !isDoorOpen;
         isDoorMoving = true;
 

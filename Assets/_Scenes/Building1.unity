@@ -7808,7 +7808,7 @@ GameObject:
   - component: {fileID: 1574232839}
   - component: {fileID: 1574232838}
   m_Layer: 5
-  m_Name: PlayerInteraction_Text
+  m_Name: Interaction_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13117,6 +13117,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -13129,6 +13130,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &975421949430823410
 Transform:
@@ -15452,6 +15455,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -15464,6 +15468,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1609635412495604071
 MeshRenderer:
@@ -18734,6 +18740,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
@@ -18746,6 +18753,8 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 1879614732177390110}
 --- !u!4 &1875161216612700763
 Transform:
@@ -18947,6 +18956,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
@@ -18959,6 +18969,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &1875161216722088320
 MeshRenderer:
@@ -19035,6 +19047,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -19047,6 +19060,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216731409326
 Transform:
@@ -19337,6 +19352,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
@@ -19349,6 +19365,8 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 1876630031721721799}
 --- !u!4 &1875161216913999824
 Transform:
@@ -19587,6 +19605,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -19599,6 +19618,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!114 &1875161217056796249
 MonoBehaviour:
@@ -19618,6 +19639,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -19630,6 +19652,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217121920507
 Transform:
@@ -19813,6 +19837,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -19825,6 +19850,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!1 &1875161217394332177
 GameObject:
@@ -21421,6 +21448,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
@@ -21433,6 +21461,8 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166880}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 5411702062035160471}
 --- !u!4 &1875161218516245653
 Transform:
@@ -21593,6 +21623,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -21605,6 +21636,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218673369673
 Transform:
@@ -22149,6 +22182,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
@@ -22161,6 +22195,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876481243523332479
 AudioSource:
@@ -22695,6 +22731,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -22707,6 +22744,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876635991172028075
 AudioSource:
@@ -22875,6 +22914,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -22887,6 +22927,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1876640084607535165
 AudioSource:
@@ -23775,6 +23817,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -23787,6 +23830,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879301797568630687
 AudioSource:
@@ -24403,6 +24448,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -24415,6 +24461,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879530183016443165
 AudioSource:
@@ -24993,6 +25041,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -25005,6 +25054,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &1879628717615984171
 AudioSource:
@@ -33990,6 +34041,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -34002,6 +34054,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3231434512211610070
 AudioSource:
@@ -35085,6 +35139,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -35097,6 +35152,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &3531443653390167215
 AudioSource:
@@ -36889,6 +36946,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -36901,6 +36959,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4095303726235316411
 AudioSource:
@@ -37839,6 +37899,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -37851,6 +37912,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4323376261421865388
 AudioSource:
@@ -39261,6 +39324,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -39273,6 +39337,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &4722926279912086933
 AudioSource:
@@ -40234,6 +40300,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -40246,6 +40313,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!4 &4985833862760063991
 Transform:
@@ -41064,11 +41133,12 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 65537af5d6ca25b4682099e1a18c6d17, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 5376026593118847093}
   isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
-  isUnlockable: 1
-  isRoomCompleted: 1
+  isUnlockable: 0
+  isRoomCompleted: 0
   doorID: 1
   shouldStartTimer: 1
   chemicalBomb: {fileID: 4001697182668950348}
@@ -41076,6 +41146,8 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166880}
   remainingAliensCountContainer: {fileID: 1949498769}
+  interactionText: {fileID: 1574232838}
+  crosshairImage: {fileID: 1981799375}
   lockedDoorAnimator: {fileID: 5248679429457064832}
 --- !u!4 &5251353936471029689
 Transform:
@@ -42667,6 +42739,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -42679,6 +42752,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &5660267529715239442
 AudioSource:
@@ -44435,6 +44510,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
@@ -44447,6 +44523,8 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166877}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 6096234473738546706}
 --- !u!95 &6096234473738546706
 Animator:
@@ -45908,6 +45986,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -45920,6 +45999,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6370389251489606861
 AudioSource:
@@ -47069,6 +47150,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -47081,6 +47163,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6734199790238685268
 AudioSource:
@@ -47513,6 +47597,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -47525,6 +47610,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!23 &6823987876855903344
 MeshRenderer:
@@ -53091,6 +53178,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 8300000, guid: 1271667061f85a2468d9bcc35ea9748e, type: 3}
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
@@ -53103,6 +53191,8 @@ MonoBehaviour:
   gameTimer: {fileID: 1194441157}
   bombsUI: {fileID: 1307166880}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 8128831679578322680}
 --- !u!95 &8128831679578322680
 Animator:
@@ -53236,6 +53326,7 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
+  useKeyButton: {fileID: 0}
   isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
@@ -53248,6 +53339,8 @@ MonoBehaviour:
   gameTimer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!82 &8176039784201981259
 AudioSource:

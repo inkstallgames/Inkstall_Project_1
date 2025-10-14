@@ -381,25 +381,23 @@ public class DoorInteraction : MonoBehaviour
     }
 
     // Public so PlayerInteraction can call it
+    // Track if the door was just unlocked but not yet opened
+    private bool justUnlocked = false;
+
     public void TryUnlockDoor()
     {
         if (KeyManager.Instance.GetCurrentKeyCount() > 0)
-        {
-            UnlockDoor();
-            // The use key button will be disabled by PlayerInteraction
-        }
-    }
-
-    public void UnlockDoor()
-    {
-        if (isLockedDoor)
         {
             KeyManager.Instance.UseKey();
             audioSource.PlayOneShot(doorUnlockSound);
             isLockedDoor = false;
             lockedDoorAnimator.enabled = false;
+            // Flag that the door was just unlocked but not yet opened
+            justUnlocked = true;
+            // The use key button will be disabled by PlayerInteraction
         }
     }
+
 
     private void ToggleDoorOpenClose()
     {
@@ -410,6 +408,13 @@ public class DoorInteraction : MonoBehaviour
         
         isDoorOpen = !isDoorOpen;
         isDoorMoving = true;
+
+        // Check if this is the first time opening the door after unlocking
+        if (isDoorOpen && justUnlocked)
+        {
+            ActivateGameElements();
+            justUnlocked = false; // Reset the flag after activating
+        }
 
         if (audioSource != null)
         {

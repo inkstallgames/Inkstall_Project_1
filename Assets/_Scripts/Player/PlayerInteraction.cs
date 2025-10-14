@@ -5,7 +5,7 @@ using TMPro;
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Interaction Settings")]
-    [SerializeField] private float rayDistance = 20f;
+    [SerializeField] private float rayDistance = 10f;
     [SerializeField] private Camera playerMainCamera;
     [SerializeField] private float interactDistance = 3f;
 
@@ -98,12 +98,21 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         // We're looking at a door and within range
                         this.doorInteraction = rayDoorInteraction;
-                        interactButton.SetActive(true);
+                        if(!interactButton.gameObject.activeSelf)
+                        {
+                            interactButton.SetActive(true);
+                        }
                     }
                     else
                     {
-                        interactButton.SetActive(false);
-                        useKeyButton.SetActive(false);
+                        if(interactButton.gameObject.activeSelf)
+                        {
+                            interactButton.SetActive(false);
+                        }
+                        if(useKeyButton.gameObject.activeSelf)
+                        {
+                            useKeyButton.SetActive(false);
+                        }
                     }
                 }
             }
@@ -122,10 +131,12 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         // We're looking at a drawer and within range
                         drawerMech = drawerInteraction;
+                        if(!interactButton.gameObject.activeSelf)
                         interactButton.SetActive(true);
                     }
                     else
                     {
+                        if(interactButton.gameObject.activeSelf)
                         interactButton.SetActive(false);
                     }
                 }
@@ -146,7 +157,7 @@ public class PlayerInteraction : MonoBehaviour
                             interactionText.gameObject.SetActive(true);
                             interactionText.text = "if you Enter you will lose your progress";
                             // Hide crosshair when showing interaction text
-                            if (crosshairImage != null)
+                            if (crosshairImage != null )
                             {
                                 crosshairImage.gameObject.SetActive(false);
                             }
@@ -164,12 +175,12 @@ public class PlayerInteraction : MonoBehaviour
                 if (distanceToObject <= interactDistance)
                 {
                     // Show building collider message
-                    if (interactionText != null)
+                    if (interactionText != null && !interactionText.gameObject.activeSelf)
                     {
                         interactionText.gameObject.SetActive(true);
                         interactionText.text = "Complete Levels on this Floor First to go ahead";
                         // Hide crosshair when showing interaction text
-                        if (crosshairImage != null)
+                        if (crosshairImage != null && crosshairImage.gameObject.activeSelf)
                         {
                             crosshairImage.gameObject.SetActive(false);
                         }
@@ -178,8 +189,18 @@ public class PlayerInteraction : MonoBehaviour
             } 
             else
             {
+                if(interactionText != null && interactionText.gameObject.activeSelf)
+               { 
                 interactButton.SetActive(false);
+               }
+               if(useKeyButton.gameObject.activeSelf)
+               {
                 useKeyButton.SetActive(false);
+               }
+               if(interactionText != null && interactionText.gameObject.activeSelf)
+               {
+                interactionText.gameObject.SetActive(false);
+               }
             }     
         }
     }

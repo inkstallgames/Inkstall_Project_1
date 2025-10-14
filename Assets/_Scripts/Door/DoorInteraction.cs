@@ -296,6 +296,7 @@ public class DoorInteraction : MonoBehaviour
                 PlayDoorLockedAnimation();
                 PlayDoorLockedSound();
                 useKeyButton.SetActive(true);
+                interactionText.gameObject.SetActive(true);
             }
             else if (!isUnlockable)
             {

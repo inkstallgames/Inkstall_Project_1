@@ -263,8 +263,8 @@ public class DoorInteraction : MonoBehaviour
     {
         TryUnlockDoor();
 
-        // Reset the flag since the door is now unlocked
-        showUseKeyButton = false;
+        useKeyButton.SetActive(false);
+        interactionText.gameObject.SetActive(false);
     }
 
     public int GetDoorID()
@@ -297,6 +297,7 @@ public class DoorInteraction : MonoBehaviour
                 PlayDoorLockedSound();
                 useKeyButton.SetActive(true);
                 interactionText.gameObject.SetActive(true);
+                interactionText.text = "Use [Key] to Unlock";
             }
             else if (!isUnlockable)
             {

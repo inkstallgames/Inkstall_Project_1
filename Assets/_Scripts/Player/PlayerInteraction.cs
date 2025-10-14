@@ -49,6 +49,7 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
+
         // Make sure the interaction text is initially hidden
         if (interactionText != null)
         {
@@ -102,7 +103,6 @@ public class PlayerInteraction : MonoBehaviour
                     else
                     {
                         interactButton.SetActive(false);
-                        if(useKeyButton.activeInHierarchy)
                         useKeyButton.SetActive(false);
                     }
                 }
@@ -123,6 +123,10 @@ public class PlayerInteraction : MonoBehaviour
                         // We're looking at a drawer and within range
                         drawerMech = drawerInteraction;
                         interactButton.SetActive(true);
+                    }
+                    else
+                    {
+                        interactButton.SetActive(false);
                     }
                 }
             }
@@ -171,7 +175,12 @@ public class PlayerInteraction : MonoBehaviour
                         }
                     }
                 }
-            }            
+            } 
+            else
+            {
+                interactButton.SetActive(false);
+                useKeyButton.SetActive(false);
+            }     
         }
     }
 

@@ -402,10 +402,11 @@ public class DoorInteraction : MonoBehaviour
 
     private void ToggleDoorOpenClose()
     {
-        if(lockedDoorAnimator.enabled)
+        if(lockedDoorAnimator != null && lockedDoorAnimator.enabled)
         {
             lockedDoorAnimator.enabled = false;
         }
+        
         isDoorOpen = !isDoorOpen;
         isDoorMoving = true;
 

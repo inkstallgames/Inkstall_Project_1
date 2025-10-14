@@ -276,7 +276,6 @@ public class DoorInteraction : MonoBehaviour
     {
         if (isRoomCompleted)
         {
-            Debug.Log("Is Room completed Called");
             // Show completed room message
             if (interactionText != null)
             {

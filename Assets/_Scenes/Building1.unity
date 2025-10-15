@@ -41137,7 +41137,7 @@ MonoBehaviour:
   isLockedDoor: 1
   doorLockedSound: {fileID: 8300000, guid: d5029b2ff633e5e49b27bc507b80bdfa, type: 3}
   doorUnlockSound: {fileID: 8300000, guid: a662da02a990da14097f01898cff54b5, type: 3}
-  isUnlockable: 1
+  isUnlockable: 0
   isRoomCompleted: 0
   doorID: 1
   shouldStartTimer: 1
@@ -56440,11 +56440,15 @@ MonoBehaviour:
   rayDistance: 10
   playerMainCamera: {fileID: 9005220659803848082}
   interactDistance: 3
+  interactionLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   interactButton: {fileID: 4370096595425205733}
   useKeyButton: {fileID: 5376026593118847093}
   interactionText: {fileID: 1574232838}
   gameTimer: {fileID: 1194441155}
   crosshairImage: {fileID: 1981799375}
+  raycastInterval: 0.1
 --- !u!82 &8997996947364382294
 AudioSource:
   m_ObjectHideFlags: 0

@@ -143,12 +143,16 @@ public class PlayerInteraction : MonoBehaviour
                         // We're looking at a drawer and within range
                         drawerMech = drawerInteraction;
                         if(!interactButton.gameObject.activeSelf)
-                        interactButton.SetActive(true);
+                        {
+                            interactButton.SetActive(true);
+                        }
                     }
                     else
                     {
                         if(interactButton.gameObject.activeSelf)
-                        interactButton.SetActive(false);
+                        {
+                            interactButton.SetActive(false);
+                        }
                     }
                 }
             }

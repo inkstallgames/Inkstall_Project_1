@@ -13,11 +13,10 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private float doorSpeed = 2f;
     [SerializeField] private AudioClip doorOpenSound;
     [SerializeField] private AudioClip doorCloseSound;
+    [SerializeField] private GameObject useKeyButton; // Reference to the use key button
 
     [Header("Lock Settings")]
-
-    [SerializeField] private GameObject useKeyButton; // Reference to the use key button
-    [SerializeField] private bool isLockedDoor = false;
+    [SerializeField] public bool isLockedDoor = false;
     [SerializeField] private AudioClip doorLockedSound;
     [SerializeField] private AudioClip doorUnlockSound;
     [SerializeField] public bool isUnlockable = false;

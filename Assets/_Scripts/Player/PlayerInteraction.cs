@@ -8,6 +8,7 @@ public class PlayerInteraction : MonoBehaviour
     [SerializeField] private float rayDistance = 10f;
     [SerializeField] private Camera playerMainCamera;
     [SerializeField] private float interactDistance = 3f;
+    [SerializeField] private LayerMask interactionLayers = ~0; // Default to all layers
 
     [SerializeField] private GameObject interactButton;
     [SerializeField] private GameObject useKeyButton;
@@ -18,18 +19,20 @@ public class PlayerInteraction : MonoBehaviour
     private DoorInteraction doorInteraction;   // Track which door we're looking at
     private DrawerMech drawerMech;      // Track which drawer we're looking at
 
+    private float nextRaycastTime;
+    [SerializeField] private float raycastInterval = 0.1f;
+
     
     
     private void Start()
     {
+        // Cache the main camera at start
+        playerMainCamera = playerMainCamera != null ? playerMainCamera : Camera.main;
         if (playerMainCamera == null)
         {
-            playerMainCamera = Camera.main;
-            if (playerMainCamera == null)
-            {
-                enabled = false;
-                return;
-            }
+            Debug.LogError("No camera assigned and no main camera found in the scene!");
+            enabled = false;
+            return;
         }
 
         // Make sure the buttons are initially disabled
@@ -65,7 +68,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Update()
     {
-        CheckRaycastInteraction();
+        if (Time.time >= nextRaycastTime)
+        {
+            CheckRaycastInteraction();
+            nextRaycastTime = Time.time + raycastInterval;
+        }
+
     }
 
     private void CheckRaycastInteraction()
@@ -79,9 +87,12 @@ public class PlayerInteraction : MonoBehaviour
         drawerMech = null;
         
 
-        // Cast ray from camera center (where crosshair is)
-        Ray ray = new Ray(playerMainCamera.transform.position, playerMainCamera.transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance))
+        // Cache camera transform for better performance
+        Transform cameraTransform = playerMainCamera.transform;
+        
+        // Cast ray from camera center with layer mask
+        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, interactionLayers))
         {
             GameObject hitObject = hit.collider.gameObject;
 
@@ -92,9 +103,9 @@ public class PlayerInteraction : MonoBehaviour
                 DoorInteraction rayDoorInteraction = hitObject.GetComponent<DoorInteraction>();
                 if (rayDoorInteraction != null && rayDoorInteraction.enabled)
                 {
-                    // Check if we're within interaction distance
-                    float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
-                    if (distanceToObject <= interactDistance)
+                    // Check if we're within interaction distance (using sqrMagnitude for better performance)
+                    float distanceSqr = (transform.position - hitObject.transform.position).sqrMagnitude;
+                    if (distanceSqr <= interactDistance * interactDistance)
                     {
                         // We're looking at a door and within range
                         this.doorInteraction = rayDoorInteraction;
@@ -125,9 +136,9 @@ public class PlayerInteraction : MonoBehaviour
                 DrawerMech drawerInteraction = hitObject.GetComponent<DrawerMech>();
                 if (drawerInteraction != null && drawerInteraction.enabled)
                 {
-                    // Check if we're within interaction distance
-                    float distanceToObject = Vector3.Distance(transform.position, hitObject.transform.position);
-                    if (distanceToObject <= interactDistance)
+                    // Check if we're within interaction distance (using sqrMagnitude for better performance)
+                    float distanceSqr = (transform.position - hitObject.transform.position).sqrMagnitude;
+                    if (distanceSqr <= interactDistance * interactDistance)
                     {
                         // We're looking at a drawer and within range
                         drawerMech = drawerInteraction;
@@ -200,6 +211,10 @@ public class PlayerInteraction : MonoBehaviour
                if(interactionText != null && interactionText.gameObject.activeSelf)
                {
                 interactionText.gameObject.SetActive(false);
+               }
+               if(crosshairImage.gameObject.activeSelf)
+               {
+                crosshairImage.gameObject.SetActive(true);
                }
             }     
         }

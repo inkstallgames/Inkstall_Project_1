@@ -297,6 +297,10 @@ public class DoorInteraction : MonoBehaviour
                 useKeyButton.SetActive(true);
                 interactionText.gameObject.SetActive(true);
                 interactionText.text = "Use [Key] to Unlock";
+                if (crosshairImage != null)
+                {
+                    crosshairImage.gameObject.SetActive(false);
+                }
             }
             else if (!isUnlockable)
             {

@@ -189,7 +189,7 @@ public class PlayerInteraction : MonoBehaviour
             } 
             else
             {
-                if(interactionText != null && interactionText.gameObject.activeSelf)
+                if(interactButton != null && interactButton.gameObject.activeSelf)
                { 
                 interactButton.SetActive(false);
                }

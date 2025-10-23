@@ -216,7 +216,7 @@ public class PlayerInteraction : MonoBehaviour
                {
                 interactionText.gameObject.SetActive(false);
                }
-               if(crosshairImage.gameObject.activeSelf)
+               if(!crosshairImage.gameObject.activeSelf)
                {
                 crosshairImage.gameObject.SetActive(true);
                }

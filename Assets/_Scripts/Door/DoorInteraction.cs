@@ -307,11 +307,11 @@ public class DoorInteraction : MonoBehaviour
                 {
                     interactionText.gameObject.SetActive(true);
                     interactionText.text = "Complete Previous Room First";
+                }
 
-                    if (crosshairImage != null)
-                    {
-                        crosshairImage.gameObject.SetActive(false);
-                    }
+                if (crosshairImage != null)
+                {
+                    crosshairImage.gameObject.SetActive(false);
                 }
             }
         }

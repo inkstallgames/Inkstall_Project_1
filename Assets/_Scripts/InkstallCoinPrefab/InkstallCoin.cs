@@ -37,7 +37,7 @@ public class InkstallCoin : MonoBehaviour
         if (collectText != null)
         {
             collectText.gameObject.SetActive(true);
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(5f);
             collectText.gameObject.SetActive(false); 
         }
         gameObject.SetActive(false);

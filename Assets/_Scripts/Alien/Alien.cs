@@ -29,24 +29,13 @@ public class Alien : MonoBehaviour
         effect.Play();
         audioSource.PlayOneShot(alienDissappearedSound);
         if (coinPrefab != null)
-        {
-            Debug.Log($"Attempting to instantiate coin at position: {transform.position}");
-            GameObject coin = Instantiate(coinPrefab, transform.position, Quaternion.identity);
-            if (coin != null)
-            {
-                Debug.Log($"Successfully instantiated coin at: {coin.transform.position}");
-                Debug.Log($"Coin active in hierarchy: {coin.activeInHierarchy}");
-                Debug.Log($"Coin name: {coin.name}");
-            }
-            else
-            {
-                Debug.LogError("Failed to instantiate coin (returned null)");
-            }
-        }
-        else
-        {
-            Debug.LogError("Coin Prefab is not assigned in the Inspector!");
-        }
+{
+    Instantiate(coinPrefab, transform.position, Quaternion.identity);
+}
+else
+{
+    Debug.LogError("Coin Prefab is not assigned in the Inspector!");
+}
 
         // Points Added UI
         

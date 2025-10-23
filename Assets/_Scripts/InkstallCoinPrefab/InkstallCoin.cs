@@ -10,7 +10,7 @@ public class InkstallCoin : MonoBehaviour
     [SerializeField] private AudioClip collectSound;
     private TextMeshProUGUI collectText;
     
-    private void Start()
+    private void OnEnable()
     {
         audioSource = GetComponent<AudioSource>();
         
@@ -37,9 +37,10 @@ public class InkstallCoin : MonoBehaviour
         if (collectText != null)
         {
             collectText.gameObject.SetActive(true);
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(2f);
             collectText.gameObject.SetActive(false); 
         }
+        yield return new WaitForSeconds(1.5f);
         gameObject.SetActive(false);
     }
 }

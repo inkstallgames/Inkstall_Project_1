@@ -28,7 +28,14 @@ public class Alien : MonoBehaviour
         ParticleSystem effect = Instantiate(disappearEffectPrefab, transform.position, Quaternion.identity);
         effect.Play();
         audioSource.PlayOneShot(alienDissappearedSound);
-        Instantiate(coinPrefab, this.gameObject.transform.position, Quaternion.identity);
+        if (coinPrefab != null)
+{
+    Instantiate(coinPrefab, transform.position, Quaternion.identity);
+}
+else
+{
+    Debug.LogError("Coin Prefab is not assigned in the Inspector!");
+}
 
         // Points Added UI
         

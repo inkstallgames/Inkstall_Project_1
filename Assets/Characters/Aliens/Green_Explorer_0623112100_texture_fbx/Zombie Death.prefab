@@ -356,10 +356,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   disappearEffectPrefab: {fileID: 2433282508523890284, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312,
     type: 3}
-  dissappearSound: {fileID: 0}
+  alienDyingSound: {fileID: 8300000, guid: aee9422c4be817940a7c3286f2822f86, type: 3}
+  alienDissappearedSound: {fileID: 0}
   coinPrefab: {fileID: 5656154876045068174, guid: ad8928dedf4cd294bb33e6b2bf8a137c,
     type: 3}
-  alienDyingSound: {fileID: 8300000, guid: aee9422c4be817940a7c3286f2822f86, type: 3}
 --- !u!1 &938146147297785274
 GameObject:
   m_ObjectHideFlags: 0

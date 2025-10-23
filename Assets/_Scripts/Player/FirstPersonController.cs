@@ -21,6 +21,8 @@ namespace StarterAssets
 		public float RotationSpeed = 1f;
 		[Tooltip("Acceleration and deceleration")]
 		public float SpeedChangeRate = 10.0f;
+		[Tooltip("Prevents wall climbing by limiting consecutive jumps")]
+		public bool preventWallClimbing = true;
 
 		[Space(10)]
 		[Tooltip("The height the player can jump")]
@@ -101,6 +103,12 @@ namespace StarterAssets
 		private float _rotationVelocity;
 		private float _verticalVelocity;
 		private float _terminalVelocity = 53.0f;
+		
+		// Anti wall-climbing variables
+		private int _consecutiveJumps = 0;
+		private float _lastJumpTime = -10f;
+		private const int MAX_CONSECUTIVE_JUMPS = 2;
+		private const float JUMP_COOLDOWN = 1.0f;
 
 		// timeout deltatime
 		private float _jumpTimeoutDelta;
@@ -239,6 +247,12 @@ namespace StarterAssets
 			GroundedCheck();
 			Move();
 			HandleMobileInput();
+			
+			// Reset consecutive jumps counter if we've been grounded for a while
+			if (Grounded && Time.time - _lastJumpTime > JUMP_COOLDOWN)
+			{
+				_consecutiveJumps = 0;
+			}
 		}
 
 		private void LateUpdate()
@@ -478,14 +492,44 @@ namespace StarterAssets
 					_verticalVelocity = -2f;
 				}
 
-				// Jump
+				// Jump - with anti wall-climbing protection
 				if (_input.jump && _jumpTimeoutDelta <= 0.0f)
 				{
-					// the square root of H * -2 * G = how much velocity needed to reach desired height
-					_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+					// Check if we should prevent this jump (anti wall-climbing)
+					bool allowJump = true;
 					
-					// Play jump sound
-					PlayJumpSound();
+					if (preventWallClimbing)
+					{
+						// If we jumped recently, increment consecutive jumps counter
+						if (Time.time - _lastJumpTime < 0.5f)
+						{
+							_consecutiveJumps++;
+							
+							// If too many consecutive jumps, block jumping temporarily
+							if (_consecutiveJumps >= MAX_CONSECUTIVE_JUMPS)
+							{
+								allowJump = false;
+								_lastJumpTime = Time.time; // Reset timer
+							}
+						}
+						else
+						{
+							// Reset counter if enough time has passed
+							_consecutiveJumps = 0;
+						}
+					}
+					
+					if (allowJump)
+					{
+						// Record jump time
+						_lastJumpTime = Time.time;
+						
+						// the square root of H * -2 * G = how much velocity needed to reach desired height
+						_verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+						
+						// Play jump sound
+						PlayJumpSound();
+					}
 				}
 
 				// jump timeout

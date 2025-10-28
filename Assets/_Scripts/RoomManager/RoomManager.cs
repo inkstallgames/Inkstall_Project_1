@@ -120,92 +120,67 @@ public class RoomManager : MonoBehaviour
     // Check if all aliens in this room have been caught
     private void CheckRoomCompletion()
     {
+        Debug.Log($"[ROOM_MANAGER] [ALIEN_COUNT] RoomManager.CheckRoomCompletion() called. Aliens remaining: {aliensRemaining}");
+
         // Update UI one last time when room is completed
         UpdateRemainingAliensUI();
-        
+
         if (aliensRemaining <= 0)
         {
-            int currentDoorID = thisRoomDoor != null ? thisRoomDoor.GetDoorID() : -1;
-            bool isValidDoor = currentDoorID >= 1 && currentDoorID <= 24;
-            
-            if (isValidDoor)
+            StartCoroutine(CompleteRoomSequence());
+        }
+    }
+
+    private IEnumerator CompleteRoomSequence()
+    {
+        int currentDoorID = thisRoomDoor != null ? thisRoomDoor.GetDoorID() : -1;
+        bool isValidDoor = currentDoorID >= 1 && currentDoorID <= 24;
+
+        Debug.Log($"[ROOM_MANAGER] [ROOM_COMPLETE] Room {roomID} completed! All aliens caught. Door ID: {currentDoorID}, Valid Door: {isValidDoor}");
+
+        // Wait until ProgressManager has loaded the data
+        while (ProgressManager.Instance == null || !ProgressManager.Instance.IsDataLoaded())
+        {
+            Debug.Log("[ROOM_MANAGER] Waiting for ProgressManager to load data...");
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        // Save room completion status to online database
+        if (ProgressManager.Instance != null && thisRoomDoor != null)
+        {
+            Debug.Log($"[ROOM_MANAGER] [DB_UPDATE] Starting database update for room {roomID} with door {currentDoorID}");
+
+            // Determine the next door ID to unlock
+            int nextDoorID = -1;
+            if (currentDoorID < 24 && currentDoorID > 0 && currentDoorID != 6 && currentDoorID != 12 && currentDoorID != 18)
             {
-                Debug.Log($"[RoomManager] Room {roomID} (Door {currentDoorID}) completed! All aliens caught.");
+                nextDoorID = currentDoorID + 1;
+                Debug.Log($"[ROOM_MANAGER] [NEXT_DOOR] Next door to unlock: {nextDoorID}");
             }
-            
-            // Save room completion status to online database
-            if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded && thisRoomDoor != null)
+            else
             {
-                // Use the MarkRoomAsCompleted method which handles both current and next door updates
-                if (isValidDoor)
-                {
-                    Debug.Log($"[RoomManager] Marking room with door {currentDoorID} as completed in database");
-                }
-                
-                ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
-                
-                // Update the door objects to reflect the new state immediately
-                // This ensures visual feedback even before the database update completes
-                thisRoomDoor.isUnlockable = false;
-                thisRoomDoor.isRoomCompleted = true;
-                thisRoomDoor.UpdateDoorVisuals();
-                
-                // If we have a next door to unlock, update it visually too
-                if (nextDoorToUnlock != null)
-                {
-                    int nextDoorID = nextDoorToUnlock.GetDoorID();
-                    bool isNextDoorValid = nextDoorID >= 1 && nextDoorID <= 24;
-                    
-                    if (isNextDoorValid)
-                    {
-                        Debug.Log($"[RoomManager] Updating next door {nextDoorID} to be unlockable");
-                    }
-                    
-                    nextDoorToUnlock.isUnlockable = true;
-                    nextDoorToUnlock.isRoomCompleted = false;
-                    nextDoorToUnlock.UpdateDoorVisuals();
-                }
-                
-                // Force a refresh of all doors in the scene to ensure consistency
-                StartCoroutine(RefreshAllDoorsAfterDelay(1.5f));
+                Debug.Log($"[ROOM_MANAGER] [NEXT_DOOR] No next door to unlock (current door is {currentDoorID})");
             }
-            else if (isValidDoor)
-            {
-                Debug.LogWarning("[RoomManager] ProgressManager not ready or door reference missing, couldn't save room completion status");
-                
-                // Try to find ProgressManager if it's not available
-                if (ProgressManager.Instance == null)
-                {
-                    Debug.LogWarning("[RoomManager] Trying to find or create ProgressManager instance");
-                    // This will create the instance if it doesn't exist
-                    var progressManager = ProgressManager.Instance;
-                    
-                    // Try again after ensuring the instance exists
-                    if (progressManager != null && thisRoomDoor != null)
-                    {
-                        Debug.Log($"[RoomManager] Found ProgressManager, marking room with door {currentDoorID} as completed");
-                        progressManager.MarkRoomAsCompleted(currentDoorID);
-                    }
-                }
-            }
-            
-            // Add 200 coins/points for completing the room
-            if (CoinsManager.Instance != null)
-            {
-                CoinsManager.Instance.AddCoins(200, "Room Completed");
-            }
-            
-            // If this is the final room, trigger game win
-            if (isFinalRoom && GameManager.Instance != null)
-            {
-                GameManager.Instance.LevelWin();
-                Debug.Log("[RoomManager] Final room completed! Level win triggered.");
-            }
-            else if (GameManager.Instance != null)
-            {
-                // Call LevelWin for non-final rooms too
-                GameManager.Instance.LevelWin();
-            }
+
+            StartCoroutine(UpdateDoorsWithDelay(currentDoorID, nextDoorID));
+        }
+
+        // Add 200 coins/points for completing the room
+        if (CoinsManager.Instance != null)
+        {
+            CoinsManager.Instance.AddCoins(200, "Room Completed");
+        }
+
+        // If this is the final room, trigger game win
+        if (isFinalRoom && GameManager.Instance != null)
+        {
+            GameManager.Instance.LevelWin();
+            Debug.Log("[RoomManager] Final room completed! Level win triggered.");
+        }
+        else if (GameManager.Instance != null)
+        {
+            // Call LevelWin for non-final rooms too
+            GameManager.Instance.LevelWin();
         }
     }
     
@@ -221,25 +196,105 @@ public class RoomManager : MonoBehaviour
     // Refresh all doors in the scene after a delay to ensure database changes are reflected
     private IEnumerator RefreshAllDoorsAfterDelay(float delay)
     {
-        Debug.Log($"[RoomManager] Will refresh all doors after {delay} seconds");
         yield return new WaitForSeconds(delay);
         
-        if (ProgressManager.Instance != null)
+        Debug.Log("[RoomManager] Refreshing all doors from database");
+        
+        // Find all door interactions in the scene
+        DoorInteraction[] doors = FindObjectsOfType<DoorInteraction>();
+        
+        foreach (DoorInteraction door in doors)
         {
-            // Find all door interactions in the scene
-            DoorInteraction[] allDoors = FindObjectsOfType<DoorInteraction>();
-            Debug.Log($"[RoomManager] Refreshing {allDoors.Length} doors in scene from database");
-            
-            foreach (DoorInteraction door in allDoors)
+            if (door != null)
             {
-                if (door != null)
+                int doorId = door.GetDoorID();
+                if (doorId >= 1 && doorId <= 24)
                 {
+                    Debug.Log($"[RoomManager] Refreshing door {doorId} from database");
+                    
                     // Update door state from database
                     ProgressManager.Instance.UpdateDoorInteraction(door);
                 }
             }
-            
-            Debug.Log("[RoomManager] Door refresh from database complete");
+        }
+        
+        Debug.Log("[RoomManager] Door refresh from database complete");
+    }
+    
+    // Update doors with a small delay to ensure student ID is properly set
+    private IEnumerator UpdateDoorsWithDelay(int currentDoorID, int nextDoorID)
+    {
+        Debug.Log($"[UpdateDoorsWithDelay] Coroutine started for currentDoorID: {currentDoorID} and nextDoorID: {nextDoorID}");
+        // Wait a short time to ensure everything is initialized
+        yield return new WaitForSeconds(0.2f);
+
+        // Update the current door directly in the database
+        Debug.Log($"[ROOM_MANAGER] [DB_DIRECT_UPDATE] Updating current door {currentDoorID} status: isUnlockable=false, isRoomCompleted=true");
+        if (ProgressManager.Instance != null)
+        {
+            StartCoroutine(ProgressManager.Instance.UpdateDoorStatusDirect(currentDoorID, false, true));
+        }
+        else
+        {
+            Debug.LogError("[UpdateDoorsWithDelay] ProgressManager.Instance is null. Cannot update current door.");
+        }
+
+        // Wait a bit between requests to avoid overwhelming the server
+        yield return new WaitForSeconds(0.5f);
+
+        // If there's a next door to unlock, update it directly too
+        if (nextDoorID > 0)
+        {
+            Debug.Log($"[ROOM_MANAGER] [DB_DIRECT_UPDATE] Updating next door {nextDoorID} status: isUnlockable=true, isRoomCompleted=false");
+            if (ProgressManager.Instance != null)
+            {
+                StartCoroutine(ProgressManager.Instance.UpdateDoorStatusDirect(nextDoorID, true, false));
+            }
+            else
+            {
+                Debug.LogError("[UpdateDoorsWithDelay] ProgressManager.Instance is null. Cannot update next door.");
+            }
+        }
+        else
+        {
+            Debug.Log("[UpdateDoorsWithDelay] No valid next door to unlock.");
+        }
+
+        // Wait a bit more before calling the backward compatibility method
+        yield return new WaitForSeconds(0.5f);
+
+        // Also call MarkRoomAsCompleted for backward compatibility
+        Debug.Log($"[ROOM_MANAGER] [DB_UPDATE] Also calling ProgressManager.MarkRoomAsCompleted({currentDoorID}) for backward compatibility");
+        if (ProgressManager.Instance != null)
+        {
+            ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
+        }
+        else
+        {
+            Debug.LogError("[UpdateDoorsWithDelay] ProgressManager.Instance is null. Cannot call MarkRoomAsCompleted.");
+        }
+        Debug.Log("[UpdateDoorsWithDelay] Coroutine finished.");
+    }
+    
+    // Update local door visuals without database updates
+    private void UpdateLocalDoorVisuals(int currentDoorID)
+    {
+        // Update the current door visually
+        if (thisRoomDoor != null)
+        {
+            Debug.Log($"[ROOM_MANAGER] [LOCAL_UPDATE] Updating local door {currentDoorID} visuals only (database update failed)");
+            thisRoomDoor.isUnlockable = false;
+            thisRoomDoor.isRoomCompleted = true;
+            thisRoomDoor.UpdateDoorVisuals();
+        }
+        
+        // If we have a next door to unlock, update it visually too
+        if (nextDoorToUnlock != null)
+        {
+            int nextVisualDoorID = nextDoorToUnlock.GetDoorID();
+            Debug.Log($"[ROOM_MANAGER] [LOCAL_UPDATE] Updating next door {nextVisualDoorID} visuals only (database update failed)");
+            nextDoorToUnlock.isUnlockable = true;
+            nextDoorToUnlock.UpdateDoorVisuals();
         }
     }
 }

@@ -96,24 +96,6 @@ public class DoorInteraction : MonoBehaviour
 
         // Update visuals based on current state (will be overridden when data loads)
         UpdateDoorVisuals();
-
-
-        // Setup use key button
-        if (useKeyButton != null)
-        {
-            useKeyButton.SetActive(false);
-
-            // Add click listener to the use key button
-            Button useKeyButtonComponent = useKeyButton.GetComponent<Button>();
-            if (useKeyButtonComponent != null)
-            {
-                useKeyButtonComponent.onClick.AddListener(OnUseKeyButtonClicked);
-            }
-            else
-            {
-                Debug.LogError("Use Key button doesn't have a Button component!");
-            }
-        }
     }
 
     private void OnDestroy()
@@ -257,14 +239,6 @@ public class DoorInteraction : MonoBehaviour
         SaveDoorStatesToDatabase();
     }
 
-    // Method to unlock the current door
-    private void OnUseKeyButtonClicked()
-    {
-        TryUnlockDoor();
-
-        useKeyButton.SetActive(false);
-        interactionText.gameObject.SetActive(false);
-    }
 
     public int GetDoorID()
     {
@@ -387,7 +361,7 @@ public class DoorInteraction : MonoBehaviour
     // Track if the door was just unlocked but not yet opened
     private bool justUnlocked = false;
 
-    public void TryUnlockDoor()
+    public void UnlockDoor()
     {
         if (KeyManager.Instance.GetCurrentKeyCount() > 0)
         {

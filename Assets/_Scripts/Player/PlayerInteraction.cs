@@ -52,6 +52,15 @@ public class PlayerInteraction : MonoBehaviour
             }
         }
 
+        if (useKeyButton != null)
+        {
+            useKeyButton.SetActive(false);
+            Button useKeyBtnComponent = useKeyButton.GetComponent<Button>();
+            if (useKeyBtnComponent != null)
+            {
+                useKeyBtnComponent.onClick.AddListener(OnUseKeyButtonClicked);
+            }
+        }
 
         // Make sure the interaction text is initially hidden
         if (interactionText != null)
@@ -234,6 +243,23 @@ public class PlayerInteraction : MonoBehaviour
         else if (drawerMech != null)
         {
             drawerMech.Interact();
+        }
+    }
+
+    private void OnUseKeyButtonClicked()
+    {
+        if (doorInteraction != null)
+        {
+            doorInteraction.UnlockDoor();
+            useKeyButton.SetActive(false);
+            if (interactionText != null)
+            {
+                interactionText.gameObject.SetActive(false);
+            }
+            if (crosshairImage != null)
+            {
+                crosshairImage.gameObject.SetActive(true);
+            }
         }
     }
 

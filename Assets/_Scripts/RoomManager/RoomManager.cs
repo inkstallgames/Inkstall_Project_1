@@ -136,8 +136,6 @@ public class RoomManager : MonoBehaviour
         int currentDoorID = thisRoomDoor != null ? thisRoomDoor.GetDoorID() : -1;
         bool isValidDoor = currentDoorID >= 1 && currentDoorID <= 24;
 
-        Debug.Log($"[ROOM_MANAGER] [ROOM_COMPLETE] Room {roomID} completed! All aliens caught. Door ID: {currentDoorID}, Valid Door: {isValidDoor}");
-
         // Wait until ProgressManager has loaded the data
         while (ProgressManager.Instance == null || !ProgressManager.Instance.IsDataLoaded())
         {
@@ -148,18 +146,11 @@ public class RoomManager : MonoBehaviour
         // Save room completion status to online database
         if (ProgressManager.Instance != null && thisRoomDoor != null)
         {
-            Debug.Log($"[ROOM_MANAGER] [DB_UPDATE] Starting database update for room {roomID} with door {currentDoorID}");
-
             // Determine the next door ID to unlock
             int nextDoorID = -1;
             if (currentDoorID < 24 && currentDoorID > 0 && currentDoorID != 6 && currentDoorID != 12 && currentDoorID != 18)
             {
                 nextDoorID = currentDoorID + 1;
-                Debug.Log($"[ROOM_MANAGER] [NEXT_DOOR] Next door to unlock: {nextDoorID}");
-            }
-            else
-            {
-                Debug.Log($"[ROOM_MANAGER] [NEXT_DOOR] No next door to unlock (current door is {currentDoorID})");
             }
 
             StartCoroutine(UpdateDoorsWithDelay(currentDoorID, nextDoorID));

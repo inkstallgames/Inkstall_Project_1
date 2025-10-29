@@ -255,14 +255,8 @@ public class ProgressManager : MonoBehaviour
                     
                     isDataLoaded = true;
                     
-                    // Ensure we have all door IDs from 1 to maxDoorId
-                    EnsureAllDoorsExist();
-                    
                     // Update all door interactions in the scene
                     UpdateAllDoorInteractions();
-                    
-                    // Process any pending door updates
-                    ProcessPendingDoorUpdates();
                     
                     // Notify subscribers that data is loaded
                     OnDataLoaded?.Invoke();
@@ -275,9 +269,7 @@ public class ProgressManager : MonoBehaviour
                         ParseMongoDBJson(jsonResponse);
                         
                         isDataLoaded = true;
-                        EnsureAllDoorsExist();
                         UpdateAllDoorInteractions();
-                        ProcessPendingDoorUpdates();
                         OnDataLoaded?.Invoke();
                     }
                     catch (Exception mongoEx)

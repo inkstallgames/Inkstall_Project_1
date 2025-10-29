@@ -190357,6 +190357,7 @@ MonoBehaviour:
   SprintSpeed: 4
   RotationSpeed: 20
   SpeedChangeRate: 10
+  preventWallClimbing: 1
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.1
@@ -190367,10 +190368,6 @@ MonoBehaviour:
   GroundLayers:
     serializedVersion: 2
     m_Bits: 1
-  WallCheckDistance: 0.6
-  WallLayers:
-    serializedVersion: 2
-    m_Bits: 0
   runThreshold: 0.7
   CinemachineCameraTarget: {fileID: 6981022636306073780}
   TopClamp: 50

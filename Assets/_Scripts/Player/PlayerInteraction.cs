@@ -118,18 +118,18 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         // We're looking at a door and within range
                         this.doorInteraction = rayDoorInteraction;
-                        if(!interactButton.gameObject.activeSelf)
+                        if(interactButton != null && !interactButton.activeSelf)
                         {
                             interactButton.SetActive(true);
                         }
                     }
                     else
                     {
-                        if(interactButton.gameObject.activeSelf)
+                        if(interactButton != null && interactButton.activeSelf)
                         {
                             interactButton.SetActive(false);
                         }
-                        if(useKeyButton.gameObject.activeSelf)
+                        if(useKeyButton != null && useKeyButton.activeSelf)
                         {
                             useKeyButton.SetActive(false);
                         }
@@ -151,14 +151,14 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         // We're looking at a drawer and within range
                         drawerMech = drawerInteraction;
-                        if(!interactButton.gameObject.activeSelf)
+                        if(interactButton != null && !interactButton.activeSelf)
                         {
                             interactButton.SetActive(true);
                         }
                     }
                     else
                     {
-                        if(interactButton.gameObject.activeSelf)
+                        if(interactButton != null && interactButton.activeSelf)
                         {
                             interactButton.SetActive(false);
                         }

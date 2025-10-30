@@ -247,6 +247,7 @@ public class DoorInteraction : MonoBehaviour
 
     public void Interact()
     {
+        // If room is already completed, just show the message and return
         if (isRoomCompleted)
         {
             // Show completed room message
@@ -260,8 +261,11 @@ public class DoorInteraction : MonoBehaviour
                     crosshairImage.gameObject.SetActive(false);
                 }
             }
+            return; // Exit the method early
         }
-        else if (isLockedDoor)
+
+        // Only check for locked door if room is not completed
+        if (isLockedDoor)
         {
             if (isUnlockable)
             {

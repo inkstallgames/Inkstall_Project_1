@@ -217,7 +217,7 @@ public class PlayerInteraction : MonoBehaviour
                { 
                 interactButton.SetActive(false);
                }
-               if(useKeyButton.gameObject.activeSelf)
+               if(useKeyButton != null && useKeyButton.gameObject.activeSelf)
                {
                 useKeyButton.SetActive(false);
                }

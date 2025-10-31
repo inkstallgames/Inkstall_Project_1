@@ -265,9 +265,9 @@ public class DoorInteraction : MonoBehaviour
         }
 
         // Only check for locked door if room is not completed
-        if (isLockedDoor)
+        else if (isLockedDoor)
         {
-            if (isUnlockable)
+            if (isUnlockable && !isRoomCompleted)
             {
                 PlayDoorLockedAnimation();
                 PlayDoorLockedSound();
@@ -279,7 +279,7 @@ public class DoorInteraction : MonoBehaviour
                     crosshairImage.gameObject.SetActive(false);
                 }
             }
-            else if (!isUnlockable)
+            else if (!isUnlockable && !isRoomCompleted)
             {
                 if (interactionText != null)
                 {

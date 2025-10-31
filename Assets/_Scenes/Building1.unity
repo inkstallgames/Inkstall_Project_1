@@ -2226,19 +2226,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 812687136}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 391131b512224cc46a7f5960813769c6, type: 3}
+  m_Script: {fileID: 11500000, guid: dc6db16088143fe4383e2998b395c340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floors:
-  - floorName: 1
-    floorCollider: {fileID: 3938680920652023022}
+  floorRules:
+  - floorName: First Floor
     requiredDoorIDs: 0100000002000000
-  - floorName: 2
-    floorCollider: {fileID: 3938680920652023021}
-    requiredDoorIDs: 0300000004000000
+    accessCollider: {fileID: 3938680920652023022}
   - floorName: 
-    floorCollider: {fileID: 0}
     requiredDoorIDs: 
+    accessCollider: {fileID: 0}
+  - floorName: 
+    requiredDoorIDs: 
+    accessCollider: {fileID: 0}
 --- !u!1 &823488689
 GameObject:
   m_ObjectHideFlags: 0
@@ -8722,6 +8722,11 @@ PrefabInstance:
       propertyPath: remainingAliensText
       value: 
       objectReference: {fileID: 191323256}
+    - target: {fileID: 2134061752793486350, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3218370127332946291, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: bombsUI
@@ -8932,12 +8937,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f32bf1ba4d85a9544b5aefadcc2ef03e, type: 3}
---- !u!1 &3938680920652023021 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6457364039808557946, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
-    type: 3}
-  m_PrefabInstance: {fileID: 3938680920652023020}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &3938680920652023022 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2134061752793486350, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,

@@ -63,7 +63,7 @@ public class FloorAccessManager : MonoBehaviour
         // Check each floor rule
         for (int i = 0; i < floorCondition.Count; i++)
         {
-            var condition = floorCondition[i];
+            var = floorCondition[i];
             Debug.Log($"[FloorAccessManager] Checking rule {i}: {condition.floorName} - {condition.requiredDoorIDs.Count} doors");
             CheckFloorRule(condition);
         }

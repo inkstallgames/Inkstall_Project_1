@@ -691,68 +691,10 @@ public class ProgressManager : MonoBehaviour
                 // This ensures the game remains playable even if the server is down
                 UpdateLocalDoorData(doorId, isUnlockable, isRoomCompleted);
                 
-                // Also update the door in the local cache to ensure it's consistent
-                SaveDoorToLocalCache(doorId, isUnlockable, isRoomCompleted);
             }
         }
     }
-    
-    // Save door state to local cache for offline consistency
-    private void SaveDoorToLocalCache(int doorId, bool isUnlockable, bool isRoomCompleted)
-    {
-        try
-        {
-            // Get existing cache or create new
-            string cacheKey = $"DoorCache_{studentId}";
-            string cachedData = PlayerPrefs.GetString(cacheKey, "{\"doors\":[]}")
-;
-            
-            // Parse the cached data
-            LocalDoorStatesWrapper doorCache;
-            try
-            {
-                doorCache = JsonConvert.DeserializeObject<LocalDoorStatesWrapper>(cachedData);
-                if (doorCache == null) doorCache = new LocalDoorStatesWrapper();
-                if (doorCache.doors == null) doorCache.doors = new List<LocalDoorState>();
-            }
-            catch
-            {
-                doorCache = new LocalDoorStatesWrapper();
-                doorCache.doors = new List<LocalDoorState>();
-            }
-            
-            // Find or create door entry
-            LocalDoorState doorState = doorCache.doors.Find(d => d.doorId == doorId);
-            if (doorState == null)
-            {
-                doorState = new LocalDoorState
-                {
-                    doorId = doorId,
-                    isUnlockable = isUnlockable,
-                    isRoomCompleted = isRoomCompleted,
-                    lastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-                };
-                doorCache.doors.Add(doorState);
-            }
-            else
-            {
-                doorState.isUnlockable = isUnlockable;
-                doorState.isRoomCompleted = isRoomCompleted;
-                doorState.lastUpdated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            }
-            
-            // Save back to PlayerPrefs
-            string updatedCache = JsonConvert.SerializeObject(doorCache);
-            PlayerPrefs.SetString(cacheKey, updatedCache);
-            PlayerPrefs.Save();
-            
-            Debug.Log($"[DOOR_CACHE] Saved door {doorId} to local cache: isUnlockable={isUnlockable}, isRoomCompleted={isRoomCompleted}");
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"[DOOR_CACHE] Error saving door to cache: {ex.Message}");
-        }
-    }
+
     
     // Update door status with direct HTTP request
     public IEnumerator UpdateDoorStatusDirect(int doorId, bool isUnlockable, bool isRoomCompleted)

@@ -265,7 +265,7 @@ public class DoorInteraction : MonoBehaviour
         }
 
         // Only check for locked door if room is not completed
-        else if (isLockedDoor)
+        if (isLockedDoor)
         {
             if (isUnlockable && !isRoomCompleted)
             {

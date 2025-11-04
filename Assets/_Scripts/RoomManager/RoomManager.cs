@@ -148,7 +148,7 @@ public class RoomManager : MonoBehaviour
         {
             // Determine the next door ID to unlock
             int nextDoorID = -1;
-            if (currentDoorID < 24 && currentDoorID > 0 && currentDoorID != 6 && currentDoorID != 12 && currentDoorID != 18)
+            if (currentDoorID < 24 && currentDoorID > 0)
             {
                 nextDoorID = currentDoorID + 1;
             }

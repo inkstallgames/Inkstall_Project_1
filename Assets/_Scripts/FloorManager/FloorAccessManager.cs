@@ -15,7 +15,7 @@ public class FloorAccessManager : MonoBehaviour
     public static FloorAccessManager Instance { get; private set; }
 
     [Header("Floor Access Rules")]
-    [SerializeField] private List<FloorAccessRule> floorRules = new List<FloorAccessRule>();
+    [SerializeField] private List<FloorAccessRule> floorCondition = new List<FloorAccessRule>();
 
     private void Awake()
     {
@@ -58,14 +58,14 @@ public class FloorAccessManager : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[FloorAccessManager] Checking {floorRules.Count} floor rules...");
+        Debug.Log($"[FloorAccessManager] Checking {floorCondition.Count} floor rules...");
         
         // Check each floor rule
-        for (int i = 0; i < floorRules.Count; i++)
+        for (int i = 0; i < floorCondition.Count; i++)
         {
-            var rule = floorRules[i];
-            Debug.Log($"[FloorAccessManager] Checking rule {i}: {rule.floorName} - {rule.requiredDoorIDs.Count} doors");
-            CheckFloorRule(rule);
+            var condition = floorCondition[i];
+            Debug.Log($"[FloorAccessManager] Checking rule {i}: {condition.floorName} - {condition.requiredDoorIDs.Count} doors");
+            CheckFloorRule(condition);
         }
     }
 

@@ -141,6 +141,20 @@ public class DoorInteraction : MonoBehaviour
             yield return null;
         }
 
+        // If we broke out of the loop because doorData was null, wait and retry once.
+        yield return new WaitForSeconds(0.5f);
+        DoorData finalDoorData = ProgressManager.Instance.GetDoorData(doorID);
+        if (finalDoorData != null)
+        {
+            SetUnlockable(finalDoorData.isUnlockable);
+            SetRoomCompleted(finalDoorData.isRoomCompleted);
+            UpdateDoorVisuals();
+        }
+        else
+        {
+            Debug.LogWarning($"Door {doorID} data is still null after waiting. The door may not function correctly.");
+        }
+
         // If we still don't have a ProgressManager, exit
         if (ProgressManager.Instance == null)
         {
@@ -160,31 +174,24 @@ public class DoorInteraction : MonoBehaviour
                 if (ProgressManager.Instance.isDataLoaded)
                 {
 
-                    // Ensure door data exists in database
-                    ProgressManager.Instance.EnsureDoorDataExists(doorID, gameObject.name);
 
                     // Get door data directly from ProgressManager
                     DoorData doorData = ProgressManager.Instance.GetDoorData(doorID);
 
-                    if (doorData != null)
+                    if (doorData == null)
                     {
-                        // Use setter methods to update properties
-                        SetUnlockable(doorData.isUnlockable);
-                        SetRoomCompleted(doorData.isRoomCompleted);
-
-                        // Update visuals based on the new state
-                        UpdateDoorVisuals();
-
-
-
-                        yield break; // Success! Exit the coroutine
+                        // If door data is null, break out of the try-catch to wait and retry.
+                        break;
                     }
-                    else
-                    {
-                        // Request an update from ProgressManager
-                        ProgressManager.Instance.UpdateDoorInteraction(this);
-                        yield break;
-                    }
+
+                    // Use setter methods to update properties
+                    SetUnlockable(doorData.isUnlockable);
+                    SetRoomCompleted(doorData.isRoomCompleted);
+
+                    // Update visuals based on the new state
+                    UpdateDoorVisuals();
+
+                    yield break; // Success! Exit the coroutine
                 }
                 else
                 {

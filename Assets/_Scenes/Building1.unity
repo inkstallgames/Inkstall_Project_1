@@ -2210,9 +2210,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a877fdf5399632408f36a5f6a6b2e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialRetryDelay: 2
+  initialRetryDelay: 0
   maxRetryAttempts: 3
-  maxDoorId: 16
+  maxDoorId: 24
   studentData:
     doors: []
   isDataLoaded: 0

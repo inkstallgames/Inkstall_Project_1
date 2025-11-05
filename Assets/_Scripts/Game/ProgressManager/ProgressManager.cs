@@ -258,6 +258,9 @@ public class ProgressManager : MonoBehaviour
                     // Update all door interactions in the scene
                     UpdateAllDoorInteractions();
                     
+                    // Ensure all doors exist before notifying other scripts
+                    EnsureAllDoorsExist();
+
                     // Notify subscribers that data is loaded
                     OnDataLoaded?.Invoke();
                 }
@@ -269,6 +272,10 @@ public class ProgressManager : MonoBehaviour
                         ParseMongoDBJson(jsonResponse);
                         
                         isDataLoaded = true;
+
+                        // Ensure all doors exist before notifying other scripts
+                        EnsureAllDoorsExist();
+
                         UpdateAllDoorInteractions();
                         OnDataLoaded?.Invoke();
                     }
@@ -1144,8 +1151,6 @@ public class ProgressManager : MonoBehaviour
         // Validate door progression logic
         ValidateDoorProgressionLogic();
         
-        // Save the updated student data to the database
-        StartCoroutine(SaveStudentDoorData());
     }
     
     // Load door states from local storage

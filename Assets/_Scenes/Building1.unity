@@ -6028,6 +6028,18 @@ Transform:
   - {fileID: 1430894577}
   m_Father: {fileID: 776522121}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2120015511 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5536312052315663108, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3938680920652023020}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &37316258384756432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8974,6 +8986,21 @@ PrefabInstance:
       propertyPath: m_LODs.Array.data[0].renderers.Array.data[402].renderer
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 8850723180610415156, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: thisRoomDoor
+      value: 
+      objectReference: {fileID: 2120015511}
+    - target: {fileID: 8850723180610415156, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: numberOfAliens
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8850723180610415156, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: remainingAliensText
+      value: 
+      objectReference: {fileID: 191323256}
     - target: {fileID: 8940143169760935910, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: m_Name

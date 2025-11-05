@@ -8826,6 +8826,11 @@ PrefabInstance:
       objectReference: {fileID: 1194441157}
     - target: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: throwButton
+      value: 
+      objectReference: {fileID: 1536972007016953564}
+    - target: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: chemicalBomb
       value: 
       objectReference: {fileID: 4001697182668950348}
@@ -8836,9 +8841,19 @@ PrefabInstance:
       objectReference: {fileID: 5376026593118847093}
     - target: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: crosshairImage
+      value: 
+      objectReference: {fileID: 1981799375}
+    - target: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: interactionText
       value: 
       objectReference: {fileID: 1574232838}
+    - target: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: remainingAliensCountContainer
+      value: 
+      objectReference: {fileID: 1949498769}
     - target: {fileID: 4310671615237114043, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: bombsUI

@@ -120,34 +120,24 @@ public class RoomManager : MonoBehaviour
         int currentDoorID = thisRoomDoor != null ? thisRoomDoor.GetDoorID() : -1;
         if (currentDoorID < 1 || currentDoorID > 24) yield break;
 
+        // Wait for ProgressManager to be ready
         while (ProgressManager.Instance == null || !ProgressManager.Instance.IsDataLoaded())
         {
             yield return new WaitForSeconds(0.5f);
         }
 
-        if (ProgressManager.Instance != null && thisRoomDoor != null)
-        {
-            int nextDoorID = -1;
-            if (currentDoorID < 24)
-            {
-                nextDoorID = currentDoorID + 1;
-            }
-            StartCoroutine(UpdateDoorsWithDelay(currentDoorID, nextDoorID));
-        }
+        // Mark room as completed - this will handle all door updates
+        ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
 
+        // Add coins for room completion
         if (CoinsManager.Instance != null)
         {
             CoinsManager.Instance.AddCoins(200, "Room Completed");
         }
 
-        // If this is the final room, trigger game win
-        if (isFinalRoom && GameManager.Instance != null)
+        // Trigger game win
+        if (GameManager.Instance != null)
         {
-            GameManager.Instance.LevelWin();
-        }
-        else if (GameManager.Instance != null)
-        {
-
             GameManager.Instance.LevelWin();
         }
     }
@@ -183,48 +173,4 @@ public class RoomManager : MonoBehaviour
         
     }
     
-    // Update doors with a small delay to ensure student ID is properly set
-    private IEnumerator UpdateDoorsWithDelay(int currentDoorID, int nextDoorID)
-    {
-        yield return new WaitForSeconds(0.2f);
-
-        if (ProgressManager.Instance != null)
-        {
-            StartCoroutine(ProgressManager.Instance.UpdateDoorStatusDirect(currentDoorID, false, true));
-        }
-
-        yield return new WaitForSeconds(0.5f);
-
-        if (nextDoorID > 0 && ProgressManager.Instance != null)
-        {
-            StartCoroutine(ProgressManager.Instance.UpdateDoorStatusDirect(nextDoorID, true, false));
-        }
-
-        yield return new WaitForSeconds(0.5f);
-
-        if (ProgressManager.Instance != null)
-        {
-            ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
-        }
-    }
-    
-    // Update local door visuals without database updates
-    private void UpdateLocalDoorVisuals(int currentDoorID)
-    {
-        // Update the current door visually
-        if (thisRoomDoor != null)
-        {
-            thisRoomDoor.isUnlockable = false;
-            thisRoomDoor.isRoomCompleted = true;
-            thisRoomDoor.UpdateDoorVisuals();
-        }
-        
-        // If we have a next door to unlock, update it visually too
-        if (nextDoorToUnlock != null)
-        {
-            int nextVisualDoorID = nextDoorToUnlock.GetDoorID();
-            nextDoorToUnlock.isUnlockable = true;
-            nextDoorToUnlock.UpdateDoorVisuals();
-        }
-    }
 }

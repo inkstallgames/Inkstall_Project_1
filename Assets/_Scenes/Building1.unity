@@ -8910,6 +8910,11 @@ PrefabInstance:
       propertyPath: remainingAliensText
       value: 
       objectReference: {fileID: 191323256}
+    - target: {fileID: 1361265660159551448, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: remainingAliensTextCount
+      value: 
+      objectReference: {fileID: 191323256}
     - target: {fileID: 2134061752793486350, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: m_IsActive
@@ -9143,6 +9148,11 @@ PrefabInstance:
     - target: {fileID: 8850723180610415156, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: remainingAliensText
+      value: 
+      objectReference: {fileID: 191323256}
+    - target: {fileID: 8850723180610415156, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: remainingAliensTextCount
       value: 
       objectReference: {fileID: 191323256}
     - target: {fileID: 8940143169760935910, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,

@@ -11,13 +11,12 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private int aliensRemaining;                 // Counter for remaining aliens
     
     [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI remainingAliensText; // UI Text to display remaining aliens count
+    [SerializeField] private TextMeshProUGUI remainingAliensTextCount; // UI Text to display remaining aliens count
     
     [Header("Door & Room Setting")]
     [SerializeField] private DoorInteraction thisRoomDoor;
     [SerializeField] private DoorInteraction nextDoorToUnlock;  // Reference to the next door to unlock
     [SerializeField] private bool isFinalRoom = false;          // Is this the final room in the level?
-    public string roomID;                     // Unique identifier for this room
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props
 
@@ -49,12 +48,6 @@ public class RoomManager : MonoBehaviour
         int alienCount = Mathf.Min(numberOfAliens, children.Count);  // Avoid overflow
         aliensRemaining = alienCount;  // Initialize counter
         UpdateRemainingAliensUI();
-        
-        // Generate roomID if not set
-        if (string.IsNullOrEmpty(roomID))
-        {
-            roomID = gameObject.name + "_" + gameObject.GetInstanceID();
-        }
         
         // Check if room is already completed in database
         if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded && thisRoomDoor != null)
@@ -154,7 +147,7 @@ public class RoomManager : MonoBehaviour
         }
         else if (GameManager.Instance != null)
         {
-            // Call LevelWin for non-final rooms too
+
             GameManager.Instance.LevelWin();
         }
     }
@@ -162,9 +155,9 @@ public class RoomManager : MonoBehaviour
     // Updates the remaining aliens count UI
     private void UpdateRemainingAliensUI()
     {
-        if (remainingAliensText != null)
+        if (remainingAliensTextCount != null)
         {
-            remainingAliensText.text = aliensRemaining.ToString();
+            remainingAliensTextCount.text = aliensRemaining.ToString();
         }
     }
     

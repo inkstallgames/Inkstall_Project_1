@@ -2300,6 +2300,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2096457473}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &852486766 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6816901976039136465, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3938680920652023020}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &902840096
 GameObject:
   m_ObjectHideFlags: 0
@@ -4369,6 +4375,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2096457473}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!1 &1487559242 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6457364039808557946, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3938680920652023020}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1505732593
 GameObject:
   m_ObjectHideFlags: 0
@@ -4687,12 +4699,12 @@ MonoBehaviour:
   - floorName: Floor1
     requiredDoorIDs: 0100000002000000
     accessCollider: {fileID: 3938680920652023022}
-  - floorName: 
-    requiredDoorIDs: 
-    accessCollider: {fileID: 0}
-  - floorName: 
-    requiredDoorIDs: 
-    accessCollider: {fileID: 0}
+  - floorName: Floor2
+    requiredDoorIDs: 0300000004000000
+    accessCollider: {fileID: 1487559242}
+  - floorName: Floor3
+    requiredDoorIDs: 0500000006000000
+    accessCollider: {fileID: 852486766}
 --- !u!1 &1607335632
 GameObject:
   m_ObjectHideFlags: 0

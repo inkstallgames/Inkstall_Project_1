@@ -103,7 +103,7 @@ public class ProgressManager : MonoBehaviour
         #if UNITY_EDITOR
         else
         {
-            studentId = "default_test_id";
+            studentId = "681ee0e6198ad04bf6c1c733";  // Default test ID for Unity Editor
             LoadStudentDoorData();
         }
         #endif
@@ -120,7 +120,9 @@ public class ProgressManager : MonoBehaviour
         
         if (!isDataLoaded)
         {
-            CreateDefaultDoorData();
+            Debug.LogError("Failed to load door data from server");
+            // Don't create default data, just keep trying to load
+            LoadStudentDoorData();
         }
     }
     
@@ -233,8 +235,9 @@ public class ProgressManager : MonoBehaviour
                 }
                 else
                 {
-                    // Create default door data if server request fails
-                    CreateDefaultDoorData();
+                    Debug.LogError("Failed to load door data from server. Will retry...");
+                    // Don't create default data, just keep trying to load
+                    LoadStudentDoorData(true);
                 }
             }
             else
@@ -281,8 +284,9 @@ public class ProgressManager : MonoBehaviour
                     }
                     catch (Exception mongoEx)
                     {
-                        // Create default door data when parsing fails
-                        CreateDefaultDoorData();
+                        Debug.LogError($"Error parsing door data: {mongoEx.Message}. Will retry...");
+                        // Don't create default data, just keep trying to load
+                        LoadStudentDoorData(true);
                     }
                 }
             }
@@ -1209,45 +1213,7 @@ public class ProgressManager : MonoBehaviour
         return result;
     }
     
-    // Create default door data when no data is available
-    private void CreateDefaultDoorData()
-    {
-        if (studentData == null)
-        {
-            studentData = new StudentDoorsData();
-            studentData.doors = new List<DoorData>();
-        }
-        else if (studentData.doors == null)
-        {
-            studentData.doors = new List<DoorData>();
-        }
-        
-        // Clear existing data
-        studentData.doors.Clear();
-        
-        // Create default door data - only door 1 is unlockable initially
-        for (int i = 1; i <= maxDoorId; i++)
-        {
-            DoorData door = new DoorData
-            {
-                doorId = i,
-                name = $"Door {i}",
-                isUnlockable = (i == 1), // Only first door is unlockable
-                isRoomCompleted = false,
-                description = $"Room behind Door {i}"
-            };
-            
-            studentData.doors.Add(door);
-        }
-        
-        isDataLoaded = true;
-        
-        // Update all door interactions in the scene
-        UpdateAllDoorInteractions();
-        
-        // Notify subscribers that data is loaded
-        OnDataLoaded?.Invoke();
-    }
+    // No longer creating default door data - only loading from server
     
     // Validate door progression logic to ensure consistency
     private void ValidateDoorProgressionLogic()

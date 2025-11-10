@@ -416,16 +416,19 @@ public class ProgressManager : MonoBehaviour
         
         if (!isValidDoor)
         {
+            Debug.LogWarning($"[MarkRoomAsCompleted] Invalid door ID: {doorId}");
             return;
         }
         
         if (string.IsNullOrEmpty(studentId))
         {
+            Debug.LogError("[MarkRoomAsCompleted] Student ID is not set");
             return;
         }
         
         if (studentData?.doors == null)
         {
+            Debug.LogError("[MarkRoomAsCompleted] Student data or doors list is null");
             return;
         }
         
@@ -433,27 +436,36 @@ public class ProgressManager : MonoBehaviour
         DoorData door = studentData.doors.Find(d => d.doorId == doorId);
         if (door == null)
         {
+            Debug.Log($"[MarkRoomAsCompleted] Door {doorId} not found, creating it");
             EnsureDoorDataExists(doorId, $"Door {doorId}");
             door = studentData.doors.Find(d => d.doorId == doorId);
             
             if (door == null)
             {
+                Debug.LogError($"[MarkRoomAsCompleted] Failed to create door {doorId}");
                 return;
             }
         }
         
         if (door.isRoomCompleted)
         {
+            Debug.Log($"[MarkRoomAsCompleted] Door {doorId} is already marked as completed");
             return;
         }
         
-        // First update the current door (set isUnlockable=false, isRoomCompleted=true)
-        UpdateDoorStatusDirect(doorId, false, true);
+        Debug.Log($"[MarkRoomAsCompleted] Marking door {doorId} as completed");
+        
+        // Update the current door
+        door.isUnlockable = false;
+        door.isRoomCompleted = true;
+        
+        // Save the updated door data to the database
+        StartCoroutine(SaveStudentDoorData());
         
         // Check if this is the last door in a building (doors 6, 12, 18, 24)
         bool isLastDoorInBuilding = (doorId == 6 || doorId == 12 || doorId == 18 || doorId == 24);
         
-        // If it's the last door in a building, we don't need to unlock the next door
+        // If it's not the last door in a building, unlock the next door
         if (!isLastDoorInBuilding && doorId < maxDoorId)
         {
             // Find the next door by ID
@@ -462,17 +474,23 @@ public class ProgressManager : MonoBehaviour
             
             if (nextDoor != null)
             {
-                // Update the next door (set isUnlockable=true, keep isRoomCompleted as is)
-                UpdateDoorStatusDirect(nextDoorId, true, nextDoor.isRoomCompleted);
+                Debug.Log($"[MarkRoomAsCompleted] Unlocking next door {nextDoorId}");
                 
-                // Verify the updates were applied for the next door
-                StartCoroutine(VerifyDatabaseUpdates(nextDoorId, true, nextDoor.isRoomCompleted));
+                // Update the next door
+                nextDoor.isUnlockable = true;
+                
+                // Save the updated next door data to the database
+                StartCoroutine(SaveStudentDoorData());
                 
                 // Update local door instances in the scene
                 UpdateDoorInstancesInScene(doorId, nextDoorId);
+                
+                // Verify the updates were applied for the next door
+                StartCoroutine(VerifyDatabaseUpdates(nextDoorId, true, nextDoor.isRoomCompleted));
             }
             else
             {
+                Debug.Log($"[MarkRoomAsCompleted] Next door {nextDoorId} not found, creating it");
                 // Try to create the next door
                 EnsureDoorDataExists(nextDoorId, $"Door {nextDoorId}");
             }

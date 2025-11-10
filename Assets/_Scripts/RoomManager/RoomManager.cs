@@ -17,8 +17,36 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private DoorInteraction thisRoomDoor;
     [SerializeField] private DoorInteraction nextDoorToUnlock;  // Reference to the next door to unlock
     [SerializeField] private bool isFinalRoom = false;          // Is this the final room in the level?
+
+    [SerializeField] private int alienFoundCoins = 20; 
+    [SerializeField] private string alienFoundDescription = "Alien Found"; 
+
+    [SerializeField] private int roomCompletionCoins = 200;
+    [SerializeField] private string roomCompletionDescription = "Room Completed";
+
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props
+
+    private void OnEnable()
+    {
+        // Subscribe to alien found event
+        BombPhysics.OnAlienFound += OnAlienFound;
+    }
+
+    private void OnDisable()
+    {
+        // Unsubscribe to prevent memory leaks
+        BombPhysics.OnAlienFound -= OnAlienFound;
+    }
+
+    private void OnAlienFound()
+    {
+        // Award coins when an alien is found
+        if (CoinsManager.Instance != null)
+        {
+            CoinsManager.Instance.AddCoins(alienFoundCoins, alienFoundDescription);
+        }
+    }
 
     void Start()
     {
@@ -132,7 +160,7 @@ public class RoomManager : MonoBehaviour
         // Add coins for room completion
         if (CoinsManager.Instance != null)
         {
-            CoinsManager.Instance.AddCoins(200, "Room Completed");
+            CoinsManager.Instance.AddCoins(roomCompletionCoins, roomCompletionDescription);
         }
 
         // Trigger game win

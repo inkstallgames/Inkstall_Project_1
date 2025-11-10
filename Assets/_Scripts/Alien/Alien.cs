@@ -39,12 +39,6 @@ else
 
         // Points Added UI
         
-        // Add coins when alien is defeated
-        if (CoinsManager.Instance != null)
-        {
-            CoinsManager.Instance.AddCoins(20, "Alien Defeated");
-        }
-        
         // Now disable the GameObject
         gameObject.SetActive(false);
     }   

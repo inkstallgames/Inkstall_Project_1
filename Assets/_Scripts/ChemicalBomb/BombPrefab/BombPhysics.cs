@@ -122,6 +122,9 @@ public class BombPhysics : MonoBehaviour
         return obj;
     }
 
+    // Static event to notify when an alien is found
+    public static event System.Action OnAlienFound;
+
     public void AlienFound(Collision collision)
     {
         // 1) Instantiate the new alien first
@@ -131,7 +134,10 @@ public class BombPhysics : MonoBehaviour
         if (player != null)
         {
             newAlien.transform.LookAt(player);
-        }  
+        }
+
+        // Notify subscribers (RoomManager) that an alien was found
+        OnAlienFound?.Invoke();
     }
     
     private void PlayHitEffect()

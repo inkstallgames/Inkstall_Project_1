@@ -150,10 +150,6 @@ public class DoorInteraction : MonoBehaviour
             SetRoomCompleted(finalDoorData.isRoomCompleted);
             UpdateDoorVisuals();
         }
-        else
-        {
-            Debug.LogWarning($"Door {doorID} data is still null after waiting. The door may not function correctly.");
-        }
 
         // If we still don't have a ProgressManager, exit
         if (ProgressManager.Instance == null)

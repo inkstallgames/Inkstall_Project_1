@@ -416,7 +416,6 @@ public class ProgressManager : MonoBehaviour
         
         if (!isValidDoor)
         {
-            Debug.LogWarning($"[MarkRoomAsCompleted] Invalid door ID: {doorId}");
             return;
         }
         

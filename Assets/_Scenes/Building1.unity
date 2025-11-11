@@ -9182,7 +9182,7 @@ PrefabInstance:
         type: 3}
       propertyPath: remainingAliensTextCount
       value: 
-      objectReference: {fileID: 191323256}
+      objectReference: {fileID: 0}
     - target: {fileID: 8940143169760935910, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: m_Name

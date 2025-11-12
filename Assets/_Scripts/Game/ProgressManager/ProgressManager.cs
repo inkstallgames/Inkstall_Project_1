@@ -22,6 +22,14 @@ public class StudentDoorsData
     public List<DoorData> doors;
 }
 
+[Serializable]
+public class ApiResponse
+{
+    public bool success;
+    public string message;
+    public StudentDoorsData data;
+}
+
 public class ProgressManager : MonoBehaviour
 {
     private static ProgressManager _instance;
@@ -244,11 +252,22 @@ public class ProgressManager : MonoBehaviour
             {
                 // Parse the response
                 string jsonResponse = webRequest.downloadHandler.text;
+                Debug.Log($"[ProgressManager-LOAD] Received from server: {jsonResponse}");
                 
                 try
                 {
-                    // First try standard JSON deserialization
-                    studentData = JsonConvert.DeserializeObject<StudentDoorsData>(jsonResponse);
+                    // Use the new ApiResponse class to handle the nested structure
+                    ApiResponse response = JsonConvert.DeserializeObject<ApiResponse>(jsonResponse);
+                    
+                    if (response != null && response.success && response.data != null)
+                    {
+                        studentData = response.data;
+                    }
+                    else
+                    {
+                        // Fallback or error handling if the new structure fails
+                        studentData = JsonConvert.DeserializeObject<StudentDoorsData>(jsonResponse);
+                    }
                     
                     if (studentData == null || studentData.doors == null || studentData.doors.Count == 0)
                     {
@@ -263,6 +282,9 @@ public class ProgressManager : MonoBehaviour
                     
                     // Ensure all doors exist before notifying other scripts
                     EnsureAllDoorsExist();
+
+                    // Validate and correct any progression inconsistencies
+                    ValidateDoorProgressionLogic();
 
                     // Notify subscribers that data is loaded
                     OnDataLoaded?.Invoke();
@@ -310,115 +332,49 @@ public class ProgressManager : MonoBehaviour
         }
     }
 
-    public IEnumerator UpdateDoorStatus(int doorId, bool isUnlockable, bool isRoomCompleted)
+    public IEnumerator UpdateDoorStatus(int doorId, Dictionary<string, object> updates)
     {
-        // Skip if studentId is not set
-        if (string.IsNullOrEmpty(studentId))
+        if (string.IsNullOrEmpty(studentId) || doorId < 1 || doorId > 24 || updates == null || updates.Count == 0)
         {
             yield break;
         }
 
-        // Skip processing for invalid door IDs
-        if (doorId < 1 || doorId > 24)
-        {
-            yield break;
-        }
-        
-        // Check if the status is already what we want to set
-        var existingDoor = studentData?.doors?.Find(d => d.doorId == doorId);
-        if (existingDoor != null && 
-            existingDoor.isUnlockable == isUnlockable && 
-            existingDoor.isRoomCompleted == isRoomCompleted)
-        {
-            yield break;
-        }
-        
         string url = $"{baseUrl}/{studentId}/{doorId}";
-        
-        // Create a proper JSON structure that matches the API expectations
-        string jsonPayload = $"{{\"isUnlockable\": {isUnlockable.ToString().ToLower()}, \"isRoomCompleted\": {isRoomCompleted.ToString().ToLower()}}}";
-        
+        string jsonPayload = JsonConvert.SerializeObject(updates);
+
         using (UnityWebRequest webRequest = UnityWebRequest.Put(url, jsonPayload))
         {
             webRequest.SetRequestHeader("Content-Type", "application/json");
-            
+
             yield return webRequest.SendWebRequest();
-            
-            if (webRequest.result != UnityWebRequest.Result.ConnectionError && 
-                webRequest.result != UnityWebRequest.Result.ProtocolError)
+
+            if (webRequest.result == UnityWebRequest.Result.Success)
             {
-                // Update local data
-                if (studentData != null && studentData.doors != null)
+                Debug.Log($"[ProgressManager-SAVE] Successfully sent update for Door {doorId} with payload: {jsonPayload}.");
+
+                // Update local data to reflect the change
+                var doorToUpdate = studentData?.doors?.Find(d => d.doorId == doorId);
+                if (doorToUpdate != null)
                 {
-                    DoorData door = studentData.doors.Find(d => d.doorId == doorId);
-                    if (door != null)
+                    if (updates.ContainsKey("isUnlockable"))
                     {
-                        door.isUnlockable = isUnlockable;
-                        door.isRoomCompleted = isRoomCompleted;
+                        doorToUpdate.isUnlockable = (bool)updates["isUnlockable"];
+                    }
+                    if (updates.ContainsKey("isRoomCompleted"))
+                    {
+                        doorToUpdate.isRoomCompleted = (bool)updates["isRoomCompleted"];
                     }
                 }
-                
-                // Force reload data to verify changes
-                StartCoroutine(ReloadDataAfterDelay(1.0f));
+            }
+            else
+            {
+                Debug.LogError($"[ProgressManager-SAVE] Failed to update Door {doorId} with payload {jsonPayload}. Error: {webRequest.error} | Response: {webRequest.downloadHandler.text}");
             }
         }
     }
 
-    private IEnumerator VerifyDoorUpdate(int doorId, bool expectedUnlockable, bool expectedCompleted)
-    {
-        // Skip verification for invalid door IDs
-        if (doorId < 1 || doorId > 24) yield break;
-        
-        // Wait a bit to ensure the server has processed the update
-        yield return new WaitForSeconds(0.5f);
-        
-        string url = $"{baseUrl}/student/{studentId}";
-        
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
-        {
-            yield return webRequest.SendWebRequest();
-            
-            if (webRequest.result != UnityWebRequest.Result.ConnectionError && 
-                webRequest.result != UnityWebRequest.Result.ProtocolError)
-            {
-                string jsonResponse = webRequest.downloadHandler.text;
-                
-                try
-                {
-                    StudentDoorsData verifiedData = JsonConvert.DeserializeObject<StudentDoorsData>(jsonResponse);
-                    DoorData verifiedDoor = verifiedData.doors.Find(d => d.doorId == doorId);
-                    
-                    if (verifiedDoor != null)
-                    {
-                        // Update our local data with the verified data
-                        studentData = verifiedData;
-                        isDataLoaded = true;
-                        
-                        // Process any pending door updates
-                        ProcessPendingDoorUpdates();
-                        
-                        // Notify subscribers that data has been updated
-                        OnDataLoaded?.Invoke();
-                    }
-                }
-                catch (Exception)
-                {
-                    // Silently handle the error
-                }
-            }
-        }
-    }
-    
-    // Mark a room as completed and unlock the next door
     public void MarkRoomAsCompleted(int doorId)
     {
-        bool isValidDoor = doorId >= 1 && doorId <= 24;
-        
-        if (!isValidDoor)
-        {
-            return;
-        }
-        
         if (string.IsNullOrEmpty(studentId))
         {
             Debug.LogError("[MarkRoomAsCompleted] Student ID is not set");
@@ -446,134 +402,70 @@ public class ProgressManager : MonoBehaviour
             }
         }
         
-        if (door.isRoomCompleted)
-        {
-            Debug.Log($"[MarkRoomAsCompleted] Door {doorId} is already marked as completed");
-            return;
-        }
-        
-        Debug.Log($"[MarkRoomAsCompleted] Marking door {doorId} as completed");
-        
-        // Update the current door
+        // --- Refactored Logic --- 
+
+        // 1. Update local data first
+        Debug.Log($"[ProgressManager-MARK] Before update: Door {door.doorId} -> isUnlockable={door.isUnlockable}, isRoomCompleted={door.isRoomCompleted}");
         door.isUnlockable = false;
         door.isRoomCompleted = true;
-        
-        // Save the updated door data to the database
-        StartCoroutine(SaveStudentDoorData());
-        
-        // Check if this is the last door in a building (doors 6, 12, 18, 24)
+        Debug.Log($"[ProgressManager-MARK] After update: Door {door.doorId} -> isUnlockable={door.isUnlockable}, isRoomCompleted={door.isRoomCompleted}");
+
+        int nextDoorId = -1;
+        DoorData nextDoor = null;
+
         bool isLastDoorInBuilding = (doorId == 6 || doorId == 12 || doorId == 18 || doorId == 24);
-        
-        // If it's not the last door in a building, unlock the next door
         if (!isLastDoorInBuilding && doorId < maxDoorId)
         {
-            // Find the next door by ID
-            int nextDoorId = doorId + 1;
-            DoorData nextDoor = studentData.doors.Find(d => d.doorId == nextDoorId);
-            
+            nextDoorId = doorId + 1;
+            EnsureDoorDataExists(nextDoorId, $"Door {nextDoorId}");
+            nextDoor = studentData.doors.Find(d => d.doorId == nextDoorId);
             if (nextDoor != null)
             {
-                Debug.Log($"[MarkRoomAsCompleted] Unlocking next door {nextDoorId}");
-                
-                // Update the next door
+                Debug.Log($"[ProgressManager-MARK] Before update: Next Door {nextDoor.doorId} -> isUnlockable={nextDoor.isUnlockable}");
                 nextDoor.isUnlockable = true;
-                
-                // Save the updated next door data to the database
-                StartCoroutine(SaveStudentDoorData());
-                
-                // Update local door instances in the scene
-                UpdateDoorInstancesInScene(doorId, nextDoorId);
-                
-                // Verify the updates were applied for the next door
-                StartCoroutine(VerifyDatabaseUpdates(nextDoorId, true, nextDoor.isRoomCompleted));
-            }
-            else
-            {
-                Debug.Log($"[MarkRoomAsCompleted] Next door {nextDoorId} not found, creating it");
-                // Try to create the next door
-                EnsureDoorDataExists(nextDoorId, $"Door {nextDoorId}");
+                Debug.Log($"[ProgressManager-MARK] After update: Next Door {nextDoor.doorId} -> isUnlockable={nextDoor.isUnlockable}");
             }
         }
-        else
-        {
-            // Just update the current door instance in the scene
-            UpdateDoorInstancesInScene(doorId, -1);
-        }
-        
-        // Force reload data from server after updates
-        StartCoroutine(ReloadDataAfterDelay(1.0f));
-        
-        // Verify the updates were applied for the current door
-        StartCoroutine(VerifyDatabaseUpdates(doorId, false, true));
+
+        // 2. Start a single coroutine to save all changes sequentially using the correct method.
+        StartCoroutine(SaveAndVerifyProgress(door, nextDoor));
+
+        // 3. Update the scene immediately for instant feedback
+        UpdateDoorInstancesInScene(doorId, nextDoorId);
     }
     
-    // Verify that database updates were applied correctly
-    private IEnumerator VerifyDatabaseUpdates(int doorId, bool expectedUnlockable, bool expectedCompleted)
+    private IEnumerator SaveAndVerifyProgress(DoorData completedDoor, DoorData nextDoorToUnlock)
     {
-        // Wait a bit to ensure the server has processed the update
-        yield return new WaitForSeconds(2.0f);
-        
-        string url = $"{baseUrl}/student/{studentId}";
-        
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
+        // --- Send separate updates for each field to work around server API limitations ---
+
+        // 1. Update the completed door: isRoomCompleted = true
+        yield return StartCoroutine(UpdateDoorStatus(completedDoor.doorId, new Dictionary<string, object>
         {
-            yield return webRequest.SendWebRequest();
-            
-            if (webRequest.result != UnityWebRequest.Result.ConnectionError && 
-                webRequest.result != UnityWebRequest.Result.ProtocolError)
+            { "isRoomCompleted", true }
+        }));
+
+        // 2. Update the completed door: isUnlockable = false
+        yield return StartCoroutine(UpdateDoorStatus(completedDoor.doorId, new Dictionary<string, object>
+        {
+            { "isUnlockable", false }
+        }));
+
+        // 3. Update the next door to unlock it: isUnlockable = true
+        if (nextDoorToUnlock != null)
+        {
+            yield return StartCoroutine(UpdateDoorStatus(nextDoorToUnlock.doorId, new Dictionary<string, object>
             {
-                string jsonResponse = webRequest.downloadHandler.text;
-                
-                try
-                {
-                    StudentDoorsData verifiedData = JsonConvert.DeserializeObject<StudentDoorsData>(jsonResponse);
-                    
-                    if (verifiedData == null || verifiedData.doors == null)
-                    {
-                        yield break;
-                    }
-                    
-                    DoorData verifiedDoor = verifiedData.doors.Find(d => d.doorId == doorId);
-                    
-                    if (verifiedDoor != null)
-                    {
-                        bool updateSuccessful = verifiedDoor.isUnlockable == expectedUnlockable && 
-                                               verifiedDoor.isRoomCompleted == expectedCompleted;
-                        
-                        if (updateSuccessful)
-                        {
-                        }
-                        else
-                        {
-                            // Try a different API endpoint as a fallback
-                            StartCoroutine(UpdateDoorStatusFallback(doorId, expectedUnlockable, expectedCompleted));
-                        }
-                        
-                        // Update our local data with the verified data
-                        studentData = verifiedData;
-                        isDataLoaded = true;
-                        
-                        // Process any pending door updates
-                        ProcessPendingDoorUpdates();
-                        
-                        // Notify subscribers that data has been updated
-                        OnDataLoaded?.Invoke();
-                    }
-                    else
-                    {
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Error handling without debug logs
-                }
-            }
-            else
-            {
-                // Error handling without debug logs
-            }
+                { "isUnlockable", true }
+            }));
         }
+
+        Debug.Log("[SaveProgress] All server updates have been sent.");
+
+        // After all updates are sent, reload the data from the server to ensure the client is in sync.
+        Debug.Log("[SaveProgress] All updates sent. Reloading data from server for synchronization.");
+        StartCoroutine(ReloadDataAfterDelay(1.5f));
     }
+
     
     // Fallback method to update door status using a different API endpoint
     public IEnumerator UpdateDoorStatusFallback(int doorId, bool isUnlockable, bool isRoomCompleted)
@@ -606,9 +498,6 @@ public class ProgressManager : MonoBehaviour
             if (webRequest.responseCode == 200 || webRequest.responseCode == 201 || webRequest.responseCode == 204)
             {
                 UpdateLocalDoorData(doorId, isUnlockable, isRoomCompleted);
-                
-                // Force reload data to verify changes
-                StartCoroutine(ReloadDataAfterDelay(1.0f));
             }
             else
             {
@@ -648,8 +537,6 @@ public class ProgressManager : MonoBehaviour
                 // Update local data to match what we tried to set
                 UpdateLocalDoorData(doorId, isUnlockable, isRoomCompleted);
                 
-                // Force reload data to verify changes
-                StartCoroutine(ReloadDataAfterDelay(1.5f));
                 
                 // Try to parse the response to confirm update
                 try {
@@ -688,7 +575,7 @@ public class ProgressManager : MonoBehaviour
         {
             yield break;
         }
-
+        
         string url = $"{baseUrl}/{studentId}/{doorId}";
         
         // Create the JSON structure
@@ -709,9 +596,6 @@ public class ProgressManager : MonoBehaviour
             {
                 // Update local data to match server state
                 UpdateLocalDoorData(doorId, isUnlockable, isRoomCompleted);
-                
-                // Force reload data to verify changes
-                StartCoroutine(ReloadDataAfterDelay(1.0f));
             }
             else
             {
@@ -766,20 +650,7 @@ public class ProgressManager : MonoBehaviour
                 
             // Find all door interactions in the scene
             DoorInteraction[] doorInteractions = FindObjectsOfType<DoorInteraction>();
-            
-            // Only log if we find doors 1-24 in the scene
-            if (doorInteractions.Any(d => d != null && d.doorID >= 1 && d.doorID <= 24))
-            {
-                Debug.Log($"[ProgressManager] Found {doorInteractions.Count(d => d != null && d.doorID >= 1 && d.doorID <= 24)} doors with IDs 1-24 in the scene");
-                Debug.Log($"[ProgressManager] Student data contains {studentData.doors.Count(d => d.doorId >= 1 && d.doorId <= 24)} doors with IDs 1-24");
-                
-                // Log the first few doors in student data for debugging (only doors 1-24)
-                foreach (var door in studentData.doors.Where(d => d.doorId >= 1 && d.doorId <= 24).Take(5))
-                {
-                    Debug.Log($"[ProgressManager] Door {door.doorId}: isUnlockable={door.isUnlockable}, isRoomCompleted={door.isRoomCompleted}");
-                }
-            }
-            
+        
             int updatedCount = 0;
             int invalidCount = 0;
             
@@ -972,7 +843,8 @@ public class ProgressManager : MonoBehaviour
         }
     }
     
-    // Save the current student door data to the database
+    // This method is now deprecated as we use UpdateDoorStatus for more reliable individual updates.
+    // It can be kept for bulk-saving if needed in the future, but requires server-side support.
     private IEnumerator SaveStudentDoorData()
     {
         if (!isDataLoaded || studentData == null) yield break;
@@ -984,6 +856,11 @@ public class ProgressManager : MonoBehaviour
         {
             webRequest.SetRequestHeader("Content-Type", "application/json");
             yield return webRequest.SendWebRequest();
+            
+            if (webRequest.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError($"[ProgressManager] Failed to save all student door data: {webRequest.error}");
+            }
         }
     }
 
@@ -1301,7 +1178,12 @@ public class ProgressManager : MonoBehaviour
         
         if (changesNeeded)
         {
+            Debug.Log("[ProgressManager-VALIDATE] Door progression inconsistencies found. Saving corrected data.");
             StartCoroutine(SaveStudentDoorData());
+        }
+        else
+        {
+            Debug.Log("[ProgressManager-VALIDATE] Door progression logic is valid.");
         }
     }
     

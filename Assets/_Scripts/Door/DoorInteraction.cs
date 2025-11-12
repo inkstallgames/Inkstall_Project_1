@@ -233,13 +233,21 @@ public class DoorInteraction : MonoBehaviour
     public void SetUnlockable(bool unlockable)
     {
         isUnlockable = unlockable;
-        SaveDoorStatesToDatabase();
+        if (ProgressManager.Instance != null)
+        {
+            var updates = new System.Collections.Generic.Dictionary<string, object> { { "isUnlockable", unlockable } };
+            ProgressManager.Instance.StartCoroutine(ProgressManager.Instance.UpdateDoorStatus(doorID, updates));
+        }
     }
 
     public void SetRoomCompleted(bool completed)
     {
         isRoomCompleted = completed;
-        SaveDoorStatesToDatabase();
+        if (ProgressManager.Instance != null)
+        {
+            var updates = new System.Collections.Generic.Dictionary<string, object> { { "isRoomCompleted", completed } };
+            ProgressManager.Instance.StartCoroutine(ProgressManager.Instance.UpdateDoorStatus(doorID, updates));
+        }
     }
 
 
@@ -499,14 +507,4 @@ public class DoorInteraction : MonoBehaviour
         return false;
     }
 
-    // Save door states to online database
-    private void SaveDoorStatesToDatabase()
-    {
-        if (ProgressManager.Instance != null)
-        {
-            ProgressManager.Instance.StartCoroutine(
-                ProgressManager.Instance.UpdateDoorStatus(doorID, isUnlockable, isRoomCompleted)
-            );
-        }
-    }
 }

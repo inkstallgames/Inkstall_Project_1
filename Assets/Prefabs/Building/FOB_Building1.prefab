@@ -7246,11 +7246,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfAliens: 0
   aliensRemaining: 0
-  remainingAliensText: {fileID: 0}
+  remainingAliensTextCount: {fileID: 0}
   thisRoomDoor: {fileID: 0}
   nextDoorToUnlock: {fileID: 0}
   isFinalRoom: 0
-  roomID: 
+  alienFoundCoins: 20
+  alienFoundDescription: Alien Found
+  roomCompletionCoins: 200
+  roomCompletionDescription: Room Completed
 --- !u!1 &1840723384704506540
 GameObject:
   m_ObjectHideFlags: 0
@@ -12949,7 +12952,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8661289088504847560}
-  - component: {fileID: 8850723180610415156}
   m_Layer: 0
   m_Name: RoomManager
   m_TagString: Untagged
@@ -12972,25 +12974,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1553202408620091742}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8850723180610415156
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3130293449261242014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306a4b653742dd24eb770f020132ae08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfAliens: 3
-  aliensRemaining: 0
-  remainingAliensText: {fileID: 0}
-  thisRoomDoor: {fileID: 0}
-  nextDoorToUnlock: {fileID: 3573223830962627022}
-  isFinalRoom: 0
-  roomID: 
 --- !u!1 &3156220264406249144
 GameObject:
   m_ObjectHideFlags: 0
@@ -14116,11 +14099,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfAliens: 0
   aliensRemaining: 0
-  remainingAliensText: {fileID: 0}
+  remainingAliensTextCount: {fileID: 0}
   thisRoomDoor: {fileID: 0}
   nextDoorToUnlock: {fileID: 0}
   isFinalRoom: 0
-  roomID: 
+  alienFoundCoins: 20
+  alienFoundDescription: Alien Found
+  roomCompletionCoins: 200
+  roomCompletionDescription: Room Completed
 --- !u!1 &3386358453793177584
 GameObject:
   m_ObjectHideFlags: 0
@@ -23708,11 +23694,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfAliens: 0
   aliensRemaining: 0
-  remainingAliensText: {fileID: 0}
+  remainingAliensTextCount: {fileID: 0}
   thisRoomDoor: {fileID: 0}
   nextDoorToUnlock: {fileID: 0}
   isFinalRoom: 0
-  roomID: 
+  alienFoundCoins: 20
+  alienFoundDescription: Alien Found
+  roomCompletionCoins: 200
+  roomCompletionDescription: Room Completed
 --- !u!1 &5588179809553094913
 GameObject:
   m_ObjectHideFlags: 0
@@ -28865,11 +28854,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfAliens: 2
   aliensRemaining: 0
-  remainingAliensText: {fileID: 0}
+  remainingAliensTextCount: {fileID: 0}
   thisRoomDoor: {fileID: 3218370127332946291}
   nextDoorToUnlock: {fileID: 4151289846741022760}
   isFinalRoom: 0
-  roomID: 
+  alienFoundCoins: 20
+  alienFoundDescription: Alien Found
+  roomCompletionCoins: 200
+  roomCompletionDescription: Room Completed
 --- !u!1 &6811958600417078505
 GameObject:
   m_ObjectHideFlags: 0
@@ -33634,11 +33626,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfAliens: 0
   aliensRemaining: 0
-  remainingAliensText: {fileID: 0}
+  remainingAliensTextCount: {fileID: 0}
   thisRoomDoor: {fileID: 0}
   nextDoorToUnlock: {fileID: 0}
   isFinalRoom: 0
-  roomID: 
+  alienFoundCoins: 20
+  alienFoundDescription: Alien Found
+  roomCompletionCoins: 200
+  roomCompletionDescription: Room Completed
 --- !u!1 &7747390054908907643
 GameObject:
   m_ObjectHideFlags: 0

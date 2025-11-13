@@ -123,6 +123,12 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &1358240 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3130293449261242014, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3938680920652023020}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &27153196
 GameObject:
   m_ObjectHideFlags: 0
@@ -3207,6 +3213,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1075262424}
   m_CullTransparentMesh: 1
+--- !u!114 &1079998516 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3938680920652023020}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1093428158
 GameObject:
   m_ObjectHideFlags: 0
@@ -5542,6 +5560,28 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 3938680920652023020}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1888635513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306a4b653742dd24eb770f020132ae08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfAliens: 1
+  aliensRemaining: 0
+  remainingAliensTextCount: {fileID: 191323256}
+  thisRoomDoor: {fileID: 1079998516}
+  nextDoorToUnlock: {fileID: 2143503398}
+  isFinalRoom: 0
+  alienFoundCoins: 20
+  alienFoundDescription: Alien Found
+  roomCompletionCoins: 200
+  roomCompletionDescription: Room Completed
 --- !u!1 &1942547676
 GameObject:
   m_ObjectHideFlags: 0
@@ -6198,6 +6238,18 @@ Transform:
 --- !u!114 &2120015511 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5536312052315663108, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3938680920652023020}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2143503398 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3573223830962627022, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
     type: 3}
   m_PrefabInstance: {fileID: 3938680920652023020}
   m_PrefabAsset: {fileID: 0}
@@ -9199,7 +9251,11 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1956823449}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3130293449261242014, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1888635513}
   m_SourcePrefab: {fileID: 100100000, guid: f32bf1ba4d85a9544b5aefadcc2ef03e, type: 3}
 --- !u!1 &3938680920652023022 stripped
 GameObject:

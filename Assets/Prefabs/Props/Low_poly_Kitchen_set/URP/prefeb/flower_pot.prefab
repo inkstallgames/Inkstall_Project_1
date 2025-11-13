@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3285200246285355346}
   - component: {fileID: 6423897107995113102}
   - component: {fileID: 3508956811508472275}
+  - component: {fileID: 2630402470968285003}
   m_Layer: 0
   m_Name: flower-pot
   m_TagString: Untagged
@@ -85,6 +86,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2630402470968285003
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800565399637552311}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.39834005, y: 0.6485158, z: 0.37583733}
+  m_Center: {x: 0.009587623, y: 0.3242578, z: -0.0000004917383}
 --- !u!1 &6901376847431469990
 GameObject:
   m_ObjectHideFlags: 0

@@ -207,11 +207,8 @@ public class CoinsManager : MonoBehaviour
     {
         if (coinText == null)
         {
-            coinText = FindObjectOfType<TextMeshProUGUI>();
-            if (coinText == null)
-            {
-                return;
-            }
+            Debug.LogError("[CoinsManager] coinText is not assigned in the Inspector!");
+            return;
         }
         
         try

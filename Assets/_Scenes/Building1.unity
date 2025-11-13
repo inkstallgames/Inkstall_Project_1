@@ -4745,13 +4745,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floorCondition:
-  - floorName: Floor1
+  - floorName: Base Floor
     requiredDoorIDs: 0100000002000000
     accessCollider: {fileID: 3938680920652023022}
-  - floorName: Floor2
+  - floorName: Floor 1
     requiredDoorIDs: 0300000004000000
     accessCollider: {fileID: 1487559242}
-  - floorName: Floor3
+  - floorName: Floor2
     requiredDoorIDs: 0500000006000000
     accessCollider: {fileID: 852486766}
 --- !u!1 &1607335632

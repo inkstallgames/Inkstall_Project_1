@@ -17,18 +17,6 @@ public class FloorAccessManager : MonoBehaviour
     [Header("Floor Access Rules")]
     [SerializeField] private List<FloorAccessRule> floorCondition = new List<FloorAccessRule>();
 
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     private void Start()
     {

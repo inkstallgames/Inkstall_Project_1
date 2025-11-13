@@ -2006,6 +2006,18 @@ Transform:
   - {fileID: 1875161217596607455}
   m_Father: {fileID: 776522121}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &755357389 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4310671615237114043, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3938680920652023020}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &776522120
 GameObject:
   m_ObjectHideFlags: 0
@@ -3367,6 +3379,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1105147017 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1328271741645855876, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3938680920652023020}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1194441155
 GameObject:
   m_ObjectHideFlags: 0
@@ -3930,6 +3954,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1283227609}
   m_CullTransparentMesh: 1
+--- !u!114 &1286095997 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6526205679978218838, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3938680920652023020}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1303235945
 GameObject:
   m_ObjectHideFlags: 0
@@ -9055,6 +9091,26 @@ PrefabInstance:
       propertyPath: chemicalBomb
       value: 
       objectReference: {fileID: 4001697182668950348}
+    - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: thisRoomDoor
+      value: 
+      objectReference: {fileID: 2143503398}
+    - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: numberOfAliens
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: nextDoorToUnlock
+      value: 
+      objectReference: {fileID: 755357389}
+    - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: remainingAliensTextCount
+      value: 
+      objectReference: {fileID: 191323256}
     - target: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: bombsUI
@@ -9110,6 +9166,46 @@ PrefabInstance:
       propertyPath: chemicalBomb
       value: 
       objectReference: {fileID: 4001697182668950348}
+    - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: thisRoomDoor
+      value: 
+      objectReference: {fileID: 755357389}
+    - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: numberOfAliens
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: nextDoorToUnlock
+      value: 
+      objectReference: {fileID: 1105147017}
+    - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: remainingAliensTextCount
+      value: 
+      objectReference: {fileID: 191323256}
+    - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: thisRoomDoor
+      value: 
+      objectReference: {fileID: 1105147017}
+    - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: numberOfAliens
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: nextDoorToUnlock
+      value: 
+      objectReference: {fileID: 1286095997}
+    - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: remainingAliensTextCount
+      value: 
+      objectReference: {fileID: 191323256}
     - target: {fileID: 6526205679978218838, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: bombsUI

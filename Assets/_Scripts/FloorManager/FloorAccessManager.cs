@@ -22,6 +22,13 @@ public class FloorAccessManager : MonoBehaviour
     {
         // Subscribe to the OnDataLoaded event
         ProgressManager.OnDataLoaded += UpdateFloorAccess;
+
+        // If data is already loaded when this scene starts, update access immediately.
+        // This handles cases where the event was fired before this object was initialized (e.g., after a scene reload).
+        if (ProgressManager.Instance != null && ProgressManager.Instance.IsDataLoaded())
+        {
+            UpdateFloorAccess();
+        }
     }
 
     private void OnDestroy()

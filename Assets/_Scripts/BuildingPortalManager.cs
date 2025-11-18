@@ -42,11 +42,7 @@ public class BuildingPortalManager : MonoBehaviour
             return;
         }
 
-        // First, sort portals by building number to ensure correct order
-        var sortedPortals = buildingPortals.OrderBy(p => p.buildingNumber).ToArray();
-        bool previousBuildingCompleted = true; // First building is always accessible
-
-        foreach (var portal in sortedPortals)
+        foreach (var portal in buildingPortals)
         {
             if (portal.portalObject == null)
             {
@@ -58,21 +54,17 @@ public class BuildingPortalManager : MonoBehaviour
             {
                 // Building 1 is always active
                 portal.portalObject.SetActive(true);
-                previousBuildingCompleted = true;
                 Debug.Log($"Building 1 portal: Always enabled");
             }
             else
             {
-                // For buildings 2-4, check if previous building is completed
+                // For buildings 2-4, check if the required door is completed
                 DoorData requiredDoor = ProgressManager.Instance?.GetDoorData(portal.requiredDoorId);
                 bool isUnlocked = requiredDoor?.isRoomCompleted ?? false;
                 
-                // Only enable if previous building is completed
-                portal.portalObject.SetActive(previousBuildingCompleted && isUnlocked);
-                Debug.Log($"Building {portal.buildingNumber} portal: Required door {portal.requiredDoorId} completed: {isUnlocked} | Portal active: {previousBuildingCompleted && isUnlocked}");
-                
-                // Update for next iteration
-                previousBuildingCompleted = isUnlocked;
+                // Enable the portal if its required door is completed
+                portal.portalObject.SetActive(isUnlocked);
+                Debug.Log($"Building {portal.buildingNumber} portal: Required door {portal.requiredDoorId} completed: {isUnlocked} | Portal active: {isUnlocked}");
             }
         }
     }

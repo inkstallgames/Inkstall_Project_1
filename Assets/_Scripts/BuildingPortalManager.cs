@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class BuildingPortalManager : MonoBehaviour
 {
@@ -41,24 +42,38 @@ public class BuildingPortalManager : MonoBehaviour
             return;
         }
 
-        foreach (var portal in buildingPortals)
+        // First, sort portals by building number to ensure correct order
+        var sortedPortals = buildingPortals.OrderBy(p => p.buildingNumber).ToArray();
+        bool previousBuildingCompleted = true; // First building is always accessible
+
+        foreach (var portal in sortedPortals)
         {
             if (portal.portalObject == null)
-            continue;
-
-            // For building 1, enable by default (no requirements)
-            if (portal.buildingNumber == 1)
             {
-                portal.portalObject.SetActive(true);
+                Debug.LogError($"Portal object for Building {portal.buildingNumber} is not assigned!");
                 continue;
             }
 
-            // For other buildings, check if the required door is completed
-            DoorData doorData = ProgressManager.Instance.GetDoorData(portal.requiredDoorId);
-            bool isUnlocked = doorData != null && doorData.isRoomCompleted;
-            
-            Debug.Log($"Building {portal.buildingNumber} portal: Required door {portal.requiredDoorId} completed: {isUnlocked}");
-            portal.portalObject.SetActive(isUnlocked);
+            if (portal.buildingNumber == 1)
+            {
+                // Building 1 is always active
+                portal.portalObject.SetActive(true);
+                previousBuildingCompleted = true;
+                Debug.Log($"Building 1 portal: Always enabled");
+            }
+            else
+            {
+                // For buildings 2-4, check if previous building is completed
+                DoorData requiredDoor = ProgressManager.Instance?.GetDoorData(portal.requiredDoorId);
+                bool isUnlocked = requiredDoor?.isRoomCompleted ?? false;
+                
+                // Only enable if previous building is completed
+                portal.portalObject.SetActive(previousBuildingCompleted && isUnlocked);
+                Debug.Log($"Building {portal.buildingNumber} portal: Required door {portal.requiredDoorId} completed: {isUnlocked} | Portal active: {previousBuildingCompleted && isUnlocked}");
+                
+                // Update for next iteration
+                previousBuildingCompleted = isUnlocked;
+            }
         }
     }
 

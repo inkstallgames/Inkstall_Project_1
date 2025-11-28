@@ -22,7 +22,7 @@ public class GoogleLoginManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private TMP_Text statusText;
-    [SerializeField] private string nextSceneName = "Lobby";
+    [SerializeField] private string nextSceneName = "MainScene";
 
     private FirebaseAuth auth;
     private bool firebaseInitialized = false;

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class LoadBuildingScene : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class LoadBuildingScene : MonoBehaviour
     [SerializeField] private AudioClip portalEnterSound;
 
     private AudioSource audioSource;
+    public Animator animator;
 
     private void Start()
     {
@@ -44,7 +46,14 @@ public class LoadBuildingScene : MonoBehaviour
 
     private void LoadNextScene()
     {
+        StartCoroutine(TriggerTransition());
+    }
+
+    IEnumerator TriggerTransition()
+    {
+        animator.SetTrigger("Start");
+        yield return new WaitForSeconds(1f);
         int sceneToLoad = isEntrance ? targetSceneIndex : mainCitySceneIndex;
         SceneManager.LoadScene(sceneToLoad);
-    }
+    }   
 }

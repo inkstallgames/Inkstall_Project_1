@@ -11,7 +11,7 @@ public class OptionsMenuManager : MonoBehaviour
     [Header("UI Controls")]
     public Slider sensitivitySlider; 
     public Slider volumeSlider; 
-    public Toggle musicToggle; 
+    public Slider musicSlider; 
     
     [Header("Sensitivity Settings")]
     public float sensitivityMultiplier = 1.0f; // Adjust this in the inspector to scale sensitivity
@@ -19,12 +19,12 @@ public class OptionsMenuManager : MonoBehaviour
     // Settings values
     private float screenSensitivity = 0.2f;
     private float volumeLevel = 0.5f;
-    private bool musicEnabled = true;
+    private float musicVolume = 0.5f;
     
     // PlayerPrefs keys for saving settings
     private const string SENSITIVITY_KEY = "ScreenSensitivity";
     private const string VOLUME_KEY = "VolumeLevel";
-    private const string MUSIC_KEY = "MusicEnabled";
+    private const string MUSIC_KEY = "MusicVolume";
     
     // References to other components
     private FirstPersonController playerController;
@@ -45,7 +45,7 @@ public class OptionsMenuManager : MonoBehaviour
         // Apply settings
         ApplySensitivity(screenSensitivity);
         ApplyVolume(volumeLevel);
-        ApplyMusicSetting(musicEnabled);
+        ApplyMusicVolume(musicVolume);
         
         // Add listeners to UI elements
         if (sensitivitySlider != null)
@@ -54,17 +54,17 @@ public class OptionsMenuManager : MonoBehaviour
         if (volumeSlider != null)
             volumeSlider.onValueChanged.AddListener(ApplyVolume);
             
-        if (musicToggle != null)
-            musicToggle.onValueChanged.AddListener(ApplyMusicSetting);
+        if (musicSlider != null)
+            musicSlider.onValueChanged.AddListener(ApplyMusicVolume);
     }
     
     // Call this function when button is clicked
     public void EnableOptionsMenu()
     {
-        // Update music toggle to reflect current music state
-        if (audioManager != null && musicToggle != null)
+        // Update music slider to reflect current music volume
+        if (musicSlider != null)
         {
-            musicToggle.isOn = audioManager.IsMusicPlaying();
+            musicSlider.value = musicVolume;
         }
 
         // Update sensitivity slider to reflect current sensitivity
@@ -79,9 +79,15 @@ public class OptionsMenuManager : MonoBehaviour
         mobileControlsCanvas.SetActive(false); 
     }
 
-    public void ResumeGame()
+    public void OnResumeButtonClicked()
     {
         SaveSettings(); 
+        optionsMenuCanvas.SetActive(false); 
+        mobileControlsCanvas.SetActive(true); 
+        Time.timeScale = 1f; 
+    }
+    public void OnCloseButtonClicked()
+    {
         optionsMenuCanvas.SetActive(false); 
         mobileControlsCanvas.SetActive(true); 
         Time.timeScale = 1f; 
@@ -112,22 +118,15 @@ public class OptionsMenuManager : MonoBehaviour
         }
     }
     
-    // Apply music setting
-    public void ApplyMusicSetting(bool enabled)
+    // Apply music volume
+    public void ApplyMusicVolume(float volume)
     {
-        musicEnabled = enabled;
-        
+        musicVolume = volume;
+
         // Apply to audio manager if available
         if (audioManager != null)
         {
-            if (enabled)
-            {
-                audioManager.PlayMusic();
-            }
-            else
-            {
-                audioManager.StopMusic();
-            }
+            audioManager.SetMusicVolume(volume);
         }
     }
     
@@ -140,8 +139,8 @@ public class OptionsMenuManager : MonoBehaviour
         if (volumeSlider != null)
             volumeSlider.value = volumeLevel;
             
-        if (musicToggle != null)
-            musicToggle.isOn = musicEnabled;
+        if (musicSlider != null)
+            musicSlider.value = musicVolume;
     }
     
     // Save settings to PlayerPrefs
@@ -149,7 +148,7 @@ public class OptionsMenuManager : MonoBehaviour
     {
         PlayerPrefs.SetFloat(SENSITIVITY_KEY, screenSensitivity);
         PlayerPrefs.SetFloat(VOLUME_KEY, volumeLevel);
-        PlayerPrefs.SetInt(MUSIC_KEY, musicEnabled ? 1 : 0);
+        PlayerPrefs.SetFloat(MUSIC_KEY, musicVolume);
         PlayerPrefs.Save();
     }
     
@@ -158,7 +157,7 @@ public class OptionsMenuManager : MonoBehaviour
     {
         screenSensitivity = PlayerPrefs.GetFloat(SENSITIVITY_KEY, 0.5f);
         volumeLevel = PlayerPrefs.GetFloat(VOLUME_KEY, 0.5f);
-        musicEnabled = PlayerPrefs.GetInt(MUSIC_KEY, 1) == 1;
+        musicVolume = PlayerPrefs.GetFloat(MUSIC_KEY, 0.5f);
     }
 
     private void OnApplicationQuit()

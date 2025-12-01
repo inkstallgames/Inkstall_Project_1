@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
 
     // PlayerPrefs keys (same as in OptionsMenuManager)
     private const string VOLUME_KEY = "VolumeLevel";
-    private const string MUSIC_KEY = "MusicEnabled";
+    private const string MUSIC_KEY = "MusicVolume";
 
     private void Awake()
     {
@@ -34,13 +34,13 @@ public class AudioManager : MonoBehaviour
     {
         // Load saved settings
         float savedVolume = PlayerPrefs.GetFloat(VOLUME_KEY, 0.5f);
-        bool musicEnabled = PlayerPrefs.GetInt(MUSIC_KEY, 1) == 1;
-        
+        float musicVolume = PlayerPrefs.GetFloat(MUSIC_KEY, 0.5f);
+
         // Apply volume setting
-        audioSource.volume = savedVolume;
-        
-        // Play music only if it was enabled in saved settings
-        if (musicEnabled)
+        SetMusicVolume(musicVolume);
+
+        // Play music if volume is greater than 0
+        if (musicVolume > 0)
         {
             PlayMusic();
         }
@@ -58,6 +58,20 @@ public class AudioManager : MonoBehaviour
     public void StopMusic()
     {
         audioSource.Stop();
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        audioSource.volume = volume;
+
+        if (volume > 0 && !audioSource.isPlaying)
+        {
+            PlayMusic();
+        }
+        else if (volume == 0 && audioSource.isPlaying)
+        {
+            StopMusic();
+        }
     }
 
     public bool IsMusicPlaying()

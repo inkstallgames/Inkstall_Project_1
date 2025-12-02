@@ -142,9 +142,9 @@ public class ChemicalBombBehaviour : MonoBehaviour
             }
             
             // Play throw sound if available
-            if (throwSound != null)
+            if (throwSound != null && AudioManager.Instance != null)
             {
-                AudioSource.PlayClipAtPoint(throwSound, throwPoint.position, throwSoundVolume);
+                AudioManager.Instance.PlaySFXAtPoint(throwSound, throwPoint.position);
             }
             
             // Decrease ammo count

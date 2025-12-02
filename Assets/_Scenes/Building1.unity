@@ -364,7 +364,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'BUY 2 BOMBS
+  m_text: 'BUY 1 BOMB
 
 '
   m_isRightToLeft: 0
@@ -710,17 +710,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletsShopCanvas: {fileID: 90827211}
   mobileControlsCanvas: {fileID: 2121465414623763718}
-  coinsCount: {fileID: 495336924}
-  bombs1Image: {fileID: 0}
-  bombs2Image: {fileID: 0}
-  bombs3Image: {fileID: 0}
+  availableCoinsText: {fileID: 495336924}
+  bombMultiplierText: {fileID: 301454588}
+  coinsCostText: {fileID: 1884299804}
+  buyButtonText: {fileID: 54541508}
   plusButton: {fileID: 920148262}
   minusButton: {fileID: 277526321}
-  bombsCountText: {fileID: 0}
-  totalCostText: {fileID: 1884299804}
   buyButton: {fileID: 355339959}
-  playerBombs: 0
-  playerBombsText: {fileID: 0}
+  closeButton: {fileID: 798612862}
 --- !u!1 &191323254
 GameObject:
   m_ObjectHideFlags: 0
@@ -1016,7 +1013,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -35, y: 27}
+  m_AnchoredPosition: {x: -35, y: 36}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &301454588
@@ -1039,7 +1036,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: x2
+  m_text: x1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8849cd943aa2be1439afb71081b4d465, type: 2}
   m_sharedMaterial: {fileID: 322113943614079793, guid: 8849cd943aa2be1439afb71081b4d465,
@@ -1672,7 +1669,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Available Coins: 700'
+  m_text: 'Available Coins : 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8849cd943aa2be1439afb71081b4d465, type: 2}
   m_sharedMaterial: {fileID: 322113943614079793, guid: 8849cd943aa2be1439afb71081b4d465,
@@ -5246,7 +5243,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 400 Coins
+  m_text: 200 Coins
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8849cd943aa2be1439afb71081b4d465, type: 2}
   m_sharedMaterial: {fileID: 322113943614079793, guid: 8849cd943aa2be1439afb71081b4d465,
@@ -5443,7 +5440,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1949498768
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8392,7 +8389,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1001 &4506293750457330183
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9179,7 +9176,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!223 &8473575344875742117
 Canvas:
   m_ObjectHideFlags: 0

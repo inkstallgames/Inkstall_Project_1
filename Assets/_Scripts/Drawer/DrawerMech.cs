@@ -22,6 +22,11 @@ public class DrawerMech : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
+        if (AudioManager.Instance != null)
+        {
+            audioSource.volume = AudioManager.Instance.sfxVolume;
+        }
+
         // Store initial position as closed position
         closedPosition = transform.localPosition;
     }

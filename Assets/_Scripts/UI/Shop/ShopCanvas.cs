@@ -9,288 +9,172 @@ public class ShopCanvas : MonoBehaviour
     public GameObject bulletsShopCanvas;
     public GameObject mobileControlsCanvas;
 
-    [Header("Coins")]
-    public TextMeshProUGUI coinsCount;
-    private int playerCoins;
+    [Header("UI References")]
+    public TextMeshProUGUI availableCoinsText; // "Available Coins: 700"
+    public TextMeshProUGUI bombMultiplierText; // "x2"
+    public TextMeshProUGUI coinsCostText;      // "400 Coins"
+    public TextMeshProUGUI buyButtonText;      // "BUY 2 BOMBS"
     
-    [Header("Bullet UI")]
-    public GameObject bombs1Image;
-    public GameObject bombs2Image;  
-    public GameObject bombs3Image;
+    [Header("Buttons")]
     public Button plusButton;
     public Button minusButton;
-    public TextMeshProUGUI bombsCountText;
-    public TextMeshProUGUI totalCostText;
     public Button buyButton;
-    
-    [Header("Player Inventory")]
-    public int playerBombs = 0;
-    public TextMeshProUGUI playerBombsText; // Reference to UI text showing player's bullet count
-    
-    private int currentBombsCount = 1;
-    private const int MAX_BOMBS = 3;
-    private const int MIN_BOMBS = 1;
-    
-    // Track how many bombs have been purchased in this shop session
-    private int bombsPurchasedThisSession = 0;
-    private const int MAX_BOMBS_PER_SESSION = 3;
-    
-    // Static variable to track total bombs purchased across shop sessions
-    private static int totalBombsPurchased = 0;
+    public Button closeButton; // Added close button reference
 
-    // Tiered pricing for bullets
-    private readonly Dictionary<int, int> bombsPrices = new Dictionary<int, int>
-    {
-        { 1, 200 },  // 1 bomb costs 200 coins
-        { 2, 300 },  // 2 bomb cost 300 coins
-        { 3, 500 }   // 3 bomb cost 500 coins
-    };
-    
-    // PlayerPrefs keys
-    private const string COINS_KEY = "PlayerCoins";
-    private const string BOMBS_KEY = "PlayerBombs";
+    [Header("Shop Settings")]
+    private int currentBombsCount = 1;
+    private const int MIN_BOMBS = 1;
+    private const int MAX_BOMBS_PER_PURCHASE = 3; // Arbitrary limit for UI, or based on max inventory
+    private const int BOMB_PRICE = 200;
+
+    private int playerCoins;
 
     void Start()
     {
-        // Load saved player data
-        LoadPlayerData();
+        // Initialize UI
+        UpdateShopUI();
         
-        // Set initial state
-        currentBombsCount = 1;
-        UpdateBombsUI();
-        UpdatePlayerUI();
-        
-        // Add listeners to buttons
-        if (plusButton != null)
-        {
-            plusButton.onClick.AddListener(IncreaseBombsCount);
-        }
-        
-        if (minusButton != null)
-        {
-            minusButton.onClick.AddListener(DecreaseBombsCount);
-        }
-        
-        if (buyButton != null)
-        {
-            buyButton.onClick.AddListener(BuyBombs);
-        }
+        // Add listeners
+        if (plusButton != null) plusButton.onClick.AddListener(IncreaseBombsCount);
+        if (minusButton != null) minusButton.onClick.AddListener(DecreaseBombsCount);
+        if (buyButton != null) buyButton.onClick.AddListener(BuyBombs);
+        if (closeButton != null) closeButton.onClick.AddListener(CloseShopCanvas);
     }
 
     void OnEnable()
     {
-        // Subscribe to CoinsManager events
+        // Subscribe to coin updates
         if (CoinsManager.Instance != null)
         {
-            CoinsManager.Instance.OnCoinsUpdated += UpdatePlayerUI;
+            CoinsManager.Instance.OnCoinsUpdated += UpdatePlayerCoinsUI;
             CoinsManager.Instance.FetchCoins();
         }
         
-        // Update UI
-        UpdateBombsUI();
-        UpdatePlayerUI();
+        // Reset selection when opening shop
+        currentBombsCount = 1;
+        UpdateShopUI();
     }
 
     void OnDisable()
     {
-        // Unsubscribe from CoinsManager events
         if (CoinsManager.Instance != null)
         {
-            CoinsManager.Instance.OnCoinsUpdated -= UpdatePlayerUI;
+            CoinsManager.Instance.OnCoinsUpdated -= UpdatePlayerCoinsUI;
         }
-    }
-
-    void Update()
-    {
-        // Update the buy button interactability based on whether player can afford the bullets
-        if (buyButton != null && CoinsManager.Instance != null)
-        {
-            int totalCost = bombsPrices[currentBombsCount];
-            buyButton.interactable = CoinsManager.Instance.currentCoins >= totalCost && totalBombsPurchased < MAX_BOMBS_PER_SESSION;
-        }
-    }
-
-    private void LoadPlayerData()
-    {
-        // Load saved bombs from PlayerPrefs
-        playerBombs = PlayerPrefs.GetInt(BOMBS_KEY, 0);
-        
-        // Update UI
-        UpdatePlayerUI();
-    }
-    
-    private void SavePlayerData()
-    {
-        // Save current coins and bullets to PlayerPrefs
-        PlayerPrefs.SetInt(COINS_KEY, playerCoins);
-        PlayerPrefs.SetInt(BOMBS_KEY, playerBombs);
-        PlayerPrefs.Save();
     }
 
     public void EnableShopCanvas()
     {
-        // Load the latest player data when opening shop
-        LoadPlayerData();
-        
-        // Reset to default state when opening shop
-        currentBombsCount = 1;
-        // Don't reset bombsPurchasedThisSession anymore
-        UpdateBombsUI();
-        UpdatePlayerUI();
-        
-        // Update buy button state based on total bombs purchased
-        if (buyButton != null)
-        {
-            buyButton.interactable = totalBombsPurchased < MAX_BOMBS_PER_SESSION;
-        }
-        
-        // Show shop UI
         bulletsShopCanvas.SetActive(true);
-        Time.timeScale = 0f; // Pause the game
-        mobileControlsCanvas.SetActive(false); // Hide the mobile controls UI
+        mobileControlsCanvas.SetActive(false);
+        Time.timeScale = 0f;
+        
+        // Refresh data
+        if (CoinsManager.Instance != null)
+        {
+            CoinsManager.Instance.FetchCoins();
+        }
+        UpdateShopUI();
     }
 
     public void CloseShopCanvas()
     {
-        bulletsShopCanvas.SetActive(false); // Hide the shop UI
-        mobileControlsCanvas.SetActive(true); // Show the mobile controls UI
-        Time.timeScale = 1f; // Resume the game
+        bulletsShopCanvas.SetActive(false);
+        mobileControlsCanvas.SetActive(true);
+        Time.timeScale = 1f;
     }
 
     public void IncreaseBombsCount()
     {
-        int maxPossibleToBuy = 3 - totalBombsPurchased; // Calculate remaining bombs that can be bought
-        if (maxPossibleToBuy <= 0)
-        {
-            // Already bought maximum bombs
-            Debug.Log("Maximum bomb purchase limit reached (3 bombs total)");
-            return;
-        }
-
-        // Don't allow increasing beyond the remaining purchasable amount
-        if (currentBombsCount < maxPossibleToBuy)
+        if (currentBombsCount < MAX_BOMBS_PER_PURCHASE)
         {
             currentBombsCount++;
+            UpdateShopUI();
         }
-        else
-        {
-            Debug.Log("Cannot purchase more than " + maxPossibleToBuy + " bombs (3 total limit)");
-        }
-        
-        UpdateBombsUI();
     }
-    
+
     public void DecreaseBombsCount()
     {
         if (currentBombsCount > MIN_BOMBS)
         {
             currentBombsCount--;
-            UpdateBombsUI();
+            UpdateShopUI();
         }
     }
 
-    private void UpdateBombsUI()
+    private void UpdateShopUI()
     {
-        // Update bombs images
-        if (bombs1Image != null) bombs1Image.SetActive(currentBombsCount >= 1);
-        if (bombs2Image != null) bombs2Image.SetActive(currentBombsCount >= 2);
-        if (bombs3Image != null) bombs3Image.SetActive(currentBombsCount >= 3);
-        
-        // Update bombs count text
-        if (bombsCountText != null)
+        // Update Multiplier Text
+        if (bombMultiplierText != null)
         {
-            bombsCountText.text = currentBombsCount.ToString();
+            bombMultiplierText.text = $"x{currentBombsCount}";
+        }
+
+        // Update Cost Text
+        int totalCost = currentBombsCount * BOMB_PRICE;
+        if (coinsCostText != null)
+        {
+            coinsCostText.text = $"{totalCost} Coins";
+        }
+
+        // Update Buy Button Text
+        if (buyButtonText != null)
+        {
+            buyButtonText.text = $"BUY {currentBombsCount} BOMBS";
+        }
+
+        // Update Buy Button Interactability
+        if (buyButton != null)
+        {
+            if (CoinsManager.Instance != null)
+            {
+                buyButton.interactable = CoinsManager.Instance.currentCoins >= totalCost;
+            }
         }
         
-        // Update total cost
-        if (totalCostText != null)
-        {
-            int totalCost = bombsPrices[currentBombsCount];
-            totalCostText.text = $"{totalCost} coins";
-        }
+        UpdatePlayerCoinsUI();
     }
-    
-    private void UpdatePlayerUI()
+
+    private void UpdatePlayerCoinsUI()
     {
-        // Get current coins from CoinsManager if available
         if (CoinsManager.Instance != null)
         {
             playerCoins = CoinsManager.Instance.currentCoins;
         }
-        
-        // Update coins display
-        if (coinsCount != null)
+
+        if (availableCoinsText != null)
         {
-            coinsCount.text = playerCoins.ToString();
-        }
-        
-        // Update bombs display if available
-        if (playerBombsText != null)
-        {
-            playerBombsText.text = playerBombs.ToString();
+            availableCoinsText.text = $"Available Coins: {playerCoins}";
         }
     }
-    
+
     public void BuyBombs()
     {
-        int maxPossibleToBuy = 3 - totalBombsPurchased;
-        if (maxPossibleToBuy <= 0)
-        {
-            Debug.Log("You've already purchased the maximum allowed bombs (3 total)");
-            return;
-        }
+        int totalCost = currentBombsCount * BOMB_PRICE;
 
-        // Ensure we don't try to buy more than allowed
-        int bombsToBuy = Mathf.Min(currentBombsCount, maxPossibleToBuy);
-        int totalCost = bombsPrices[bombsToBuy];
-        
-        // Check if player has enough coins and if CoinsManager exists
         if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost)
         {
-            // Deduct coins using CoinsManager
-            CoinsManager.Instance.SpendCoins(totalCost, $"Purchased {bombsToBuy} chemical bombs", (success) => {
+            CoinsManager.Instance.SpendCoins(totalCost, $"Purchased {currentBombsCount} chemical bombs", (success) => {
                 if (success)
                 {
-                    // Add bombs to ChemicalBombManager if it exists
+                    // Add bombs to inventory
                     if (ChemicalBombManager.Instance != null)
                     {
-                        ChemicalBombManager.Instance.AddBombs(bombsToBuy);
-                        
-                        // Update local tracking for UI
-                        playerBombs += bombsToBuy;
-                        bombsPurchasedThisSession += bombsToBuy;
-                        totalBombsPurchased += bombsToBuy;
-                        
-                        // Reset the counter after purchase
-                        currentBombsCount = 1;
-                        UpdateBombsUI();
-                        
-                        // Check if we've reached the limit and update shop button in ChemicalBombManager
-                        if (totalBombsPurchased >= 3 && ChemicalBombManager.Instance.shopButton != null)
-                        {
-                            ChemicalBombManager.Instance.DisableShopButton();
-                        }
+                        ChemicalBombManager.Instance.AddBombs(currentBombsCount);
                     }
+                    
+                    // Reset selection or close shop? 
+                    // Usually keeping the shop open is better UX, just update UI
+                    currentBombsCount = 1;
+                    UpdateShopUI();
+                    
+                    Debug.Log($"Successfully purchased {currentBombsCount} bombs.");
                 }
             });
         }
         else
         {
-            Debug.Log("Not enough coins to purchase bombs");
+            Debug.Log("Not enough coins!");
         }
-    }
-    
-    // Method to show error messages to the player
-    private void ShowErrorMessage(string message)
-    {
-        // You can implement this to show a UI message to the player
-        // For now, just log to console
-        Debug.LogWarning(message);
-    }
-    
-    // Public method to reset the bomb purchase counter (call this when starting a new game)
-    public static void ResetBombPurchaseCounter()
-    {
-        totalBombsPurchased = 0;
     }
 }

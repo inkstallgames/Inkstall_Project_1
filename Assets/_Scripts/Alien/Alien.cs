@@ -14,6 +14,10 @@ public class Alien : MonoBehaviour
     void OnEnable()
     {
         audioSource = GetComponent<AudioSource>();
+        if (AudioManager.Instance != null)
+        {
+            audioSource.volume = AudioManager.Instance.sfxVolume;
+        }
         StartCoroutine(AlienBehaviour());
     }
 

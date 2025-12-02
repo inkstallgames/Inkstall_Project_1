@@ -13,6 +13,10 @@ public class InkstallCoin : MonoBehaviour
     private void OnEnable()
     {
         audioSource = GetComponent<AudioSource>();
+        if (AudioManager.Instance != null)
+        {
+            audioSource.volume = AudioManager.Instance.sfxVolume;
+        }
         
         // Find the TextMeshPro text in the scene using the tag
         

@@ -29,6 +29,11 @@ public class LoadBuildingScene : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+
+        if (AudioManager.Instance != null)
+        {
+            audioSource.volume = AudioManager.Instance.sfxVolume;
+        }
     }
 
     private void OnTriggerEnter(Collider other)

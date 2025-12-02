@@ -36,6 +36,11 @@ public class BombPhysics : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+        
+        if (AudioManager.Instance != null)
+        {
+            audioSource.volume = AudioManager.Instance.sfxVolume;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)

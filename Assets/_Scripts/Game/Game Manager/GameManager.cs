@@ -41,6 +41,11 @@ public class GameManager : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
         }
 
+        if (AudioManager.Instance != null)
+        {
+            audioSource.volume = AudioManager.Instance.sfxVolume;
+        }
+
         // Get Student ID from StudentIdManager
         studentId = StudentIdManager.Instance.StudentId;
         

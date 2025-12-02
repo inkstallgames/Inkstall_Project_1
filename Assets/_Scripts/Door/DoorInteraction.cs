@@ -54,6 +54,11 @@ public class DoorInteraction : MonoBehaviour
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
+        
+        if (AudioManager.Instance != null)
+        {
+            audioSource.volume = AudioManager.Instance.sfxVolume;
+        }
 
         if (lockedDoorAnimator == null)
         {

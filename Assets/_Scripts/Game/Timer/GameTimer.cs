@@ -50,7 +50,7 @@ public class GameTimer : MonoBehaviour
 
         // Initialize AudioSource
         tickSource = gameObject.AddComponent<AudioSource>();
-        tickSource.volume = tickVolume;
+        tickSource.volume = (AudioManager.Instance != null ? AudioManager.Instance.sfxVolume : 1f) * tickVolume;
         tickSource.playOnAwake = false;
         tickSource.spatialBlend = 0f; // Make sure it's 2D sound
 
@@ -249,7 +249,7 @@ public class GameTimer : MonoBehaviour
                 tickSource.clip = clipToPlay;
                 // Configure loop settings
                 tickSource.loop = false; // We'll handle the looping manually
-                tickSource.volume = tickVolume;
+                tickSource.volume = (AudioManager.Instance != null ? AudioManager.Instance.sfxVolume : 1f) * tickVolume;
                 
                 // Play the sound
                 tickSource.Play();

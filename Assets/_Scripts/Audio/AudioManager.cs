@@ -60,6 +60,8 @@ public class AudioManager : MonoBehaviour
         audioSource.Stop();
     }
 
+    public float sfxVolume = 0.5f;
+
     public void SetMusicVolume(float volume)
     {
         audioSource.volume = volume;
@@ -71,6 +73,19 @@ public class AudioManager : MonoBehaviour
         else if (volume == 0 && audioSource.isPlaying)
         {
             StopMusic();
+        }
+    }
+
+    public void UpdateSFXVolume(float volume)
+    {
+        sfxVolume = volume;
+    }
+
+    public void PlaySFXAtPoint(AudioClip clip, Vector3 position)
+    {
+        if (clip != null)
+        {
+            AudioSource.PlayClipAtPoint(clip, position, sfxVolume);
         }
     }
 

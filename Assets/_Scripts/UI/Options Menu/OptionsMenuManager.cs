@@ -110,6 +110,12 @@ public class OptionsMenuManager : MonoBehaviour
     {
         volumeLevel = volume;
         
+        // Update AudioManager SFX volume
+        if (audioManager != null)
+        {
+            audioManager.UpdateSFXVolume(volume);
+        }
+
         // Get the music source to exclude it
         AudioSource musicSource = null;
         if (audioManager != null)

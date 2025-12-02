@@ -216,7 +216,7 @@ namespace StarterAssets
 				walkAudioSource.playOnAwake = false;
 				walkAudioSource.loop = true;
 				walkAudioSource.spatialBlend = 1.0f; // 3D sound
-				walkAudioSource.volume = 0.7f;
+				walkAudioSource.volume = AudioManager.Instance != null ? AudioManager.Instance.sfxVolume : 0.7f;
 			}
 			
 			// Setup running audio source
@@ -226,7 +226,7 @@ namespace StarterAssets
 				runAudioSource.playOnAwake = false;
 				runAudioSource.loop = true;
 				runAudioSource.spatialBlend = 1.0f; // 3D sound
-				runAudioSource.volume = 0.7f;
+				runAudioSource.volume = AudioManager.Instance != null ? AudioManager.Instance.sfxVolume : 0.7f;
 			}
 			
 			// Assign clips if available
@@ -562,10 +562,9 @@ namespace StarterAssets
 		
 		private void PlayJumpSound()
 		{
-			if (jumpSound != null)
+			if (jumpSound != null && AudioManager.Instance != null)
 			{
-				// Create a temporary audio source for the jump sound
-				AudioSource.PlayClipAtPoint(jumpSound, transform.position, 0.7f);
+				AudioManager.Instance.PlaySFXAtPoint(jumpSound, transform.position);
 			}
 		}
 

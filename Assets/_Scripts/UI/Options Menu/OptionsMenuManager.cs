@@ -110,10 +110,20 @@ public class OptionsMenuManager : MonoBehaviour
     {
         volumeLevel = volume;
         
-        // Set the volume of all audio sources
+        // Get the music source to exclude it
+        AudioSource musicSource = null;
+        if (audioManager != null)
+        {
+            musicSource = audioManager.GetAudioSource();
+        }
+
+        // Set the volume of all audio sources EXCEPT the music source
         AudioSource[] audioSources = FindObjectsOfType<AudioSource>();
         foreach (AudioSource source in audioSources)
         {
+            // Skip the music source
+            if (source == musicSource) continue;
+
             source.volume = volume;
         }
     }

@@ -78,4 +78,10 @@ public class AudioManager : MonoBehaviour
     {
         return audioSource.isPlaying;
     }
+
+    public AudioSource GetAudioSource()
+    {
+        return audioSource;
+    }
 }
+ 

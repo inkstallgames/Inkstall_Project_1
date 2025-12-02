@@ -29,7 +29,7 @@ public class DoorInteraction : MonoBehaviour
     [Header("Game Activation Settings")]
     [SerializeField] private GameObject chemicalBomb;
     [SerializeField] private Button throwButton;
-    [SerializeField] private TextMeshProUGUI gameTimer;
+    [SerializeField] private GameObject gameTimerContainer;
     [SerializeField] private Image bombsUI;
     [SerializeField] private Image remainingAliensCountContainer;
     [SerializeField] private TextMeshProUGUI interactionText;
@@ -353,9 +353,9 @@ public class DoorInteraction : MonoBehaviour
         }
         if (shouldStartTimer)
         {
-            if (gameTimer != null)
+            if (gameTimerContainer != null)
             {
-                gameTimer.gameObject.SetActive(true);
+                gameTimerContainer.SetActive(true);
             }
         }
     }

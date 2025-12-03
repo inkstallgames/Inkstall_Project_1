@@ -844,7 +844,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statusText: {fileID: 1975876567}
-  nextSceneName: Menu
+  nextSceneName: MainScene
 --- !u!1 &1142506433
 GameObject:
   m_ObjectHideFlags: 0

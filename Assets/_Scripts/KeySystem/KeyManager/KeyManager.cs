@@ -13,8 +13,8 @@ public class KeyManager : MonoBehaviour
     public static KeyManager Instance;
 
     [Header("Key Settings")]
-    [SerializeField] private int keysCount = 0;
-    [SerializeField] private int totalKeys = 0;
+    [SerializeField] private int keysCount = 10;  // Default value set to 10
+    [SerializeField] private int totalKeys = 10;  // Default value set to 10
     [SerializeField] private TextMeshProUGUI keyText;
 
 
@@ -56,8 +56,9 @@ public class KeyManager : MonoBehaviour
 
     private void LoadKeys()
     {
-        keysCount = PlayerPrefs.GetInt("KeysCount", 0);
-        totalKeys = PlayerPrefs.GetInt("TotalKeys", 0);
+        // Load from PlayerPrefs, if no value exists it will use the default value (10)
+        keysCount = PlayerPrefs.GetInt("KeysCount", 10);
+        totalKeys = PlayerPrefs.GetInt("TotalKeys", 10);
         UpdateUIKeyCount();
     }
 
@@ -75,8 +76,6 @@ public class KeyManager : MonoBehaviour
         SaveKeys();
         UpdateUIKeyCount();
     }
-
-
 
 
 

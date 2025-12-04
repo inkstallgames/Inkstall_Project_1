@@ -91,6 +91,7 @@ public class KeyManager : MonoBehaviour
             keyText = GameObject.FindObjectOfType<TextMeshProUGUI>();
             if (keyText != null)
             {
+                
             }
             else
             {

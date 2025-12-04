@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI; 
 using UnityEngine.Audio; 
 using StarterAssets; 
+using UnityEngine.SceneManagement;
 
 public class OptionsMenuManager : MonoBehaviour
 {
@@ -91,6 +92,11 @@ public class OptionsMenuManager : MonoBehaviour
         optionsMenuCanvas.SetActive(false); 
         mobileControlsCanvas.SetActive(true); 
         Time.timeScale = 1f; 
+    }
+
+    public void OnMenuButtonClicked()
+    {
+        SceneManager.LoadScene("Menu");
     }
     
     // Apply screen sensitivity

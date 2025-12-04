@@ -6,26 +6,7 @@ using UnityEngine.Networking;
 using TMPro;
 using UnityEngine.UI;
 
-[System.Serializable]
-public class KeyDetail
-{
-    public string type;
-    public int scrollCount;
-    public string _id;
-    public string date;
-}
 
-[System.Serializable]
-public class KeyResponse
-{
-    public string _id;
-    public string studentId;
-    public int freeKeys;
-    public int totalKeys;
-    public List<KeyDetail> keyDetails;
-    public string lastUpdated;
-    public int __v;
-}
 
 public class KeyManager : MonoBehaviour
 {
@@ -35,17 +16,7 @@ public class KeyManager : MonoBehaviour
     [SerializeField] private int keysCount = 0;
     [SerializeField] private int totalKeys = 0;
     [SerializeField] private TextMeshProUGUI keyText;
-    [SerializeField] private string apiBaseUrl = "https://api.inkstall.in/api/slot/get-keys/";
-    [SerializeField] private string useKeysUrl = "https://api.inkstall.in/api/slot/use-keys/";
 
-    // Hardcoded user ID for testing purposes
-    public string studentId = "";
-
-    // Store the full key data for potential future use
-    private KeyResponse keyData;
-
-    // Flag to track if we've successfully fetched keys
-    private bool hasInitializedKeys = false;
 
     private void Awake()
     {
@@ -79,224 +50,35 @@ public class KeyManager : MonoBehaviour
             keyText.text = totalKeys.ToString();
         }
 
-        // Get student ID from StudentIdManager or PlayerPrefs
-        GetStudentId();
-
-        // If we have a student ID, fetch keys from the database
-        if (!string.IsNullOrEmpty(studentId))
-        {
-            Debug.Log($"[KeyManager] Student ID available: {studentId}. Fetching keys...");
-            FetchKeysFromDB();
-        }
-        else
-        {
-            Debug.LogWarning("[KeyManager] No student ID available at Start(). Keys cannot be fetched yet.");
-        }
-
-        // Schedule periodic refresh of keys (every 30 seconds)
-        Debug.Log("[KeyManager] Scheduling periodic key refresh every 30 seconds");
-        InvokeRepeating("FetchKeysFromDB", 30f, 30f);
+        // Load keys from PlayerPrefs
+        LoadKeys();
     }
 
-    // Get student ID from StudentIdManager or directly from PlayerPrefs
-    private void GetStudentId()
+    private void LoadKeys()
     {
-        Debug.Log("[KeyManager] Attempting to get student ID...");
-
-        // First try StudentIdManager
-        if (StudentIdManager.Instance != null)
-        {
-            string id = StudentIdManager.Instance.GetStudentId();
-            if (!string.IsNullOrEmpty(id))
-            {
-                studentId = id;
-                Debug.Log($"[KeyManager] Successfully got student ID from StudentIdManager: {studentId}");
-                return;
-            }
-
-            Debug.Log("[KeyManager] No student ID available in StudentIdManager yet. Subscribing to OnStudentIdLoaded event.");
-            // Subscribe to StudentIdManager events to get the ID when it becomes available
-            StudentIdManager.Instance.OnStudentIdLoaded += HandleStudentIdLoaded;
-            return;
-        }
-
-        Debug.LogWarning("[KeyManager] StudentIdManager.Instance is null. Trying PlayerPrefs...");
-
-        // If still empty, try PlayerPrefs directly
-        studentId = PlayerPrefs.GetString("StudentId", "");
-        if (!string.IsNullOrEmpty(studentId))
-        {
-            Debug.Log($"[KeyManager] Got student ID from PlayerPrefs: {studentId}");
-            return;
-        }
-
-        // Log if we still don't have a student ID
-        Debug.LogWarning("[KeyManager] No student ID found in StudentIdManager or PlayerPrefs");
-
-        // Subscribe to StudentIdManager events to get the ID when it becomes available
-        if (StudentIdManager.Instance != null)
-        {
-            StudentIdManager.Instance.OnStudentIdLoaded += HandleStudentIdLoaded;
-        }
+        keysCount = PlayerPrefs.GetInt("KeysCount", 0);
+        totalKeys = PlayerPrefs.GetInt("TotalKeys", 0);
+        UpdateUIKeyCount();
     }
-    
-    private void HandleStudentIdLoaded(string id)
+
+    private void SaveKeys()
     {
-        // Unsubscribe to avoid multiple calls
-        StudentIdManager.Instance.OnStudentIdLoaded -= HandleStudentIdLoaded;
-        
-        // Set the student ID and fetch keys
-        studentId = id;
-        Debug.Log($"[KeyManager] Student ID loaded from event: {studentId}");
-        FetchKeysFromDB();
+        PlayerPrefs.SetInt("KeysCount", keysCount);
+        PlayerPrefs.SetInt("TotalKeys", totalKeys);
+        PlayerPrefs.Save();
     }
 
-    // This will be called when we need to fetch keys from the database
-    public void FetchKeysFromDB()
+    public void AddKeys(int amount)
     {
-        if (!string.IsNullOrEmpty(studentId))
-        {
-            Debug.Log($"[KeyManager] Fetching keys for student ID: {studentId}");
-            StartCoroutine(FetchDBKeyCount());
-        }
-        else
-        {
-            Debug.LogError("[KeyManager] Cannot fetch keys: studentId is null or empty");
-        }
+        keysCount += amount;
+        totalKeys += amount;
+        SaveKeys();
+        UpdateUIKeyCount();
     }
 
-    // Fetch the key count from the API
-    public IEnumerator FetchDBKeyCount()
-    {
 
-        string url = apiBaseUrl + studentId;
 
-        UnityWebRequest www = UnityWebRequest.Get(url);
-        www.timeout = 15; // Set timeout to 15 seconds
 
-        float startTime = Time.time;
-        yield return www.SendWebRequest();
-        float endTime = Time.time;
-
-        if (www.result == UnityWebRequest.Result.Success)
-        {
-            string json = www.downloadHandler.text;
-
-            // Check if 'totalKeys' field exists in JSON
-            bool hasTotalKeysField = json.Contains("\"totalKeys\":");
-
-            try
-            {
-                // Instead of using JsonUtility, manually extract the totalKeys value
-                int totalKeysValue = ExtractTotalKeysFromJson(json);
-
-                // Update the key counts
-                int oldCount = keysCount;
-                keysCount = totalKeysValue;
-                totalKeys = totalKeysValue;
-
-                // Set initialization flag
-                hasInitializedKeys = true;
-
-                // Visual indicator for successful fetch
-                StartCoroutine(ShowFetchSuccessIndicator());
-
-                // Call UpdateUIKeyCount to update the UI
-                UpdateUIKeyCount();
-
-                // Also force a UI update to ensure it's displayed correctly
-                ForceUpdateUI();
-
-                // Verify UI was updated
-                if (keyText != null)
-                {
-                }
-                else
-                {
-                }
-            }
-            catch (System.Exception e)
-            {
-            }
-        }
-        else
-        {
-        }
-    }
-
-    // Helper method to extract totalKeys from MongoDB JSON format
-    private int ExtractTotalKeysFromJson(string json)
-    {
-
-        try
-        {
-            // Find the totalKeys field
-            int totalKeysIndex = json.IndexOf("\"totalKeys\":");
-            if (totalKeysIndex < 0)
-            {
-                return 0;
-            }
-
-            // Extract the value after "totalKeys":
-            string substring = json.Substring(totalKeysIndex + "\"totalKeys\":".Length);
-
-            // Find the end of the value (comma or closing brace)
-            int commaIndex = substring.IndexOf(",");
-            int braceIndex = substring.IndexOf("}");
-
-            int endIndex = -1;
-            if (commaIndex >= 0 && braceIndex >= 0)
-            {
-                endIndex = Math.Min(commaIndex, braceIndex);
-            }
-            else if (commaIndex >= 0)
-            {
-                endIndex = commaIndex;
-            }
-            else if (braceIndex >= 0)
-            {
-                endIndex = braceIndex;
-            }
-
-            if (endIndex < 0)
-            {
-                return 0;
-            }
-
-            // Extract just the value
-            string valueStr = substring.Substring(0, endIndex).Trim();
-
-            // Parse to int
-            int value;
-            if (int.TryParse(valueStr, out value))
-            {
-                return value;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        catch (System.Exception e)
-        {
-            return 0;
-        }
-    }
-
-    // Show a visual indicator when keys are successfully fetched
-    private IEnumerator ShowFetchSuccessIndicator()
-    {
-        // Optional: Change text color to indicate success
-        if (keyText == null) yield break;
-
-        Color originalColor = keyText.color;
-        keyText.color = Color.green;
-
-        yield return new WaitForSeconds(1.5f);
-
-        // Return to original color
-        keyText.color = originalColor;
-    }
 
     // Update the UI to show the current key count
     private void UpdateUIKeyCount()
@@ -347,126 +129,12 @@ public class KeyManager : MonoBehaviour
             return false;
         }
 
-        // Store current key count for UI display
-        int previousKeyCount = keysCount;
-
-        // Show a temporary "using key" state in the UI
-        if (keyText != null)
-        {
-            // Show a visual indicator that key is being used
-            keyText.text = (previousKeyCount - 1).ToString();
-            keyText.color = Color.yellow; // Visual indicator that this is a temporary state
-        }
-
         // Reduce local key count for internal tracking
         keysCount--;
-
-        // Start the coroutine to use a key and update from database
-        StartCoroutine(UseKeyCoroutine(previousKeyCount));
+        SaveKeys();
+        UpdateUIKeyCount();
 
         return true;
-    }
-
-    private IEnumerator UseKeyCoroutine(int previousKeyCount)
-    {
-        // Use the exact format from the backend code: PATCH /api/slot/use-keys/:userId/:keysToUse
-        int keysToUse = 1; // We're using 1 key at a time
-        string url = "https://api.inkstall.in/api/slot/use-keys/" + studentId + "/" + keysToUse;
-
-        // Create PATCH request (no body needed as parameters are in URL)
-        UnityWebRequest webRequest = new UnityWebRequest(url, "PATCH");
-        webRequest.downloadHandler = new DownloadHandlerBuffer();
-        webRequest.SetRequestHeader("Content-Type", "application/json");
-
-        yield return webRequest.SendWebRequest();
-
-        if (webRequest.downloadHandler != null && webRequest.downloadHandler.text != null)
-        {
-        }
-
-        // Handle errors or success
-        if (webRequest.result != UnityWebRequest.Result.Success)
-        {
-            // If there was an error, revert the key count change
-            keysCount = previousKeyCount;
-
-            // Reset UI to original color and value
-            if (keyText != null)
-            {
-                keyText.text = previousKeyCount.ToString();
-                keyText.color = Color.white;
-            }
-
-            // Visual feedback for error
-            StartCoroutine(ShowErrorIndicator());
-        }
-        else
-        {
-            // After successful key use, fetch the latest count from database
-            yield return StartCoroutine(FetchLatestKeyCount());
-        }
-    }
-
-    // New method to fetch the latest key count after using a key
-    private IEnumerator FetchLatestKeyCount()
-    {
-
-        // Wait a short delay to ensure the database has processed the previous request
-        yield return new WaitForSeconds(0.5f);
-
-        string url = apiBaseUrl + studentId;
-
-        UnityWebRequest www = UnityWebRequest.Get(url);
-        www.timeout = 15; // Set timeout to 15 seconds
-
-        yield return www.SendWebRequest();
-
-        if (www.result == UnityWebRequest.Result.Success)
-        {
-            string json = www.downloadHandler.text;
-
-            try
-            {
-                // Extract the totalKeys value
-                int totalKeysValue = ExtractTotalKeysFromJson(json);
-
-                // Update the key counts
-                keysCount = totalKeysValue;
-                totalKeys = totalKeysValue;
-
-                // Update UI with the latest count from database
-                if (keyText != null)
-                {
-                    keyText.text = keysCount.ToString();
-                    keyText.color = Color.white; // Reset to normal color
-                }
-
-                // Visual indicator for successful fetch
-                StartCoroutine(ShowUpdateSuccessIndicator());
-
-            }
-            catch (System.Exception e)
-            {
-            }
-        }
-        else
-        {
-        }
-    }
-
-    // Show a visual indicator for errors
-    private IEnumerator ShowErrorIndicator()
-    {
-        // Change text color to indicate error
-        if (keyText == null) yield break;
-
-        Color originalColor = keyText.color;
-        keyText.color = Color.red;
-
-        yield return new WaitForSeconds(1.5f);
-
-        // Return to original color
-        keyText.color = originalColor;
     }
 
     // Update the UI text displaying the key count
@@ -478,52 +146,7 @@ public class KeyManager : MonoBehaviour
         }
     }
 
-    // Update the database with the current key count
-    private void UpdateDBKeyCount()
-    {
-        StartCoroutine(SendKeyUpdateToDB());
-    }
 
-    private IEnumerator SendKeyUpdateToDB()
-    {
-
-        // Create a simple JSON object with just the totalKeys field
-        string jsonData = "{\"totalKeys\":" + keysCount + "}";
-
-        string url = apiBaseUrl + studentId;
-
-        UnityWebRequest www = new UnityWebRequest(url, "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-        www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        www.downloadHandler = new DownloadHandlerBuffer();
-        www.SetRequestHeader("Content-Type", "application/json");
-
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-        }
-        else
-        {
-            // Visual feedback for successful update
-            StartCoroutine(ShowUpdateSuccessIndicator());
-        }
-    }
-
-    // Show a visual indicator when keys are successfully updated
-    private IEnumerator ShowUpdateSuccessIndicator()
-    {
-        // Optional: Change text color to indicate success
-        if (keyText == null) yield break;
-
-        Color originalColor = keyText.color;
-        keyText.color = Color.cyan;
-
-        yield return new WaitForSeconds(1f);
-
-        // Return to original color
-        keyText.color = originalColor;
-    }
 
     // Force update the UI with the current key count
     public void ForceUpdateUI()
@@ -564,12 +187,10 @@ public class KeyManager : MonoBehaviour
     {
         keysCount = 0;
         totalKeys = 0;
+        SaveKeys();
         UpdateUIKeyCount();
     }
 
     // For debugging - call this to force a refresh
-    public void DebugRefreshKeys()
-    {
-        FetchKeysFromDB();
-    }
+
 }

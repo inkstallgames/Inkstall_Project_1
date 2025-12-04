@@ -699,7 +699,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -3443,7 +3443,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -5312,7 +5312,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -5608,7 +5608,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -5995,7 +5995,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -7590,7 +7590,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -7887,7 +7887,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1577257726}
     m_Modifications:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -7922,17 +7922,17 @@ PrefabInstance:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -8202,7 +8202,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -10726,7 +10726,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -12126,7 +12126,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -13112,7 +13112,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -17584,7 +17584,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1577257726}
     m_Modifications:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -17614,17 +17614,17 @@ PrefabInstance:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -18288,7 +18288,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -19295,6 +19295,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5996881851261273903, guid: 1f3397adeac41f84b80b700ee560a41e,
     type: 3}
   m_PrefabInstance: {fileID: 294050545}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &296445599 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 275452584}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &299362330
 GameObject:
@@ -22438,7 +22444,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -24929,6 +24935,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 361963824}
   m_Mesh: {fileID: 8233907072332092556, guid: bf4bafcdbe900844192625019487b5ef, type: 3}
+--- !u!4 &363424915 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1333589096}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &363433707
 GameObject:
   m_ObjectHideFlags: 0
@@ -28367,7 +28379,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -29184,7 +29196,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -29421,7 +29433,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -32773,7 +32785,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -33666,7 +33678,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -34319,7 +34331,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -34512,7 +34524,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1577257726}
     m_Modifications:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -34537,17 +34549,17 @@ PrefabInstance:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -34574,6 +34586,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e50e7eb6c0d6c4742a11babd6e9b96d0, type: 3}
+--- !u!4 &506739006 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1406617694}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &507680146
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35160,7 +35178,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -36088,7 +36106,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -37626,7 +37644,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -39482,7 +39500,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -40166,6 +40184,12 @@ Transform:
   m_Children: []
   m_Father: {fileID: 359668658}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &586732293 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 506222611}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &588533129
 GameObject:
   m_ObjectHideFlags: 0
@@ -41361,7 +41385,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -43085,7 +43109,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -43893,7 +43917,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1577257726}
     m_Modifications:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -43928,17 +43952,17 @@ PrefabInstance:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -44086,7 +44110,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -44527,7 +44551,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -45284,7 +45308,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -47097,7 +47121,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -49342,7 +49366,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -50628,7 +50652,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -51149,7 +51173,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -53067,7 +53091,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -53980,7 +54004,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -54529,9 +54553,6 @@ MonoBehaviour:
   keysCount: 0
   totalKeys: 0
   keyText: {fileID: 2322437273294813703}
-  apiBaseUrl: https://api.inkstall.in/api/slot/get-keys/
-  useKeysUrl: https://api.inkstall.in/api/slot/use-keys/
-  studentId: 681ee0e6198ad04bf6c1c733
 --- !u!1001 &788885689
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55037,7 +55058,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -58485,7 +58506,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -58672,7 +58693,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -59524,7 +59545,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -60227,7 +60248,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -60464,7 +60485,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -63694,7 +63715,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -65557,7 +65578,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -66328,7 +66349,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -66892,6 +66913,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   musicSource: {fileID: 8300000, guid: 99b242c221aad994db2599a78d8d45b0, type: 3}
+  sfxVolume: 0.5
 --- !u!82 &952129825
 AudioSource:
   m_ObjectHideFlags: 0
@@ -67502,7 +67524,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -68035,7 +68057,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -68910,7 +68932,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -69183,7 +69205,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -69444,6 +69466,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5173047274225451421, guid: 3883eb798fef6794080cab0237ec66f9,
     type: 3}
   m_PrefabInstance: {fileID: 992462428}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &994847712 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 637590862}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &995190845
 GameObject:
@@ -71203,7 +71231,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -71559,7 +71587,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -72800,7 +72828,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -73225,7 +73253,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -73664,7 +73692,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1577257726}
     m_Modifications:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -73694,17 +73722,17 @@ PrefabInstance:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -73939,7 +73967,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -74213,7 +74241,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -76653,7 +76681,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -76890,7 +76918,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -77208,7 +77236,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -77483,7 +77511,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -79747,7 +79775,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -80564,6 +80592,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1154446897}
   m_Mesh: {fileID: 7122261301043347358, guid: bf4bafcdbe900844192625019487b5ef, type: 3}
+--- !u!4 &1154914606 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1984345891}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1155424945
 GameObject:
   m_ObjectHideFlags: 0
@@ -80818,7 +80852,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -83623,7 +83657,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -86029,50 +86063,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1232222205}
   m_Mesh: {fileID: 2795315529474567381, guid: bf4bafcdbe900844192625019487b5ef, type: 3}
---- !u!1 &1238983707
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1238983708}
-  - component: {fileID: 1238983709}
-  m_Layer: 0
-  m_Name: StudentIDManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1238983708
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1238983707}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1607335633}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1238983709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1238983707}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c014645bfd12a2b4289f09e5dca4bd9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1245010651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -87167,7 +87157,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -87558,7 +87548,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -87818,7 +87808,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -88782,7 +88772,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -91264,7 +91254,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -91621,7 +91611,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -92063,7 +92053,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1577257726}
     m_Modifications:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -92098,17 +92088,17 @@ PrefabInstance:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -93806,6 +93796,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1359080110}
   m_Mesh: {fileID: 4300008, guid: 9c16c2b0ef8205a45823521d6ed61d12, type: 3}
+--- !u!4 &1359645896 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5414035282952374510, guid: 4a3f67d5eadd96045bb58dd64b0783c8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1828404342}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1361236938
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -93954,7 +93950,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -96660,7 +96656,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1577257726}
     m_Modifications:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -96690,17 +96686,17 @@ PrefabInstance:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -98408,7 +98404,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -100171,7 +100167,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -100597,7 +100593,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -101613,7 +101609,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -103323,7 +103319,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -103887,7 +103883,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -108240,7 +108236,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -108559,6 +108555,15 @@ Transform:
   - {fileID: 1628415621}
   - {fileID: 1318172689}
   - {fileID: 1220914486}
+  - {fileID: 1999096047}
+  - {fileID: 363424915}
+  - {fileID: 994847712}
+  - {fileID: 1359645896}
+  - {fileID: 296445599}
+  - {fileID: 506739006}
+  - {fileID: 2040975286}
+  - {fileID: 586732293}
+  - {fileID: 1154914606}
   m_Father: {fileID: 776522121}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1577269815
@@ -110751,7 +110756,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1238983708}
   - {fileID: 788499691}
   - {fileID: 962220123}
   - {fileID: 952129823}
@@ -113438,7 +113442,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -116461,7 +116465,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -119313,7 +119317,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -120144,7 +120148,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -123472,7 +123476,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1577257726}
     m_Modifications:
     - target: {fileID: 4641334122566816340, guid: 4a3f67d5eadd96045bb58dd64b0783c8,
         type: 3}
@@ -123507,17 +123511,17 @@ PrefabInstance:
     - target: {fileID: 5414035282952374510, guid: 4a3f67d5eadd96045bb58dd64b0783c8,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5414035282952374510, guid: 4a3f67d5eadd96045bb58dd64b0783c8,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5414035282952374510, guid: 4a3f67d5eadd96045bb58dd64b0783c8,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 5414035282952374510, guid: 4a3f67d5eadd96045bb58dd64b0783c8,
         type: 3}
@@ -123764,7 +123768,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -124802,7 +124806,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -127132,7 +127136,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -129224,7 +129228,7 @@ PrefabInstance:
     - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
       propertyPath: targetSceneIndex
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
@@ -131158,7 +131162,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1577257726}
     m_Modifications:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -131198,17 +131202,17 @@ PrefabInstance:
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
         type: 3}
@@ -132736,6 +132740,12 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1998321492}
   m_Mesh: {fileID: 4300004, guid: 545dc11e63502bc42bba2ca09a29e398, type: 3}
+--- !u!4 &1999096047 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 130695549}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1999708598
 GameObject:
   m_ObjectHideFlags: 0
@@ -133916,7 +133926,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -134626,7 +134636,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -135207,7 +135217,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -135333,6 +135343,12 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!4 &2040975286 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3664205271536518130, guid: e50e7eb6c0d6c4742a11babd6e9b96d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1054772730}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2041087877
 GameObject:
   m_ObjectHideFlags: 0
@@ -135995,7 +136011,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -137384,7 +137400,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -137908,7 +137924,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -141111,7 +141127,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -146037,7 +146053,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -148119,7 +148135,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -151680,7 +151696,7 @@ MonoBehaviour:
   shouldStartTimer: 1
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -151834,7 +151850,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -151868,7 +151884,7 @@ MonoBehaviour:
   shouldStartTimer: 1
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -151902,7 +151918,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -152177,7 +152193,7 @@ MonoBehaviour:
   shouldStartTimer: 1
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -152337,7 +152353,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -152371,7 +152387,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -152548,7 +152564,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -152613,7 +152629,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -152701,7 +152717,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -153629,7 +153645,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -153843,7 +153859,7 @@ MonoBehaviour:
   shouldStartTimer: 1
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -153949,7 +153965,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -167155,7 +167171,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -168204,7 +168220,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -169477,7 +169493,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -211.2, y: 269.9}
+  m_AnchoredPosition: {x: -211.2002, y: 269.8999}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!4 &3934556463963852376
@@ -169881,7 +169897,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -170687,7 +170703,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -171705,7 +171721,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -54.6, y: -14.5}
+  m_AnchoredPosition: {x: -54.600098, y: -14.5}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 1, y: 1}
 --- !u!23 &4638681773428525511
@@ -172099,7 +172115,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -172958,7 +172974,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -175066,7 +175082,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -176433,7 +176449,7 @@ MonoBehaviour:
   shouldStartTimer: 1
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -177915,7 +177931,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -179030,7 +179046,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -179416,7 +179432,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -184713,7 +184729,7 @@ MonoBehaviour:
   shouldStartTimer: 0
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
   remainingAliensCountContainer: {fileID: 0}
   interactionText: {fileID: 0}
@@ -188207,12 +188223,3 @@ SceneRoots:
   - {fileID: 1485958586}
   - {fileID: 776522121}
   - {fileID: 7218051647181464752}
-  - {fileID: 130695549}
-  - {fileID: 1333589096}
-  - {fileID: 637590862}
-  - {fileID: 1828404342}
-  - {fileID: 275452584}
-  - {fileID: 1406617694}
-  - {fileID: 1054772730}
-  - {fileID: 506222611}
-  - {fileID: 1984345891}

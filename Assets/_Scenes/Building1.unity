@@ -3562,11 +3562,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keysCount: 0
-  totalKeys: 0
+  totalKeys: 10
   keyText: {fileID: 8269896128065995755}
-  apiBaseUrl: https://api.inkstall.in/api/slot/get-keys/
-  useKeysUrl: https://api.inkstall.in/api/slot/use-keys/
-  studentId: 681ee0e6198ad04bf6c1c733
 --- !u!1 &1256279764
 GameObject:
   m_ObjectHideFlags: 0
@@ -4542,50 +4539,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1763065311}
   m_CullTransparentMesh: 1
---- !u!1 &1765471112
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1765471113}
-  - component: {fileID: 1765471114}
-  m_Layer: 0
-  m_Name: StudentIDManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1765471113
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1765471112}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1765471114
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1765471112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c014645bfd12a2b4289f09e5dca4bd9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1774634692
 GameObject:
   m_ObjectHideFlags: 0
@@ -5814,7 +5767,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   coinText: {fileID: 0}
-  userId: 
   currentCoins: 0
 --- !u!1 &2049626417
 GameObject:
@@ -9867,7 +9819,6 @@ SceneRoots:
   - {fileID: 315136621}
   - {fileID: 776522121}
   - {fileID: 1607335633}
-  - {fileID: 1765471113}
   - {fileID: 1228881206}
   - {fileID: 962220123}
   - {fileID: 1093428159}

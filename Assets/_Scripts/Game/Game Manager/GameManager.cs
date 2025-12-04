@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public AudioClip looseSound;
     public AudioClip levelCompleteSound;
     
-    private string studentId; // Added missing variable declaration
+
 
     // Play Loose effect
     // Play Win effect
@@ -46,24 +46,7 @@ public class GameManager : MonoBehaviour
             audioSource.volume = AudioManager.Instance.sfxVolume;
         }
 
-        // Get Student ID from StudentIdManager
-        studentId = StudentIdManager.Instance.StudentId;
-        
-        // Initialize ProgressManager if it doesn't exist
-        if (ProgressManager.Instance != null)
-        {
-            // Set student ID if needed
-            if (!string.IsNullOrEmpty(studentId))
-            {
-                ProgressManager.Instance.SetStudentId(studentId);
-                
-                // Load door data from the server
-                ProgressManager.Instance.LoadStudentDoorData();
-            }
-            else
-            {
-            }
-        }
+
     }
 
     public void GameOver()
@@ -98,26 +81,7 @@ public class GameManager : MonoBehaviour
         
         yield return new WaitForSeconds(1f);
         
-        // Check if ProgressManager has completed saving door data
-        if (ProgressManager.Instance != null)
-        {
-            // Force one final data reload to ensure latest data is saved
-            bool reloadSuccess = true;
-            try
-            {
-                ProgressManager.Instance.LoadStudentDoorData();
-            }
-            catch (System.Exception)
-            {
-                reloadSuccess = false;
-            }
-            
-            // Small delay to allow data reload to start
-            if (reloadSuccess)
-            {
-                yield return new WaitForSeconds(0.5f);
-            }
-        }
+
         
         // Reload the current scene
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;

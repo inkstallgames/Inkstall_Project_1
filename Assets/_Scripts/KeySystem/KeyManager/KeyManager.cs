@@ -24,6 +24,7 @@ public class KeyManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -33,25 +34,17 @@ public class KeyManager : MonoBehaviour
 
     private void Start()
     {
-        // Initialize the UI and fetch keys on start for testing
-
-        // Check if keyText is assigned
-        if (keyText == null)
-        {
-
-            // Try to find the key text component if not assigned
-            keyText = GameObject.FindObjectOfType<TextMeshProUGUI>();
-            if (keyText != null)
-            {
-            }
-        }
-        else
-        {
-            keyText.text = totalKeys.ToString();
-        }
-
-        // Load keys from PlayerPrefs
+        // Load keys from PlayerPrefs first
         LoadKeys();
+
+        // Update UI after loading keys
+        UpdateUIKeyCount();
+    }
+
+    private void OnEnable()
+    {
+        // Refresh UI when scene changes or object is enabled
+        UpdateUIKeyCount();
     }
 
     private void LoadKeys()
@@ -82,27 +75,22 @@ public class KeyManager : MonoBehaviour
     // Update the UI to show the current key count
     private void UpdateUIKeyCount()
     {
-
-        // Check if keyText is assigned
-        if (keyText == null)
+        // Update the UI text if assigned
+        if (keyText != null)
         {
-
-            // Try to find the key text component if not assigned
-            keyText = GameObject.FindObjectOfType<TextMeshProUGUI>();
-            if (keyText != null)
-            {
-                
-            }
-            else
-            {
-                return;
-            }
+            keyText.text = keysCount.ToString();
         }
+    }
 
-        // Update the UI text
-        keyText.text = keysCount.ToString();
-
-        // Verify the text was set correctly
+    /// <summary>
+    /// Set the key text UI reference (called by UI scripts in each scene)
+    /// </summary>
+    public void SetKeyTextUI(TextMeshProUGUI newKeyText)
+    {
+        keyText = newKeyText;
+        Debug.Log($"[KeyManager] UI Text reference updated. Current keys: {keysCount}");
+        UpdateUIKeyCount();
+        Debug.Log($"[KeyManager] UI updated. Text should now show: {keysCount}");
     }
 
     // Returns the current key count as an integer
@@ -133,6 +121,12 @@ public class KeyManager : MonoBehaviour
         keysCount--;
         SaveKeys();
         UpdateUIKeyCount();
+
+        // Notify the timer system that a key was used
+        if (KeyRefreshTimer.Instance != null)
+        {
+            KeyRefreshTimer.Instance.OnKeyUsed();
+        }
 
         return true;
     }

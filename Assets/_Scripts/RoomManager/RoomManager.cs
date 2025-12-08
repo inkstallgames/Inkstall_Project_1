@@ -103,6 +103,9 @@ public class RoomManager : MonoBehaviour
             
             // Add to tracking list
             alienProps.Add(obj);
+            
+            // Debug log which GameObject is selected as alien
+            Debug.Log($"[RoomManager] Alien #{i + 1} selected: {obj.name} (Position: {obj.transform.position})");
         }
         
         // Register with BombPhysics to receive notifications

@@ -9,7 +9,21 @@ public class AlienPropBehaviour : MonoBehaviour
     public enum BehaviourType { Random, Wiggle, FlickerLight, RotateTowardsPlayer, Breathing, ChangeSize }
     [SerializeField] private BehaviourType behaviour = BehaviourType.Random;  // visible in inspector
 
-    private Light light; // for flicker if it's a lamp
+    // --- Light (for lamps) ---
+    private Light propLight; // for flicker if it's a lamp
+
+    // --- Emission Glow ---
+    [Header("Emission Glow Settings")]
+    [SerializeField] private bool useEmissionGlow = true;
+    [SerializeField] private Color emissionBaseColor = Color.black;   // default "off" color
+    [SerializeField] private Color emissionGlowColor = Color.cyan;    // glow color
+    [SerializeField] private float emissionMaxIntensity = 1.8f;       // how strong the glow is
+    [SerializeField] private float emissionPulseDuration = 0.8f;      // seconds for a pulse
+
+    private Renderer propRenderer;
+    private MaterialPropertyBlock mpb;
+    private static readonly int EmissionColorID = Shader.PropertyToID("_EmissionColor");
+
     private Quaternion originalRotation;
 
     void Start()
@@ -18,7 +32,23 @@ public class AlienPropBehaviour : MonoBehaviour
         originalRotation = transform.rotation;
 
         // Check if this object has a Light (useful for lamp props)
-        light = GetComponentInChildren<Light>();
+        propLight = GetComponentInChildren<Light>();
+
+        // Grab renderer for emission
+        propRenderer = GetComponentInChildren<Renderer>();
+        if (propRenderer != null)
+        {
+            mpb = new MaterialPropertyBlock();
+            propRenderer.GetPropertyBlock(mpb);
+            mpb.SetColor(EmissionColorID, emissionBaseColor);
+            propRenderer.SetPropertyBlock(mpb);
+
+            // Make sure emission is enabled on the material
+            if (propRenderer.sharedMaterial != null)
+            {
+                propRenderer.sharedMaterial.EnableKeyword("_EMISSION");
+            }
+        }
 
         // If set to Random, pick a random behaviour at runtime
         if (behaviour == BehaviourType.Random)
@@ -27,7 +57,7 @@ public class AlienPropBehaviour : MonoBehaviour
         }
 
         // If Flicker chosen but no Light exists → reassign another behaviour
-        if (behaviour == BehaviourType.FlickerLight && light == null)
+        if (behaviour == BehaviourType.FlickerLight && propLight == null)
         {
             do
             {
@@ -52,6 +82,12 @@ public class AlienPropBehaviour : MonoBehaviour
             randomInterval = Random.Range(2f, 5f); // reset interval
 
             TriggerBehaviour();
+
+            // Every time a behaviour triggers, also pulse emission (if enabled)
+            if (useEmissionGlow)
+            {
+                StartCoroutine(EmissionPulse());
+            }
         }
     }
 
@@ -64,7 +100,7 @@ public class AlienPropBehaviour : MonoBehaviour
                 break;
 
             case BehaviourType.FlickerLight:
-                if (light != null) StartCoroutine(FlickerLight());
+                if (propLight != null) StartCoroutine(FlickerLight());
                 break;
 
             case BehaviourType.RotateTowardsPlayer:
@@ -90,8 +126,8 @@ public class AlienPropBehaviour : MonoBehaviour
 
         for (float t = 0; t < 0.5f; t += Time.deltaTime)
         {
-            float wiggleRot = Mathf.Sin(t * 20f) * 5f;  // rotation angle
-            float wiggleMove = Mathf.Sin(t * 40f) * 0.02f; // small position jiggle
+            float wiggleRot = Mathf.Sin(t * 20f) * 5f;      // rotation angle
+            float wiggleMove = Mathf.Sin(t * 40f) * 0.02f;  // small position jiggle
 
             transform.localEulerAngles = startRot + new Vector3(0, wiggleRot, 0);
             transform.localPosition = startPos + new Vector3(wiggleMove, 0, 0);
@@ -107,10 +143,10 @@ public class AlienPropBehaviour : MonoBehaviour
     {
         for (int i = 0; i < 5; i++)
         {
-            light.enabled = !light.enabled;
+            propLight.enabled = !propLight.enabled;
             yield return new WaitForSeconds(Random.Range(0.05f, 0.2f));
         }
-        light.enabled = true;
+        propLight.enabled = true;
     }
 
     void RotateTowardsPlayer()
@@ -175,5 +211,41 @@ public class AlienPropBehaviour : MonoBehaviour
         }
 
         transform.localScale = originalScale;
+    }
+
+    // === Emission Glow ===
+
+    IEnumerator EmissionPulse()
+    {
+        if (propRenderer == null || mpb == null) yield break;
+
+        float t = 0f;
+
+        // Simple up-and-down pulse using a sine curve
+        while (t < emissionPulseDuration)
+        {
+            t += Time.deltaTime;
+            float normalized = Mathf.Clamp01(t / emissionPulseDuration);
+
+            // 0 → 1 → 0 curve
+            float curve = Mathf.Sin(normalized * Mathf.PI);
+
+            Color target = emissionBaseColor + (emissionGlowColor * (curve * emissionMaxIntensity));
+            ApplyEmissionColor(target);
+
+            yield return null;
+        }
+
+        // Reset to base color
+        ApplyEmissionColor(emissionBaseColor);
+    }
+
+    void ApplyEmissionColor(Color color)
+    {
+        if (propRenderer == null || mpb == null) return;
+
+        propRenderer.GetPropertyBlock(mpb);
+        mpb.SetColor(EmissionColorID, color);
+        propRenderer.SetPropertyBlock(mpb);
     }
 }

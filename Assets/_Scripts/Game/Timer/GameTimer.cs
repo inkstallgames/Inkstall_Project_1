@@ -41,6 +41,13 @@ public class GameTimer : MonoBehaviour
 
     void OnEnable()
     {
+        // We will now start the timer manually, not OnEnable
+        // StartTimer(); 
+    }
+
+    public void StartTimer(float duration)
+    {
+        totalTime = duration;
         StartTimer();
     }
 

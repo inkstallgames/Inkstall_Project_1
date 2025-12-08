@@ -25,6 +25,7 @@ public class DoorInteraction : MonoBehaviour
 
     [Header("Timer Settings")]
     [SerializeField] private bool shouldStartTimer = false;
+    [SerializeField] private float timerDuration = 60f; // Default duration, can be changed in Inspector
 
     [Header("Game Activation Settings")]
     [SerializeField] private GameObject chemicalBomb;
@@ -38,7 +39,7 @@ public class DoorInteraction : MonoBehaviour
 
     // State
     private bool isDoorOpen = false;
-    private bool showUseKeyButton = false;      // Flag to track if we should show the use key button
+    private bool showUseKeyButton = false;  // Flag to track if we should show the use key button
     private bool gameElementsActivated = false;
     private bool isDoorMoving = false;
     private Quaternion closedRotation;
@@ -356,6 +357,11 @@ public class DoorInteraction : MonoBehaviour
             if (gameTimerContainer != null)
             {
                 gameTimerContainer.SetActive(true);
+                GameTimer timer = gameTimerContainer.GetComponentInChildren<GameTimer>();
+                if (timer != null)
+                {
+                    timer.StartTimer(timerDuration);
+                }
             }
         }
     }

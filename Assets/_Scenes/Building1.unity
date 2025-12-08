@@ -15387,6 +15387,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: e67acca8fdc8d304baccdf0ec4e7e4d8, type: 2}
     - target: {fileID: 1328271741645855876, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: doorID
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1328271741645855876, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: bombsUI
       value: 
       objectReference: {fileID: 1307166880}
@@ -15572,6 +15577,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: e67acca8fdc8d304baccdf0ec4e7e4d8, type: 2}
     - target: {fileID: 3573223830962627022, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: doorID
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3573223830962627022, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: bombsUI
       value: 
       objectReference: {fileID: 1307166880}
@@ -15688,7 +15698,7 @@ PrefabInstance:
     - target: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 50
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -15717,6 +15727,11 @@ PrefabInstance:
       objectReference: {fileID: 1949498769}
     - target: {fileID: 4310671615237114043, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: doorID
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4310671615237114043, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: bombsUI
       value: 
       objectReference: {fileID: 1307166880}
@@ -15743,7 +15758,7 @@ PrefabInstance:
     - target: {fileID: 4310671615237114043, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 40
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4310671615237114043, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -15917,6 +15932,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: e67acca8fdc8d304baccdf0ec4e7e4d8, type: 2}
     - target: {fileID: 6526205679978218838, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: doorID
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6526205679978218838, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: bombsUI
       value: 
       objectReference: {fileID: 1307166880}
@@ -15943,7 +15963,7 @@ PrefabInstance:
     - target: {fileID: 6526205679978218838, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 30
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 6526205679978218838, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}

@@ -47,6 +47,12 @@ public class DoorInteraction : MonoBehaviour
     private AudioSource audioSource;
     private GameTimer attachedTimer;
     public Animator lockedDoorAnimator;
+    
+    // Event to notify when door is unlocked
+    public delegate void DoorUnlockedHandler();
+    public event DoorUnlockedHandler OnDoorUnlocked;
+    
+    private bool isUnlocked = false;
 
     private void Awake()
     {
@@ -108,6 +114,9 @@ public class DoorInteraction : MonoBehaviour
     {
         // Unsubscribe from the event when this object is destroyed
         ProgressManager.OnDataLoaded -= OnProgressDataLoaded;
+        
+        // Clear all event subscribers
+        OnDoorUnlocked = null;
     }
 
     private void OnProgressDataLoaded()
@@ -239,11 +248,23 @@ public class DoorInteraction : MonoBehaviour
     public void SetUnlockable(bool unlockable)
     {
         isUnlockable = unlockable;
+        if (isUnlockable && !isUnlocked)
+        {
+            isUnlocked = true;
+            // Notify listeners that the door has been unlocked
+            OnDoorUnlocked?.Invoke();
+        }
         if (ProgressManager.Instance != null)
         {
             var updates = new System.Collections.Generic.Dictionary<string, object> { { "isUnlockable", unlockable } };
             ProgressManager.Instance.StartCoroutine(ProgressManager.Instance.UpdateDoorStatus(doorID, updates));
         }
+        UpdateDoorVisuals();
+    }
+
+    public bool IsUnlocked()
+    {
+        return isUnlocked;
     }
 
     public void SetRoomCompleted(bool completed)

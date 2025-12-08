@@ -25,6 +25,7 @@ public class RoomManager : MonoBehaviour
 
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props
+    private bool isRoomActive = false;  // Track if this room is active
 
     private void OnEnable()
     {
@@ -52,9 +53,29 @@ public class RoomManager : MonoBehaviour
         // Validate door references
         if (thisRoomDoor == null)
         {
+            Debug.LogError("RoomManager: No door reference assigned!");
             return;
         }
 
+        // Register with the door to be activated when it's unlocked
+        thisRoomDoor.OnDoorUnlocked += ActivateRoom;
+        
+        // If the door is already unlocked, activate the room immediately
+        if (thisRoomDoor.IsUnlocked())
+        {
+            ActivateRoom();
+        }
+        
+        // Register with BombPhysics to receive notifications
+        BombPhysics.OnAlienDestroyed += OnAlienCaught;
+    }
+    
+    // Method to activate the room and set up aliens
+    private void ActivateRoom()
+    {
+        if (isRoomActive) return; // Prevent multiple activations
+        isRoomActive = true;
+        
         // Collect all children
         List<Transform> children = new List<Transform>();
         foreach (Transform child in transform)
@@ -86,6 +107,7 @@ public class RoomManager : MonoBehaviour
             if (doorData != null && doorData.isRoomCompleted)
             {
                 aliensRemaining = 0; // Room is already completed
+                return;
             }
         }
 
@@ -107,15 +129,18 @@ public class RoomManager : MonoBehaviour
             // Debug log which GameObject is selected as alien
             Debug.Log($"[RoomManager] Alien #{i + 1} selected: {obj.name} (Position: {obj.transform.position})");
         }
-        
-        // Register with BombPhysics to receive notifications
-        BombPhysics.OnAlienDestroyed += OnAlienCaught;
     }
     
     private void OnDestroy()
     {
-        // Unregister from event when destroyed
+        // Unregister from events when destroyed
         BombPhysics.OnAlienDestroyed -= OnAlienCaught;
+        
+        // Unregister from door event
+        if (thisRoomDoor != null)
+        {
+            thisRoomDoor.OnDoorUnlocked -= ActivateRoom;
+        }
     }
     
     // Called when an alien is caught

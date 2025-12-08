@@ -353,6 +353,12 @@ public class GameTimer : MonoBehaviour
     {
         timerRunning = false;
         StopTicking();
+        
+        // Update UI to show the timer is stopped
+        if (timerText != null)
+        {
+            timerText.color = Color.green; // Indicate success
+        }
     }
 
     public bool IsRunning() => timerRunning;

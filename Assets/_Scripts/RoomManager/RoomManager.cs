@@ -15,6 +15,7 @@ public class RoomManager : MonoBehaviour
     
     [Header("Door & Room Setting")]
     [SerializeField] private DoorInteraction thisRoomDoor;
+    [SerializeField] private GameTimer roomTimer;  // Reference to the room's timer
     [SerializeField] private bool isFinalRoom = false;          // Is this the final room in the level?
 
     [SerializeField] private int alienFoundCoins = 20; 
@@ -153,6 +154,15 @@ public class RoomManager : MonoBehaviour
             aliensRemaining--;
             
             UpdateRemainingAliensUI();
+            
+            // If all aliens are caught, stop the timer
+            if (aliensRemaining <= 0)
+            {
+                if (roomTimer != null)
+                {
+                    roomTimer.StopTimer();
+                }
+            }
             
             CheckRoomCompletion();
         }

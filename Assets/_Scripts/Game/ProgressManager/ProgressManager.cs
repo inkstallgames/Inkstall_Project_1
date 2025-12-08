@@ -23,7 +23,6 @@ public class StudentDoorsData
 }
 
 
-
 public class ProgressManager : MonoBehaviour
 {
     private static ProgressManager _instance;

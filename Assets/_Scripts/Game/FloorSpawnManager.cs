@@ -116,6 +116,22 @@ public class FloorSpawnManager : MonoBehaviour
         if (!isInitialized) Initialize();
         UpdateSpawnPointFromProgress();
     }
+    
+    // Call this when a door is unlocked with a key
+    public void OnDoorUnlocked(int doorId)
+    {
+        if (!isInitialized) Initialize();
+        
+        // Calculate which floor this door is on (1-2 = floor 0, 3-4 = floor 1, 5-6 = floor 2)
+        int doorFloor = (doorId - 1) / 2;
+        
+        // Only update if this door is on a higher floor than current
+        if (doorFloor > currentFloor)
+        {
+            Debug.Log($"[FloorSpawnManager] Door {doorId} unlocked on floor {doorFloor}, updating spawn point");
+            SetCurrentFloor(doorFloor);
+        }
+    }
 
     public (Vector3 position, Quaternion rotation) GetSpawnPoint()
     {

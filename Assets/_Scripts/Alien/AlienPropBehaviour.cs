@@ -17,7 +17,7 @@ public class AlienPropBehaviour : MonoBehaviour
     [SerializeField] private bool useEmissionGlow = true;
     [SerializeField] private Color emissionBaseColor = Color.black;   // default "off" color
     [SerializeField] private Color emissionGlowColor = Color.cyan;    // glow color
-    [SerializeField] private float emissionMaxIntensity = 1f;       // how strong the glow is
+    [SerializeField] private float emissionMaxIntensity = 0.8f;       // how strong the glow is
     [SerializeField] private float emissionPulseDuration = 0.3f;      // seconds for a pulse
 
     private Renderer propRenderer;

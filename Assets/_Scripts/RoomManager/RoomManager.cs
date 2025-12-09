@@ -193,6 +193,12 @@ public class RoomManager : MonoBehaviour
 
         // Mark room as completed - this will handle all door updates
         ProgressManager.Instance.MarkRoomAsCompleted(currentDoorID);
+        
+        // Update spawn point if this is a higher floor
+        if (FloorSpawnManager.Instance != null)
+        {
+            FloorSpawnManager.Instance.OnRoomCompleted(currentDoorID);
+        }
 
         // Add coins for room completion
         if (CoinsManager.Instance != null)

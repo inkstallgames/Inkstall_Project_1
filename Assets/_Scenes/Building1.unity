@@ -12587,7 +12587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306a4b653742dd24eb770f020132ae08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfAliens: 1
+  numberOfAliens: 2
   aliensRemaining: 0
   remainingAliensTextCount: {fileID: 191323256}
   thisRoomDoor: {fileID: 1079998516}
@@ -16054,7 +16054,7 @@ PrefabInstance:
     - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -16204,7 +16204,7 @@ PrefabInstance:
     - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -16274,7 +16274,7 @@ PrefabInstance:
     - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -16314,7 +16314,7 @@ PrefabInstance:
     - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}

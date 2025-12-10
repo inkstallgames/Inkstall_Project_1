@@ -141,9 +141,9 @@ public class AdManager : MonoBehaviour
     {
         ShowRewarded((Reward reward) => {
             // This runs when the player earns the reward
-            if (CoinsManager.Instance != null)
+            if (KeyManager.Instance != null)
             {
-                CoinsManager.Instance.AddCoins(25, "Watched Rewarded Ad");
+                KeyManager.Instance.AddKeys(1);
             }
         });
     }

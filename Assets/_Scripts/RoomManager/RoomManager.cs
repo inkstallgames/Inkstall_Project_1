@@ -206,6 +206,16 @@ public class RoomManager : MonoBehaviour
             CoinsManager.Instance.AddCoins(roomCompletionCoins, roomCompletionDescription);
         }
 
+        // Show interstitial ad after a small delay
+        if (AdManager.Instance != null)
+        {
+            StartCoroutine(ShowInterstitialAfterDelay(0.5f));
+        }
+        else
+        {
+            Debug.LogWarning("AdManager instance not found. Skipping ad.");
+        }
+
         // Trigger game win
         if (GameManager.Instance != null)
         {
@@ -214,6 +224,12 @@ public class RoomManager : MonoBehaviour
     }
     
     // Updates the remaining aliens count UI
+    private IEnumerator ShowInterstitialAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        AdManager.Instance.ShowInterstitial();
+    }
+
     private void UpdateRemainingAliensUI()
     {
         if (remainingAliensTextCount != null)

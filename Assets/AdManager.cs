@@ -96,7 +96,7 @@ public class AdManager : MonoBehaviour
         });
     }
 
-    public void ShowInterstitial()
+    public void ShowInterstitialAd()
     {
         if (interstitialAd != null && interstitialAd.CanShowAd())
         {
@@ -133,6 +133,18 @@ public class AdManager : MonoBehaviour
 
             rewardedAd = ad;
             Debug.Log("Rewarded ad loaded successfully!");
+        });
+    }
+
+    // Call this method from Unity UI button
+    public void ShowRewardedAd()
+    {
+        ShowRewarded((Reward reward) => {
+            // This runs when the player earns the reward
+            if (CoinsManager.Instance != null)
+            {
+                CoinsManager.Instance.AddCoins(25, "Watched Rewarded Ad");
+            }
         });
     }
 

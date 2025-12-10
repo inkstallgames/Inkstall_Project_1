@@ -227,7 +227,7 @@ public class RoomManager : MonoBehaviour
     private IEnumerator ShowInterstitialAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        AdManager.Instance.ShowInterstitial();
+        AdManager.Instance.ShowInterstitialAd();
     }
 
     private void UpdateRemainingAliensUI()

@@ -9,18 +9,18 @@ public class AdManager : MonoBehaviour
 
     [Header("AdMob App ID")]
     [Tooltip("Find this in your AdMob dashboard")]
-    public string androidAppId = "ca-app-pub-8376488234284532~5753664751";
-    public string iosAppId = "ca-app-pub-8376488234284532~2318590859";
+    private string androidAppId = "ca-app-pub-8376488234284532~5753664751";
+    private string iosAppId = "ca-app-pub-8376488234284532~2318590859";
 
     [Header("Interstitial Ad IDs")]
     [Tooltip("Find these in your AdMob dashboard")]
-    public string androidInterstitialId = "ca-app-pub-8376488234284532/7408918392";
-    public string iosInterstitialId = "";
+    private string androidInterstitialId = "ca-app-pub-8376488234284532/7408918392";
+    private string iosInterstitialId = "ca-app-pub-8376488234284532/7302775482";
 
     [Header("Rewarded Ad IDs")]
     [Tooltip("Find these in your AdMob dashboard")]
-    public string androidRewardedId = "ca-app-pub-8376488234284532/2867038155";
-    public string iosRewardedId = "";
+    private string androidRewardedId = "ca-app-pub-8376488234284532/2867038155";
+    private string iosRewardedId = "ca-app-pub-8376488234284532/9427758836";
 
     // Runtime properties
     private string _interstitialId;

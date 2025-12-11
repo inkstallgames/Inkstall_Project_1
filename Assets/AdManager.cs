@@ -2,6 +2,7 @@ using UnityEngine;
 using GoogleMobileAds;
 using GoogleMobileAds.Api;
 using System;
+using System.Collections.Generic;
 
 public class AdManager : MonoBehaviour
 {
@@ -25,9 +26,14 @@ public class AdManager : MonoBehaviour
     // Runtime properties
     private string _interstitialId;
     private string _rewardedId;
+    private int _maxRetryAttempts = 3;
+    private int _currentInterstitialRetry = 0;
+    private int _currentRewardedRetry = 0;
 
     private InterstitialAd interstitialAd;
     private RewardedAd rewardedAd;
+    private bool _isInterstitialLoading = false;
+    private bool _isRewardedLoading = false;
 
     private void Awake()
     {
@@ -59,6 +65,14 @@ public class AdManager : MonoBehaviour
         _rewardedId = "unexpected_platform";
 #endif
 
+        // Basic configuration for live ads
+        var requestConfiguration = new RequestConfiguration
+        {
+            TagForChildDirectedTreatment = TagForChildDirectedTreatment.Unspecified,
+            TagForUnderAgeOfConsent = TagForUnderAgeOfConsent.Unspecified
+        };
+        MobileAds.SetRequestConfiguration(requestConfiguration);
+
         // Initialize the Mobile Ads SDK
         MobileAds.Initialize(initStatus => 
         {
@@ -72,6 +86,9 @@ public class AdManager : MonoBehaviour
     // -------------------- Interstitial Ad--------------------
     public void RequestInterstitial()
     {
+        if (_isInterstitialLoading) return;
+        _isInterstitialLoading = true;
+
         // Clean up the old ad before loading a new one.
         if (interstitialAd != null)
         {
@@ -81,18 +98,45 @@ public class AdManager : MonoBehaviour
 
         var adRequest = new AdRequest();
         
-        // Create new interstitial ad
+        Debug.Log("Loading interstitial ad...");
         InterstitialAd.Load(_interstitialId, adRequest, (InterstitialAd ad, LoadAdError error) =>
         {
+            _isInterstitialLoading = false;
+            
             // If error is not null, the load request failed.
             if (error != null || ad == null)
             {
-                Debug.LogError("Interstitial ad failed to load: " + error);
+                _currentInterstitialRetry++;
+                if (_currentInterstitialRetry < _maxRetryAttempts)
+                {
+                    Debug.LogWarning($"Interstitial ad failed to load (Attempt {_currentInterstitialRetry}/{_maxRetryAttempts}): {error?.GetMessage()}");
+                    // Retry after a delay
+                    Invoke(nameof(RequestInterstitial), 2f);
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load interstitial ad after {_maxRetryAttempts} attempts: {error?.GetMessage()}");
+                    _currentInterstitialRetry = 0;
+                }
                 return;
             }
 
+            _currentInterstitialRetry = 0;
             interstitialAd = ad;
             Debug.Log("Interstitial ad loaded successfully!");
+            
+            // Register event handlers
+            ad.OnAdFullScreenContentClosed += () =>
+            {
+                Debug.Log("Interstitial ad closed.");
+                RequestInterstitial(); // Pre-load the next ad
+            };
+            
+            ad.OnAdFullScreenContentFailed += (AdError error) =>
+            {
+                Debug.LogError($"Interstitial ad failed to show: {error.GetMessage()}");
+                RequestInterstitial(); // Try to load another ad
+            };
         });
     }
 
@@ -100,18 +144,24 @@ public class AdManager : MonoBehaviour
     {
         if (interstitialAd != null && interstitialAd.CanShowAd())
         {
+            Debug.Log("Showing interstitial ad...");
             interstitialAd.Show();
+            return;
         }
-        else
-        {
-            Debug.Log("Interstitial ad is not ready yet.");
-            RequestInterstitial();
-        }
+        
+        Debug.Log("Interstitial ad is not ready yet. Requesting a new one...");
+        RequestInterstitial();
+        
+        // If we don't have an ad ready, you might want to continue the game
+        // or show a message to the user
     }
 
     // -------------------- Rewarded Ad--------------------
     public void RequestRewarded()
     {
+        if (_isRewardedLoading) return;
+        _isRewardedLoading = true;
+
         // Clean up the old ad before loading a new one.
         if (rewardedAd != null)
         {
@@ -121,18 +171,45 @@ public class AdManager : MonoBehaviour
 
         var adRequest = new AdRequest();
         
-        // Create new rewarded ad
+        Debug.Log("Loading rewarded ad...");
         RewardedAd.Load(_rewardedId, adRequest, (RewardedAd ad, LoadAdError error) =>
         {
+            _isRewardedLoading = false;
+            
             // If error is not null, the load request failed.
             if (error != null || ad == null)
             {
-                Debug.LogError("Rewarded ad failed to load: " + error);
+                _currentRewardedRetry++;
+                if (_currentRewardedRetry < _maxRetryAttempts)
+                {
+                    Debug.LogWarning($"Rewarded ad failed to load (Attempt {_currentRewardedRetry}/{_maxRetryAttempts}): {error?.GetMessage()}");
+                    // Retry after a delay
+                    Invoke(nameof(RequestRewarded), 2f);
+                }
+                else
+                {
+                    Debug.LogError($"Failed to load rewarded ad after {_maxRetryAttempts} attempts: {error?.GetMessage()}");
+                    _currentRewardedRetry = 0;
+                }
                 return;
             }
 
+            _currentRewardedRetry = 0;
             rewardedAd = ad;
             Debug.Log("Rewarded ad loaded successfully!");
+            
+            // Register event handlers
+            ad.OnAdFullScreenContentClosed += () =>
+            {
+                Debug.Log("Rewarded ad closed.");
+                RequestRewarded(); // Pre-load the next ad
+            };
+            
+            ad.OnAdFullScreenContentFailed += (AdError adError) =>
+            {
+                Debug.LogError($"Rewarded ad failed to show: {adError.GetMessage()}");
+                RequestRewarded(); // Try to load another ad
+            };
         });
     }
 
@@ -152,16 +229,20 @@ public class AdManager : MonoBehaviour
     {
         if (rewardedAd != null && rewardedAd.CanShowAd())
         {
+            Debug.Log("Showing rewarded ad...");
             // Called when the user should be rewarded for interacting with the ad.
             rewardedAd.Show((Reward reward) =>
             {
+                Debug.Log("User earned reward: " + reward.Amount + " " + reward.Type);
                 rewardCallback?.Invoke(reward);
             });
+            return;
         }
-        else
-        {
-            Debug.Log("Rewarded ad is not ready yet.");
-            RequestRewarded();
-        }
+        
+        Debug.Log("Rewarded ad is not ready yet. Requesting a new one...");
+        RequestRewarded();
+        
+        // If you want to notify the user that the ad isn't ready
+        // You could show a UI message here
     }
 }

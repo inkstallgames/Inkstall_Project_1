@@ -6421,12 +6421,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 033e8ccbd63053941b4a3bdb8acaa5bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  androidAppId: ca-app-pub-8376488234284532~5753664751
-  iosAppId: ca-app-pub-8376488234284532~2318590859
-  androidInterstitialId: ca-app-pub-8376488234284532/7408918392
-  iosInterstitialId: 
-  androidRewardedId: ca-app-pub-8376488234284532/2867038155
-  iosRewardedId: 
 --- !u!4 &787823714
 Transform:
   m_ObjectHideFlags: 0
@@ -9401,7 +9395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46fb8b902a9e69e438ff0aa03127239d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxBombs: 6
+  maxBombs: 5
   currentBombs: 0
   bombsContainerUI: {fileID: 1307166877}
   bombsUIElements:

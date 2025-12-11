@@ -95,6 +95,27 @@ public class ChemicalBombBehaviour : MonoBehaviour
 
     public void ThrowChemicalBall()
     {
+        // Debug log to see when the method is called
+        Debug.Log($"ThrowChemicalBall called. Time: {Time.time}");
+        
+        // Check if timer exists and if time is up
+        if (GameTimer.instance != null)
+        {
+            float remainingTime = GameTimer.instance.GetRemainingTime();
+            Debug.Log($"Timer check - Running: {GameTimer.instance.timerRunning}, Remaining: {remainingTime}");
+            
+            // Check if timer is not running OR if current time is less than or equal to zero
+            if (!GameTimer.instance.timerRunning || remainingTime <= 0f)
+            {
+                Debug.Log("Cannot throw bombs - time's up!");
+                return;
+            }
+        }
+        else
+        {
+            Debug.Log("GameTimer.instance is null!");
+        }
+        
         // Check if we have ammo available
         if (ChemicalBombManager.Instance != null && ChemicalBombManager.Instance.currentBombs <= 0)
         {

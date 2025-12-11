@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public bool isGameOver { get; private set; }
 
     private AudioSource audioSource;
     [SerializeField] private AudioClip doorCloseSound;
@@ -51,6 +52,9 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        // Set game over flag
+        isGameOver = true;
+        
         // Level Loose effect
         // Play Loose Sound        
         
@@ -81,7 +85,8 @@ public class GameManager : MonoBehaviour
         
         yield return new WaitForSeconds(1f);
         
-
+        // Reset game over state before reloading
+        isGameOver = false;
         
         // Reload the current scene
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;

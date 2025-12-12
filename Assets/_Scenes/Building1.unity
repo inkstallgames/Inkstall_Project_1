@@ -9080,7 +9080,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   keysCount: 0
   totalKeys: 0
-  keyText: {fileID: 0}
+  keyText: {fileID: 197444554}
+  keyCollectSound: {fileID: 8300000, guid: 897126e867900d04db0c58a6da3aefa6, type: 3}
 --- !u!1001 &1237548252
 PrefabInstance:
   m_ObjectHideFlags: 0

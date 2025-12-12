@@ -171,6 +171,11 @@ public class AdManager : MonoBehaviour
 
         var adRequest = new AdRequest();
         
+        // Add test device ID for iOS
+        #if UNITY_IOS
+        adRequest.Extras.Add("test_device_id", "69d6891543cce296d6693e79cd17ec9c");
+        #endif
+        
         Debug.Log("Loading rewarded ad...");
         RewardedAd.Load(_rewardedId, adRequest, (RewardedAd ad, LoadAdError error) =>
         {

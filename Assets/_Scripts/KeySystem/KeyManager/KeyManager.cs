@@ -16,6 +16,8 @@ public class KeyManager : MonoBehaviour
     [SerializeField] private int keysCount = 10;  // Default value set to 10
     [SerializeField] private int totalKeys = 10;  // Default value set to 10
     [SerializeField] private TextMeshProUGUI keyText;
+    [Header("Sound Effects")]
+    [SerializeField] private AudioClip keyCollectSound; // Sound to play when keys are added
 
 
     private void Awake()
@@ -64,10 +66,26 @@ public class KeyManager : MonoBehaviour
 
     public void AddKeys(int amount)
     {
+        int previousCount = keysCount;
         keysCount += amount;
         totalKeys += amount;
         SaveKeys();
         UpdateUIKeyCount();
+        
+        // Play sound effect if keys were actually added
+        if (amount > 0 && keyCollectSound != null)
+        {
+            // Play the sound at the camera's position to ensure it's heard
+            if (Camera.main != null)
+            {
+                AudioManager.Instance.PlaySFXAtPoint(keyCollectSound, Camera.main.transform.position);
+            }
+            else
+            {
+                // Fallback to world origin if no main camera is found
+                AudioManager.Instance.PlaySFXAtPoint(keyCollectSound, Vector3.zero);
+            }
+        }
     }
 
 

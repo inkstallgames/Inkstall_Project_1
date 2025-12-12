@@ -50,36 +50,43 @@ public class AdManager : MonoBehaviour
 
     private void Start()
     {
-        // Set platform-specific IDs
-#if UNITY_ANDROID
-        string appId = androidAppId;
-        _interstitialId = androidInterstitialId;
-        _rewardedId = androidRewardedId;
-#elif UNITY_IPHONE
-        string appId = iosAppId;
-        _interstitialId = iosInterstitialId;
-        _rewardedId = iosRewardedId;
-#else
-        string appId = "unexpected_platform";
-        _interstitialId = "unexpected_platform";
-        _rewardedId = "unexpected_platform";
-#endif
+        // Set platform-specific IDs and log them
+        #if UNITY_ANDROID
+            string appId = androidAppId;
+            _interstitialId = androidInterstitialId;
+            _rewardedId = androidRewardedId;
+            Debug.Log($"[AdManager] Android setup - App ID: {appId}");
+        #elif UNITY_IPHONE
+            string appId = iosAppId;
+            _interstitialId = iosInterstitialId;
+            _rewardedId = iosRewardedId;
+            Debug.Log($"[AdManager] iOS setup - App ID: {appId}");
+            Debug.Log($"[AdManager] iOS Test Device ID: 69d6891543cce296d6693e79cd17ec9c");
+        #else
+            string appId = "unexpected_platform";
+            _interstitialId = "unexpected_platform";
+            _rewardedId = "unexpected_platform";
+            Debug.LogError("[AdManager] Unsupported platform for ads");
+        #endif
 
         // Basic configuration for live ads
         var requestConfiguration = new RequestConfiguration
         {
             TagForChildDirectedTreatment = TagForChildDirectedTreatment.Unspecified,
-            TagForUnderAgeOfConsent = TagForUnderAgeOfConsent.Unspecified
+            TagForUnderAgeOfConsent = TagForUnderAgeOfConsent.Unspecified,
+            TestDeviceIds = new List<string> { "69d6891543cce296d6693e79cd17ec9c" }
         };
         MobileAds.SetRequestConfiguration(requestConfiguration);
 
-        // Initialize the Mobile Ads SDK
+        // Initialize the Mobile Ads SDK with more detailed logging
+        Debug.Log("[AdManager] Initializing Mobile Ads SDK...");
         MobileAds.Initialize(initStatus => 
         {
-            Debug.Log("Mobile Ads SDK initialized successfully!");
-            // Now that the SDK is initialized, request ads
-            RequestInterstitial();
-            RequestRewarded();
+            Debug.Log("[AdManager] Mobile Ads SDK initialized successfully!");
+            Debug.Log($"[AdManager] Adapter status: {initStatus}");
+            
+            // Request ads after a short delay to ensure everything is ready
+            Invoke(nameof(LoadAllAds), 0.5f);
         });
     }
 
@@ -98,7 +105,12 @@ public class AdManager : MonoBehaviour
 
         var adRequest = new AdRequest();
         
-        Debug.Log("Loading interstitial ad...");
+        // Add test device ID for iOS
+        #if UNITY_IOS
+        adRequest.Extras.Add("test_device_id", "69d6891543cce296d6693e79cd17ec9c");
+        #endif
+        
+        Debug.Log($"[AdManager] Loading interstitial ad with ID: {_interstitialId}");
         InterstitialAd.Load(_interstitialId, adRequest, (InterstitialAd ad, LoadAdError error) =>
         {
             _isInterstitialLoading = false;
@@ -159,24 +171,38 @@ public class AdManager : MonoBehaviour
     // -------------------- Rewarded Ad--------------------
     public void RequestRewarded()
     {
-        if (_isRewardedLoading) return;
+        if (_isRewardedLoading) 
+        {
+            Debug.Log("[AdManager] Rewarded ad is already loading, skipping duplicate request");
+            return;
+        }
+        
         _isRewardedLoading = true;
+        Debug.Log("[AdManager] Starting to load rewarded ad...");
 
         // Clean up the old ad before loading a new one.
         if (rewardedAd != null)
         {
+            Debug.Log("[AdManager] Cleaning up previous rewarded ad");
             rewardedAd.Destroy();
             rewardedAd = null;
+        }
+        else
+        {
+            Debug.Log("[AdManager] No previous rewarded ad to clean up");
         }
 
         var adRequest = new AdRequest();
         
         // Add test device ID for iOS
         #if UNITY_IOS
+        Debug.Log("[AdManager] Setting up iOS test device");
         adRequest.Extras.Add("test_device_id", "69d6891543cce296d6693e79cd17ec9c");
         #endif
         
-        Debug.Log("Loading rewarded ad...");
+        Debug.Log($"[AdManager] Loading rewarded ad with ID: {_rewardedId}");
+        Debug.Log($"[AdManager] Ad request configuration: {adRequest}");
+        
         RewardedAd.Load(_rewardedId, adRequest, (RewardedAd ad, LoadAdError error) =>
         {
             _isRewardedLoading = false;
@@ -218,6 +244,14 @@ public class AdManager : MonoBehaviour
         });
     }
 
+    // Load both interstitial and rewarded ads
+    private void LoadAllAds()
+    {
+        Debug.Log("[AdManager] Loading all ads...");
+        RequestInterstitial();
+        RequestRewarded();
+    }
+
     // Call this method from Unity UI button
     public void ShowRewardedAd()
     {
@@ -232,16 +266,56 @@ public class AdManager : MonoBehaviour
 
     public void ShowRewarded(Action<Reward> rewardCallback = null)
     {
-        if (rewardedAd != null && rewardedAd.CanShowAd())
+        Debug.Log("[AdManager] ShowRewarded called");
+        
+        if (rewardedAd == null)
         {
-            Debug.Log("Showing rewarded ad...");
-            // Called when the user should be rewarded for interacting with the ad.
+            Debug.LogError("[AdManager] Rewarded ad is null. Please ensure the ad is loaded before showing.");
+            // Try to load a new ad if none exists
+            RequestRewarded();
+            return;
+        }
+        
+        if (!rewardedAd.CanShowAd())
+        {
+            Debug.LogError("[AdManager] Rewarded ad is not ready to show. State: " + rewardedAd.GetResponseInfo());
+            // Try to load a new ad if current one can't be shown
+            RequestRewarded();
+            return;
+        }
+        
+        try
+        {
+            Debug.Log("[AdManager] Showing rewarded ad...");
+            // Register callback for when the ad is closed
+            rewardedAd.OnAdFullScreenContentClosed += () => 
+            {
+                Debug.Log("[AdManager] Rewarded ad closed");
+                // Pre-load the next ad
+                RequestRewarded();
+            };
+            
+            // Register callback for when the ad fails to show
+            rewardedAd.OnAdFullScreenContentFailed += (AdError error) =>
+            {
+                Debug.LogError($"[AdManager] Rewarded ad failed to show: {error?.GetMessage()}");
+                // Try to load a new ad if showing fails
+                RequestRewarded();
+            };
+            
+            // Show the ad and handle the reward
             rewardedAd.Show((Reward reward) =>
             {
-                Debug.Log("User earned reward: " + reward.Amount + " " + reward.Type);
+                Debug.Log($"[AdManager] User earned reward: {reward.Amount} {reward.Type}");
                 rewardCallback?.Invoke(reward);
             });
-            return;
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[AdManager] Exception while showing rewarded ad: {e.Message}");
+            Debug.LogException(e);
+            // Try to load a new ad if there was an exception
+            RequestRewarded();
         }
         
         Debug.Log("Rewarded ad is not ready yet. Requesting a new one...");

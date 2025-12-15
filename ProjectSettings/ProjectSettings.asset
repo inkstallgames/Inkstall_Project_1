@@ -925,7 +925,8 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Purchasing: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -948,7 +949,7 @@ PlayerSettings:
   cloudProjectId: b4abfdf5-600f-47f4-8eca-b3e9aed8c4a5
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: Prop_Hunt
+  projectName: Xeno Attack
   organizationId: inkstallsushant
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

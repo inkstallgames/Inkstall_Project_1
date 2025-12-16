@@ -55184,6 +55184,7 @@ MonoBehaviour:
   keysCount: 0
   totalKeys: 0
   keyText: {fileID: 2322437273294813703}
+  keyCollectSound: {fileID: 0}
 --- !u!1001 &788885689
 PrefabInstance:
   m_ObjectHideFlags: 0

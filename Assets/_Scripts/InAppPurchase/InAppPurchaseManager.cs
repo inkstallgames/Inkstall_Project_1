@@ -11,7 +11,7 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
 
     void Awake()
     {
-        // Prevent duplicate managers
+        // Prevent duplicate instances
         if (FindObjectsOfType<IAPRemoveAdsManager>().Length > 1)
         {
             Destroy(gameObject);
@@ -49,9 +49,16 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
         CheckExistingPurchase();
     }
 
+    // OLD Unity IAP versions
     public void OnInitializeFailed(InitializationFailureReason error)
     {
         Debug.LogError("IAP Initialization Failed: " + error);
+    }
+
+    // NEW Unity IAP versions
+    public void OnInitializeFailed(InitializationFailureReason error, string message)
+    {
+        Debug.LogError($"IAP Initialization Failed: {error}, {message}");
     }
 
     // ===================== BUY =====================
@@ -110,7 +117,6 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
     void DisableAds()
     {
         Debug.Log("Ads Disabled");
-
         // Example:
         // AdsManager.Instance.DisableAds();
     }

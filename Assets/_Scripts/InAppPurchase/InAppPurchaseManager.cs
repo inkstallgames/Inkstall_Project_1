@@ -1,153 +1,123 @@
-// using UnityEngine;
-// using UnityEngine.Purchasing;
-// using UnityEngine.Purchasing.Security;
+using UnityEngine;
+using UnityEngine.Purchasing;
 
-// public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
-// {
-//     private static IStoreController storeController;
-//     private static IExtensionProvider storeExtensionProvider;
+public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
+{
+    private static IStoreController storeController;
+    private static IExtensionProvider storeExtensionProvider;
+    private static bool isInitialized = false;
 
-//     public static string REMOVE_ADS = "remove_ads";
+    public static string REMOVE_ADS = "remove_ads";
 
-//     void Awake()
-//     {
-//         DontDestroyOnLoad(gameObject);
-//     }
+    void Awake()
+    {
+        // Prevent duplicate managers
+        if (FindObjectsOfType<IAPRemoveAdsManager>().Length > 1)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
-//     void Start()
-//     {
-//         if (storeController == null)
-//         {
-//             InitializePurchasing();
-//         }
-//     }
+        DontDestroyOnLoad(gameObject);
+    }
 
-//     void InitializePurchasing()
-//     {
-//         var builder = ConfigurationBuilder.Instance(
-//             StandardPurchasingModule.Instance());
+    void Start()
+    {
+        if (!isInitialized)
+        {
+            InitializePurchasing();
+            isInitialized = true;
+        }
+    }
 
-//         builder.AddProduct(REMOVE_ADS, ProductType.NonConsumable);
+    // ===================== INIT =====================
+    void InitializePurchasing()
+    {
+        var builder = ConfigurationBuilder.Instance(
+            StandardPurchasingModule.Instance());
 
-//         UnityPurchasing.Initialize(this, builder);
-//     }
+        builder.AddProduct(REMOVE_ADS, ProductType.NonConsumable);
 
-//     // ===================== BUY =====================
-//     public void BuyRemoveAds()
-//     {
-//         if (storeController == null) return;
+        UnityPurchasing.Initialize(this, builder);
+    }
 
-//         Product product = storeController.products.WithID(REMOVE_ADS);
+    public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
+    {
+        storeController = controller;
+        storeExtensionProvider = extensions;
 
-//         if (product != null && product.availableToPurchase)
-//         {
-//             storeController.InitiatePurchase(product);
-//         }
-//     }
+        CheckExistingPurchase();
+    }
 
-//     // ===================== INIT =====================
-//     public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
-//     {
-//         storeController = controller;
-//         storeExtensionProvider = extensions;
+    public void OnInitializeFailed(InitializationFailureReason error)
+    {
+        Debug.LogError("IAP Initialization Failed: " + error);
+    }
 
-//         CheckExistingPurchase();
-//     }
+    // ===================== BUY =====================
+    public void BuyRemoveAds()
+    {
+        if (storeController == null)
+        {
+            Debug.LogWarning("IAP not initialized yet");
+            return;
+        }
 
-//     public void OnInitializeFailed(InitializationFailureReason error)
-//     {
-//         Debug.LogError("IAP Init Failed: " + error);
-//     }
+        Product product = storeController.products.WithID(REMOVE_ADS);
 
-//     // ===================== PURCHASE =====================
-//     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
-//     {
-//         if (args.purchasedProduct.definition.id == REMOVE_ADS)
-//         {
-//             if (ValidateReceipt(args.purchasedProduct))
-//             {
-//                 GrantRemoveAds();
-//             }
-//             else
-//             {
-//                 Debug.LogError("Receipt validation failed");
-//             }
-//         }
+        if (product != null && product.availableToPurchase)
+        {
+            storeController.InitiatePurchase(product);
+        }
+    }
 
-//         return PurchaseProcessingResult.Complete;
-//     }
+    // ===================== PURCHASE =====================
+    public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
+    {
+        if (args.purchasedProduct.definition.id == REMOVE_ADS)
+        {
+            GrantRemoveAds();
+        }
 
-//     public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
-//     {
-//         Debug.LogError("Purchase Failed: " + failureReason);
-//     }
+        return PurchaseProcessingResult.Complete;
+    }
 
-//     // ===================== RECEIPT VALIDATION =====================
-//     bool ValidateReceipt(Product product)
-//     {
-// #if UNITY_EDITOR
-//         return true; // Skip validation in editor
-// #endif
+    public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
+    {
+        Debug.LogError("Purchase Failed: " + failureReason);
+    }
 
-//         try
-//         {
-//             var validator = new CrossPlatformValidator(
-//                 GooglePlayTangle.Data(),
-//                 AppleTangle.Data(),
-//                 Application.identifier
-//             );
+    // ===================== CHECK EXISTING =====================
+    void CheckExistingPurchase()
+    {
+        Product product = storeController.products.WithID(REMOVE_ADS);
 
-//             validator.Validate(product.receipt);
-//             return true;
-//         }
-//         catch (IAPSecurityException)
-//         {
-//             return false;
-//         }
-//     }
+        if (product != null && product.hasReceipt)
+        {
+            GrantRemoveAds();
+        }
+    }
 
-//     // ===================== RESTORE / CHECK =====================
-//     void CheckExistingPurchase()
-//     {
-//         Product product = storeController.products.WithID(REMOVE_ADS);
+    // ===================== REWARD =====================
+    void GrantRemoveAds()
+    {
+        PlayerPrefs.SetInt("RemoveAds", 1);
+        PlayerPrefs.Save();
 
-//         if (product != null && product.hasReceipt)
-//         {
-//             GrantRemoveAds();
-//         }
-//     }
+        DisableAds();
+    }
 
-//     public void RestorePurchases()
-//     {
-// #if UNITY_IOS
-//         var apple = storeExtensionProvider.GetExtension<IAppleExtensions>();
-//         apple.RestoreTransactions(result =>
-//         {
-//             Debug.Log("Restore Result: " + result);
-//         });
-// #endif
-//     }
+    void DisableAds()
+    {
+        Debug.Log("Ads Disabled");
 
-//     // ===================== REWARD =====================
-//     void GrantRemoveAds()
-//     {
-//         PlayerPrefs.SetInt("RemoveAds", 1);
-//         PlayerPrefs.Save();
+        // Example:
+        // AdsManager.Instance.DisableAds();
+    }
 
-//         DisableAds();
-//     }
-
-//     void DisableAds()
-//     {
-//         Debug.Log("Ads Disabled");
-
-//         // Example:
-//         // AdsManager.Instance.DisableAds();
-//     }
-
-//     // ===================== PUBLIC CHECK =====================
-//     public static bool IsAdsRemoved()
-//     {
-//         return PlayerPrefs.GetInt("RemoveAds", 0) == 1;
-//     }
-// }
+    // ===================== PUBLIC CHECK =====================
+    public static bool IsAdsRemoved()
+    {
+        return PlayerPrefs.GetInt("RemoveAds", 0) == 1;
+    }
+}

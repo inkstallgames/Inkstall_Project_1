@@ -55183,6 +55183,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   keysCount: 0
   totalKeys: 0
+  maxKeys: 5
   keyText: {fileID: 2322437273294813703}
   keyCollectSound: {fileID: 0}
 --- !u!1001 &788885689
@@ -69488,6 +69489,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 985605629}
   m_Mesh: {fileID: 7122261301043347358, guid: bf4bafcdbe900844192625019487b5ef, type: 3}
+--- !u!114 &985623244 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5413658640556492343, guid: c396852164a91c044adcdc5c62925e62,
+    type: 3}
+  m_PrefabInstance: {fileID: 5302176867155828464}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &986512337
 GameObject:
   m_ObjectHideFlags: 0
@@ -86961,6 +86974,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1232880272}
+  - component: {fileID: 1232880273}
   m_Layer: 0
   m_Name: ---CANVAS---
   m_TagString: Untagged
@@ -86983,6 +86997,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1232880273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1232880271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3435ebad0856ce640958f3ed72af31e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  watchAdButton: {fileID: 985623244}
 --- !u!1001 &1245010651
 PrefabInstance:
   m_ObjectHideFlags: 0

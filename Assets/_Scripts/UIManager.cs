@@ -8,21 +8,6 @@ public class UIManager : MonoBehaviour
     [Header("UI References")]
     [SerializeField] private Button watchAdButton;  // Assign this in the Unity Inspector
     
-    private void Awake()
-    {
-        // Singleton pattern
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-    }
-    
     private void Start()
     {
         // Subscribe to key count changes

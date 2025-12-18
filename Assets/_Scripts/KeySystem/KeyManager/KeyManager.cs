@@ -15,7 +15,11 @@ public class KeyManager : MonoBehaviour
     [Header("Key Settings")]
     [SerializeField] private int keysCount;
     [SerializeField] private int totalKeys;
+    public int maxKeys = 5; // Maximum number of keys
     [SerializeField] private TextMeshProUGUI keyText;
+    
+    // Event to notify when keys count changes
+    public event Action OnKeysChanged;
     [Header("Sound Effects")]
     [SerializeField] private AudioClip keyCollectSound; // Sound to play when keys are added
 
@@ -98,6 +102,9 @@ public class KeyManager : MonoBehaviour
         {
             keyText.text = keysCount.ToString();
         }
+        
+        // Notify listeners
+        OnKeysChanged?.Invoke();
     }
 
     /// <summary>
@@ -192,6 +199,9 @@ public class KeyManager : MonoBehaviour
 
         // Force TMPro to update
         keyText.ForceMeshUpdate();
+        
+        // Notify listeners
+        OnKeysChanged?.Invoke();
     }
 
     // For debugging - call this from other scripts or the Unity Editor

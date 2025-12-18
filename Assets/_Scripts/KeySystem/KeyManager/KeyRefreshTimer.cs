@@ -4,10 +4,13 @@ using UnityEngine;
 public class KeyRefreshTimer : MonoBehaviour
 {
     public static KeyRefreshTimer Instance;
+    
+    // Event that's triggered when keys count changes
+    public event Action OnKeysCountChanged;
 
     [Header("Timer Settings")]
     [SerializeField] private float keyRefreshTimeInMinutes = 10f; // Time in minutes to refresh one key
-    [SerializeField] private int maxKeys = 10; // Maximum number of keys
+    [SerializeField] private int maxKeys = 5; // Maximum number of keys
 
     private const string TIMER_START_KEY = "KeyRefreshTimerStart";
     private const string TIMER_ACTIVE_KEY = "KeyRefreshTimerActive";
@@ -15,6 +18,12 @@ public class KeyRefreshTimer : MonoBehaviour
     private bool isTimerActive = false;
     private DateTime timerStartTime;
     private float keyRefreshTimeInSeconds;
+
+    // Property to get current keys count
+    public int KeysCount 
+    { 
+        get { return KeyManager.Instance != null ? KeyManager.Instance.GetCurrentKeyCount() : 0; }
+    }
 
     private void Awake()
     {
@@ -71,6 +80,9 @@ public class KeyRefreshTimer : MonoBehaviour
         {
             StartTimer();
         }
+        
+        // Notify listeners that keys count has changed
+        OnKeysCountChanged?.Invoke();
     }
 
     /// <summary>
@@ -120,6 +132,9 @@ public class KeyRefreshTimer : MonoBehaviour
                 // Add the keys
                 KeyManager.Instance.AddKeys(actualKeysAdded);
                 Debug.Log($"Added {actualKeysAdded} key(s). Current keys: {KeyManager.Instance.GetCurrentKeyCount()}");
+                
+                // Notify listeners that keys count has changed
+                OnKeysCountChanged?.Invoke();
 
                 // Update timer start time for remaining time
                 float remainingTime = elapsedSeconds - (keysToAdd * keyRefreshTimeInSeconds);

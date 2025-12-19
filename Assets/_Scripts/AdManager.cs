@@ -35,18 +35,6 @@ public class AdManager : MonoBehaviour
     private bool _isInterstitialLoading = false;
     private bool _isRewardedLoading = false;
 
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     private void Start()
     {
@@ -74,7 +62,6 @@ public class AdManager : MonoBehaviour
         {
             TagForChildDirectedTreatment = TagForChildDirectedTreatment.Unspecified,
             TagForUnderAgeOfConsent = TagForUnderAgeOfConsent.Unspecified,
-            TestDeviceIds = new List<string> { "69d6891543cce296d6693e79cd17ec9c" }
         };
         MobileAds.SetRequestConfiguration(requestConfiguration);
 
@@ -104,11 +91,6 @@ public class AdManager : MonoBehaviour
         }
 
         var adRequest = new AdRequest();
-        
-        // Add test device ID for iOS
-        #if UNITY_IOS
-        adRequest.Extras.Add("test_device_id", "69d6891543cce296d6693e79cd17ec9c");
-        #endif
         
         Debug.Log($"[AdManager] Loading interstitial ad with ID: {_interstitialId}");
         InterstitialAd.Load(_interstitialId, adRequest, (InterstitialAd ad, LoadAdError error) =>

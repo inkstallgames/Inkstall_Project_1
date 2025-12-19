@@ -105,6 +105,8 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
         }
     }
 
+    public static event System.Action OnPurchaseSuccess;
+
     // ===================== REWARD =====================
     void GrantRemoveAds()
     {
@@ -112,6 +114,7 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
         PlayerPrefs.Save();
 
         DisableAds();
+        OnPurchaseSuccess?.Invoke();
     }
 
     void DisableAds()

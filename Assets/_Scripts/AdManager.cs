@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 public class AdManager : MonoBehaviour
 {
+    public event System.Action OnRewardGranted;
     public static AdManager Instance;
 
     [Header("AdMob App ID")]

@@ -51,6 +51,15 @@ public class GameTimer : MonoBehaviour
         StartTimer();
     }
 
+    public void AddTime(float timeToAdd)
+    {
+        currentTime += timeToAdd;
+        if (!timerRunning)
+        {
+            StartTimer();
+        }
+    }
+
     void Start()
     {
         currentTime = totalTime;
@@ -119,12 +128,12 @@ public class GameTimer : MonoBehaviour
         }
 
         // Check if timer reached zero
-        if (currentTime <= 0f)
+        if (currentTime <= 0f && timerRunning)
         {
             currentTime = 0f;
             timerRunning = false;
             StopTicking();
-            GameManager.Instance.GameOver();
+            GameManager.Instance.ShowExtraTimePanel();
         }
     }
 

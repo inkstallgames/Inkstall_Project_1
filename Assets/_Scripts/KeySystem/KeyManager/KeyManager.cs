@@ -70,15 +70,27 @@ public class KeyManager : MonoBehaviour
 
     public void AddKeys(int amount)
     {
+        Debug.Log($"[KeyManager] AddKeys called with amount: {amount}");
         int previousCount = keysCount;
         keysCount += amount;
         totalKeys += amount;
+        
+        Debug.Log($"[KeyManager] Keys updated - Before: {previousCount}, After: {keysCount}, Total: {totalKeys}");
+        
+        // Save the keys
         SaveKeys();
+        Debug.Log("[KeyManager] Keys saved to PlayerPrefs");
+        
+        // Verify the save
+        int savedKeys = PlayerPrefs.GetInt("KeysCount", -1);
+        Debug.Log($"[KeyManager] Verify save - Saved keys in PlayerPrefs: {savedKeys}");
+        
         UpdateUIKeyCount();
         
         // Play sound effect if keys were actually added
         if (amount > 0 && keyCollectSound != null)
         {
+            Debug.Log("[KeyManager] Playing key collect sound");
             // Play the sound at the camera's position to ensure it's heard
             if (Camera.main != null)
             {

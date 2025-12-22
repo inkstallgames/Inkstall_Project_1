@@ -46057,7 +46057,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &665941389
 RectTransform:
   m_ObjectHideFlags: 0
@@ -69495,7 +69495,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 5302176867155828464}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 5302176867155828465}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
@@ -175344,21 +175344,48 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1449052642}
+      objectReference: {fileID: 5302176867155828466}
     - target: {fileID: 5413658640556492343, guid: c396852164a91c044adcdc5c62925e62,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ShowRewardedAd
+      value: OnWatchAdClicked
+      objectReference: {fileID: 0}
+    - target: {fileID: 5413658640556492343, guid: c396852164a91c044adcdc5c62925e62,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: WatchAdButton, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2080989577047043844, guid: c396852164a91c044adcdc5c62925e62,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5302176867155828466}
     - targetCorrespondingSourceObject: {fileID: 903846718015701694, guid: c396852164a91c044adcdc5c62925e62,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 80605150}
   m_SourcePrefab: {fileID: 100100000, guid: c396852164a91c044adcdc5c62925e62, type: 3}
+--- !u!1 &5302176867155828465 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2080989577047043844, guid: c396852164a91c044adcdc5c62925e62,
+    type: 3}
+  m_PrefabInstance: {fileID: 5302176867155828464}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5302176867155828466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5302176867155828465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92fe13554dc9dd94b92821077dacb852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!205 &5302289165777260988
 LODGroup:
   m_ObjectHideFlags: 0

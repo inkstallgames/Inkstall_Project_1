@@ -1,12 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
     
     [Header("UI References")]
-    [SerializeField] private Button watchAdButton;  // Assign this in the Unity Inspector
+    [SerializeField] private Button watchAdButton;
+    public GameObject completion;
+    public RoomManager roomManager;
     
     private void Start()
     {
@@ -18,6 +22,7 @@ public class UIManager : MonoBehaviour
 
         // Initial update of the ad button state
         UpdateAdButtonState();
+        OnfinalRoom();
     }
     
     private void OnDestroy()
@@ -54,5 +59,34 @@ public class UIManager : MonoBehaviour
     public void RefreshAdButtonState()
     {
         UpdateAdButtonState();
+    }
+
+    private bool completionCoroutineStarted = false;
+
+    private void OnfinalRoom()
+    {
+        if (roomManager != null && roomManager.isFinalRoom && !completionCoroutineStarted)
+        {
+            if (ProgressManager.Instance != null && ProgressManager.Instance.IsDataLoaded())
+            {
+                int doorID = roomManager.GetDoorID();
+                var doorData = ProgressManager.Instance.GetDoorData(doorID);
+
+                if (doorData != null && doorData.isRoomCompleted)
+                {
+                    StartCoroutine(CompletionCo());
+                    completionCoroutineStarted = true;
+                }
+            }
+        }
+    }
+
+
+
+    private IEnumerator CompletionCo()
+    {
+        completion.SetActive(true);
+        yield return new WaitForSeconds(10f);
+        completion.SetActive(false);        
     }
 }

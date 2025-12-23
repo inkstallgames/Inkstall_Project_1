@@ -15,7 +15,6 @@ public class KeyManager : MonoBehaviour
     [Header("Key Settings")]
     [SerializeField] private int keysCount;
     [SerializeField] private int totalKeys;
-    public int maxKeys = 5; // Maximum number of keys
     [SerializeField] private TextMeshProUGUI keyText;
     
     // Event to notify when keys count changes
@@ -70,27 +69,18 @@ public class KeyManager : MonoBehaviour
 
     public void AddKeys(int amount)
     {
-        Debug.Log($"[KeyManager] AddKeys called with amount: {amount}");
         int previousCount = keysCount;
         keysCount += amount;
         totalKeys += amount;
         
-        Debug.Log($"[KeyManager] Keys updated - Before: {previousCount}, After: {keysCount}, Total: {totalKeys}");
-        
         // Save the keys
         SaveKeys();
-        Debug.Log("[KeyManager] Keys saved to PlayerPrefs");
-        
-        // Verify the save
-        int savedKeys = PlayerPrefs.GetInt("KeysCount", -1);
-        Debug.Log($"[KeyManager] Verify save - Saved keys in PlayerPrefs: {savedKeys}");
         
         UpdateUIKeyCount();
         
         // Play sound effect if keys were actually added
         if (amount > 0 && keyCollectSound != null)
         {
-            Debug.Log("[KeyManager] Playing key collect sound");
             // Play the sound at the camera's position to ensure it's heard
             if (Camera.main != null)
             {
@@ -125,9 +115,7 @@ public class KeyManager : MonoBehaviour
     public void SetKeyTextUI(TextMeshProUGUI newKeyText)
     {
         keyText = newKeyText;
-        Debug.Log($"[KeyManager] UI Text reference updated. Current keys: {keysCount}");
         UpdateUIKeyCount();
-        Debug.Log($"[KeyManager] UI updated. Text should now show: {keysCount}");
     }
 
     // Returns the current key count as an integer
@@ -142,10 +130,7 @@ public class KeyManager : MonoBehaviour
         return totalKeys;
     }
 
-    /// <summary>
-    /// Use a key and update the database
-    /// </summary>
-    /// <returns>True if key was successfully used, false otherwise</returns>
+
     public bool UseKey()
     {
         // Check if we have keys available

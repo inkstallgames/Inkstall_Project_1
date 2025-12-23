@@ -10,7 +10,7 @@ public class KeyRefreshTimer : MonoBehaviour
 
     [Header("Timer Settings")]
     [SerializeField] private float keyRefreshTimeInMinutes = 10f; // Time in minutes to refresh one key
-    [SerializeField] private int maxKeys = 5; // Maximum number of keys
+    [SerializeField] public int maxKeys = 5; // Maximum number of keys
 
     private const string TIMER_START_KEY = "KeyRefreshTimerStart";
     private const string TIMER_ACTIVE_KEY = "KeyRefreshTimerActive";

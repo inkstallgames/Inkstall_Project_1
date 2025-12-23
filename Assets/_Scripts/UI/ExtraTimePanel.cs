@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
+using System.Collections;
 
 /// <summary>
 /// This script manages the UI interactions for the 'Extra Time' panel.
@@ -7,11 +9,15 @@ using UnityEngine.Events;
 /// </summary>
 public class ExtraTimePanel : MonoBehaviour
 {
+    [SerializeField] private Slider countdownSlider;
     private bool adWatched = false;
     private bool wasGamePaused = false;
+    private Coroutine countdownCoroutine;
+
 
     private void OnEnable()
     {
+        countdownCoroutine = StartCoroutine(CountdownCoroutine());
         // Pause the game when panel is shown
         wasGamePaused = Time.timeScale < 0.1f; // Check if game was already paused
         if (!wasGamePaused)
@@ -44,10 +50,42 @@ public class ExtraTimePanel : MonoBehaviour
         }
         
         // Only trigger game over if ad wasn't watched
+        if (countdownCoroutine != null)
+        {
+            StopCoroutine(countdownCoroutine);
+            countdownCoroutine = null;
+        }
+
+        // Only trigger game over if ad wasn't watched
         if (!adWatched && GameManager.Instance != null)
         {
+            GameManager.Instance.GameOver();
             Debug.Log("[ExtraTimePanel] Panel disabled without watching ad, triggering game over.");
         }
+    }
+
+    private IEnumerator CountdownCoroutine()
+    {
+        float duration = 5f;
+        float elapsedTime = 0f;
+
+        if (countdownSlider != null)
+        {
+            countdownSlider.value = 1f;
+        }
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.unscaledDeltaTime;
+            if (countdownSlider != null)
+            {
+                countdownSlider.value = 1 - (elapsedTime / duration);
+            }
+            yield return null;
+        }
+
+        // If countdown finishes, hide the panel. OnDisable will handle game over.
+        gameObject.SetActive(false);
     }
 
     /// <summary>

@@ -133,7 +133,6 @@ public class GameTimer : MonoBehaviour
             currentTime = 0f;
             timerRunning = false;
             StopTicking();
-            GameManager.Instance.ShowExtraTimePanel();
         }
     }
 

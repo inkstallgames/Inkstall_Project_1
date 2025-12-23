@@ -12,7 +12,6 @@ public class ExtraTimePanel : MonoBehaviour
         if (GameManager.Instance != null)
         {
             Debug.Log("[ExtraTimePanel] Panel disabled, triggering game over.");
-            GameManager.Instance.DeclineExtraTime();
         }
     }
     /// <summary>

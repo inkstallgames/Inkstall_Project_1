@@ -1,14 +1,11 @@
 using UnityEngine;
 using TMPro;
 
-/// <summary>
-/// Optional UI component to display the key refresh timer countdown
-/// </summary>
 public class KeyTimerUI : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI timerText;
-    [SerializeField] private GameObject timerPanel; // Optional panel to show/hide
+    [SerializeField] private GameObject timerPanel;
 
     private void Update()
     {

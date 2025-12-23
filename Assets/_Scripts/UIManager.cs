@@ -41,7 +41,7 @@ public class UIManager : MonoBehaviour
         {
             // Deactivate the watch ad button if keys count is maxKeys or more
             int currentKeys = KeyManager.Instance.GetCurrentKeyCount();
-            int maxKeys = KeyManager.Instance.maxKeys;
+            int maxKeys = KeyRefreshTimer.Instance.maxKeys;
             
             bool shouldBeActive = currentKeys < maxKeys;
             

@@ -7237,8 +7237,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2169b008ae359144ca4cff41c1e16f64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  extraTimePanel: {fileID: 1887624618}
-  extraTimeAmount: 25
   doorCloseSound: {fileID: 8300000, guid: f0b0fc0abfcfafd41b84e124ceec2485, type: 3}
   looseSound: {fileID: 0}
   levelCompleteSound: {fileID: 8300000, guid: c45dfb2b9b1bfc245ac8d455dc158827, type: 3}

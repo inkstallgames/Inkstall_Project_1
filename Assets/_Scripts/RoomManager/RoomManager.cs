@@ -16,7 +16,7 @@ public class RoomManager : MonoBehaviour
     [Header("Door & Room Setting")]
     [SerializeField] private DoorInteraction thisRoomDoor;
     [SerializeField] private GameTimer roomTimer;  // Reference to the room's timer
-    [SerializeField] private bool isFinalRoom = false;          // Is this the final room in the level?
+    [SerializeField] public bool isFinalRoom = false;          // Is this the final room in the level?
 
     [SerializeField] private int alienFoundCoins = 20; 
     [SerializeField] private string alienFoundDescription = "Alien Found"; 
@@ -228,6 +228,15 @@ public class RoomManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         AdManager.Instance.ShowInterstitialAd();
+    }
+
+    public int GetDoorID()
+    {
+        if (thisRoomDoor != null)
+        {
+            return thisRoomDoor.GetDoorID();
+        }
+        return -1;
     }
 
     private void UpdateRemainingAliensUI()

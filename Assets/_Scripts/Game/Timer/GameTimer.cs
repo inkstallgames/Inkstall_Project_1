@@ -254,6 +254,8 @@ public class GameTimer : MonoBehaviour
     {
         if (tickSource != null)
         {
+            StopAllCoroutines(); // Stop any existing ticking coroutines
+
             // Stop any currently playing sound
             tickSource.Stop();
             

@@ -16,7 +16,7 @@ public class WatchAdButton : MonoBehaviour
         if (AdManager.Instance != null)
         {
             // Call the singleton method to show the ad
-            AdManager.Instance.ShowRewardedAd();
+            AdManager.Instance.ShowRewardedAdForExtraKey();
         }
         else
         {

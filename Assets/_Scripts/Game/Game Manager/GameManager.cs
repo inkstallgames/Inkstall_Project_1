@@ -76,7 +76,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator ResetGame()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
         
         // Play door close sound
         if (doorCloseSound != null && audioSource != null)

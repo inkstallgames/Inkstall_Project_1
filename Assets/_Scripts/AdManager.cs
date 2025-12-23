@@ -234,7 +234,7 @@ public class AdManager : MonoBehaviour
         RequestRewarded();
     }
 
-    public void ShowRewardedAd()
+    public void ShowRewardedAdForExtraKey()
     {
         Debug.Log("[Rewarded] ===== SHOW REWARDED AD REQUESTED =====");
         Debug.Log($"[Rewarded] Current Thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}");
@@ -267,6 +267,22 @@ public class AdManager : MonoBehaviour
             {
                 Debug.LogError("[Rewarded] CRITICAL: KeyManager.Instance is null! Cannot add reward keys.");
             }
+        });
+    }
+    
+    public void ShowRewardedAdForExtraTime(System.Action onRewardGranted = null)
+    {
+        Debug.Log("[Rewarded] ===== SHOW REWARDED AD FOR EXTRA TIME REQUESTED =====");
+        Debug.Log($"[Rewarded] Current Thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}");
+        
+        ShowRewarded(() =>
+        {
+            Debug.Log("[Rewarded] ===== EXTRA TIME REWARD GRANTED =====");
+            // Notify that reward was granted
+            OnRewardGranted?.Invoke();
+            
+            // Call the callback if provided
+            onRewardGranted?.Invoke();
         });
     }
 

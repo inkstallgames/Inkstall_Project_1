@@ -14,6 +14,11 @@ public class GameTimer : MonoBehaviour
     public TextMeshProUGUI timerText;
     public bool timerRunning = false; // Changed to false so timer doesn't start automatically
 
+    [Header("Extra Time Settings")]
+    [SerializeField] private GameObject extraTimePanel;
+    [SerializeField] public float extraTimeAmount = 30f; // Amount of extra time to give
+    private bool hasUsedExtraTime = false; // Track if extra time has been used this session
+
     private bool warningTriggered = false;
     private bool tickingStarted = false;
     private bool hasBeenTriggered = false; // Track if timer has been triggered at least once
@@ -54,6 +59,7 @@ public class GameTimer : MonoBehaviour
     public void AddTime(float timeToAdd)
     {
         currentTime += timeToAdd;
+        hasUsedExtraTime = true; // Mark that extra time has been used
         if (!timerRunning)
         {
             StartTimer();
@@ -62,7 +68,24 @@ public class GameTimer : MonoBehaviour
 
     void Start()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        
         currentTime = totalTime;
+        hasUsedExtraTime = false; // Reset the flag when game starts
+        
+        // Hide the extra time panel at start
+        if (extraTimePanel != null)
+        {
+            extraTimePanel.SetActive(false);
+        }
 
         // Initialize AudioSource
         tickSource = gameObject.AddComponent<AudioSource>();
@@ -133,7 +156,18 @@ public class GameTimer : MonoBehaviour
             currentTime = 0f;
             timerRunning = false;
             StopTicking();
-            GameManager.Instance.GameOver();
+            
+            // Only show extra time panel if it hasn't been used yet
+            if (!hasUsedExtraTime && extraTimePanel != null)
+            {
+                extraTimePanel.SetActive(true);
+            }
+            else
+            {
+                // If extra time was already used or panel is missing, end the game
+                Debug.Log("[GameTimer] Extra time already used or panel missing, ending game.");
+                GameManager.Instance.GameOver();
+            }
         }
     }
 

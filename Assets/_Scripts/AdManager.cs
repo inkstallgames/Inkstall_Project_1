@@ -8,6 +8,9 @@ public class AdManager : MonoBehaviour
 {
     public event System.Action OnRewardGranted;
     public static AdManager Instance;
+    
+    private const string ADS_REMOVED_KEY = "AdsRemoved";
+    public bool AreAdsRemoved { get; private set; }
 
     [Header("AdMob App ID")]
     private string androidAppId = "ca-app-pub-8376488234284532~5753664751";
@@ -49,6 +52,14 @@ public class AdManager : MonoBehaviour
     private void Start()
     {
         Debug.Log($"[AdManager] Starting AdManager on {SystemInfo.deviceModel} ({Application.platform})");
+        
+        // Load ad removal status
+        AreAdsRemoved = PlayerPrefs.GetInt(ADS_REMOVED_KEY, 0) == 1;
+        if (AreAdsRemoved)
+        {
+            Debug.Log("[AdManager] Ads are disabled via purchase");
+            return; // Skip ad initialization if ads are removed
+        }
         
 #if UNITY_ANDROID
         _interstitialId = androidInterstitialId;
@@ -137,6 +148,12 @@ public class AdManager : MonoBehaviour
 
     public void ShowInterstitialAd()
     {
+        if (AreAdsRemoved)
+        {
+            Debug.Log("[Interstitial] Ads are removed, not showing interstitial");
+            return;
+        }
+
         Debug.Log("[Interstitial] ===== SHOW INTERSTITIAL AD REQUESTED =====");
 
         if (interstitialAd == null)
@@ -230,8 +247,43 @@ public class AdManager : MonoBehaviour
 
     private void LoadAllAds()
     {
+        if (AreAdsRemoved)
+        {
+            Debug.Log("[AdManager] Skipping ad loading - ads are removed");
+            return;
+        }
+        
         RequestInterstitial();
         RequestRewarded();
+    }
+    
+    public void SetAdsRemoved(bool removed)
+    {
+        AreAdsRemoved = removed;
+        PlayerPrefs.SetInt(ADS_REMOVED_KEY, removed ? 1 : 0);
+        PlayerPrefs.Save();
+        
+        if (removed)
+        {
+            // Clean up any loaded ads
+            if (interstitialAd != null)
+            {
+                interstitialAd.Destroy();
+                interstitialAd = null;
+            }
+            if (rewardedAd != null)
+            {
+                rewardedAd.Destroy();
+                rewardedAd = null;
+            }
+        }
+        else
+        {
+            // Reinitialize ads if they're being re-enabled
+            LoadAllAds();
+        }
+        
+        Debug.Log($"[AdManager] Ads removed status set to: {removed}");
     }
 
     public void ShowRewardedAdForExtraKey()

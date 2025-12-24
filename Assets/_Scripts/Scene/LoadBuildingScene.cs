@@ -21,6 +21,7 @@ public class LoadBuildingScene : MonoBehaviour
 
     private AudioSource audioSource;
     public Animator animator;
+    MeshRenderer meshRenderer;
 
     private void Start()
     {
@@ -34,6 +35,8 @@ public class LoadBuildingScene : MonoBehaviour
         {
             audioSource.volume = AudioManager.Instance.sfxVolume;
         }
+
+        meshRenderer = GetComponent<MeshRenderer>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,6 +48,12 @@ public class LoadBuildingScene : MonoBehaviour
             {
                 audioSource.PlayOneShot(portalEnterSound);
             }
+
+            if(meshRenderer != null)
+            {
+                meshRenderer.enabled = false; 
+            }
+
             Invoke("LoadNextScene", loadDelay);
         }
     }

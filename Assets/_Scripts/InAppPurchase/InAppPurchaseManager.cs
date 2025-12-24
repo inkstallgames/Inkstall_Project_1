@@ -8,21 +8,14 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
     private static bool isInitialized = false;
 
     public static string REMOVE_ADS = "remove_ads";
+    
+    private AdManager adManager;
 
-    void Awake()
-    {
-        // Prevent duplicate instances
-        if (FindObjectsOfType<IAPRemoveAdsManager>().Length > 1)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        DontDestroyOnLoad(gameObject);
-    }
 
     void Start()
     {
+        adManager = AdManager.Instance;
+        
         if (!isInitialized)
         {
             InitializePurchasing();
@@ -110,10 +103,23 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
     // ===================== REWARD =====================
     void GrantRemoveAds()
     {
-        PlayerPrefs.SetInt("RemoveAds", 1);
-        PlayerPrefs.Save();
-
-        DisableAds();
+        Debug.Log("Remove Ads purchase successful! Disabling ads...");
+        
+        // Update the AdManager to disable ads
+        if (adManager != null)
+        {
+            adManager.SetAdsRemoved(true);
+            Debug.Log("Ads have been successfully disabled.");
+        }
+        else
+        {
+            Debug.LogError("AdManager reference is missing! Ads will be re-enabled on next launch.");
+            // Fallback: Save to PlayerPrefs as a backup
+            PlayerPrefs.SetInt("AdsRemoved", 1);
+            PlayerPrefs.Save();
+        }
+        
+        // Notify any listeners that the purchase was successful
         OnPurchaseSuccess?.Invoke();
     }
 

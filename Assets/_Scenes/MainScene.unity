@@ -43097,6 +43097,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3612936092480122250, guid: 0bb9d777915ed6247b67db20caabdb81,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3612936092480122250, guid: 0bb9d777915ed6247b67db20caabdb81,
+        type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 22a875ee64d199844883a2ec843574df, type: 2}
@@ -54829,8 +54834,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keysCount: 0
-  totalKeys: 0
-  maxKeys: 5
   keyText: {fileID: 2322437273294813703}
   keyCollectSound: {fileID: 0}
 --- !u!1001 &788885689
@@ -79271,7 +79274,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1120064232
 RectTransform:
   m_ObjectHideFlags: 0
@@ -175320,14 +175323,14 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2080989577047043844, guid: c396852164a91c044adcdc5c62925e62,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5302176867155828466}
     - targetCorrespondingSourceObject: {fileID: 903846718015701694, guid: c396852164a91c044adcdc5c62925e62,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 80605150}
+    - targetCorrespondingSourceObject: {fileID: 2080989577047043844, guid: c396852164a91c044adcdc5c62925e62,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5302176867155828466}
   m_SourcePrefab: {fileID: 100100000, guid: c396852164a91c044adcdc5c62925e62, type: 3}
 --- !u!1 &5302176867155828465 stripped
 GameObject:
@@ -182167,7 +182170,7 @@ GameObject:
   - component: {fileID: 1129950378068086666}
   - component: {fileID: 1209277260885606071}
   m_Layer: 5
-  m_Name: No_ads panel
+  m_Name: No_Ads panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -187436,7 +187439,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7633843942478008453}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1024471122}
+        m_TargetAssemblyTypeName: IAPRemoveAdsManager, Assembly-CSharp
+        m_MethodName: BuyRemoveAds
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!205 &8405175420845670995
 LODGroup:
   m_ObjectHideFlags: 0

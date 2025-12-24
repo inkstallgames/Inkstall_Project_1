@@ -14,7 +14,6 @@ public class KeyManager : MonoBehaviour
 
     [Header("Key Settings")]
     [SerializeField] private int keysCount;
-    [SerializeField] private int totalKeys;
     [SerializeField] private TextMeshProUGUI keyText;
     
     // Event to notify when keys count changes
@@ -56,14 +55,12 @@ public class KeyManager : MonoBehaviour
     {
         // Load from PlayerPrefs, if no value exists it will use the default value (10)
         keysCount = PlayerPrefs.GetInt("KeysCount", 5);
-        totalKeys = PlayerPrefs.GetInt("TotalKeys", 5);
         UpdateUIKeyCount();
     }
 
     private void SaveKeys()
     {
         PlayerPrefs.SetInt("KeysCount", keysCount);
-        PlayerPrefs.SetInt("TotalKeys", totalKeys);
         PlayerPrefs.Save();
     }
 
@@ -71,7 +68,6 @@ public class KeyManager : MonoBehaviour
     {
         int previousCount = keysCount;
         keysCount += amount;
-        totalKeys += amount;
         
         // Save the keys
         SaveKeys();
@@ -122,12 +118,6 @@ public class KeyManager : MonoBehaviour
     public int GetCurrentKeyCount()
     {
         return keysCount;
-    }
-
-    // Returns the total key count as an integer
-    public int GetTotalKeyCount()
-    {
-        return totalKeys;
     }
 
 
@@ -205,7 +195,6 @@ public class KeyManager : MonoBehaviour
     public void DebugResetKeys()
     {
         keysCount = 0;
-        totalKeys = 0;
         SaveKeys();
         UpdateUIKeyCount();
     }

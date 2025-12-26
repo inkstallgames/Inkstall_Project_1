@@ -3,6 +3,7 @@ using GoogleMobileAds;
 using GoogleMobileAds.Api;
 using System;
 using System.Collections.Generic;
+using UnityEngine.Audio;
 
 public class AdManager : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class AdManager : MonoBehaviour
 
     private InterstitialAd interstitialAd;
     private RewardedAd rewardedAd;
+    private bool wasMusicPlaying = false;
 
     private bool _isInterstitialLoading = false;
     private bool _isRewardedLoading = false;
@@ -132,10 +134,27 @@ public class AdManager : MonoBehaviour
             Debug.Log("[Interstitial] Ad loaded successfully.");
 
             // Register for ad events
-            interstitialAd.OnAdFullScreenContentOpened += () => Debug.Log("[Interstitial] Ad content opened.");
+            interstitialAd.OnAdFullScreenContentOpened += () => 
+            {
+                Debug.Log("[Interstitial] Ad content opened.");
+                // Pause music when ad opens
+                if (AudioManager.Instance != null)
+                {
+                    wasMusicPlaying = AudioManager.Instance.IsMusicPlaying();
+                    if (wasMusicPlaying)
+                    {
+                        AudioManager.Instance.StopMusic();
+                    }
+                }
+            };
             interstitialAd.OnAdFullScreenContentClosed += () => 
             {
                 Debug.Log("[Interstitial] Ad content closed. Requesting next ad.");
+                // Resume music if it was playing before the ad
+                if (AudioManager.Instance != null && wasMusicPlaying)
+                {
+                    AudioManager.Instance.PlayMusic();
+                }
                 RequestInterstitial();
             };
             interstitialAd.OnAdFullScreenContentFailed += (AdError adError) => 
@@ -229,11 +248,25 @@ public class AdManager : MonoBehaviour
             rewardedAd.OnAdFullScreenContentOpened += () =>
             {
                 Debug.Log("[Rewarded] OPENED");
+                // Pause music when rewarded ad opens
+                if (AudioManager.Instance != null)
+                {
+                    wasMusicPlaying = AudioManager.Instance.IsMusicPlaying();
+                    if (wasMusicPlaying)
+                    {
+                        AudioManager.Instance.StopMusic();
+                    }
+                }
             };
 
             rewardedAd.OnAdFullScreenContentClosed += () =>
             {
                 Debug.Log("[Rewarded] CLOSED (no reward if not earned)");
+                // Resume music if it was playing before the ad
+                if (AudioManager.Instance != null && wasMusicPlaying)
+                {
+                    AudioManager.Instance.PlayMusic();
+                }
                 RequestRewarded();
             };
 

@@ -6,7 +6,7 @@ using TMPro;
 
 public class ShopCanvas : MonoBehaviour
 {
-    public GameObject bulletsShopCanvas;
+    public GameObject buybombsPanel;
     public GameObject mobileControlsCanvas;
 
     [Header("UI References")]
@@ -65,7 +65,7 @@ public class ShopCanvas : MonoBehaviour
 
     public void EnableShopCanvas()
     {
-        bulletsShopCanvas.SetActive(true);
+        buybombsPanel.SetActive(true);
         mobileControlsCanvas.SetActive(false);
         Time.timeScale = 0f;
         
@@ -79,7 +79,7 @@ public class ShopCanvas : MonoBehaviour
 
     public void CloseShopCanvas()
     {
-        bulletsShopCanvas.SetActive(false);
+        buybombsPanel.SetActive(false);
         mobileControlsCanvas.SetActive(true);
         Time.timeScale = 1f;
     }

@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class OptionsMenuManager : MonoBehaviour
 {
-    public GameObject optionsMenuCanvas; 
-    public GameObject mobileControlsCanvas; 
+    public GameObject SettingsPanel; 
+    public GameObject MainCanvas; 
     
     [Header("UI Controls")]
     public Slider sensitivitySlider; 
@@ -76,22 +76,22 @@ public class OptionsMenuManager : MonoBehaviour
         }
 
         // Toggle the active state
-        optionsMenuCanvas.SetActive(true);
+        SettingsPanel.SetActive(true);
         Time.timeScale = 0f; 
-        mobileControlsCanvas.SetActive(false); 
+        MainCanvas.SetActive(false); 
     }
 
     public void OnResumeButtonClicked()
     {
         SaveSettings(); 
-        optionsMenuCanvas.SetActive(false); 
-        mobileControlsCanvas.SetActive(true); 
+        SettingsPanel.SetActive(false); 
+        MainCanvas.SetActive(true); 
         Time.timeScale = 1f; 
     }
     public void OnCloseButtonClicked()
     {
-        optionsMenuCanvas.SetActive(false); 
-        mobileControlsCanvas.SetActive(true); 
+        SettingsPanel.SetActive(false); 
+        MainCanvas.SetActive(true); 
         Time.timeScale = 1f; 
     }
 

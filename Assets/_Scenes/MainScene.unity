@@ -19142,6 +19142,9 @@ MonoBehaviour:
   watchAdButton: {fileID: 194833586917333191}
   completion: {fileID: 0}
   roomManager: {fileID: 0}
+  MainCanvas: {fileID: 5890610881071145636}
+  noAdsPanel: {fileID: 7050568993624476015}
+  settingsPanel: {fileID: 1001816843811986852}
 --- !u!4 &292269977
 Transform:
   m_ObjectHideFlags: 0
@@ -79226,7 +79229,6 @@ GameObject:
   - component: {fileID: 1120064235}
   - component: {fileID: 1120064234}
   - component: {fileID: 1120064233}
-  - component: {fileID: 1120064236}
   m_Layer: 5
   m_Name: NoAdsBtn
   m_TagString: Untagged
@@ -79299,9 +79301,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1120064236}
-        m_TargetAssemblyTypeName: NoAds, Assembly-CSharp
-        m_MethodName: OnclickNoAdsBtn
+      - m_Target: {fileID: 292269976}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OpenNoAdsPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -79349,22 +79351,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1120064231}
   m_CullTransparentMesh: 1
---- !u!114 &1120064236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1120064231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e249f15d7ca5eb74da513186140b62cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  noAdsPanel: {fileID: 7050568993624476015}
-  buyButtonText: {fileID: 409697800436905470}
-  buyButton: {fileID: 8393275779564506960}
-  debugChangeText: 0
 --- !u!1001 &1123270521
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145880,7 +145866,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7727491066197169258}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 292269976}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OpenSettingsPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!4 &731372495874729629
 Transform:
   m_ObjectHideFlags: 0
@@ -172464,8 +172462,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1120064236}
-        m_TargetAssemblyTypeName: NoAds, Assembly-CSharp
+      - m_Target: {fileID: 7050568993624476016}
+        m_TargetAssemblyTypeName: NoAdsPanel, Assembly-CSharp
         m_MethodName: OnclickClosebtn
         m_Mode: 1
         m_Arguments:
@@ -178139,7 +178137,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 8046756040115735086}
         m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
         m_MethodName: OnResumeButtonClicked
         m_Mode: 1
@@ -182961,7 +182959,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 8046756040115735086}
         m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
         m_MethodName: OnCloseButtonClicked
         m_Mode: 1
@@ -184622,6 +184620,7 @@ GameObject:
   - component: {fileID: 1690370997376564441}
   - component: {fileID: 1129950378068086666}
   - component: {fileID: 1209277260885606071}
+  - component: {fileID: 7050568993624476016}
   m_Layer: 5
   m_Name: NoAdsPanel
   m_TagString: Untagged
@@ -184629,6 +184628,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
+--- !u!114 &7050568993624476016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7050568993624476015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521eff155a16db942999054dbc4c2599, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  noAdsPanel: {fileID: 7050568993624476015}
+  MainCanvas: {fileID: 5890610881071145636}
+  buyButtonText: {fileID: 0}
+  buyButton: {fileID: 8393275779564506960}
+  debugChangeText: 0
 --- !u!23 &7063643587681900477
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -189001,8 +189017,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fea3046b72d10b849be180d2800a81c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  optionsMenuCanvas: {fileID: 5730814849476471083}
-  mobileControlsCanvas: {fileID: 5890610881071145636}
+  SettingsPanel: {fileID: 1001816843811986852}
+  MainCanvas: {fileID: 5890610881071145636}
   sensitivitySlider: {fileID: 391978493815882574}
   volumeSlider: {fileID: 4170851053482464029}
   musicSlider: {fileID: 7775194833228683896}

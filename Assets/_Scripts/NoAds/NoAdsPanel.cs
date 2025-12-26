@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NoAds : MonoBehaviour
+public class NoAdsPanel : MonoBehaviour
 {
     public GameObject noAdsPanel;
+    public GameObject MainCanvas;
     public TMPro.TextMeshProUGUI buyButtonText;
     public UnityEngine.UI.Button buyButton;
     public bool debugChangeText;
-    //public float ownedFontSize = 39.6f;
 
     private void Start()
     {
@@ -33,7 +33,6 @@ public class NoAds : MonoBehaviour
             if (buyButtonText != null)
             {
                 buyButtonText.text = "Owned";
-                //buyButtonText.fontSize = ownedFontSize;
             }
             if (buyButton != null)
                 buyButton.interactable = false;
@@ -47,7 +46,6 @@ public class NoAds : MonoBehaviour
             if (buyButtonText != null)
             {
                 buyButtonText.text = "Owned";
-                //buyButtonText.fontSize = ownedFontSize;
             }
             if (buyButton != null)
                 buyButton.interactable = false;
@@ -57,5 +55,6 @@ public class NoAds : MonoBehaviour
     public void OnclickClosebtn()
     {
         noAdsPanel.SetActive(false);
+        MainCanvas.SetActive(true);
     }
 }

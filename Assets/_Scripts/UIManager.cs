@@ -11,6 +11,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button watchAdButton;
     public GameObject completion;
     public RoomManager roomManager;
+    public GameObject MainCanvas;
+    public GameObject noAdsPanel;
+    public GameObject settingsPanel;
     
     private void Start()
     {
@@ -93,4 +96,17 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(10f);
         completion.SetActive(false);        
     }
+
+    public void OpenNoAdsPanel()
+    {
+        MainCanvas.SetActive(false);
+        noAdsPanel.SetActive(true);
+    }
+
+    public void OpenSettingsPanel()
+    {
+        MainCanvas.SetActive(false);
+        settingsPanel.SetActive(true);
+    }
+
 }

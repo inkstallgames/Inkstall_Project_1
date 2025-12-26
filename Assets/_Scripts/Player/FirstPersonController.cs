@@ -125,6 +125,10 @@ namespace StarterAssets
 		[Tooltip("Additional sensitivity reduction for WebGL platform (lower = less sensitive)")]
 		public float webGLSensitivityMultiplier = 0.05f;
 
+		// mouse input for editor
+		private bool isMouseDragging = false;
+		private Vector2 lastMousePosition;
+
 		// PlayerPrefs key for sensitivity (matching OptionsMenuManager)
 		private const string SENSITIVITY_KEY = "ScreenSensitivity";
 		private const float DEFAULT_SENSITIVITY = 0.2f;
@@ -577,8 +581,44 @@ namespace StarterAssets
 			bool foundCameraTouch = false;
 			Vector2 cameraDelta = Vector2.zero;
 
+#if UNITY_EDITOR
+			// Handle mouse input for camera look in the editor
+			if (Input.GetMouseButtonDown(0))
+			{
+				if (EventSystem.current == null || !EventSystem.current.IsPointerOverGameObject())
+				{
+					bool isRightSide = Input.mousePosition.x > Screen.width / 2;
+					if (!useSplitScreenTouch || isRightSide)
+					{
+						isMouseDragging = true;
+						lastMousePosition = Input.mousePosition;
+					}
+				}
+			}
+
+			if (Input.GetMouseButton(0) && isMouseDragging)
+			{
+				cameraDelta = (Vector2)Input.mousePosition - lastMousePosition;
+
+				if (cameraDelta.magnitude > 0)
+				{
+					cameraDelta.y = -cameraDelta.y; // Invert Y for natural feel
+
+					float adjustedSensitivity = touchSensitivity;
+					_input.look = cameraDelta * adjustedSensitivity;
+				}
+
+				lastMousePosition = Input.mousePosition;
+			}
+
+			if (Input.GetMouseButtonUp(0))
+			{
+				isMouseDragging = false;
+			}
+#endif
+
 			// Handle touch input for camera look
-			if (Input.touchCount > 0)
+			if (Input.touchCount > 0 )
 			{
 				// First pass: Process right side touches for camera control
 				for (int i = 0; i < Input.touchCount; i++)

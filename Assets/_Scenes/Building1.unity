@@ -12157,7 +12157,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4936765026015116, guid: 7bc62b4df422eed49905184a457c8db3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.146
+      value: 2.082
       objectReference: {fileID: 0}
     - target: {fileID: 4936765026015116, guid: 7bc62b4df422eed49905184a457c8db3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -12314,7 +12314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4904199861950686, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.031
+      value: 0.958
       objectReference: {fileID: 0}
     - target: {fileID: 4904199861950686, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_LocalPosition.z
@@ -18227,7 +18227,7 @@ PrefabInstance:
     - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: isFinalRoom
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -18269,6 +18269,11 @@ PrefabInstance:
       propertyPath: roomTimer
       value: 
       objectReference: {fileID: 1194441159}
+    - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: isFinalRoom
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: thisRoomDoor

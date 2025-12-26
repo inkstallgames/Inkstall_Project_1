@@ -54,7 +54,7 @@ public class KeyManager : MonoBehaviour
     private void LoadKeys()
     {
         // Load from PlayerPrefs, if no value exists it will use the default value (10)
-        keysCount = PlayerPrefs.GetInt("KeysCount", 5);
+        keysCount = PlayerPrefs.GetInt("KeysCount", 10);
         UpdateUIKeyCount();
     }
 

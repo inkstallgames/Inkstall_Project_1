@@ -67,6 +67,8 @@ public class UIManager : MonoBehaviour
     {
         if (roomManager != null && roomManager.isFinalRoom && !completionCoroutineStarted)
         {
+            Debug.Log(roomManager.isFinalRoom);
+            
             if (ProgressManager.Instance != null && ProgressManager.Instance.IsDataLoaded())
             {
                 int doorID = roomManager.GetDoorID();

@@ -15,6 +15,10 @@ public class UIManager : MonoBehaviour
     public GameObject noAdsPanel;
     public GameObject settingsPanel;
     public GameObject buybombsPanel;
+
+    public int lastDoorid;
+
+    private bool completionCoroutineStarted = false;
     
     private void Start()
     {
@@ -65,7 +69,6 @@ public class UIManager : MonoBehaviour
         UpdateAdButtonState();
     }
 
-    private bool completionCoroutineStarted = false;
 
     private void OnfinalRoom()
     {
@@ -74,11 +77,10 @@ public class UIManager : MonoBehaviour
         {
             if (ProgressManager.Instance != null && ProgressManager.Instance.IsDataLoaded())
             {
-                var doorData = ProgressManager.Instance.GetDoorData(6);
+                var doorData = ProgressManager.Instance.GetDoorData(lastDoorid);
 
                 if (doorData != null)
                 {
-                    Debug.Log("Door ID: 2, Is Room Completed: " + doorData.isRoomCompleted);
                     if (doorData.isRoomCompleted)
                     {
                         StartCoroutine(CompletionCo());

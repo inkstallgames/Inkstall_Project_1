@@ -1189,7 +1189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75176106433747d43bab5e841cad3a46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletsShopCanvas: {fileID: 90827211}
+  buybombsPanel: {fileID: 0}
   mobileControlsCanvas: {fileID: 2121465414623763718}
   availableCoinsText: {fileID: 495336924}
   bombMultiplierText: {fileID: 301454588}
@@ -9971,6 +9971,11 @@ MonoBehaviour:
   watchAdButton: {fileID: 332922426}
   completion: {fileID: 1576539516}
   roomManager: {fileID: 747152412}
+  MainCanvas: {fileID: 0}
+  noAdsPanel: {fileID: 0}
+  settingsPanel: {fileID: 0}
+  buybombsPanel: {fileID: 0}
+  lastDoorid: 12
 --- !u!4 &1312993842
 Transform:
   m_ObjectHideFlags: 0

@@ -144945,7 +144945,7 @@ GameObject:
   - component: {fileID: 6026897243088516983}
   - component: {fileID: 4479229308779095780}
   m_Layer: 5
-  m_Name: KeyIMG
+  m_Name: Key_IMG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145849,19 +145849,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7727491066197169258}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6342818171217103054}
-        m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
-        m_MethodName: EnableOptionsMenu
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!4 &731372495874729629
 Transform:
   m_ObjectHideFlags: 0
@@ -147243,13 +147231,14 @@ GameObject:
   - component: {fileID: 2353355911033082853}
   - component: {fileID: 8046756040115735085}
   - component: {fileID: 1975375446278409038}
+  - component: {fileID: 8046756040115735086}
   m_Layer: 5
   m_Name: SettingsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1002683414189321531
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -173527,7 +173516,7 @@ GameObject:
   - component: {fileID: 1479683429957414313}
   - component: {fileID: 708080849755975976}
   m_Layer: 5
-  m_Name: Image
+  m_Name: BG_IMG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -178119,7 +178108,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6342818171217103054}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
         m_MethodName: OnResumeButtonClicked
         m_Mode: 1
@@ -178831,14 +178820,13 @@ GameObject:
   - component: {fileID: 3168511397406332236}
   - component: {fileID: 4600740020100528254}
   - component: {fileID: 2235212248263728918}
-  - component: {fileID: 6342818171217103054}
   m_Layer: 5
   m_Name: Canvas_Panels
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!222 &5731545472665810682
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -181693,24 +181681,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &6342818171217103054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5730814849476471083}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fea3046b72d10b849be180d2800a81c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  optionsMenuCanvas: {fileID: 5730814849476471083}
-  mobileControlsCanvas: {fileID: 5890610881071145636}
-  sensitivitySlider: {fileID: 391978493815882574}
-  volumeSlider: {fileID: 4170851053482464029}
-  musicSlider: {fileID: 7775194833228683896}
-  sensitivityMultiplier: 2
 --- !u!33 &6365897613169846760
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -182960,7 +182930,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6342818171217103054}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
         m_MethodName: OnCloseButtonClicked
         m_Mode: 1
@@ -185502,7 +185472,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6342818171217103054}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
         m_MethodName: OnMenuButtonClicked
         m_Mode: 1
@@ -188988,6 +188958,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1001816843811986852}
   m_CullTransparentMesh: 1
+--- !u!114 &8046756040115735086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001816843811986852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fea3046b72d10b849be180d2800a81c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  optionsMenuCanvas: {fileID: 5730814849476471083}
+  mobileControlsCanvas: {fileID: 5890610881071145636}
+  sensitivitySlider: {fileID: 391978493815882574}
+  volumeSlider: {fileID: 4170851053482464029}
+  musicSlider: {fileID: 7775194833228683896}
+  sensitivityMultiplier: 2
 --- !u!33 &8053557485547819627
 MeshFilter:
   m_ObjectHideFlags: 0

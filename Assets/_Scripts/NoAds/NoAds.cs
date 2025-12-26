@@ -54,11 +54,6 @@ public class NoAds : MonoBehaviour
         }
     }
 
-    public void OnclickNoAdsBtn()
-    {
-        noAdsPanel.SetActive(true);
-    }
-
     public void OnclickClosebtn()
     {
         noAdsPanel.SetActive(false);

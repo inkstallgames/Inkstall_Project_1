@@ -62,6 +62,7 @@ public class OptionsMenuManager : MonoBehaviour
     // Call this function when button is clicked
     public void EnableOptionsMenu()
     {
+        
         // Update music slider to reflect current music volume
         if (musicSlider != null)
         {

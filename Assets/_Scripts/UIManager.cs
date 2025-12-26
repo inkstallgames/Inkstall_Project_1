@@ -65,19 +65,21 @@ public class UIManager : MonoBehaviour
 
     private void OnfinalRoom()
     {
-        if (roomManager != null && roomManager.isFinalRoom && !completionCoroutineStarted)
+        
+        if (roomManager != null && !completionCoroutineStarted)
         {
-            Debug.Log(roomManager.isFinalRoom);
-            
             if (ProgressManager.Instance != null && ProgressManager.Instance.IsDataLoaded())
             {
-                int doorID = roomManager.GetDoorID();
-                var doorData = ProgressManager.Instance.GetDoorData(doorID);
+                var doorData = ProgressManager.Instance.GetDoorData(6);
 
-                if (doorData != null && doorData.isRoomCompleted)
+                if (doorData != null)
                 {
-                    StartCoroutine(CompletionCo());
-                    completionCoroutineStarted = true;
+                    Debug.Log("Door ID: 2, Is Room Completed: " + doorData.isRoomCompleted);
+                    if (doorData.isRoomCompleted)
+                    {
+                        StartCoroutine(CompletionCo());
+                        completionCoroutineStarted = true;
+                    }
                 }
             }
         }

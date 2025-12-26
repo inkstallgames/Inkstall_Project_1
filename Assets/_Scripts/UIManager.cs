@@ -118,4 +118,20 @@ public class UIManager : MonoBehaviour
         buybombsPanel.SetActive(true);
     }
 
+       public void OnWatchAdClicked()
+    {
+        Debug.Log("[WatchAdButton] 'Watch Ad' button clicked. Attempting to show a rewarded ad.");
+
+        if (AdManager.Instance != null)
+        {
+            // Call the singleton method to show the ad
+            AdManager.Instance.ShowRewardedAdForExtraKey();
+        }
+        else
+        {
+            // Log an error if the AdManager is not available
+            Debug.LogError("[WatchAdButton] AdManager.Instance is not found in the scene! Cannot show rewarded ad.");
+        }
+    }
+
 }

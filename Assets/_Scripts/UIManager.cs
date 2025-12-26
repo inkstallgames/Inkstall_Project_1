@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     public GameObject MainCanvas;
     public GameObject noAdsPanel;
     public GameObject settingsPanel;
+    public GameObject buybombsPanel;
     
     private void Start()
     {
@@ -107,6 +108,12 @@ public class UIManager : MonoBehaviour
     {
         MainCanvas.SetActive(false);
         settingsPanel.SetActive(true);
+    }
+
+    public void OpenShopPanel()
+    {
+        MainCanvas.SetActive(false);
+        buybombsPanel.SetActive(true);
     }
 
 }

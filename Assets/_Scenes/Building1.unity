@@ -8827,7 +8827,6 @@ RectTransform:
   - {fileID: 1774634693}
   - {fileID: 1307166878}
   - {fileID: 1574232837}
-  - {fileID: 1949498768}
   - {fileID: 27153197}
   - {fileID: 1650671127}
   - {fileID: 8262539202582422531}
@@ -9858,6 +9857,7 @@ MonoBehaviour:
   MainCanvas: {fileID: 2121465414623763718}
   noAdsPanel: {fileID: 0}
   settingsPanel: {fileID: 711267595341819094}
+  buybombsPanel: {fileID: 0}
 --- !u!4 &1312993842
 Transform:
   m_ObjectHideFlags: 0
@@ -14075,7 +14075,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1949498767}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -14083,7 +14083,7 @@ RectTransform:
   - {fileID: 1763065312}
   - {fileID: 1942547677}
   - {fileID: 191323255}
-  m_Father: {fileID: 1217582467}
+  m_Father: {fileID: 758386994974643637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -16164,6 +16164,7 @@ RectTransform:
   - {fileID: 5807366373551378166}
   - {fileID: 197444553}
   - {fileID: 1981799374}
+  - {fileID: 1949498768}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -17466,7 +17467,7 @@ GameObject:
   - component: {fileID: 3391761977474097052}
   - component: {fileID: 4340876133002544118}
   m_Layer: 5
-  m_Name: Canvas_MobileControls
+  m_Name: Canvas_MainScreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17985,9 +17986,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ShopCanvas, Assembly-CSharp
-        m_MethodName: EnableShopCanvas
+      - m_Target: {fileID: 1312993841}
+        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_MethodName: OpenShopPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -22243,7 +22244,7 @@ MonoBehaviour:
   sensitivitySlider: {fileID: 0}
   volumeSlider: {fileID: 0}
   musicSlider: {fileID: 0}
-  sensitivityMultiplier: 1.5
+  sensitivityMultiplier: 1
 --- !u!222 &7776710531509494469
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -319,26 +319,26 @@ public class AdManager : MonoBehaviour
         Debug.Log($"[AdManager] Ads removed status set to: {removed}");
     }
 
-    public void ShowRewardedAdForExtraKey()
+    public bool ShowRewardedAdForExtraKey()
     {
         Debug.Log("[Rewarded] ===== SHOW REWARDED AD REQUESTED =====");
         Debug.Log($"[Rewarded] Current Thread: {System.Threading.Thread.CurrentThread.ManagedThreadId}");
         Debug.Log($"[Rewarded] Is Playing: {Application.isPlaying}");
-        
-        ShowRewarded(() =>
+
+        return ShowRewarded(() =>
         {
             Debug.Log("[Rewarded] ===== REWARD CALLBACK TRIGGERED =====");
             if (KeyManager.Instance != null)
             {
                 int keysBefore = KeyManager.Instance.GetCurrentKeyCount();
                 Debug.Log($"[Rewarded] Before adding key. Current keys: {keysBefore}");
-                
+
                 // Add the key
                 KeyManager.Instance.AddKeys(1);
-                
+
                 int keysAfter = KeyManager.Instance.GetCurrentKeyCount();
                 Debug.Log($"[Rewarded] After adding key. Expected: {keysBefore + 1}, Actual: {keysAfter}");
-                
+
                 if (keysAfter <= keysBefore)
                 {
                     Debug.LogError($"[Rewarded] KEY NOT ADDED PROPERLY! Before: {keysBefore}, After: {keysAfter}");
@@ -371,7 +371,7 @@ public class AdManager : MonoBehaviour
         });
     }
 
-    public void ShowRewarded(Action onReward = null)
+    public bool ShowRewarded(Action onReward = null)
     {
         Debug.Log($"[Rewarded] SHOW REQUESTED (Platform: {Application.platform})");
 
@@ -379,14 +379,14 @@ public class AdManager : MonoBehaviour
         {
             Debug.LogError("[Rewarded] NOT READY (NULL)");
             RequestRewarded();
-            return;
+            return false;
         }
 
         if (!rewardedAd.CanShowAd())
         {
             Debug.LogError("[Rewarded] NOT READY (CanShowAd = FALSE)");
             RequestRewarded();
-            return;
+            return false;
         }
 
         Debug.Log("[Rewarded] SHOWING");
@@ -398,16 +398,18 @@ public class AdManager : MonoBehaviour
                 Debug.Log($"[Rewarded] USER EARNED REWARD - Amount: {reward.Amount}, Type: {reward.Type}");
                 // Only invoke the callback when reward is actually earned
                 onReward?.Invoke();
-                
+
                 // Preload next ad
                 RequestRewarded();
             });
+            return true;
         }
         catch (Exception e)
         {
             Debug.LogError($"[Rewarded] Exception when showing ad: {e.Message}");
             // Don't give reward if there was an error showing the ad
             RequestRewarded();
+            return false;
         }
     }
 }

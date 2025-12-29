@@ -11,17 +11,15 @@ public class WatchAdButton : MonoBehaviour
     /// </summary>
     public void OnWatchAdClicked()
     {
-        Debug.Log("[WatchAdButton] 'Watch Ad' button clicked. Attempting to show a rewarded ad.");
-
-        if (AdManager.Instance != null)
+        // The UIManager now handles the ad-watching logic.
+        // This ensures that all UI elements are updated correctly.
+        if (UIManager.Instance != null)
         {
-            // Call the singleton method to show the ad
-            AdManager.Instance.ShowRewardedAdForExtraKey();
+            UIManager.Instance.OnWatchAdClicked();
         }
         else
         {
-            // Log an error if the AdManager is not available
-            Debug.LogError("[WatchAdButton] AdManager.Instance is not found in the scene! Cannot show rewarded ad.");
+            Debug.LogError("[WatchAdButton] UIManager.Instance is not found! Cannot trigger ad watch.");
         }
     }
 }

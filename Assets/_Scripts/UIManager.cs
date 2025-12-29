@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-
+using TMPro;
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
     public GameObject noAdsPanel;
     public GameObject settingsPanel;
     public GameObject buybombsPanel;
-
+    public GameObject Notification;
     public int lastDoorid;
 
     private bool completionCoroutineStarted = false;
@@ -118,19 +118,42 @@ public class UIManager : MonoBehaviour
         buybombsPanel.SetActive(true);
     }
 
-       public void OnWatchAdClicked()
+    public void OnWatchAdClicked()
     {
         Debug.Log("[WatchAdButton] 'Watch Ad' button clicked. Attempting to show a rewarded ad.");
 
         if (AdManager.Instance != null)
         {
-            // Call the singleton method to show the ad
-            AdManager.Instance.ShowRewardedAdForExtraKey();
+            // Call the singleton method to show the ad and check if it was successful
+            bool adShown = AdManager.Instance.ShowRewardedAdForExtraKey();
+
+            if (!adShown)
+            {
+                // If the ad wasn't shown, show a notification
+                StartCoroutine(ShowNotification("Ad not found"));
+            }
         }
         else
         {
             // Log an error if the AdManager is not available
             Debug.LogError("[WatchAdButton] AdManager.Instance is not found in the scene! Cannot show rewarded ad.");
+            StartCoroutine(ShowNotification("Ad service not available"));
+        }
+    }
+
+    private IEnumerator ShowNotification(string message)
+    {
+        if (Notification != null)
+        {
+            TextMeshProUGUI notificationText = Notification.GetComponentInChildren<TextMeshProUGUI>();
+            if (notificationText != null)
+            {
+                notificationText.text = message;
+            }
+
+            Notification.SetActive(true);
+            yield return new WaitForSeconds(3f); // Show for 3 seconds
+            Notification.SetActive(false);
         }
     }
 

@@ -19145,6 +19145,9 @@ MonoBehaviour:
   MainCanvas: {fileID: 5890610881071145636}
   noAdsPanel: {fileID: 7050568993624476015}
   settingsPanel: {fileID: 1001816843811986852}
+  buybombsPanel: {fileID: 0}
+  Notification: {fileID: 0}
+  lastDoorid: 0
 --- !u!4 &292269977
 Transform:
   m_ObjectHideFlags: 0
@@ -67201,7 +67204,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0083120beac00fc44b402b64af05fda1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicSource: {fileID: 8300000, guid: 99b242c221aad994db2599a78d8d45b0, type: 3}
+  scene0Music: {fileID: 8300000, guid: 99b242c221aad994db2599a78d8d45b0, type: 3}
+  otherScenesMusic: {fileID: 8300000, guid: b56b08bf2ee79b446ad77b98aaa52bd0, type: 3}
   sfxVolume: 0.5
 --- !u!82 &952129825
 AudioSource:

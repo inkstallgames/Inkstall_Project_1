@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
@@ -7,8 +8,9 @@ public class AudioManager : MonoBehaviour
 
     AudioSource audioSource;
 
-    [Header("Audio Sources")]
-    public AudioClip musicSource;
+    [Header("Music Clips")]
+    public AudioClip scene0Music;
+    public AudioClip otherScenesMusic;
 
     // PlayerPrefs keys (same as in OptionsMenuManager)
     private const string VOLUME_KEY = "VolumeLevel";
@@ -20,6 +22,7 @@ public class AudioManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // Keep the AudioManager across scenes
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -33,26 +36,17 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         // Load saved settings
-        float savedVolume = PlayerPrefs.GetFloat(VOLUME_KEY, 0.5f);
         float musicVolume = PlayerPrefs.GetFloat(MUSIC_KEY, 0.5f);
-
-        // Apply volume setting
         SetMusicVolume(musicVolume);
 
-        // Play music if volume is greater than 0
-        if (musicVolume > 0)
-        {
-            PlayMusic();
-        }
+        // Initial music play for the starting scene
+        PlayMusicForScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void PlayMusic()
     {
-        if (audioSource.clip != musicSource)
-        {
-            audioSource.clip = musicSource;
-        }
-        audioSource.Play();
+        // This method is now a wrapper to play the correct music for the current scene
+        PlayMusicForScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void StopMusic()
@@ -97,6 +91,36 @@ public class AudioManager : MonoBehaviour
     public AudioSource GetAudioSource()
     {
         return audioSource;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        PlayMusicForScene(scene.buildIndex);
+    }
+
+    private void PlayMusicForScene(int sceneIndex)
+    {
+        AudioClip clipToPlay = (sceneIndex == 0) ? scene0Music : otherScenesMusic;
+
+        // Only change and play if the clip is different and not null
+        if (clipToPlay != null && audioSource.clip != clipToPlay)
+        {
+            audioSource.clip = clipToPlay;
+            audioSource.Play();
+        }
+        else if (clipToPlay == null)
+        {
+            audioSource.Stop();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Unsubscribe to prevent memory leaks
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
     }
 }
  

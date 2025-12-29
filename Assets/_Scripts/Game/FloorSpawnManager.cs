@@ -1,13 +1,18 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class FloorSpawnManager : MonoBehaviour
 {
     public static FloorSpawnManager Instance { get; private set; }
     
-    [Tooltip("Assign floor spawn points in order: 0=Ground, 1=1st Floor, 2=2nd Floor, etc.")]
+    [Tooltip("Assign floor spawn points in order: Building0_Floor0, Building0_Floor1, Building0_Floor2, Building1_Floor0, etc.")]
     public Transform[] floorSpawnPoints;
     
-    private int currentFloor = 0; // 0 = ground floor
+    [Tooltip("Number of floors per building")]
+    public int floorsPerBuilding = 3;
+    
+    private int currentFloor = 0;
+    private int currentBuilding = 0;
     private bool isInitialized = false;
 
     private void Awake()
@@ -28,24 +33,24 @@ public class FloorSpawnManager : MonoBehaviour
     {
         if (isInitialized) return;
         
-        // First, load any saved floor data
+        // Load saved data
         LoadFloorData();
         
-        // If no floor is saved (first launch), set to floor 0 (spawn point 1)
-        if (!PlayerPrefs.HasKey("CurrentFloor"))
+        // First launch setup
+        if (!PlayerPrefs.HasKey("CurrentFloor") || !PlayerPrefs.HasKey("CurrentBuilding"))
         {
             currentFloor = 0;
-            PlayerPrefs.SetInt("CurrentFloor", currentFloor);
-            PlayerPrefs.Save();
-            Debug.Log("[FloorSpawnManager] First launch - setting spawn to floor 0");
+            currentBuilding = 0;
+            SaveFloorData();
+            Debug.Log("[FloorSpawnManager] First launch - setting spawn to Building 0, Floor 0");
         }
         
-        // Then check ProgressManager for higher floors if available
+        // Check ProgressManager for room completion data
         if (ProgressManager.Instance != null)
         {
             if (ProgressManager.Instance.IsDataLoaded())
             {
-                UpdateSpawnPointFromProgress();
+                UpdateSpawnPointForBuilding(currentBuilding);
             }
             else
             {
@@ -63,28 +68,35 @@ public class FloorSpawnManager : MonoBehaviour
     
     private void OnProgressDataLoaded()
     {
-        UpdateSpawnPointFromProgress();
+        UpdateSpawnPointForBuilding(currentBuilding);
+        // Unsubscribe using the same method reference
         ProgressManager.OnDataLoaded -= OnProgressDataLoaded;
     }
 
     private void LoadFloorData()
     {
+        currentBuilding = PlayerPrefs.GetInt("CurrentBuilding", 0);
         currentFloor = PlayerPrefs.GetInt("CurrentFloor", 0);
     }
 
-    public void UpdateSpawnPointFromProgress()
+    public void UpdateSpawnPointForBuilding(int buildingNumber)
     {
         if (ProgressManager.Instance == null) return;
         
         int highestFloor = 0;
         
-        // Check all doors to find the highest completed floor
-        for (int i = 1; i <= 6; i++) // Assuming 6 rooms total (1-6)
+        // Calculate room range for this building (6 rooms per building: 2 per floor)
+        int roomStart = buildingNumber * 6 + 1;
+        int roomEnd = roomStart + 5;
+        
+        // Check all rooms in this building
+        for (int roomId = roomStart; roomId <= roomEnd; roomId++)
         {
-            var door = ProgressManager.Instance.GetDoorData(i);
+            var door = ProgressManager.Instance.GetDoorData(roomId);
             if (door != null && door.isRoomCompleted)
             {
-                int floor = (i - 1) / 2; // Calculate floor from room ID
+                // Calculate floor within this building (0-2 for 3 floors)
+                int floor = (roomId - roomStart) / 2;
                 if (floor > highestFloor)
                 {
                     highestFloor = floor;
@@ -92,29 +104,47 @@ public class FloorSpawnManager : MonoBehaviour
             }
         }
         
-        // Update to the highest floor with completed rooms
-        if (highestFloor > currentFloor)
+        // Update spawn point if we found a higher floor or changed buildings
+        if (highestFloor > currentFloor || buildingNumber != currentBuilding)
         {
-            SetCurrentFloor(highestFloor);
-        }
-    }
-
-    private void SetCurrentFloor(int floorIndex)
-    {
-        if (floorIndex >= 0 && floorIndex < floorSpawnPoints.Length)
-        {
-            currentFloor = floorIndex;
-            PlayerPrefs.SetInt("CurrentFloor", currentFloor);
-            PlayerPrefs.Save();
-            Debug.Log($"[FloorSpawnManager] Spawn point updated to floor {currentFloor}");
+            currentBuilding = buildingNumber;
+            currentFloor = highestFloor;
+            SaveFloorData();
+            Debug.Log($"[FloorSpawnManager] Updated spawn to Building {currentBuilding}, Floor {currentFloor}");
         }
     }
     
+    // For backward compatibility
+    public void UpdateSpawnPointFromProgress()
+    {
+        UpdateSpawnPointForBuilding(currentBuilding);
+    }
+
+    public void SetCurrentFloor(int floor, int building = -1)
+    {
+        int newBuilding = building >= 0 ? building : currentBuilding;
+        
+        // Calculate the spawn point index
+        int spawnIndex = (newBuilding * floorsPerBuilding) + floor;
+        
+        if (spawnIndex < 0 || spawnIndex >= floorSpawnPoints.Length)
+        {
+            Debug.LogError($"Invalid spawn point: Building {newBuilding}, Floor {floor}. Index {spawnIndex} out of range.");
+            return;
+        }
+        
+        currentFloor = floor;
+        currentBuilding = newBuilding;
+        SaveFloorData();
+        
+        Debug.Log($"[FloorSpawnManager] Spawn point set to Building {currentBuilding}, Floor {currentFloor}");
+    }
+
     // Call this when a room is completed to update the spawn point if needed
     public void OnRoomCompleted(int roomId)
     {
         if (!isInitialized) Initialize();
-        UpdateSpawnPointFromProgress();
+        UpdateSpawnPointForBuilding(currentBuilding);
     }
     
     // Call this when a door is unlocked with a key
@@ -133,19 +163,41 @@ public class FloorSpawnManager : MonoBehaviour
         }
     }
 
+    public Transform GetCurrentSpawnPoint()
+    {
+        return GetSpawnPointForBuilding(currentBuilding);
+    }
+    
+    public Transform GetSpawnPointForBuilding(int buildingNumber)
+    {
+        // Calculate the spawn point index
+        int spawnIndex = (buildingNumber * floorsPerBuilding) + currentFloor;
+        
+        if (spawnIndex < 0 || spawnIndex >= floorSpawnPoints.Length)
+        {
+            Debug.LogError($"[FloorSpawnManager] Invalid spawn point: Building {buildingNumber}, Floor {currentFloor}. " +
+                         $"Index {spawnIndex} out of range (0-{floorSpawnPoints.Length - 1}).");
+            return floorSpawnPoints.Length > 0 ? floorSpawnPoints[0] : null;
+        }
+        
+        return floorSpawnPoints[spawnIndex];
+    }
+    
+    // For backward compatibility with PlayerSpawner
     public (Vector3 position, Quaternion rotation) GetSpawnPoint()
     {
-        if (floorSpawnPoints == null || floorSpawnPoints.Length == 0)
+        Transform spawnPoint = GetSpawnPointForBuilding(currentBuilding);
+        if (spawnPoint != null)
         {
-            Debug.LogError("No floor spawn points assigned!");
-            return (Vector3.zero, Quaternion.identity);
-        }
-
-        int safeFloor = Mathf.Clamp(currentFloor, 0, floorSpawnPoints.Length - 1);
-        if (floorSpawnPoints[safeFloor] != null)
-        {
-            return (floorSpawnPoints[safeFloor].position, floorSpawnPoints[safeFloor].rotation);
+            return (spawnPoint.position, spawnPoint.rotation);
         }
         return (Vector3.zero, Quaternion.identity);
+    }
+    
+    private void SaveFloorData()
+    {
+        PlayerPrefs.SetInt("CurrentBuilding", currentBuilding);
+        PlayerPrefs.SetInt("CurrentFloor", currentFloor);
+        PlayerPrefs.Save();
     }
 }

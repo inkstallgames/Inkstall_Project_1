@@ -16,10 +16,24 @@ public class UIManager : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject buybombsPanel;
     public GameObject Notification;
+    public GameObject exitTextOBJ;
+    private bool exitText;
     public int lastDoorid;
 
     private bool completionCoroutineStarted = false;
-    
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void Start()
     {
         // Subscribe to key count changes
@@ -84,6 +98,10 @@ public class UIManager : MonoBehaviour
                     if (doorData.isRoomCompleted)
                     {
                         StartCoroutine(CompletionCo());
+                        if( exitText == true )
+                        {
+                            exitTextOBJ.SetActive(true);
+                        }
                         completionCoroutineStarted = true;
                     }
                 }
@@ -94,7 +112,8 @@ public class UIManager : MonoBehaviour
 
 
     private IEnumerator CompletionCo()
-    {
+    {   
+        exitText = true;
         completion.SetActive(true);
         yield return new WaitForSeconds(10f);
         completion.SetActive(false);        

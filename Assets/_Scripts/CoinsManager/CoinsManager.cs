@@ -15,21 +15,29 @@ public class CoinsManager : MonoBehaviour
     
     void Awake()
     {
-        // if (Instance == null)
-        // {
-        //     Instance = this;
-        //     DontDestroyOnLoad(gameObject);
-        // }
-        // else
-        // {
-        //     Destroy(gameObject);
-        // }
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            CloudSaveManager.OnCloudDataLoaded += FetchCoins;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            CloudSaveManager.OnCloudDataLoaded -= FetchCoins;
+        }
     }
 
     private void Start()
     {        
-        // Initialize UI
-        LoadCoins();
+        // Data will be loaded by the OnCloudDataLoaded event.
     }
 
     private void LoadCoins()

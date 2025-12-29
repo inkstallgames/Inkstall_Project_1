@@ -32,9 +32,15 @@ public class ProgressManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                GameObject go = new GameObject("ProgressManager");
-                _instance = go.AddComponent<ProgressManager>();
-                DontDestroyOnLoad(go);
+                // Find existing instance
+                _instance = FindObjectOfType<ProgressManager>();
+
+                // If no instance exists, create a new one
+                if (_instance == null)
+                {
+                    GameObject go = new GameObject("ProgressManager");
+                    _instance = go.AddComponent<ProgressManager>();
+                }
             }
             return _instance;
         }
@@ -76,21 +82,26 @@ public class ProgressManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        
+
         _instance = this;
         DontDestroyOnLoad(gameObject);
+        CloudSaveManager.OnCloudDataLoaded += FetchDoorDataFromPlayerPrefs;
+    }
+
+    private void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            CloudSaveManager.OnCloudDataLoaded -= FetchDoorDataFromPlayerPrefs;
+        }
     }
 
     private void Start()
     {
-        // Load data from PlayerPrefs
-        LoadStudentDoorDataFromPrefs();
-        
-        isDataLoaded = true;
-        OnDataLoaded?.Invoke();
+        // Data will be loaded by the OnCloudDataLoaded event.
     }
 
-    private void LoadStudentDoorDataFromPrefs()
+    public void FetchDoorDataFromPlayerPrefs()
     {
         string json = PlayerPrefs.GetString("StudentDoorData", "");
         if (!string.IsNullOrEmpty(json))
@@ -125,6 +136,9 @@ public class ProgressManager : MonoBehaviour
 
         // Ensure all doors exist
         EnsureAllDoorsExist();
+
+        isDataLoaded = true;
+        OnDataLoaded?.Invoke();
     }
 
     private void SaveStudentDoorDataToPrefs()
@@ -172,6 +186,12 @@ public class ProgressManager : MonoBehaviour
 
         // Update the scene immediately for instant feedback
         UpdateDoorInstancesInScene(doorId, nextDoorId);
+
+        // Save data to the cloud
+        if (CloudSaveManager.Instance != null)
+        {
+            CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
+        }
     }
 
     public IEnumerator UpdateDoorStatus(int doorId, Dictionary<string, object> updates)

@@ -29,6 +29,7 @@ public class KeyManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            CloudSaveManager.OnCloudDataLoaded += FetchKeysFromPlayerPrefs;
         }
         else
         {
@@ -36,13 +37,17 @@ public class KeyManager : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            CloudSaveManager.OnCloudDataLoaded -= FetchKeysFromPlayerPrefs;
+        }
+    }
+
     private void Start()
     {
-        // Load keys from PlayerPrefs first
-        LoadKeys();
-
-        // Update UI after loading keys
-        UpdateUIKeyCount();
+        // Data will be loaded by the OnCloudDataLoaded event.
     }
 
     private void OnEnable()
@@ -51,7 +56,7 @@ public class KeyManager : MonoBehaviour
         UpdateUIKeyCount();
     }
 
-    private void LoadKeys()
+    public void FetchKeysFromPlayerPrefs()
     {
         // Load from PlayerPrefs, if no value exists it will use the default value (10)
         keysCount = PlayerPrefs.GetInt("KeysCount", 3);

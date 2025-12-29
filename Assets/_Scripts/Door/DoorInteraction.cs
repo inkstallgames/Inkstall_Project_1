@@ -136,94 +136,40 @@ public class DoorInteraction : MonoBehaviour
 
     private IEnumerator WaitForProgressManager()
     {
-        float timeout = 30f; // Increased timeout to give more time for data to load
+        float timeout = 30f;
         float elapsed = 0f;
-        float logInterval = 2.0f; // Log every 2 seconds instead of every frame
-        float lastLogTime = 0f;
 
-
-        // First wait for the ProgressManager instance to be available
+        // Wait until ProgressManager.Instance is not null
         while (ProgressManager.Instance == null && elapsed < timeout)
         {
             elapsed += Time.deltaTime;
-
-            // Log periodically instead of every frame
-            if (Time.time - lastLogTime > logInterval)
-            {
-                lastLogTime = Time.time;
-            }
-
             yield return null;
         }
 
-        // If we broke out of the loop because doorData was null, wait and retry once.
-        yield return new WaitForSeconds(0.5f);
-        DoorData finalDoorData = ProgressManager.Instance.GetDoorData(doorID);
-        if (finalDoorData != null)
-        {
-            SetUnlockable(finalDoorData.isUnlockable);
-            SetRoomCompleted(finalDoorData.isRoomCompleted);
-            UpdateDoorVisuals();
-        }
-
-        // If we still don't have a ProgressManager, exit
+        // If ProgressManager is still null after timeout, log an error and exit
         if (ProgressManager.Instance == null)
         {
+            Debug.LogError($"[DoorInteraction] Timed out waiting for ProgressManager.Instance. Door {doorID} will not be initialized correctly.");
             yield break;
         }
 
-
-        // Now wait for data to be loaded
+        // Now wait until the data is loaded
         elapsed = 0f;
-        lastLogTime = 0f;
-
-        while (elapsed < timeout)
+        while (!ProgressManager.Instance.isDataLoaded && elapsed < timeout)
         {
-            try
-            {
-                // Check if data is loaded
-                if (ProgressManager.Instance.isDataLoaded)
-                {
-
-
-                    // Get door data directly from ProgressManager
-                    DoorData doorData = ProgressManager.Instance.GetDoorData(doorID);
-
-                    if (doorData == null)
-                    {
-                        // If door data is null, break out of the try-catch to wait and retry.
-                        break;
-                    }
-
-                    // Use setter methods to update properties
-                    SetUnlockable(doorData.isUnlockable);
-                    SetRoomCompleted(doorData.isRoomCompleted);
-
-                    // Update visuals based on the new state
-                    UpdateDoorVisuals();
-
-                    yield break; // Success! Exit the coroutine
-                }
-                else
-                {
-                    // Just request the update - ProgressManager will queue it if data isn't ready yet
-                    ProgressManager.Instance.UpdateDoorInteraction(this);
-
-                    // Log periodically
-                    if (Time.time - lastLogTime > logInterval)
-                    {
-                        lastLogTime = Time.time;
-                    }
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"[DoorInteraction] Door {doorID} - Error while waiting for data: {e.Message}");
-            }
-
             elapsed += Time.deltaTime;
             yield return null;
         }
+
+        // If data is still not loaded after timeout, log an error and exit
+        if (!ProgressManager.Instance.isDataLoaded)
+        {
+            Debug.LogError($"[DoorInteraction] Timed out waiting for ProgressManager data to be loaded. Door {doorID} may not be up to date.");
+            yield break;
+        }
+
+        // Data is loaded, so we can safely update the door
+        OnProgressDataLoaded();
     }
 
     private void Update()

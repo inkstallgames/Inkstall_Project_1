@@ -159,35 +159,30 @@ public class ProgressManager : MonoBehaviour
     
 
 
-    public void MarkRoomAsCompleted(int doorId)
+   public void MarkRoomAsCompleted(int doorId)
     {
-        // Calculate nextDoorId
-        int nextDoorId = -1;
-        if (doorId < maxDoorId)
-        {
-             // Check if it's not the last door of a building (6, 12, 18, 24)
-             bool isLastDoorInBuilding = (doorId == 6 || doorId == 12 || doorId == 18 || doorId == 24);
-             if (!isLastDoorInBuilding)
-             {
-                 nextDoorId = doorId + 1;
-             }
-        }
-
-        // Update current door
+        // Mark current door as completed and not unlockable
         UpdateLocalDoorData(doorId, false, true);
 
-        // Update next door if exists
-        if (nextDoorId != -1)
+        // Unlock the next door if it exists and is within maxDoorId
+        int nextDoorId = doorId + 1;
+        if (nextDoorId <= maxDoorId)
         {
-             var nextDoor = GetDoorData(nextDoorId);
-             bool nextCompleted = nextDoor != null ? nextDoor.isRoomCompleted : false;
-             UpdateLocalDoorData(nextDoorId, true, nextCompleted);
+            var nextDoor = GetDoorData(nextDoorId);
+            bool isNextDoorCompleted = nextDoor != null ? nextDoor.isRoomCompleted : false;
+            UpdateLocalDoorData(nextDoorId, true, isNextDoorCompleted);
+            Debug.Log($"[ProgressManager] Completed door {doorId} and unlocked door {nextDoorId}");
+        }
+        else
+        {
+            nextDoorId = -1; // Ensure nextDoorId is -1 if it's the last door
+            Debug.Log($"[ProgressManager] Completed final door {doorId}");
         }
 
         // Update the scene immediately for instant feedback
         UpdateDoorInstancesInScene(doorId, nextDoorId);
 
-        // Save data to the cloud
+        // Save all data to the cloud
         if (CloudSaveManager.Instance != null)
         {
             CloudSaveManager.Instance.SaveAllPlayerDataToCloud();

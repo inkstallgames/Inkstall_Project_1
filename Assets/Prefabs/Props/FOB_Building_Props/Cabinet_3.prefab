@@ -336,18 +336,22 @@ MonoBehaviour:
   doorSpeed: 2
   doorOpenSound: {fileID: 0}
   doorCloseSound: {fileID: 0}
-  isLocked: 0
+  useKeyButton: {fileID: 0}
+  isLockedDoor: 0
   doorLockedSound: {fileID: 0}
   doorUnlockSound: {fileID: 0}
   isUnlockable: 0
   isRoomCompleted: 0
   doorID: 35182
   shouldStartTimer: 0
+  timerDuration: 60
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
-  gameTimer: {fileID: 0}
+  gameTimerContainer: {fileID: 0}
   bombsUI: {fileID: 0}
-  remainingAliensCount: {fileID: 0}
+  remainingAliensCountContainer: {fileID: 0}
+  interactionText: {fileID: 0}
+  crosshairImage: {fileID: 0}
   lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2000669298256703060
 BoxCollider:

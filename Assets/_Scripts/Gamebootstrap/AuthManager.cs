@@ -27,8 +27,25 @@ public class AuthManager : MonoBehaviour
             await Task.Yield();
         }
 
-        await SignInAnonymously();
-        await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
+        try
+        {
+            await SignInAnonymously();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"Sign-in failed, proceeding in offline mode. Error: {e.Message}");
+        }
+
+        // This will now run regardless of sign-in success.
+        // CloudSaveManager will handle loading from cloud or local PlayerPrefs.
+        if (CloudSaveManager.Instance != null)
+        {
+            await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
+        }
+        else
+        {
+            Debug.LogError("CloudSaveManager instance not found. Player data cannot be loaded.");
+        }
     }
 
 

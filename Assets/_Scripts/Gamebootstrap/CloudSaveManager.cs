@@ -1,3 +1,4 @@
+using System.Linq;
 using Unity.Services.CloudSave;
 using UnityEngine;
 using System.Collections.Generic;
@@ -41,14 +42,30 @@ public class CloudSaveManager : MonoBehaviour
 
     public async Task LoadAllPlayerDataFromCloud()
     {
-        await LoadPlayerData();
-        OnCloudDataLoaded?.Invoke();
+        try
+        {
+            await LoadPlayerData();
+        }
+        catch (CloudSaveException e)
+        {
+            Debug.LogWarning($"Failed to load data from cloud. Loading local data instead. Error: {e.Message}");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"An unexpected error occurred while loading cloud data: {e.Message}");
+        }
+        finally
+        {
+            // This will trigger managers to load from PlayerPrefs, using either
+            // the fresh cloud data or the existing local data if the cloud failed.
+            OnCloudDataLoaded?.Invoke();
+        }
     }
 
     public async Task SaveAllPlayerDataToCloud()
     {
         int coins = PlayerPrefs.GetInt("CurrentCoins", 0);
-        int keys = PlayerPrefs.GetInt("KeysCount", 3);
+        int keys = PlayerPrefs.GetInt("KeysCount", 5);
         string studentDoorData = PlayerPrefs.GetString("StudentDoorData", "");
 
         await SavePlayerData(coins, keys, studentDoorData);
@@ -56,26 +73,63 @@ public class CloudSaveManager : MonoBehaviour
 
     public async Task LoadPlayerData()
     {
-        var keys = new HashSet<string> { "coins", "keys", "studentDoorData" };
-        var result = await CloudSaveService.Instance.Data.Player.LoadAsync(keys);
+        // Load cloud data with metadata to get server timestamp
+        var cloudData = await CloudSaveService.Instance.Data.Player.LoadAllAsync();
 
-        int coins = result.ContainsKey("coins")
-            ? result["coins"].Value.GetAs<int>()
-            : 0;
+        // Get local timestamp
+        string localTimestampStr = PlayerPrefs.GetString("LastLocalSaveTimestamp", null);
+        System.DateTime.TryParse(localTimestampStr, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AdjustToUniversal, out System.DateTime localTimestamp);
 
-        int keysCount = result.ContainsKey("keys")
-            ? result["keys"].Value.GetAs<int>()
-            : 3;
+        if (cloudData != null && cloudData.Count > 0)
+        {
+            // Find the most recent server timestamp from all cloud variables
+            var validTimestamps = cloudData.Values.Where(v => v.Modified.HasValue).Select(v => v.Modified.Value);
+            System.DateTime cloudTimestamp = validTimestamps.Any() ? validTimestamps.Max() : System.DateTime.MinValue;
 
-        string studentDoorData = result.ContainsKey("studentDoorData")
-            ? result["studentDoorData"].Value.GetAsString()
-            : "";
+            if (localTimestamp > cloudTimestamp)
+            {
+                // Local data is newer, so upload it to the cloud
+                Debug.Log("Local data is newer. Uploading to cloud.");
+                await SaveAllPlayerDataToCloud();
+            }
+            else
+            {
+                // Cloud data is newer or same, so load it
+                Debug.Log("Cloud data is newer. Loading from cloud.");
+                int coins = cloudData.ContainsKey("coins") ? cloudData["coins"].Value.GetAs<int>() : 0;
+                int keysCount = cloudData.ContainsKey("keys") ? cloudData["keys"].Value.GetAs<int>() : 5;
+                string studentDoorData = cloudData.ContainsKey("studentDoorData") ? cloudData["studentDoorData"].Value.GetAsString() : "";
 
-        PlayerPrefs.SetInt("CurrentCoins", coins);
-        PlayerPrefs.SetInt("KeysCount", keysCount);
-        PlayerPrefs.SetString("StudentDoorData", studentDoorData);
-        PlayerPrefs.Save();
+                PlayerPrefs.SetInt("CurrentCoins", coins);
+                PlayerPrefs.SetInt("KeysCount", keysCount);
+                PlayerPrefs.SetString("StudentDoorData", studentDoorData);
+                PlayerPrefs.Save();
+                Debug.Log($"✅ Cloud Save Loaded → Coins: {coins}, Keys: {keysCount}");
+            }
+        }
+        else if (!string.IsNullOrEmpty(localTimestampStr))
+        {
+            // No cloud data, but local data exists. Upload local data.
+            Debug.Log("No cloud data found. Uploading local data to cloud.");
+            await SaveAllPlayerDataToCloud();
+        }
+        else
+        {
+            // No cloud or local data. Game will start with default values.
+            Debug.Log("No save data found anywhere. Starting fresh.");
+        }
+    }
 
-        Debug.Log($"✅ Cloud Save Loaded → Coins: {coins}, Keys: {keysCount}");
+    private void OnApplicationQuit()
+    {
+        // This is a fire-and-forget call. It's not guaranteed to complete before the app closes,
+        // but it's the standard way to handle async saves on quit.
+        _ = SaveAllPlayerDataToCloud();
+    }
+
+    public static void SaveTimestamp()
+    {
+        string timestamp = System.DateTime.UtcNow.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        PlayerPrefs.SetString("LastLocalSaveTimestamp", timestamp);
     }
 }

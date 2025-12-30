@@ -59,7 +59,7 @@ public class KeyManager : MonoBehaviour
     public void FetchKeysFromPlayerPrefs()
     {
         // Load from PlayerPrefs, if no value exists it will use the default value (10)
-        keysCount = PlayerPrefs.GetInt("KeysCount", 10);
+        keysCount = PlayerPrefs.GetInt("KeysCount", 5);
         UpdateUIKeyCount();
     }
 
@@ -67,6 +67,7 @@ public class KeyManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("KeysCount", keysCount);
         PlayerPrefs.Save();
+        CloudSaveManager.SaveTimestamp();
     }
 
     public void AddKeys(int amount)

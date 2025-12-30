@@ -148,6 +148,7 @@ public class ProgressManager : MonoBehaviour
             string json = JsonUtility.ToJson(studentData);
             PlayerPrefs.SetString("StudentDoorData", json);
             PlayerPrefs.Save();
+            CloudSaveManager.SaveTimestamp();
             Debug.Log($"[ProgressManager] Saved door data to PlayerPrefs: {json}");
         }
     }

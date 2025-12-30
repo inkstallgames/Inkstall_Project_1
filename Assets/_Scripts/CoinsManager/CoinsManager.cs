@@ -50,6 +50,7 @@ public class CoinsManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("CurrentCoins", currentCoins);
         PlayerPrefs.Save();
+        CloudSaveManager.SaveTimestamp();
     }
 
     public void FetchCoins()

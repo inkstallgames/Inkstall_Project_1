@@ -3,6 +3,7 @@ using UnityEngine.Purchasing;
 
 public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
 {
+
     private static IStoreController storeController;
     private static IExtensionProvider storeExtensionProvider;
     private static bool isInitialized = false;
@@ -10,6 +11,7 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
     public static string REMOVE_ADS = "remove_ads";
     
     private AdManager adManager;
+
 
 
     void Start()
@@ -121,6 +123,37 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
         
         // Notify any listeners that the purchase was successful
         OnPurchaseSuccess?.Invoke();
+    }
+
+    // ===================== RESTORE =====================
+    public void RestorePurchases()
+    {
+        if (!isInitialized)
+        {
+            Debug.LogError("RestorePurchases failed. IAP not initialized.");
+            return;
+        }
+
+        if (Application.platform == RuntimePlatform.IPhonePlayer ||
+            Application.platform == RuntimePlatform.OSXPlayer)
+        {
+            Debug.Log("Restoring purchases...");
+            var apple = storeExtensionProvider.GetExtension<IAppleExtensions>();
+            apple.RestoreTransactions((success, error) => {
+                if (success)
+                {
+                    Debug.Log("Transactions restored successfully.");
+                }
+                else
+                {
+                    Debug.LogError("Restore failed: " + error);
+                }
+            });
+        }
+        else
+        {
+            Debug.Log("Restore purchases not supported on this platform.");
+        }
     }
 
     void DisableAds()

@@ -17,6 +17,8 @@ public class UIManager : MonoBehaviour
     public GameObject buybombsPanel;
     public GameObject Notification;
     public GameObject exitTextOBJ;
+    public GameObject appleSigninBtn;
+    public GameObject GooglePlayGamesBtn;
     private bool exitText;
     public int lastDoorid;
 
@@ -45,6 +47,20 @@ public class UIManager : MonoBehaviour
         // Initial update of the ad button state
         UpdateAdButtonState();
         OnfinalRoom();
+        #if UNITY_EDITOR
+        appleSigninBtn.SetActive(true);
+        GooglePlayGamesBtn.SetActive(true);
+#elif UNITY_IOS
+        appleSigninBtn.SetActive(true);
+        GooglePlayGamesBtn.SetActive(false);
+#elif UNITY_ANDROID
+        appleSigninBtn.SetActive(false);
+        GooglePlayGamesBtn.SetActive(true);
+#else
+        // For any other platform, disable both
+        appleSigninBtn.SetActive(false);
+        GooglePlayGamesBtn.SetActive(false);
+#endif
     }
     
     private void OnDestroy()
@@ -160,6 +176,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    
     private IEnumerator ShowNotification(string message)
     {
         if (Notification != null)
@@ -175,5 +192,8 @@ public class UIManager : MonoBehaviour
             Notification.SetActive(false);
         }
     }
+
+
+
 
 }

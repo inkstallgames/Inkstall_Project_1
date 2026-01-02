@@ -13671,7 +13671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306a4b653742dd24eb770f020132ae08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfAliens: 2
+  numberOfAliens: 3
   aliensRemaining: 0
   remainingAliensTextCount: {fileID: 191323256}
   thisRoomDoor: {fileID: 1079998516}
@@ -14491,7 +14491,6 @@ MonoBehaviour:
   - {fileID: 2031858004}
   - {fileID: 243213864}
   - {fileID: 895963135}
-  floorsPerBuilding: 3
 --- !u!4 &1958429945
 Transform:
   m_ObjectHideFlags: 0
@@ -18763,7 +18762,7 @@ PrefabInstance:
     - target: {fileID: 1328271741645855876, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 35
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1328271741645855876, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -18803,7 +18802,7 @@ PrefabInstance:
     - target: {fileID: 1361265660159551448, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1361265660159551448, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -18902,6 +18901,11 @@ PrefabInstance:
       objectReference: {fileID: 5376026593118847093}
     - target: {fileID: 3218370127332946291, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: timerDuration
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3218370127332946291, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: crosshairImage
       value: 
       objectReference: {fileID: 1981799375}
@@ -18968,7 +18972,7 @@ PrefabInstance:
     - target: {fileID: 3573223830962627022, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 45
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 3573223830962627022, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -19023,7 +19027,7 @@ PrefabInstance:
     - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -19068,7 +19072,7 @@ PrefabInstance:
     - target: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 55
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 4151289846741022760, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -19128,7 +19132,7 @@ PrefabInstance:
     - target: {fileID: 4310671615237114043, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 50
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 4310671615237114043, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -19178,7 +19182,7 @@ PrefabInstance:
     - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -19253,7 +19257,7 @@ PrefabInstance:
     - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -19298,7 +19302,7 @@ PrefabInstance:
     - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -19358,7 +19362,7 @@ PrefabInstance:
     - target: {fileID: 6526205679978218838, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 40
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 6526205679978218838, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}

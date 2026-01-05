@@ -98,7 +98,7 @@ public class AuthManager : MonoBehaviour
     }
 
 #if UNITY_ANDROID
-    public async void SignInWithGoogle()
+    public void SignInWithGoogle()
     {
         Debug.Log("[AuthManager] SignInWithGoogle() called by user.");
         
@@ -110,12 +110,6 @@ public class AuthManager : MonoBehaviour
 
         if (!playGamesActivated)
         {
-            // // Configure Google Play Games
-            // PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()
-            //     .RequestServerAuthCode(false)
-            //     .Build();
-            
-            // PlayGamesPlatform.InitializeInstance(config);
             PlayGamesPlatform.Activate();
             playGamesActivated = true;
             Debug.Log("[AuthManager] Google Play Games platform activated.");
@@ -123,40 +117,38 @@ public class AuthManager : MonoBehaviour
 
         Debug.Log("[AuthManager] Starting Google Play Games authentication...");
         
-        // Use TaskCompletionSource to make the callback awaitable
-        var authTcs = new System.Threading.Tasks.TaskCompletionSource<bool>();
-        
         Social.localUser.Authenticate(success =>
         {
-            authTcs.SetResult(success);
+            if (!success)
+            {
+                Debug.LogError("❌ Google Play Games login failed");
+                return;
+            }
+
+            Debug.Log("✅ Google Play Games login success");
+
+            PlayGamesPlatform.Instance.RequestServerSideAccess(false, authCode =>
+            {
+                if (string.IsNullOrEmpty(authCode))
+                {
+                    Debug.LogError("❌ Failed to retrieve server auth code");
+                    return;
+                }
+
+                // Start coroutine to handle async operations on main thread
+                StartCoroutine(ProcessGoogleSignInCoroutine(authCode));
+            });
         });
+    }
 
-        bool authenticated = await authTcs.Task;
-        
-        if (!authenticated)
-        {
-            Debug.LogError("❌ Google Play Games login failed");
-            return;
-        }
+    System.Collections.IEnumerator ProcessGoogleSignInCoroutine(string serverAuthCode)
+    {
+        var task = ProcessGoogleSignIn(serverAuthCode);
+        yield return new WaitUntil(() => task.IsCompleted);
+    }
 
-        Debug.Log("✅ Google Play Games login success");
-
-        // Get server auth code
-        var authCodeTcs = new System.Threading.Tasks.TaskCompletionSource<string>();
-        
-        PlayGamesPlatform.Instance.RequestServerSideAccess(false, authCode =>
-        {
-            authCodeTcs.SetResult(authCode);
-        });
-        
-        string serverAuthCode = await authCodeTcs.Task;
-        
-        if (string.IsNullOrEmpty(serverAuthCode))
-        {
-            Debug.LogError("❌ Failed to retrieve server auth code");
-            return;
-        }
-
+    async System.Threading.Tasks.Task ProcessGoogleSignIn(string serverAuthCode)
+    {
         try
         {
             // Try to sign in with Google Play (this checks if account has existing data)

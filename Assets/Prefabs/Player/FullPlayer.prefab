@@ -659,7 +659,6 @@ MonoBehaviour:
   jumpingParam: IsJumping
   runThreshold: 0.7
   directionThreshold: 0.3
-  showDebugLogs: 1
 --- !u!1 &4091287980361551338
 GameObject:
   m_ObjectHideFlags: 0
@@ -924,6 +923,7 @@ MonoBehaviour:
   SprintSpeed: 4
   RotationSpeed: 20
   SpeedChangeRate: 10
+  preventWallClimbing: 1
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.1
@@ -938,9 +938,24 @@ MonoBehaviour:
   CinemachineCameraTarget: {fileID: 2709333421724779005}
   TopClamp: 9
   BottomClamp: -40
+  enableCameraArcMotion: 1
+  cameraArcHeight: 2
+  cameraArcSpeed: 10
+  cameraZoomAmount: 1.5
+  cameraZoomSpeed: 8
+  enableCameraSmoothing: 1
+  cameraSmoothingSpeed: 10
+  uniformMovementSpeed: 0
+  walkAudioSource: {fileID: 0}
+  runAudioSource: {fileID: 0}
+  walkSound: {fileID: 0}
+  runSound: {fileID: 0}
+  jumpSound: {fileID: 0}
+  runThresholdSound: 0.7
   minTouchDelta: 10
   touchSensitivity: 5
   useSplitScreenTouch: 1
+  webGLSensitivityMultiplier: 0.05
 --- !u!114 &261933871421061652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1299,10 +1314,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3821e1b739673c45992e6fb9573fa63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rayDistance: 10
+  playerMainCamera: {fileID: 0}
   interactDistance: 3
-  playerCamera: {fileID: 0}
-  interactKey: 101
-  interactionPromptText: {fileID: 0}
+  interactionLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  interactButton: {fileID: 0}
+  useKeyButton: {fileID: 0}
+  interactionText: {fileID: 0}
+  gameTimer: {fileID: 0}
+  crosshairImage: {fileID: 0}
+  raycastInterval: 0.1
 --- !u!1 &5342912752486609737
 GameObject:
   m_ObjectHideFlags: 0

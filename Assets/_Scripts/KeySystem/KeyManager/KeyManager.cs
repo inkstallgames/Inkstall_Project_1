@@ -47,7 +47,17 @@ public class KeyManager : MonoBehaviour
 
     private void Start()
     {
-        // Data will be loaded by the OnCloudDataLoaded event.
+        Debug.Log("[KeyManager] Start() called. Waiting for OnCloudDataLoaded event.");
+        
+        // Defensive initialization: if PlayerPrefs doesn't have keys, set default immediately
+        if (!PlayerPrefs.HasKey("KeysCount"))
+        {
+            Debug.LogWarning("[KeyManager] KeysCount not found in PlayerPrefs during Start(). Setting default.");
+            PlayerPrefs.SetInt("KeysCount", 5);
+            PlayerPrefs.Save();
+            keysCount = 5;
+            UpdateUIKeyCount();
+        }
     }
 
     private void OnEnable()
@@ -58,8 +68,18 @@ public class KeyManager : MonoBehaviour
 
     public void FetchKeysFromPlayerPrefs()
     {
-        // Load from PlayerPrefs, if no value exists it will use the default value (10)
+        // Load from PlayerPrefs, if no value exists it will use the default value (5)
         keysCount = PlayerPrefs.GetInt("KeysCount", 5);
+        
+        // Safety check: if keys are 0, reset to default
+        if (keysCount == 0)
+        {
+            Debug.LogWarning("[KeyManager] Detected 0 keys in PlayerPrefs. Resetting to default value of 5.");
+            keysCount = 5;
+            SaveKeys();
+        }
+        
+        Debug.Log($"[KeyManager] Loaded keys from PlayerPrefs: {keysCount}");
         UpdateUIKeyCount();
     }
 

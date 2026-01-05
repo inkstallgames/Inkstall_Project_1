@@ -24,35 +24,15 @@ public class KeyManager : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("[KeyManager] Awake called");
-        
         // Set up singleton
         if (Instance == null)
         {
-            Debug.Log("[KeyManager] Initializing KeyManager instance");
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            
-            // Initialize with default keys if needed
-            if (!PlayerPrefs.HasKey("KeysCount"))
-            {
-                Debug.Log("[KeyManager] No saved keys found, initializing with default");
-                keysCount = 5;
-                SaveKeys();
-            }
-            else
-            {
-                // Load existing keys
-                keysCount = PlayerPrefs.GetInt("KeysCount", 5);
-                Debug.Log($"[KeyManager] Loaded {keysCount} keys from PlayerPrefs");
-            }
-            
-            // Update UI immediately
-            UpdateUIKeyCount();
+            CloudSaveManager.OnCloudDataLoaded += FetchKeysFromPlayerPrefs;
         }
-        else if (Instance != this)
+        else
         {
-            Debug.Log("[KeyManager] Duplicate KeyManager instance destroyed");
             Destroy(gameObject);
         }
     }
@@ -61,16 +41,13 @@ public class KeyManager : MonoBehaviour
     {
         if (Instance == this)
         {
-            // Clean up any subscriptions if needed
-            // Note: We're not using CloudSaveManager events anymore to avoid the error
+            CloudSaveManager.OnCloudDataLoaded -= FetchKeysFromPlayerPrefs;
         }
     }
 
     private void Start()
     {
-        Debug.Log("[KeyManager] Start called");
-        // Ensure we have the latest key count
-        FetchKeysFromPlayerPrefs();
+        // Data will be loaded by the OnCloudDataLoaded event.
     }
 
     private void OnEnable()
@@ -81,35 +58,9 @@ public class KeyManager : MonoBehaviour
 
     public void FetchKeysFromPlayerPrefs()
     {
-        try
-        {
-            // Check if the key exists in PlayerPrefs
-            bool hasKey = PlayerPrefs.HasKey("KeysCount");
-            Debug.Log($"[KeyManager] PlayerPrefs has KeysCount key: {hasKey}");
-            
-            // Load from PlayerPrefs, if no value exists it will use the default value (5)
-            int previousCount = keysCount;
-            keysCount = PlayerPrefs.GetInt("KeysCount", 5);
-            
-            Debug.Log($"[KeyManager] Fetched keys from PlayerPrefs. Previous: {previousCount}, New: {keysCount}, Using default: {!hasKey}");
-            
-            // Force save to ensure the default value is stored if it didn't exist
-            if (!hasKey)
-            {
-                keysCount = 5; // Ensure we have the default value
-                SaveKeys();
-            }
-            
-            UpdateUIKeyCount();
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"[KeyManager] Error in FetchKeysFromPlayerPrefs: {e.Message}");
-            // Fallback to default value
-            keysCount = 5;
-            SaveKeys();
-            UpdateUIKeyCount();
-        }
+        // Load from PlayerPrefs, if no value exists it will use the default value (10)
+        keysCount = PlayerPrefs.GetInt("KeysCount", 5);
+        UpdateUIKeyCount();
     }
 
     private void SaveKeys()

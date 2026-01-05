@@ -29,18 +29,30 @@ public class AuthManager : MonoBehaviour
 
     async void Start()
     {
+        Debug.Log("[AuthManager] Start() called.");
         Debug.Log("[AuthManager] Waiting for Unity Services to initialize...");
+        
+        int waitCount = 0;
         while (!UnityServicesInitializer.IsInitialized)
+        {
             await Task.Yield();
+            waitCount++;
+            if (waitCount % 100 == 0)
+            {
+                Debug.Log($"[AuthManager] Still waiting for Unity Services... ({waitCount} frames)");
+            }
+        }
 
         Debug.Log("[AuthManager] Unity Services initialized. Starting sign-in...");
         try
         {
+            Debug.Log("[AuthManager] Calling SignInAnonymously...");
             await SignInAnonymously();
+            Debug.Log("[AuthManager] SignInAnonymously completed.");
         }
         catch (System.Exception e)
         {
-            Debug.LogWarning("⚠ Anonymous sign-in failed: " + e.Message);
+            Debug.LogError($"⚠ Anonymous sign-in failed: {e.Message}\nStackTrace: {e.StackTrace}");
         }
 
         Debug.Log("[AuthManager] Waiting for CloudSaveManager instance...");
@@ -90,10 +102,19 @@ public class AuthManager : MonoBehaviour
 
     async Task SignInAnonymously()
     {
+        Debug.Log("[AuthManager] SignInAnonymously() started.");
+        Debug.Log($"[AuthManager] IsSignedIn: {AuthenticationService.Instance.IsSignedIn}");
+        
         if (!AuthenticationService.Instance.IsSignedIn)
         {
+            Debug.Log("[AuthManager] Not signed in. Attempting anonymous sign-in...");
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
             Debug.Log("✅ Anonymous Login Success");
+            Debug.Log($"[AuthManager] Player ID: {AuthenticationService.Instance.PlayerId}");
+        }
+        else
+        {
+            Debug.Log("[AuthManager] Already signed in.");
         }
     }
 

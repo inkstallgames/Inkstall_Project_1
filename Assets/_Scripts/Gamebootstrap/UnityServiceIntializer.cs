@@ -9,6 +9,8 @@ public class UnityServicesInitializer : MonoBehaviour
 
     async void Awake()
     {
+        Debug.Log("[UnityServicesInitializer] Awake() called.");
+        
         if (FindObjectsOfType<UnityServicesInitializer>().Length > 1)
         {
             Debug.LogWarning("[UnityServicesInitializer] Duplicate found. Destroying this component only.");
@@ -17,22 +19,31 @@ public class UnityServicesInitializer : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
+        Debug.Log("[UnityServicesInitializer] Starting InitializeServices...");
         await InitializeServices();
     }
 
     async Task InitializeServices()
     {
+        Debug.Log("[UnityServicesInitializer] InitializeServices() called.");
+        
         if (IsInitialized)
+        {
+            Debug.Log("[UnityServicesInitializer] Already initialized.");
             return;
+        }
 
         try
         {
+            Debug.Log("[UnityServicesInitializer] Creating initialization options...");
             var options = new InitializationOptions();
 
 #if UNITY_EDITOR
-            options.SetProfile("editor-test-user"); // 👈 SAME ID EVERY TIME
+            options.SetProfile("editor-test-user");
+            Debug.Log("[UnityServicesInitializer] Using editor test profile.");
 #endif
 
+            Debug.Log("[UnityServicesInitializer] Calling UnityServices.InitializeAsync...");
             await UnityServices.InitializeAsync(options);
             IsInitialized = true;
 
@@ -40,7 +51,7 @@ public class UnityServicesInitializer : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError("❌ Init Failed: " + e.Message);
+            Debug.LogError($"❌ Unity Services Init Failed: {e.Message}\nStackTrace: {e.StackTrace}");
         }
     }
 }

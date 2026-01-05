@@ -10,14 +10,17 @@ public class CloudSaveManager : MonoBehaviour
 
     void Awake()
     {
+        Debug.Log("[CloudSaveManager] Awake() called.");
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            Debug.Log("[CloudSaveManager] Instance set successfully.");
         }
         else
         {
-            Destroy(gameObject);
+            Debug.LogWarning("[CloudSaveManager] Duplicate found. Destroying this component only.");
+            Destroy(this);
         }
     }
 
@@ -42,23 +45,47 @@ public class CloudSaveManager : MonoBehaviour
 
     public async Task LoadAllPlayerDataFromCloud()
     {
+        Debug.Log("[CloudSaveManager] LoadAllPlayerDataFromCloud started.");
         try
         {
             await LoadPlayerData();
+            Debug.Log("[CloudSaveManager] LoadPlayerData completed successfully.");
         }
         catch (CloudSaveException e)
         {
-            Debug.LogWarning($"Failed to load data from cloud. Loading local data instead. Error: {e.Message}");
+            Debug.LogWarning($"[CloudSaveManager] CloudSaveException: {e.Message}");
+            EnsureDefaultsExist();
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"An unexpected error occurred while loading cloud data: {e.Message}");
+            Debug.LogError($"[CloudSaveManager] Exception during LoadPlayerData: {e.Message}\nStackTrace: {e.StackTrace}");
+            EnsureDefaultsExist();
         }
         finally
         {
-            // This will trigger managers to load from PlayerPrefs, using either
-            // the fresh cloud data or the existing local data if the cloud failed.
+            Debug.Log("[CloudSaveManager] Invoking OnCloudDataLoaded event.");
             OnCloudDataLoaded?.Invoke();
+            Debug.Log("[CloudSaveManager] OnCloudDataLoaded event invoked.");
+        }
+    }
+
+    private void EnsureDefaultsExist()
+    {
+        Debug.Log("[CloudSaveManager] EnsureDefaultsExist called.");
+        if (!PlayerPrefs.HasKey("KeysCount"))
+        {
+            Debug.Log("[CloudSaveManager] KeysCount not found in PlayerPrefs. Setting defaults.");
+            PlayerPrefs.SetInt("CurrentCoins", 0);
+            PlayerPrefs.SetInt("KeysCount", 5);
+            PlayerPrefs.SetString("StudentDoorData", "");
+            PlayerPrefs.Save();
+            SaveTimestamp();
+            Debug.Log("[CloudSaveManager] Defaults set: Keys=5, Coins=0");
+        }
+        else
+        {
+            int keys = PlayerPrefs.GetInt("KeysCount", 5);
+            Debug.Log($"[CloudSaveManager] KeysCount already exists in PlayerPrefs: {keys}");
         }
     }
 
@@ -73,11 +100,14 @@ public class CloudSaveManager : MonoBehaviour
 
     public async Task LoadPlayerData()
     {
+        Debug.Log("[CloudSaveManager] LoadPlayerData: Fetching cloud data...");
         // Load cloud data with metadata to get server timestamp
         var cloudData = await CloudSaveService.Instance.Data.Player.LoadAllAsync();
+        Debug.Log($"[CloudSaveManager] Cloud data fetched. Count: {cloudData?.Count ?? 0}");
 
         // Get local timestamp
         string localTimestampStr = PlayerPrefs.GetString("LastLocalSaveTimestamp", null);
+        Debug.Log($"[CloudSaveManager] Local timestamp: {localTimestampStr ?? "null"}");
         System.DateTime.TryParse(localTimestampStr, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AdjustToUniversal, out System.DateTime localTimestamp);
 
         if (cloudData != null && cloudData.Count > 0)
@@ -89,34 +119,49 @@ public class CloudSaveManager : MonoBehaviour
             if (localTimestamp > cloudTimestamp)
             {
                 // Local data is newer, so upload it to the cloud
-                Debug.Log("Local data is newer. Uploading to cloud.");
+                Debug.Log("[CloudSaveManager] Local data is newer. Uploading to cloud.");
                 await SaveAllPlayerDataToCloud();
             }
             else
             {
                 // Cloud data is newer or same, so load it
-                Debug.Log("Cloud data is newer. Loading from cloud.");
+                Debug.Log("[CloudSaveManager] Cloud data is newer or same. Loading from cloud.");
                 int coins = cloudData.ContainsKey("coins") ? cloudData["coins"].Value.GetAs<int>() : 0;
                 int keysCount = cloudData.ContainsKey("keys") ? cloudData["keys"].Value.GetAs<int>() : 5;
                 string studentDoorData = cloudData.ContainsKey("studentDoorData") ? cloudData["studentDoorData"].Value.GetAsString() : "";
+
+                Debug.Log($"[CloudSaveManager] Raw cloud data - Coins: {coins}, Keys: {keysCount}");
+
+                // Validate: keys should never be 0 as default is 5
+                if (keysCount == 0)
+                {
+                    Debug.LogWarning("[CloudSaveManager] Detected 0 keys in cloud data. Resetting to default (5).");
+                    keysCount = 5;
+                }
 
                 PlayerPrefs.SetInt("CurrentCoins", coins);
                 PlayerPrefs.SetInt("KeysCount", keysCount);
                 PlayerPrefs.SetString("StudentDoorData", studentDoorData);
                 PlayerPrefs.Save();
-                Debug.Log($"✅ Cloud Save Loaded → Coins: {coins}, Keys: {keysCount}");
+                Debug.Log($"[CloudSaveManager] ✅ Cloud data saved to PlayerPrefs → Coins: {coins}, Keys: {keysCount}");
             }
         }
         else if (!string.IsNullOrEmpty(localTimestampStr))
         {
             // No cloud data, but local data exists. Upload local data.
-            Debug.Log("No cloud data found. Uploading local data to cloud.");
+            Debug.Log("[CloudSaveManager] No cloud data found, but local timestamp exists. Uploading local data to cloud.");
             await SaveAllPlayerDataToCloud();
         }
         else
         {
-            // No cloud or local data. Game will start with default values.
-            Debug.Log("No save data found anywhere. Starting fresh.");
+            // No cloud or local data. Initialize with defaults.
+            Debug.Log("[CloudSaveManager] No save data found anywhere. Initializing with defaults.");
+            PlayerPrefs.SetInt("CurrentCoins", 0);
+            PlayerPrefs.SetInt("KeysCount", 5);
+            PlayerPrefs.SetString("StudentDoorData", "");
+            PlayerPrefs.Save();
+            SaveTimestamp();
+            Debug.Log("[CloudSaveManager] Defaults initialized: Keys=5, Coins=0");
         }
     }
 

@@ -11,7 +11,8 @@ public class UnityServicesInitializer : MonoBehaviour
     {
         if (FindObjectsOfType<UnityServicesInitializer>().Length > 1)
         {
-            Destroy(gameObject);
+            Debug.LogWarning("[UnityServicesInitializer] Duplicate found. Destroying this component only.");
+            Destroy(this);
             return;
         }
 

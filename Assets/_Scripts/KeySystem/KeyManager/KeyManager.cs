@@ -24,15 +24,35 @@ public class KeyManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("[KeyManager] Awake called");
+        
         // Set up singleton
         if (Instance == null)
         {
+            Debug.Log("[KeyManager] Initializing KeyManager instance");
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            CloudSaveManager.OnCloudDataLoaded += FetchKeysFromPlayerPrefs;
+            
+            // Initialize with default keys if needed
+            if (!PlayerPrefs.HasKey("KeysCount"))
+            {
+                Debug.Log("[KeyManager] No saved keys found, initializing with default");
+                keysCount = 5;
+                SaveKeys();
+            }
+            else
+            {
+                // Load existing keys
+                keysCount = PlayerPrefs.GetInt("KeysCount", 5);
+                Debug.Log($"[KeyManager] Loaded {keysCount} keys from PlayerPrefs");
+            }
+            
+            // Update UI immediately
+            UpdateUIKeyCount();
         }
-        else
+        else if (Instance != this)
         {
+            Debug.Log("[KeyManager] Duplicate KeyManager instance destroyed");
             Destroy(gameObject);
         }
     }
@@ -41,13 +61,16 @@ public class KeyManager : MonoBehaviour
     {
         if (Instance == this)
         {
-            CloudSaveManager.OnCloudDataLoaded -= FetchKeysFromPlayerPrefs;
+            // Clean up any subscriptions if needed
+            // Note: We're not using CloudSaveManager events anymore to avoid the error
         }
     }
 
     private void Start()
     {
-        // Data will be loaded by the OnCloudDataLoaded event.
+        Debug.Log("[KeyManager] Start called");
+        // Ensure we have the latest key count
+        FetchKeysFromPlayerPrefs();
     }
 
     private void OnEnable()
@@ -58,9 +81,35 @@ public class KeyManager : MonoBehaviour
 
     public void FetchKeysFromPlayerPrefs()
     {
-        // Load from PlayerPrefs, if no value exists it will use the default value (10)
-        keysCount = PlayerPrefs.GetInt("KeysCount", 5);
-        UpdateUIKeyCount();
+        try
+        {
+            // Check if the key exists in PlayerPrefs
+            bool hasKey = PlayerPrefs.HasKey("KeysCount");
+            Debug.Log($"[KeyManager] PlayerPrefs has KeysCount key: {hasKey}");
+            
+            // Load from PlayerPrefs, if no value exists it will use the default value (5)
+            int previousCount = keysCount;
+            keysCount = PlayerPrefs.GetInt("KeysCount", 5);
+            
+            Debug.Log($"[KeyManager] Fetched keys from PlayerPrefs. Previous: {previousCount}, New: {keysCount}, Using default: {!hasKey}");
+            
+            // Force save to ensure the default value is stored if it didn't exist
+            if (!hasKey)
+            {
+                keysCount = 5; // Ensure we have the default value
+                SaveKeys();
+            }
+            
+            UpdateUIKeyCount();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[KeyManager] Error in FetchKeysFromPlayerPrefs: {e.Message}");
+            // Fallback to default value
+            keysCount = 5;
+            SaveKeys();
+            UpdateUIKeyCount();
+        }
     }
 
     private void SaveKeys()
@@ -101,10 +150,30 @@ public class KeyManager : MonoBehaviour
     // Update the UI to show the current key count
     private void UpdateUIKeyCount()
     {
+        // Try to find the key text component if not assigned
+        if (keyText == null)
+        {
+            GameObject keyTextObj = GameObject.FindGameObjectWithTag("KeyText");
+            if (keyTextObj != null)
+            {
+                keyText = keyTextObj.GetComponent<TextMeshProUGUI>();
+                Debug.Log($"[KeyManager] Found key text component: {keyText != null}");
+            }
+            else
+            {
+                Debug.LogWarning("[KeyManager] No GameObject with tag 'KeyText' found in the scene");
+            }
+        }
+
         // Update the UI text if assigned
         if (keyText != null)
         {
             keyText.text = keysCount.ToString();
+            Debug.Log($"[KeyManager] Updated key count UI to: {keysCount}");
+        }
+        else
+        {
+            Debug.LogError("[KeyManager] Key text component is not assigned and couldn't be found in the scene");
         }
         
         // Notify listeners

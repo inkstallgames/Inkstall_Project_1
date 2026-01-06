@@ -22,10 +22,14 @@ public class ShopCanvas : MonoBehaviour
     public Button closeButton; // Added close button reference
 
     [Header("Shop Settings")]
+    [Tooltip("Price for each bomb in sequence (first bomb, second bomb, etc.)")]
+    [SerializeField] private int[] bombPrices = new int[] { 10, 15, 20 }; // Price for 1st, 2nd, 3rd bomb etc.
+    
+    [Tooltip("Maximum number of bombs that can be purchased in a single transaction")]
+    [SerializeField] private int maxBombsPerPurchase = 3;
+    
     private int currentBombsCount = 1;
     private const int MIN_BOMBS = 1;
-    private const int MAX_BOMBS_PER_PURCHASE = 3; // Arbitrary limit for UI, or based on max inventory
-    private const int BOMB_PRICE = 200;
 
     private int playerCoins;
 
@@ -86,7 +90,7 @@ public class ShopCanvas : MonoBehaviour
 
     public void IncreaseBombsCount()
     {
-        if (currentBombsCount < MAX_BOMBS_PER_PURCHASE)
+        if (currentBombsCount < maxBombsPerPurchase)
         {
             currentBombsCount++;
             UpdateShopUI();
@@ -110,8 +114,14 @@ public class ShopCanvas : MonoBehaviour
             bombMultiplierText.text = $"x{currentBombsCount}";
         }
 
-        // Update Cost Text
-        int totalCost = currentBombsCount * BOMB_PRICE;
+        // Calculate total cost based on tiered pricing
+        int totalCost = 0;
+        for (int i = 0; i < currentBombsCount; i++)
+        {
+            // Use the last price if we have more bombs than defined prices
+            int priceIndex = Mathf.Min(i, bombPrices.Length - 1);
+            totalCost += bombPrices[priceIndex];
+        }
         if (coinsCostText != null)
         {
             coinsCostText.text = $"{totalCost} Coins";
@@ -150,7 +160,13 @@ public class ShopCanvas : MonoBehaviour
 
     public void BuyBombs()
     {
-        int totalCost = currentBombsCount * BOMB_PRICE;
+        // Calculate total cost based on tiered pricing
+        int totalCost = 0;
+        for (int i = 0; i < currentBombsCount; i++)
+        {
+            int priceIndex = Mathf.Min(i, bombPrices.Length - 1);
+            totalCost += bombPrices[priceIndex];
+        }
 
         if (CoinsManager.Instance != null && CoinsManager.Instance.currentCoins >= totalCost)
         {

@@ -7674,6 +7674,8 @@ MonoBehaviour:
   minusButton: {fileID: 277526321}
   buyButton: {fileID: 355339959}
   closeButton: {fileID: 798612862}
+  bombPrices: 0a0000000f00000014000000
+  maxBombsPerPurchase: 3
 --- !u!1001 &1053737435
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8491,7 +8493,6 @@ RectTransform:
   m_Children:
   - {fileID: 977753790}
   - {fileID: 1774634693}
-  - {fileID: 1307166878}
   - {fileID: 1574232837}
   - {fileID: 27153197}
   - {fileID: 8262539202582422531}
@@ -9260,7 +9261,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1307166877}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9271,7 +9272,7 @@ RectTransform:
   - {fileID: 2049626418}
   - {fileID: 1804517142}
   - {fileID: 430515288}
-  m_Father: {fileID: 1217582467}
+  m_Father: {fileID: 758386994974643637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -9454,6 +9455,8 @@ MonoBehaviour:
   buybombsPanel: {fileID: 1047451880}
   Notification: {fileID: 554846051}
   exitTextOBJ: {fileID: 0}
+  appleSigninBtn: {fileID: 0}
+  GooglePlayGamesBtn: {fileID: 0}
   lastDoorid: 6
 --- !u!4 &1312993842
 Transform:
@@ -12938,15 +12941,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 306a4b653742dd24eb770f020132ae08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfAliens: 2
+  numberOfAliens: 1
   aliensRemaining: 0
   remainingAliensTextCount: {fileID: 191323256}
   thisRoomDoor: {fileID: 1079998516}
   roomTimer: {fileID: 1194441159}
   isFinalRoom: 0
-  alienFoundCoins: 20
+  maxBombsForRoom: 3
+  alienFoundCoins: 5
   alienFoundDescription: Alien Found
-  roomCompletionCoins: 200
+  roomCompletionCoins: 10
   roomCompletionDescription: Room Completed
 --- !u!1001 &1891011428
 PrefabInstance:
@@ -15566,6 +15570,7 @@ RectTransform:
   - {fileID: 1981799374}
   - {fileID: 1949498768}
   - {fileID: 1650671127}
+  - {fileID: 1307166878}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -18024,7 +18029,7 @@ PrefabInstance:
     - target: {fileID: 1328271741645855876, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 40
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1328271741645855876, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -18053,6 +18058,11 @@ PrefabInstance:
       objectReference: {fileID: 1949498769}
     - target: {fileID: 1361265660159551448, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: maxBombs
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361265660159551448, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: roomTimer
       value: 
       objectReference: {fileID: 1194441159}
@@ -18068,9 +18078,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1361265660159551448, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: alienFoundCoins
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361265660159551448, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: maxBombsForRoom
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361265660159551448, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: remainingAliensText
       value: 
       objectReference: {fileID: 191323256}
+    - target: {fileID: 1361265660159551448, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: roomCompletionCoins
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1361265660159551448, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: remainingAliensTextCount
@@ -18273,6 +18298,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: e67acca8fdc8d304baccdf0ec4e7e4d8, type: 2}
     - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: maxBombs
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: roomTimer
       value: 
       objectReference: {fileID: 1194441159}
@@ -18288,9 +18318,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: alienFoundCoins
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: maxBombsForRoom
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: nextDoorToUnlock
       value: 
       objectReference: {fileID: 755357389}
+    - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: roomCompletionCoins
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3994843846756416132, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: remainingAliensTextCount
@@ -18423,6 +18468,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: e67acca8fdc8d304baccdf0ec4e7e4d8, type: 2}
     - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: maxBombs
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: roomTimer
       value: 
       objectReference: {fileID: 1194441159}
@@ -18438,9 +18488,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: alienFoundCoins
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: maxBombsForRoom
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: nextDoorToUnlock
       value: 
       objectReference: {fileID: 1105147017}
+    - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: roomCompletionCoins
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4417720671510031535, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: remainingAliensTextCount
@@ -18493,6 +18558,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: e67acca8fdc8d304baccdf0ec4e7e4d8, type: 2}
     - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: maxBombs
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: roomTimer
       value: 
       objectReference: {fileID: 1194441159}
@@ -18509,7 +18579,22 @@ PrefabInstance:
     - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 2
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: alienFoundCoins
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: maxBombsForRoom
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: roomCompletionCoins
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5798109133051224903, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -18538,6 +18623,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: e67acca8fdc8d304baccdf0ec4e7e4d8, type: 2}
     - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
+      propertyPath: maxBombs
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
       propertyPath: roomTimer
       value: 
       objectReference: {fileID: 1194441159}
@@ -18554,13 +18644,28 @@ PrefabInstance:
     - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: numberOfAliens
-      value: 2
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: alienFoundCoins
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: maxBombsForRoom
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: nextDoorToUnlock
       value: 
       objectReference: {fileID: 1286095997}
+    - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
+        type: 3}
+      propertyPath: roomCompletionCoins
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6089663928854939403, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: remainingAliensTextCount
@@ -18614,7 +18719,7 @@ PrefabInstance:
     - target: {fileID: 6526205679978218838, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 50
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 6526205679978218838, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}

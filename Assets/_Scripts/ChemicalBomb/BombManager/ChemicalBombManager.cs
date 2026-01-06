@@ -51,8 +51,15 @@ public class ChemicalBombManager : MonoBehaviour
         }
     }
     
-    void OnEnable()
+    void Start()
     {
+        currentBombs = maxBombs;
+        UpdateBombsUI();
+    }
+
+    public void SetMaxBombs(int newMaxBombs)
+    {
+        maxBombs = newMaxBombs;
         currentBombs = maxBombs;
         UpdateBombsUI();
     }

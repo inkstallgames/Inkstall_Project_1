@@ -17,8 +17,9 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private DoorInteraction thisRoomDoor;
     [SerializeField] private GameTimer roomTimer;  // Reference to the room's timer
     [SerializeField] public bool isFinalRoom = false;          // Is this the final room in the level?
+    [SerializeField] private int maxBombsForRoom = 6;     // Max bombs for this room
 
-    [SerializeField] private int alienFoundCoins = 20; 
+    [SerializeField] private int alienFoundCoins = 10; 
     [SerializeField] private string alienFoundDescription = "Alien Found"; 
 
     [SerializeField] private int roomCompletionCoins = 200;
@@ -76,6 +77,12 @@ public class RoomManager : MonoBehaviour
     {
         if (isRoomActive) return; // Prevent multiple activations
         isRoomActive = true;
+
+        // Set max bombs for this room
+        if (ChemicalBombManager.Instance != null)
+        {
+            ChemicalBombManager.Instance.SetMaxBombs(maxBombsForRoom);
+        }
         
         // Collect all children
         List<Transform> children = new List<Transform>();

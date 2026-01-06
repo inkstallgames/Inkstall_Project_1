@@ -102140,9 +102140,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2118362762}
+      - m_Target: {fileID: 2118362764}
         m_TargetAssemblyTypeName: AuthManager, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: SignInWithGoogle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

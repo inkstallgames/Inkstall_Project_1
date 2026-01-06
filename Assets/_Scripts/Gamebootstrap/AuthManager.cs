@@ -185,17 +185,23 @@ public class AuthManager : MonoBehaviour
                 Debug.Log("[AuthManager] Cloud data loaded from Google Play account.");
             }
         }
-        catch (AuthenticationException e)
+       catch (AuthenticationException e)
         {
-            // If sign-in fails, the account might not exist, so link it to current anonymous account
-            Debug.LogWarning($"⚠ Google Play sign-in failed: {e.Message}. Linking to current account instead...");
-            
+            Debug.LogWarning($"⚠ Google Play sign-in failed: {e.Message}");
+
+            // 🔒 VERY IMPORTANT: do NOT link if account already exists
+            if (e.ErrorCode == AuthenticationErrorCodes.AccountAlreadyLinked)
+            {
+                Debug.LogError("❌ Google account already linked to another user. Abort linking.");
+                return;
+            }
+
             try
             {
+                Debug.Log("[AuthManager] Linking Google account...");
                 await AuthenticationService.Instance.LinkWithGooglePlayGamesAsync(serverAuthCode);
                 Debug.Log("✅ Google account linked with current progress");
-                
-                // Upload current progress to cloud
+
                 if (CloudSaveManager.Instance != null)
                 {
                     await CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
@@ -207,6 +213,7 @@ public class AuthManager : MonoBehaviour
                 Debug.LogError($"❌ Failed to link Google account: {linkError.Message}");
             }
         }
+
     }
 
     bool IsGoogleAlreadyLinked()
@@ -216,7 +223,7 @@ public class AuthManager : MonoBehaviour
 
         foreach (var identity in info.Identities)
         {
-            if (identity.TypeId == "google")
+            if (identity.TypeId == "google_play_games")
                 return true;
         }
         return false;

@@ -189,30 +189,33 @@ public class AuthManager : MonoBehaviour
         {
             Debug.LogWarning($"⚠ Google Play sign-in failed: {e.Message}");
 
-            // 🔒 VERY IMPORTANT: do NOT link if account already exists
+            // 🔑 This means reinstall / returning user
             if (e.ErrorCode == AuthenticationErrorCodes.AccountAlreadyLinked)
             {
-                Debug.LogError("❌ Google account already linked to another user. Abort linking.");
-                return;
-            }
+                Debug.Log("🔁 Google already linked. Retrying SIGN-IN.");
 
-            try
-            {
-                Debug.Log("[AuthManager] Linking Google account...");
-                await AuthenticationService.Instance.LinkWithGooglePlayGamesAsync(serverAuthCode);
-                Debug.Log("✅ Google account linked with current progress");
+                // Retry sign-in instead of linking
+                await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverAuthCode);
 
                 if (CloudSaveManager.Instance != null)
                 {
-                    await CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
-                    Debug.Log("[AuthManager] Current progress uploaded to Google Play account.");
+                    await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
+                    Debug.Log("☁ Cloud data loaded after reinstall");
                 }
+
+                return;
             }
-            catch (AuthenticationException linkError)
+
+            // Only link for truly new accounts
+            await AuthenticationService.Instance.LinkWithGooglePlayGamesAsync(serverAuthCode);
+
+            if (CloudSaveManager.Instance != null)
             {
-                Debug.LogError($"❌ Failed to link Google account: {linkError.Message}");
+                await CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
+                Debug.Log("☁ Local data uploaded to cloud");
             }
         }
+
 
     }
 

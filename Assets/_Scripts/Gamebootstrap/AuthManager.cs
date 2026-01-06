@@ -185,28 +185,43 @@ public class AuthManager : MonoBehaviour
                 Debug.Log("[AuthManager] Cloud data loaded from Google Play account.");
             }
         }
-       catch (AuthenticationException e)
+        catch (AuthenticationException e)
         {
             Debug.LogWarning($"⚠ Google Play sign-in failed: {e.Message}");
 
-            // 🔑 This means reinstall / returning user
+            // 🔑 Reinstall / returning user case
             if (e.ErrorCode == AuthenticationErrorCodes.AccountAlreadyLinked)
             {
-                Debug.Log("🔁 Google already linked. Retrying SIGN-IN.");
+                Debug.Log("🔁 Google already linked.");
 
-                // Retry sign-in instead of linking
+                // 🚨 IMPORTANT: do NOT sign in again if already signed in
+                if (AuthenticationService.Instance.IsSignedIn)
+                {
+                    Debug.Log("✅ Unity already signed in. Loading cloud data only.");
+
+                    if (CloudSaveManager.Instance != null)
+                    {
+                        await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
+                        Debug.Log("☁ Cloud data loaded after reinstall");
+                    }
+
+                    return;
+                }
+
+                // (Very rare fallback)
+                Debug.Log("⚠ Unity not signed in, retrying Google sign-in once.");
                 await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverAuthCode);
 
                 if (CloudSaveManager.Instance != null)
                 {
                     await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
-                    Debug.Log("☁ Cloud data loaded after reinstall");
                 }
 
                 return;
             }
 
-            // Only link for truly new accounts
+            // 🆕 First-time Google user ONLY
+            Debug.Log("[AuthManager] Linking Google account...");
             await AuthenticationService.Instance.LinkWithGooglePlayGamesAsync(serverAuthCode);
 
             if (CloudSaveManager.Instance != null)
@@ -215,6 +230,7 @@ public class AuthManager : MonoBehaviour
                 Debug.Log("☁ Local data uploaded to cloud");
             }
         }
+
 
 
     }

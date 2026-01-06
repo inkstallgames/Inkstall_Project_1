@@ -137,7 +137,7 @@ public class AuthManager : MonoBehaviour
         yield return new WaitUntil(() => task.IsCompleted);
     }
 
-    async Task ProcessGoogleSignIn(string serverAuthCode)
+   async Task ProcessGoogleSignIn(string serverAuthCode)
     {
         try
         {
@@ -151,19 +151,33 @@ public class AuthManager : MonoBehaviour
         {
             Debug.LogWarning($"⚠ Google sign-in failed: {e.Message} | Code: {e.ErrorCode}");
 
-            if (e.ErrorCode == AuthenticationErrorCodes.AccountAlreadyLinked)
+            // ✅ RETURNING USER / REINSTALL CASE
+            if (e.ErrorCode == AuthenticationErrorCodes.AccountAlreadyLinked ||
+                AuthenticationService.Instance.IsSignedIn)
             {
-                Debug.Log("🔁 Account already linked. Retrying SIGN-IN only.");
-                await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverAuthCode);
-                await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
+                Debug.Log("🔁 Google account already linked. Loading cloud data only.");
+
+                if (CloudSaveManager.Instance != null)
+                {
+                    await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
+                    Debug.Log("☁ Cloud data loaded for returning user");
+                }
+
                 return;
             }
 
+            // ✅ FIRST-TIME GOOGLE USER ONLY
             Debug.Log("🔗 Linking Google account to anonymous user...");
             await AuthenticationService.Instance.LinkWithGooglePlayGamesAsync(serverAuthCode);
-            await CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
+
+            if (CloudSaveManager.Instance != null)
+            {
+                await CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
+                Debug.Log("☁ Local data uploaded after linking Google account");
+            }
         }
     }
+
 
     bool IsGoogleAlreadyLinked()
     {

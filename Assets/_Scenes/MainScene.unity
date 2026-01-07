@@ -698,6 +698,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -3443,6 +3444,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -5326,6 +5328,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -5623,6 +5626,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -6086,6 +6090,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -7682,6 +7687,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -8295,6 +8301,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -10820,6 +10827,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -12221,6 +12229,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -13208,6 +13217,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -18385,6 +18395,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -22598,6 +22609,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -28668,6 +28680,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -29486,6 +29499,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -29724,6 +29738,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -33077,6 +33092,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -33971,6 +33987,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -34625,6 +34642,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -35473,6 +35491,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -36402,6 +36421,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -38076,6 +38096,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -39933,6 +39954,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -41819,6 +41841,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -43796,6 +43819,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -44798,6 +44822,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -45240,6 +45265,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -45998,6 +46024,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -46563,7 +46590,7 @@ GameObject:
   - component: {fileID: 673542144}
   - component: {fileID: 673542143}
   m_Layer: 0
-  m_Name: FOB_Building3
+  m_Name: FOB_Building4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47813,6 +47840,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -49527,8 +49555,8 @@ Transform:
   m_Children:
   - {fileID: 1875161217596607455}
   - {fileID: 359668658}
-  - {fileID: 673542144}
   - {fileID: 1090342405}
+  - {fileID: 673542144}
   m_Father: {fileID: 776522121}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &715253947
@@ -50194,6 +50222,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -51481,6 +51510,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -52003,6 +52033,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -53922,6 +53953,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -54836,6 +54868,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -55891,6 +55924,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -59340,6 +59374,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -59528,6 +59563,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -60381,6 +60417,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -61085,6 +61122,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -61323,6 +61361,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -64554,6 +64593,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -66418,6 +66458,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -67190,6 +67231,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -68367,6 +68409,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -68901,6 +68944,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -69777,6 +69821,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -70051,6 +70096,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -72122,6 +72168,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -72479,6 +72526,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -73766,6 +73814,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -74192,6 +74241,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -74907,6 +74957,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -75182,6 +75233,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -77022,7 +77074,7 @@ GameObject:
   - component: {fileID: 1090342405}
   - component: {fileID: 1090342406}
   m_Layer: 0
-  m_Name: FOB_Building4
+  m_Name: FOB_Building3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77624,6 +77676,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -77862,6 +77915,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -78181,6 +78235,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -78457,6 +78512,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -80856,6 +80912,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -81934,6 +81991,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -84740,6 +84798,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -88170,6 +88229,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -88562,6 +88622,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -88823,6 +88884,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -89788,6 +89850,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -92405,6 +92468,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -92763,6 +92827,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -93926,10 +93991,10 @@ MonoBehaviour:
     portalObject: {fileID: 5016248854519288066}
     requiredDoorId: 6
   - buildingNumber: 3
-    portalObject: {fileID: 6078974085175250308}
+    portalObject: {fileID: 8008150388759493881}
     requiredDoorId: 12
   - buildingNumber: 4
-    portalObject: {fileID: 8008150388759493881}
+    portalObject: {fileID: 6078974085175250308}
     requiredDoorId: 18
 --- !u!4 &1344072264
 Transform:
@@ -95157,6 +95222,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -99612,6 +99678,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -101420,6 +101487,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -101847,6 +101915,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -102996,6 +103065,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -104353,6 +104423,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -104918,6 +104989,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -109272,6 +109344,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -114476,6 +114549,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -117500,6 +117574,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -120353,6 +120428,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -121185,6 +121261,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -124794,6 +124871,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -125833,6 +125911,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -128299,6 +128378,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -135103,6 +135183,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -135814,6 +135895,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -136396,6 +136478,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -137191,6 +137274,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -138581,6 +138665,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -139106,6 +139191,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -142380,6 +142466,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -147974,6 +148061,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -150588,6 +150676,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -154408,6 +154497,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 1
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -154563,6 +154653,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -154598,6 +154689,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 1
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -154633,6 +154725,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -154909,6 +155002,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 1
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -155070,6 +155164,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -155105,6 +155200,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -155283,6 +155379,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -155349,6 +155446,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -155438,6 +155536,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -156368,6 +156467,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -156583,6 +156683,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 1
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -156690,6 +156791,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -170355,6 +170457,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -171485,6 +171588,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -173584,6 +173688,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -174472,6 +174577,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -176091,6 +176197,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -177012,6 +177119,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -179511,6 +179619,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -180908,7 +181017,7 @@ GameObject:
   - component: {fileID: 7101099593672571607}
   - component: {fileID: 7101099593672571606}
   m_Layer: 0
-  m_Name: Building3Arr
+  m_Name: Building4Arr
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -180996,6 +181105,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 1
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -182654,6 +182764,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -184029,6 +184140,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -184379,6 +184491,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}
@@ -189683,7 +189796,7 @@ GameObject:
   - component: {fileID: 8008150388759493883}
   - component: {fileID: 8008150388759493882}
   m_Layer: 0
-  m_Name: Building4Arr
+  m_Name: Building3Arr
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -190395,6 +190508,7 @@ MonoBehaviour:
   doorID: 0
   shouldStartTimer: 0
   timerDuration: 60
+  roomManager: {fileID: 0}
   chemicalBomb: {fileID: 0}
   throwButton: {fileID: 0}
   gameTimerContainer: {fileID: 0}

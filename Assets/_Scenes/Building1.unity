@@ -9458,6 +9458,7 @@ MonoBehaviour:
   appleSigninBtn: {fileID: 0}
   GooglePlayGamesBtn: {fileID: 0}
   lastDoorid: 6
+  shopButton: {fileID: 2888523364713361416}
 --- !u!4 &1312993842
 Transform:
   m_ObjectHideFlags: 0
@@ -11701,7 +11702,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -34.600098}
+  m_AnchoredPosition: {x: 0, y: -34.59961}
   m_SizeDelta: {x: 405, y: 120}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1650671128
@@ -12947,7 +12948,7 @@ MonoBehaviour:
   thisRoomDoor: {fileID: 1079998516}
   roomTimer: {fileID: 1194441159}
   isFinalRoom: 0
-  maxBombsForRoom: 3
+  maxBombs: 3
   alienFoundCoins: 5
   alienFoundDescription: Alien Found
   roomCompletionCoins: 10
@@ -21726,7 +21727,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -156.1, y: -26}
+  m_AnchoredPosition: {x: -156.09961, y: -26}
   m_SizeDelta: {x: 120, y: 120}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!1 &7327652489415502720
@@ -23141,7 +23142,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 13.422363}
+  m_AnchoredPosition: {x: 0, y: 13.422852}
   m_SizeDelta: {x: 0, y: 26.843}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9153304873800952405

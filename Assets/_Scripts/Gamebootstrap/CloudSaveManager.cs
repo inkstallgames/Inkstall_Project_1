@@ -105,6 +105,12 @@ public class CloudSaveManager : MonoBehaviour
         var cloudData = await CloudSaveService.Instance.Data.Player.LoadAllAsync();
         Debug.Log($"[CloudSaveManager] Cloud data fetched. Count: {cloudData?.Count ?? 0}");
 
+        if (cloudData != null && cloudData.Count > 0)
+        {
+            string rawData = string.Join(", ", cloudData.Select(kvp => $"'{kvp.Key}': '{kvp.Value.Value.GetAsString()}'"));
+            Debug.Log($"[CloudSaveManager] RAW CLOUD DATA: {{{rawData}}}");
+        }
+
         // Get local timestamp
         string localTimestampStr = PlayerPrefs.GetString("LastLocalSaveTimestamp", null);
         Debug.Log($"[CloudSaveManager] Local timestamp: {localTimestampStr ?? "null"}");

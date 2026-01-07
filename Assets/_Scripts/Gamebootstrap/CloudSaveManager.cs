@@ -116,7 +116,14 @@ public class CloudSaveManager : MonoBehaviour
         Debug.Log($"[CloudSaveManager] Local timestamp: {localTimestampStr ?? "null"}");
         System.DateTime.TryParse(localTimestampStr, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AdjustToUniversal, out System.DateTime localTimestamp);
 
-        if (cloudData != null && cloudData.Count > 0)
+        // REINSTALL CHECK: If no door data exists locally, force a cloud download.
+        bool isFreshInstall = !PlayerPrefs.HasKey("StudentDoorData");
+        if (isFreshInstall)
+        {
+            Debug.Log("[CloudSaveManager] Fresh install detected (no local door data). Forcing cloud data load.");
+        }
+
+        if (cloudData != null && cloudData.Count > 0 && !isFreshInstall)
         {
             // Find the most recent server timestamp from all cloud variables
             var validTimestamps = cloudData.Values.Where(v => v.Modified.HasValue).Select(v => v.Modified.Value);

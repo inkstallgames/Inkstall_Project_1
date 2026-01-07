@@ -161,6 +161,12 @@ public class AuthManager : MonoBehaviour
                 {
                     await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
                     Debug.Log("☁ Cloud data loaded for returning user");
+
+                    // Log the data that was just loaded into PlayerPrefs
+                    int loadedCoins = PlayerPrefs.GetInt("CurrentCoins", 0);
+                    int loadedKeys = PlayerPrefs.GetInt("KeysCount", 5);
+                    string loadedDoorData = PlayerPrefs.GetString("StudentDoorData", "");
+                    Debug.Log($"[AuthManager] LOADED DATA → Coins: {loadedCoins}, Keys: {loadedKeys}, DoorData: '{loadedDoorData}'");
                 }
 
                 return;

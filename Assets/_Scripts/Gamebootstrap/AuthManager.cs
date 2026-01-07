@@ -137,7 +137,7 @@ public class AuthManager : MonoBehaviour
         yield return new WaitUntil(() => task.IsCompleted);
     }
 
-   async Task ProcessGoogleSignIn(string serverAuthCode)
+    async Task ProcessGoogleSignIn(string serverAuthCode)
     {
         try
         {
@@ -146,41 +146,16 @@ public class AuthManager : MonoBehaviour
 
             Debug.Log("✅ Google sign-in successful. Loading cloud data...");
             await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
+
+            // Log the data that was just loaded into PlayerPrefs
+            int loadedCoins = PlayerPrefs.GetInt("CurrentCoins", 0);
+            int loadedKeys = PlayerPrefs.GetInt("KeysCount", 5);
+            string loadedDoorData = PlayerPrefs.GetString("StudentDoorData", "");
+            Debug.Log($"[AuthManager] LOADED DATA → Coins: {loadedCoins}, Keys: {loadedKeys}, DoorData: '{loadedDoorData}'");
         }
-        catch (AuthenticationException e)
+        catch (System.Exception e)
         {
-            Debug.LogWarning($"⚠ Google sign-in failed: {e.Message} | Code: {e.ErrorCode}");
-
-            // ✅ RETURNING USER / REINSTALL CASE
-            if (e.ErrorCode == AuthenticationErrorCodes.AccountAlreadyLinked ||
-                AuthenticationService.Instance.IsSignedIn)
-            {
-                Debug.Log("🔁 Google account already linked. Loading cloud data only.");
-
-                if (CloudSaveManager.Instance != null)
-                {
-                    await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
-                    Debug.Log("☁ Cloud data loaded for returning user");
-
-                    // Log the data that was just loaded into PlayerPrefs
-                    int loadedCoins = PlayerPrefs.GetInt("CurrentCoins", 0);
-                    int loadedKeys = PlayerPrefs.GetInt("KeysCount", 5);
-                    string loadedDoorData = PlayerPrefs.GetString("StudentDoorData", "");
-                    Debug.Log($"[AuthManager] LOADED DATA → Coins: {loadedCoins}, Keys: {loadedKeys}, DoorData: '{loadedDoorData}'");
-                }
-
-                return;
-            }
-
-            // ✅ FIRST-TIME GOOGLE USER ONLY
-            Debug.Log("🔗 Linking Google account to anonymous user...");
-            await AuthenticationService.Instance.LinkWithGooglePlayGamesAsync(serverAuthCode);
-
-            if (CloudSaveManager.Instance != null)
-            {
-                await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
-                Debug.Log("☁ Cloud data loaded after linking Google account for the first time.");
-            }
+            Debug.LogError($"⚠ Google sign-in failed: {e.Message}");
         }
     }
 

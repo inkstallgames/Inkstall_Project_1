@@ -185716,7 +185716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 133355dd6c148fc499db0662e22654e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSceneIndex: 3
+  targetSceneIndex: 4
   isEntrance: 1
   loadDelay: 0.5
   mainCitySceneIndex: 0
@@ -189814,7 +189814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 133355dd6c148fc499db0662e22654e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSceneIndex: 4
+  targetSceneIndex: 3
   isEntrance: 1
   loadDelay: 0.5
   mainCitySceneIndex: 0

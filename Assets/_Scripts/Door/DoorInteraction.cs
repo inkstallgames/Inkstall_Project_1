@@ -27,6 +27,9 @@ public class DoorInteraction : MonoBehaviour
     [SerializeField] private bool shouldStartTimer = false;
     [SerializeField] private float timerDuration = 60f; // Default duration, can be changed in Inspector
 
+    [Header("Room Settings")]
+    public RoomManager roomManager; // Assign this in the inspector
+
     [Header("Game Activation Settings")]
     [SerializeField] private GameObject chemicalBomb;
     [SerializeField] private Button throwButton;
@@ -331,6 +334,13 @@ public class DoorInteraction : MonoBehaviour
                 }
             }
         }
+
+        if (roomManager != null)
+        {
+            ChemicalBombManager.Instance.InitializeBombs(roomManager.maxBombs);
+        }
+        ChemicalBombManager.Instance.UpdateBombsUI();
+        ChemicalBombManager.Instance.UpdateShopButtonState();
     }
 
     public void PlayDoorLockedAnimation()

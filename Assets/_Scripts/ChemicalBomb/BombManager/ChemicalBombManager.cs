@@ -31,30 +31,17 @@ public class ChemicalBombManager : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void Start()
     {
-        // If purchase limit is reached, keep shop button disabled
-        if (purchaseLimitReached)
-        {
-            shopButton.gameObject.SetActive(false);
-            return;
-        }
-        
-        // Original logic for shop button visibility
-        if (currentBombs <= 3)
-        {
-            shopButton.gameObject.SetActive(true);
-        }
-        else if(currentBombs > 3 && !shopButton.gameObject.activeSelf)
+        if (shopButton != null)
         {
             shopButton.gameObject.SetActive(false);
         }
     }
-    
-    void OnEnable()
+
+    private void Update()
     {
-        currentBombs = maxBombs;
-        UpdateBombsUI();
+        // This space is intentionally left blank to prevent the shop button from being activated every frame.
     }
     
     public void InitializeBombs(int newMaxBombs)
@@ -108,7 +95,7 @@ public class ChemicalBombManager : MonoBehaviour
         UpdateBombsUI();
     }
     
-    private void UpdateShopButtonState()
+    public void UpdateShopButtonState()
     {
         // If purchase limit is reached, keep shop button disabled
         if (purchaseLimitReached)
@@ -121,11 +108,11 @@ public class ChemicalBombManager : MonoBehaviour
         }
         
         // Original logic
-        if (shopButton != null && currentBombs <= 3)
+        if (shopButton != null && currentBombs <= 1)
         {
             shopButton.gameObject.SetActive(true);
         }
-        else if (shopButton != null && currentBombs > 3)
+        else if (shopButton != null && currentBombs > 1)
         {
             shopButton.gameObject.SetActive(false);    
         }

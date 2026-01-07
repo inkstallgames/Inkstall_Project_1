@@ -17,7 +17,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private DoorInteraction thisRoomDoor;
     [SerializeField] private GameTimer roomTimer;  // Reference to the room's timer
     [SerializeField] public bool isFinalRoom = false;          // Is this the final room in the level?
-    [SerializeField] private int maxBombs = 6; // Max bombs for this room
+    [SerializeField] public int maxBombs = 6; // Max bombs for this room
 
     [SerializeField] private int alienFoundCoins = 10; 
     [SerializeField] private string alienFoundDescription = "Alien Found"; 

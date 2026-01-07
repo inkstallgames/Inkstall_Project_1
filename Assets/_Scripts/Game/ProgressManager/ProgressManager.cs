@@ -150,6 +150,12 @@ public class ProgressManager : MonoBehaviour
             PlayerPrefs.Save();
             CloudSaveManager.SaveTimestamp();
             Debug.Log($"[ProgressManager] Saved door data to PlayerPrefs: {json}");
+
+            // Trigger the cloud save
+            if (CloudSaveManager.Instance != null)
+            {
+                CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
+            }
         }
     }
     
@@ -183,11 +189,7 @@ public class ProgressManager : MonoBehaviour
         // Update the scene immediately for instant feedback
         UpdateDoorInstancesInScene(doorId, nextDoorId);
 
-        // Save all data to the cloud
-        if (CloudSaveManager.Instance != null)
-        {
-            CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
-        }
+        // The cloud save is now handled by SaveStudentDoorDataToPrefs()
     }
 
     public IEnumerator UpdateDoorStatus(int doorId, Dictionary<string, object> updates)

@@ -62,8 +62,8 @@ public class AuthManager : MonoBehaviour
 
         if (CloudSaveManager.Instance != null)
         {
-            Debug.Log("[AuthManager] Loading cloud data on launch...");
-            await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
+            Debug.Log("[AuthManager] Loading local data on launch...");
+            CloudSaveManager.Instance.LoadLocalDataOnly();
         }
         else
         {
@@ -178,8 +178,8 @@ public class AuthManager : MonoBehaviour
 
             if (CloudSaveManager.Instance != null)
             {
-                await CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
-                Debug.Log("☁ Local data uploaded after linking Google account");
+                await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
+                Debug.Log("☁ Cloud data loaded after linking Google account for the first time.");
             }
         }
     }

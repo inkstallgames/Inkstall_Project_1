@@ -98,6 +98,14 @@ public class CloudSaveManager : MonoBehaviour
         await SavePlayerData(coins, keys, studentDoorData);
     }
 
+    public void LoadLocalDataOnly()
+    {
+        Debug.Log("[CloudSaveManager] Loading local data only.");
+        EnsureDefaultsExist();
+        OnCloudDataLoaded?.Invoke();
+        Debug.Log("[CloudSaveManager] OnCloudDataLoaded event invoked for local data.");
+    }
+
     public async Task LoadPlayerData()
     {
         Debug.Log("[CloudSaveManager] LoadPlayerData: Fetching cloud data...");

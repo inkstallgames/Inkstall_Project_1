@@ -22654,7 +22654,7 @@ MonoBehaviour:
   jumpSound: {fileID: 8300000, guid: 11f6bfe0292408549a75c58dc4067ab3, type: 3}
   runThresholdSound: 0.7
   minTouchDelta: 10
-  touchSensitivity: 5
+  touchSensitivity: 0.5
   useSplitScreenTouch: 1
   webGLSensitivityMultiplier: 0.05
 --- !u!1 &8616685848467102958

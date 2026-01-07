@@ -119,7 +119,7 @@ namespace StarterAssets
 		private Vector2 previousTouchPos;
 		private bool isTouching = false;
 		public float minTouchDelta = 10f;
-		public float touchSensitivity = 0.1f;
+		public float touchSensitivity = 0.5f;
 		[Tooltip("Whether to use screen split for touch controls (left: movement, right: camera)")]
 		public bool useSplitScreenTouch = true;
 		[Tooltip("Additional sensitivity reduction for WebGL platform (lower = less sensitive)")]

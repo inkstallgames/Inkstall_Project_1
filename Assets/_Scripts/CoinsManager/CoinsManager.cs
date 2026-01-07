@@ -51,6 +51,12 @@ public class CoinsManager : MonoBehaviour
         PlayerPrefs.SetInt("CurrentCoins", currentCoins);
         PlayerPrefs.Save();
         CloudSaveManager.SaveTimestamp();
+
+        // Also save to the cloud
+        if (CloudSaveManager.Instance != null)
+        {
+            CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
+        }
     }
 
     public void FetchCoins()

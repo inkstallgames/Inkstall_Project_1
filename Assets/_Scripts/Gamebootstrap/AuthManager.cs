@@ -141,6 +141,14 @@ public class AuthManager : MonoBehaviour
     {
         try
         {
+            // Sign out from the anonymous session first
+            if (AuthenticationService.Instance.IsSignedIn)
+            {
+                Debug.Log("[AuthManager] Signing out of anonymous session before Google sign-in...");
+                AuthenticationService.Instance.SignOut();
+                await Task.Delay(500); // Give a moment for sign-out to complete
+            }
+
             Debug.Log("[AuthManager] Signing in with Google Play (Unity Auth)...");
             await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverAuthCode);
 

@@ -153,12 +153,14 @@ public class CloudSaveManager : MonoBehaviour
             PlayerPrefs.SetString("StudentDoorData", studentDoorData);
             PlayerPrefs.Save();
             Debug.Log($"[CloudSaveManager] ✅ Cloud data saved to PlayerPrefs → Coins: {coins}, Keys: {keysCount}");
+            UIManager.Instance.ShowNotificationMessage("Cloud data loaded successfully");
         }
         else if (!string.IsNullOrEmpty(localTimestampStr))
         {
             // No cloud data, but local data exists. Upload local data.
             Debug.Log("[CloudSaveManager] No cloud data found, but local timestamp exists. Uploading local data to cloud.");
             await SaveAllPlayerDataToCloud();
+            UIManager.Instance.ShowNotificationMessage("Account successfully linked");
         }
         else
         {

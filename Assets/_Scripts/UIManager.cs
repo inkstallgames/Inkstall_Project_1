@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject buybombsPanel;
     public GameObject Notification;
+    public TextMeshProUGUI notificationText; // Assign this in the Inspector
     public GameObject exitTextOBJ;
     public GameObject appleSigninBtn;
     public GameObject GooglePlayGamesBtn;
@@ -47,6 +48,36 @@ public class UIManager : MonoBehaviour
         // Initial update of the ad button state
         UpdateAdButtonState();
         OnfinalRoom();
+
+        // Re-assign button listeners to ensure they are connected to the AuthManager singleton
+#if UNITY_ANDROID
+        if (GooglePlayGamesBtn != null)
+        {
+            var googleButton = GooglePlayGamesBtn.GetComponent<Button>();
+            if (googleButton != null) 
+            {
+                googleButton.onClick.RemoveAllListeners();
+                googleButton.onClick.AddListener(() => AuthManager.Instance.SignInWithGoogle());
+            }
+        }
+#elif UNITY_IOS
+        if (appleSigninBtn != null)
+        {
+            var appleButton = appleSigninBtn.GetComponent<Button>();
+            var appleSignInHandler = appleSigninBtn.GetComponent<AppleSignInHandler>();
+            if (appleSignInHandler == null) 
+            {
+                appleSignInHandler = appleSigninBtn.AddComponent<AppleSignInHandler>();
+            }
+
+            if (appleButton != null) 
+            {
+                appleButton.onClick.RemoveAllListeners();
+                appleButton.onClick.AddListener(() => appleSignInHandler.SignIn());
+            }
+        }
+#endif
+
         #if UNITY_EDITOR
         appleSigninBtn.SetActive(true);
         GooglePlayGamesBtn.SetActive(true);
@@ -177,14 +208,22 @@ public class UIManager : MonoBehaviour
     }
 
     
-    private IEnumerator ShowNotification(string message)
+    public void ShowNotificationMessage(string message)
+    {
+        StartCoroutine(ShowNotification(message));
+    }
+
+    public IEnumerator ShowNotification(string message)
     {
         if (Notification != null)
         {
-            TextMeshProUGUI notificationText = Notification.GetComponentInChildren<TextMeshProUGUI>();
             if (notificationText != null)
             {
                 notificationText.text = message;
+            }
+            else
+            {
+                Debug.LogWarning("[UIManager] Notification TextMeshProUGUI component is not assigned in the Inspector.");
             }
 
             Notification.SetActive(true);

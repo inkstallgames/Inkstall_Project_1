@@ -164,6 +164,7 @@ public class AuthManager : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"⚠ Google sign-in failed: {e.Message}");
+            UIManager.Instance.ShowNotificationMessage("Sign in failed. Check internet connection");
         }
     }
 
@@ -214,6 +215,7 @@ public class AuthManager : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"⚠ Apple sign-in failed: {e.Message}");
+            UIManager.Instance.ShowNotificationMessage("Sign in failed. Check internet connection");
         }
     }
 

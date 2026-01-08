@@ -190,19 +190,30 @@ public class AuthManager : MonoBehaviour
 
         if (IsAppleAlreadyLinked())
         {
-            Debug.Log("ℹ Apple already linked.");
+            Debug.Log("ℹ Apple already linked. Just loading cloud data.");
+            _ = CloudSaveManager.Instance?.LoadAllPlayerDataFromCloud();
             return;
         }
 
         try
         {
+            // Sign out from the anonymous session first
+            if (AuthenticationService.Instance.IsSignedIn)
+            {
+                Debug.Log("[AuthManager] Signing out of anonymous session before Apple sign-in...");
+                AuthenticationService.Instance.SignOut();
+                await Task.Delay(500); // Give a moment for sign-out to complete
+            }
+
+            Debug.Log("[AuthManager] Signing in with Apple (Unity Auth)...");
             await AuthenticationService.Instance.SignInWithAppleAsync(identityToken);
+
+            Debug.Log("✅ Apple sign-in successful. Loading cloud data...");
             await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
         }
-        catch (AuthenticationException)
+        catch (System.Exception e)
         {
-            await AuthenticationService.Instance.LinkWithAppleAsync(identityToken);
-            await CloudSaveManager.Instance.SaveAllPlayerDataToCloud();
+            Debug.LogError($"⚠ Apple sign-in failed: {e.Message}");
         }
     }
 

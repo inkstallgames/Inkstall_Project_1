@@ -1,37 +1,70 @@
 using UnityEngine;
 #if UNITY_IOS
-using UnityEngine.SignInWithApple;
+using AppleAuth;
+using AppleAuth.Enums;
+using AppleAuth.Interfaces;
+using AppleAuth.Native;
 #endif
 
 public class AppleSignInHandler : MonoBehaviour
 {
 #if UNITY_IOS
-    public void SignIn()
+    private IAppleAuthManager _appleAuthManager;
+
+    void Start()
     {
-        var siwa = gameObject.AddComponent<SignInWithApple>();
-        siwa.Login(OnLogin);
+        if (AppleAuthManager.IsCurrentPlatformSupported)
+        {
+            var deserializer = new PayloadDeserializer();
+            _appleAuthManager = new AppleAuthManager(deserializer);
+        }
     }
 
-    private void OnLogin(SignInWithApple.CallbackArgs args)
+    void Update()
     {
-        if (args.error != null)
+        if (_appleAuthManager != null)
         {
-            Debug.LogError($"[AppleSignInHandler] Apple Sign-In failed: {args.error}");
+            _appleAuthManager.Update();
+        }
+    }
+
+    public void SignIn()
+    {
+        if (_appleAuthManager == null)
+        {
+            Debug.LogError("[AppleSignInHandler] Apple Auth is not supported on this platform.");
             return;
         }
 
-        var userInfo = (SignInWithApple.UserInfo)args.userInfo;
-        string identityToken = userInfo.idToken;
+        var loginArgs = new AppleAuthLoginArgs(LoginOptions.IncludeEmail | LoginOptions.IncludeFullName);
 
-        if (!string.IsNullOrEmpty(identityToken))
-        {
-            Debug.Log("[AppleSignInHandler] Apple Sign-In successful. Passing token to AuthManager.");
-            AuthManager.Instance.SignInWithApple(identityToken);
-        }
-        else
-        {
-            Debug.LogError("[AppleSignInHandler] Apple Sign-In failed: Identity token is null or empty.");
-        }
+        _appleAuthManager.LoginWithAppleId(
+            loginArgs,
+            credential =>
+            {
+                var appleIdCredential = credential as IAppleIDCredential;
+                if (appleIdCredential != null)
+                {
+                    string identityToken = System.Text.Encoding.UTF8.GetString(appleIdCredential.IdentityToken, 0, appleIdCredential.IdentityToken.Length);
+                    if (!string.IsNullOrEmpty(identityToken))
+                    {
+                        Debug.Log("[AppleSignInHandler] Apple Sign-In successful. Passing token to AuthManager.");
+                        AuthManager.Instance.SignInWithApple(identityToken);
+                    }
+                    else
+                    {
+                        Debug.LogError("[AppleSignInHandler] Apple Sign-In failed: Identity token is null or empty.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("[AppleSignInHandler] Apple Sign-In failed: Credential is not an AppleIDCredential.");
+                }
+            },
+            error =>
+            {
+                Debug.LogError($"[AppleSignInHandler] Apple Sign-In failed: {error}");
+            });
     }
 #endif
 }

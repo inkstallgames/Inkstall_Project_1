@@ -22460,9 +22460,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SettingsPanel: {fileID: 711267595341819094}
   MainCanvas: {fileID: 2121465414623763718}
-  sensitivitySlider: {fileID: 0}
-  volumeSlider: {fileID: 0}
-  musicSlider: {fileID: 0}
+  sensitivitySlider: {fileID: 92696928827994684}
+  volumeSlider: {fileID: 4456333751790609007}
+  musicSlider: {fileID: 8061108536400063242}
   sensitivityMultiplier: 1
 --- !u!222 &7776710531509494469
 CanvasRenderer:

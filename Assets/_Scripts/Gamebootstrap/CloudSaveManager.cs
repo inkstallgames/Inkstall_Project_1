@@ -131,41 +131,28 @@ public class CloudSaveManager : MonoBehaviour
             Debug.Log("[CloudSaveManager] Fresh install detected (no local door data). Forcing cloud data load.");
         }
 
-        if (cloudData != null && cloudData.Count > 0 && !isFreshInstall)
+        if (cloudData != null && cloudData.Count > 0)
         {
-            // Find the most recent server timestamp from all cloud variables
-            var validTimestamps = cloudData.Values.Where(v => v.Modified.HasValue).Select(v => v.Modified.Value);
-            System.DateTime cloudTimestamp = validTimestamps.Any() ? validTimestamps.Max() : System.DateTime.MinValue;
+            // Cloud data exists, so load it, ignoring local timestamps.
+            Debug.Log("[CloudSaveManager] Cloud data found. Loading from cloud.");
+            int coins = cloudData.ContainsKey("coins") ? cloudData["coins"].Value.GetAs<int>() : 0;
+            int keysCount = cloudData.ContainsKey("keys") ? cloudData["keys"].Value.GetAs<int>() : 5;
+            string studentDoorData = cloudData.ContainsKey("studentDoorData") ? cloudData["studentDoorData"].Value.GetAsString() : "";
 
-            if (localTimestamp > cloudTimestamp)
+            Debug.Log($"[CloudSaveManager] Raw cloud data - Coins: {coins}, Keys: {keysCount}");
+
+            // Validate: keys should never be 0 as default is 5
+            if (keysCount == 0)
             {
-                // Local data is newer, so upload it to the cloud
-                Debug.Log("[CloudSaveManager] Local data is newer. Uploading to cloud.");
-                await SaveAllPlayerDataToCloud();
+                Debug.LogWarning("[CloudSaveManager] Detected 0 keys in cloud data. Resetting to default (5).");
+                keysCount = 5;
             }
-            else
-            {
-                // Cloud data is newer or same, so load it
-                Debug.Log("[CloudSaveManager] Cloud data is newer or same. Loading from cloud.");
-                int coins = cloudData.ContainsKey("coins") ? cloudData["coins"].Value.GetAs<int>() : 0;
-                int keysCount = cloudData.ContainsKey("keys") ? cloudData["keys"].Value.GetAs<int>() : 5;
-                string studentDoorData = cloudData.ContainsKey("studentDoorData") ? cloudData["studentDoorData"].Value.GetAsString() : "";
 
-                Debug.Log($"[CloudSaveManager] Raw cloud data - Coins: {coins}, Keys: {keysCount}");
-
-                // Validate: keys should never be 0 as default is 5
-                if (keysCount == 0)
-                {
-                    Debug.LogWarning("[CloudSaveManager] Detected 0 keys in cloud data. Resetting to default (5).");
-                    keysCount = 5;
-                }
-
-                PlayerPrefs.SetInt("CurrentCoins", coins);
-                PlayerPrefs.SetInt("KeysCount", keysCount);
-                PlayerPrefs.SetString("StudentDoorData", studentDoorData);
-                PlayerPrefs.Save();
-                Debug.Log($"[CloudSaveManager] ✅ Cloud data saved to PlayerPrefs → Coins: {coins}, Keys: {keysCount}");
-            }
+            PlayerPrefs.SetInt("CurrentCoins", coins);
+            PlayerPrefs.SetInt("KeysCount", keysCount);
+            PlayerPrefs.SetString("StudentDoorData", studentDoorData);
+            PlayerPrefs.Save();
+            Debug.Log($"[CloudSaveManager] ✅ Cloud data saved to PlayerPrefs → Coins: {coins}, Keys: {keysCount}");
         }
         else if (!string.IsNullOrEmpty(localTimestampStr))
         {

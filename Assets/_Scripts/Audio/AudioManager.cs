@@ -60,13 +60,33 @@ public class AudioManager : MonoBehaviour
     {
         audioSource.volume = volume;
 
-        if (volume > 0 && !audioSource.isPlaying)
+        if (volume > 0)
         {
-            PlayMusic();
+            // If we're increasing from zero, make sure we have a clip to play
+            if (audioSource.clip == null)
+            {
+                // Get the appropriate clip for the current scene
+                AudioClip clipToPlay = (SceneManager.GetActiveScene().buildIndex == 0) ? scene0Music : otherScenesMusic;
+                if (clipToPlay != null)
+                {
+                    audioSource.clip = clipToPlay;
+                }
+            }
+            
+            // If not playing, start playback
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
+            // If paused, unpause
+            else if (!audioSource.isPlaying && audioSource.time > 0)
+            {
+                audioSource.UnPause();
+            }
         }
         else if (volume == 0 && audioSource.isPlaying)
         {
-            StopMusic();
+            audioSource.Pause();
         }
     }
 

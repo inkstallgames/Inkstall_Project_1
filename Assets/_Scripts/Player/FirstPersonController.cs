@@ -131,7 +131,7 @@ namespace StarterAssets
 
 		// PlayerPrefs key for sensitivity (matching OptionsMenuManager)
 		private const string SENSITIVITY_KEY = "ScreenSensitivity";
-		private const float DEFAULT_SENSITIVITY = 0.2f;
+		private const float DEFAULT_SENSITIVITY = 0.5f;
 		private const float SENSITIVITY_MULTIPLIER = 1f; // Match this with your OptionsMenuManager's sensitivityMultiplier
 
 #if ENABLE_INPUT_SYSTEM

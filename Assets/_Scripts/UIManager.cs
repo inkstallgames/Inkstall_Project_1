@@ -226,9 +226,9 @@ public class UIManager : MonoBehaviour
                 Debug.LogWarning("[UIManager] Notification TextMeshProUGUI component is not assigned in the Inspector.");
             }
 
-            Notification.SetActive(true);
+            notificationText.gameObject.SetActive(true);
             yield return new WaitForSeconds(3f); // Show for 3 seconds
-            Notification.SetActive(false);
+            notificationText.gameObject.SetActive(false);
         }
     }
 

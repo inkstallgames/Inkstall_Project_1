@@ -94123,6 +94123,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildingPortals:
+  - buildingNumber: 1
+    portalObject: {fileID: 1047201162}
+    requiredDoorId: 0
   - buildingNumber: 2
     portalObject: {fileID: 5016248854519288066}
     requiredDoorId: 6

@@ -57,7 +57,11 @@ public class UIManager : MonoBehaviour
             if (googleButton != null) 
             {
                 googleButton.onClick.RemoveAllListeners();
-                googleButton.onClick.AddListener(() => AuthManager.Instance.SignInWithGoogle());
+                googleButton.onClick.AddListener(() =>
+                {
+                    DisplayNotification("Signing you in...", 0); // Display indefinitely
+                    AuthManager.Instance.SignInWithGoogle();
+                });
             }
         }
 #elif UNITY_IOS
@@ -73,7 +77,11 @@ public class UIManager : MonoBehaviour
             if (appleButton != null) 
             {
                 appleButton.onClick.RemoveAllListeners();
-                appleButton.onClick.AddListener(() => appleSignInHandler.SignIn());
+                appleButton.onClick.AddListener(() =>
+                {
+                    DisplayNotification("Signing you in...", 0); // Display indefinitely
+                    appleSignInHandler.SignIn();
+                });
             }
         }
 #endif
@@ -196,24 +204,47 @@ public class UIManager : MonoBehaviour
             if (!adShown)
             {
                 // If the ad wasn't shown, show a notification
-                StartCoroutine(ShowNotification("Ad not found"));
+                DisplayNotification("Ad not found", 3f);
             }
         }
         else
         {
             // Log an error if the AdManager is not available
             Debug.LogError("[WatchAdButton] AdManager.Instance is not found in the scene! Cannot show rewarded ad.");
-            StartCoroutine(ShowNotification("Ad service not available"));
+            DisplayNotification("Ad service not available", 3f);
         }
     }
 
     
     public void ShowNotificationMessage(string message)
     {
-        StartCoroutine(ShowNotification(message));
+        DisplayNotification(message, 3f); // Display for 3 seconds
     }
 
-    public IEnumerator ShowNotification(string message)
+    private Coroutine notificationCoroutine;
+
+    public void DisplayNotification(string message, float duration)
+    {
+        if (notificationCoroutine != null)
+        {
+            StopCoroutine(notificationCoroutine);
+        }
+        notificationCoroutine = StartCoroutine(ShowNotification(message, duration));
+    }
+
+    public void HideNotification()
+    {
+        if (notificationCoroutine != null)
+        {
+            StopCoroutine(notificationCoroutine);
+        }
+        if (notificationText != null)
+        {
+            notificationText.gameObject.SetActive(false);
+        }
+    }
+
+    private IEnumerator ShowNotification(string message, float duration)
     {
         if (Notification != null)
         {
@@ -227,8 +258,11 @@ public class UIManager : MonoBehaviour
             }
 
             notificationText.gameObject.SetActive(true);
-            yield return new WaitForSeconds(3f); // Show for 3 seconds
-            notificationText.gameObject.SetActive(false);
+            if (duration > 0)
+            {
+                yield return new WaitForSeconds(duration);
+                notificationText.gameObject.SetActive(false);
+            }
         }
     }
 

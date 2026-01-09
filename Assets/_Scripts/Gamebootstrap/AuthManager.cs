@@ -153,6 +153,7 @@ public class AuthManager : MonoBehaviour
             await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(serverAuthCode);
 
             Debug.Log("✅ Google sign-in successful. Loading cloud data...");
+            UIManager.Instance.ShowNotificationMessage("Sign in successful!");
             await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
 
             // Log the data that was just loaded into PlayerPrefs
@@ -210,6 +211,7 @@ public class AuthManager : MonoBehaviour
             await AuthenticationService.Instance.SignInWithAppleAsync(identityToken);
 
             Debug.Log("✅ Apple sign-in successful. Loading cloud data...");
+            UIManager.Instance.ShowNotificationMessage("Sign in successful!");
             await CloudSaveManager.Instance.LoadAllPlayerDataFromCloud();
         }
         catch (System.Exception e)

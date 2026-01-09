@@ -645,7 +645,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7431131}
   - component: {fileID: 7431133}
-  - component: {fileID: 7431132}
   - component: {fileID: 7431134}
   m_Layer: 0
   m_Name: Door_Room_LOD (7)
@@ -671,42 +670,6 @@ Transform:
   - {fileID: 1602104849}
   m_Father: {fileID: 339619663}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!114 &7431132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7431130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &7431133
 LODGroup:
   m_ObjectHideFlags: 0
@@ -5275,7 +5238,6 @@ GameObject:
   m_Component:
   - component: {fileID: 92300582}
   - component: {fileID: 92300584}
-  - component: {fileID: 92300583}
   - component: {fileID: 92300585}
   m_Layer: 0
   m_Name: Door_Room_LOD (7)
@@ -5301,42 +5263,6 @@ Transform:
   - {fileID: 366997705}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!114 &92300583
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 92300581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &92300584
 LODGroup:
   m_ObjectHideFlags: 0
@@ -5550,7 +5476,6 @@ GameObject:
   m_Component:
   - component: {fileID: 94431183}
   - component: {fileID: 94431186}
-  - component: {fileID: 94431185}
   - component: {fileID: 94431184}
   - component: {fileID: 94431187}
   m_Layer: 0
@@ -5599,42 +5524,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.29382935, y: 2.6083517, z: 1.4839861}
   m_Center: {x: 0.0114005655, y: 1.3438425, z: -0.6983446}
---- !u!114 &94431185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 94431182}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &94431186
 LODGroup:
   m_ObjectHideFlags: 0
@@ -7634,7 +7523,6 @@ GameObject:
   m_Component:
   - component: {fileID: 127866683}
   - component: {fileID: 127866685}
-  - component: {fileID: 127866684}
   - component: {fileID: 127866686}
   m_Layer: 0
   m_Name: Door_Room_LOD (4)
@@ -7660,42 +7548,6 @@ Transform:
   - {fileID: 1515717439}
   m_Father: {fileID: 473744439}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &127866684
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 127866682}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &127866685
 LODGroup:
   m_ObjectHideFlags: 0
@@ -8248,7 +8100,6 @@ GameObject:
   m_Component:
   - component: {fileID: 131479572}
   - component: {fileID: 131479574}
-  - component: {fileID: 131479573}
   - component: {fileID: 131479575}
   m_Layer: 0
   m_Name: Door_Room_LOD (8)
@@ -8274,42 +8125,6 @@ Transform:
   - {fileID: 1810953766}
   m_Father: {fileID: 339619663}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!114 &131479573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 131479571}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &131479574
 LODGroup:
   m_ObjectHideFlags: 0
@@ -10774,7 +10589,6 @@ GameObject:
   m_Component:
   - component: {fileID: 175040370}
   - component: {fileID: 175040372}
-  - component: {fileID: 175040371}
   - component: {fileID: 175040373}
   m_Layer: 0
   m_Name: Door_Room_LOD (2)
@@ -10800,42 +10614,6 @@ Transform:
   - {fileID: 1188787305}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &175040371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 175040369}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &175040372
 LODGroup:
   m_ObjectHideFlags: 0
@@ -28628,7 +28406,6 @@ GameObject:
   m_Component:
   - component: {fileID: 404150042}
   - component: {fileID: 404150044}
-  - component: {fileID: 404150043}
   - component: {fileID: 404150045}
   m_Layer: 0
   m_Name: Door_Room_LOD (8)
@@ -28654,42 +28431,6 @@ Transform:
   - {fileID: 1190047372}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!114 &404150043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 404150041}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &404150044
 LODGroup:
   m_ObjectHideFlags: 0
@@ -29686,7 +29427,6 @@ GameObject:
   m_Component:
   - component: {fileID: 419554575}
   - component: {fileID: 419554577}
-  - component: {fileID: 419554576}
   - component: {fileID: 419554578}
   m_Layer: 0
   m_Name: Door_Room_LOD (3)
@@ -29712,42 +29452,6 @@ Transform:
   - {fileID: 1012330870}
   m_Father: {fileID: 473744439}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &419554576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 419554574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &419554577
 LODGroup:
   m_ObjectHideFlags: 0
@@ -34567,7 +34271,6 @@ GameObject:
   m_Component:
   - component: {fileID: 504550164}
   - component: {fileID: 504550167}
-  - component: {fileID: 504550166}
   - component: {fileID: 504550165}
   - component: {fileID: 504550168}
   m_Layer: 0
@@ -34616,42 +34319,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.29382935, y: 2.6083517, z: 1.4839861}
   m_Center: {x: 0.0114005655, y: 1.3438425, z: -0.6983446}
---- !u!114 &504550166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 504550163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &504550167
 LODGroup:
   m_ObjectHideFlags: 0
@@ -35551,7 +35218,6 @@ GameObject:
   m_Component:
   - component: {fileID: 514558223}
   - component: {fileID: 514558226}
-  - component: {fileID: 514558225}
   - component: {fileID: 514558224}
   - component: {fileID: 514558227}
   m_Layer: 0
@@ -35600,42 +35266,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.29382935, y: 2.6083517, z: 1.4839861}
   m_Center: {x: 0.0114005655, y: 1.3438425, z: -0.6983446}
---- !u!114 &514558225
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 514558222}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &514558226
 LODGroup:
   m_ObjectHideFlags: 0
@@ -40037,7 +39667,6 @@ GameObject:
   m_Component:
   - component: {fileID: 560921204}
   - component: {fileID: 560921206}
-  - component: {fileID: 560921205}
   - component: {fileID: 560921207}
   m_Layer: 0
   m_Name: Door_Room_LOD (2)
@@ -40063,42 +39692,6 @@ Transform:
   - {fileID: 1725437908}
   m_Father: {fileID: 473744439}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &560921205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 560921203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &560921206
 LODGroup:
   m_ObjectHideFlags: 0
@@ -47900,7 +47493,6 @@ GameObject:
   m_Component:
   - component: {fileID: 680244831}
   - component: {fileID: 680244834}
-  - component: {fileID: 680244833}
   - component: {fileID: 680244832}
   - component: {fileID: 680244835}
   m_Layer: 0
@@ -47949,42 +47541,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.23388374, y: 3.1118507, z: 1.5400027}
   m_Center: {x: 0.014978856, y: 1.055922, z: -0.6447134}
---- !u!114 &680244833
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 680244830}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &680244834
 LODGroup:
   m_ObjectHideFlags: 0
@@ -50282,7 +49838,6 @@ GameObject:
   m_Component:
   - component: {fileID: 724603220}
   - component: {fileID: 724603223}
-  - component: {fileID: 724603222}
   - component: {fileID: 724603221}
   - component: {fileID: 724603224}
   m_Layer: 0
@@ -50331,42 +49886,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.23388374, y: 3.1118507, z: 1.5400027}
   m_Center: {x: 0.014978856, y: 1.055922, z: -0.6447134}
---- !u!114 &724603222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 724603219}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &724603223
 LODGroup:
   m_ObjectHideFlags: 0
@@ -51593,7 +51112,6 @@ GameObject:
   m_Component:
   - component: {fileID: 735745862}
   - component: {fileID: 735745864}
-  - component: {fileID: 735745863}
   - component: {fileID: 735745865}
   m_Layer: 0
   m_Name: Door_Room_LOD (4)
@@ -51619,42 +51137,6 @@ Transform:
   - {fileID: 1227001277}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &735745863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 735745861}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &735745864
 LODGroup:
   m_ObjectHideFlags: 0
@@ -54928,7 +54410,6 @@ GameObject:
   m_Component:
   - component: {fileID: 783682282}
   - component: {fileID: 783682285}
-  - component: {fileID: 783682284}
   - component: {fileID: 783682283}
   - component: {fileID: 783682286}
   m_Layer: 0
@@ -54977,42 +54458,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.9345149, y: 2.84705, z: 0.08648165}
   m_Center: {x: 0.45295316, y: 1.4589766, z: -0.05444456}
---- !u!114 &783682284
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 783682281}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &783682285
 LODGroup:
   m_ObjectHideFlags: 0
@@ -55984,7 +55429,6 @@ GameObject:
   m_Component:
   - component: {fileID: 789630985}
   - component: {fileID: 789630988}
-  - component: {fileID: 789630987}
   - component: {fileID: 789630986}
   - component: {fileID: 789630989}
   m_Layer: 0
@@ -56033,42 +55477,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0432497, y: 2.84705, z: 0.13201092}
   m_Center: {x: -0.50640935, y: 1.4589766, z: 0.0050302204}
---- !u!114 &789630987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 789630984}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &789630988
 LODGroup:
   m_ObjectHideFlags: 0
@@ -59435,7 +58843,6 @@ GameObject:
   m_Component:
   - component: {fileID: 832353216}
   - component: {fileID: 832353219}
-  - component: {fileID: 832353218}
   - component: {fileID: 832353217}
   - component: {fileID: 832353220}
   m_Layer: 0
@@ -59483,42 +58890,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7253789, y: 2.7496986, z: 0.3210793}
   m_Center: {x: 0.71062386, y: 1.3107686, z: -0.02237909}
---- !u!114 &832353218
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 832353215}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &832353219
 LODGroup:
   m_ObjectHideFlags: 0
@@ -60477,7 +59848,6 @@ GameObject:
   m_Component:
   - component: {fileID: 850690114}
   - component: {fileID: 850690117}
-  - component: {fileID: 850690116}
   - component: {fileID: 850690115}
   - component: {fileID: 850690118}
   m_Layer: 0
@@ -60526,42 +59896,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.9345149, y: 2.84705, z: 0.08648165}
   m_Center: {x: 0.45295316, y: 1.4589766, z: -0.05444456}
---- !u!114 &850690116
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 850690113}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &850690117
 LODGroup:
   m_ObjectHideFlags: 0
@@ -67313,7 +66647,6 @@ GameObject:
   - component: {fileID: 945448657}
   - component: {fileID: 945448660}
   - component: {fileID: 945448659}
-  - component: {fileID: 945448658}
   - component: {fileID: 945448661}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (5)
@@ -67340,42 +66673,6 @@ Transform:
   - {fileID: 1740641065}
   m_Father: {fileID: 473744439}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &945448658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 945448656}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &945448659
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -69027,7 +68324,6 @@ GameObject:
   m_Component:
   - component: {fileID: 969194667}
   - component: {fileID: 969194669}
-  - component: {fileID: 969194668}
   - component: {fileID: 969194670}
   m_Layer: 0
   m_Name: Door_Room_LOD (3)
@@ -69053,42 +68349,6 @@ Transform:
   - {fileID: 2109776535}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &969194668
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 969194666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &969194669
 LODGroup:
   m_ObjectHideFlags: 0
@@ -69881,7 +69141,6 @@ GameObject:
   m_Component:
   - component: {fileID: 986512338}
   - component: {fileID: 986512341}
-  - component: {fileID: 986512340}
   - component: {fileID: 986512339}
   - component: {fileID: 986512342}
   m_Layer: 0
@@ -69930,42 +69189,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.29382935, y: 2.6083517, z: 1.4839861}
   m_Center: {x: 0.0114005655, y: 1.3438425, z: -0.6983446}
---- !u!114 &986512340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 986512337}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &986512341
 LODGroup:
   m_ObjectHideFlags: 0
@@ -72228,7 +71451,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1027447564}
   - component: {fileID: 1027447567}
-  - component: {fileID: 1027447566}
   - component: {fileID: 1027447565}
   - component: {fileID: 1027447568}
   m_Layer: 0
@@ -72277,42 +71499,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.0432497, y: 2.84705, z: 0.13201092}
   m_Center: {x: -0.50640935, y: 1.4589766, z: 0.0050302204}
---- !u!114 &1027447566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1027447563}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1027447567
 LODGroup:
   m_ObjectHideFlags: 0
@@ -72609,7 +71795,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1031432513}
   - component: {fileID: 1031432515}
-  - component: {fileID: 1031432514}
   - component: {fileID: 1031432516}
   m_Layer: 0
   m_Name: Door_Room_LOD (7)
@@ -72635,42 +71820,6 @@ Transform:
   - {fileID: 1375726045}
   m_Father: {fileID: 473744439}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!114 &1031432514
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1031432512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1031432515
 LODGroup:
   m_ObjectHideFlags: 0
@@ -74302,7 +73451,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1049225330}
   - component: {fileID: 1049225333}
-  - component: {fileID: 1049225332}
   - component: {fileID: 1049225331}
   - component: {fileID: 1049225334}
   m_Layer: 0
@@ -74350,42 +73498,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7253789, y: 2.7496986, z: 0.3210793}
   m_Center: {x: 0.71062386, y: 1.3107686, z: -0.02237909}
---- !u!114 &1049225332
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1049225329}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1049225333
 LODGroup:
   m_ObjectHideFlags: 0
@@ -75040,7 +74152,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1059370818}
   - component: {fileID: 1059370820}
-  - component: {fileID: 1059370819}
   - component: {fileID: 1059370821}
   m_Layer: 0
   m_Name: Door_Room_LOD (11)
@@ -75066,42 +74177,6 @@ Transform:
   - {fileID: 74154022}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &1059370819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1059370817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1059370820
 LODGroup:
   m_ObjectHideFlags: 0
@@ -75315,7 +74390,6 @@ GameObject:
   - component: {fileID: 1064742298}
   - component: {fileID: 1064742301}
   - component: {fileID: 1064742300}
-  - component: {fileID: 1064742299}
   - component: {fileID: 1064742302}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD
@@ -75342,42 +74416,6 @@ Transform:
   - {fileID: 1996210297}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1064742299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064742297}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1064742300
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -78295,7 +77333,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1098779069}
   - component: {fileID: 1098779072}
-  - component: {fileID: 1098779071}
   - component: {fileID: 1098779070}
   - component: {fileID: 1098779073}
   m_Layer: 0
@@ -78344,42 +77381,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2878197, y: 2.6877205, z: 1.607392}
   m_Center: {x: 0.04411991, y: 1.318015, z: -0.73506385}
---- !u!114 &1098779071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1098779068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1098779072
 LODGroup:
   m_ObjectHideFlags: 0
@@ -78594,7 +77595,6 @@ GameObject:
   - component: {fileID: 1102787940}
   - component: {fileID: 1102787943}
   - component: {fileID: 1102787942}
-  - component: {fileID: 1102787941}
   - component: {fileID: 1102787944}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD
@@ -78621,42 +77621,6 @@ Transform:
   - {fileID: 1565247717}
   m_Father: {fileID: 473744439}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1102787941
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1102787939}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1102787942
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -82074,7 +81038,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1156827450}
   - component: {fileID: 1156827452}
-  - component: {fileID: 1156827451}
   - component: {fileID: 1156827453}
   m_Layer: 0
   m_Name: Door_Room_LOD (11)
@@ -82100,42 +81063,6 @@ Transform:
   - {fileID: 2041820671}
   m_Father: {fileID: 339619663}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &1156827451
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156827449}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1156827452
 LODGroup:
   m_ObjectHideFlags: 0
@@ -84881,7 +83808,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1197044444}
   - component: {fileID: 1197044446}
-  - component: {fileID: 1197044445}
   - component: {fileID: 1197044447}
   m_Layer: 0
   m_Name: Door_Room_LOD (2)
@@ -84907,42 +83833,6 @@ Transform:
   - {fileID: 1422788040}
   m_Father: {fileID: 339619663}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1197044445
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1197044443}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1197044446
 LODGroup:
   m_ObjectHideFlags: 0
@@ -88311,7 +87201,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1256055860}
   - component: {fileID: 1256055862}
-  - component: {fileID: 1256055861}
   - component: {fileID: 1256055863}
   m_Layer: 0
   m_Name: Door_Balkon_LOD (3)
@@ -88338,42 +87227,6 @@ Transform:
   - {fileID: 1343861632}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1256055861
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1256055859}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1256055862
 LODGroup:
   m_ObjectHideFlags: 0
@@ -88944,7 +87797,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1261334819}
   - component: {fileID: 1261334822}
-  - component: {fileID: 1261334821}
   - component: {fileID: 1261334820}
   - component: {fileID: 1261334823}
   m_Layer: 0
@@ -88993,42 +87845,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.29382935, y: 2.6083517, z: 1.4839861}
   m_Center: {x: 0.0114005655, y: 1.3438425, z: -0.6983446}
---- !u!114 &1261334821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1261334818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1261334822
 LODGroup:
   m_ObjectHideFlags: 0
@@ -92528,7 +91344,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1323805118}
   - component: {fileID: 1323805121}
-  - component: {fileID: 1323805120}
   - component: {fileID: 1323805119}
   - component: {fileID: 1323805122}
   m_Layer: 0
@@ -92577,42 +91392,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2878197, y: 2.6877205, z: 1.607392}
   m_Center: {x: 0.04411991, y: 1.318015, z: -0.73506385}
---- !u!114 &1323805120
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1323805117}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1323805121
 LODGroup:
   m_ObjectHideFlags: 0
@@ -92887,7 +91666,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1326364274}
   - component: {fileID: 1326364277}
-  - component: {fileID: 1326364276}
   - component: {fileID: 1326364275}
   - component: {fileID: 1326364278}
   m_Layer: 0
@@ -92936,42 +91714,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.23388374, y: 3.1118507, z: 1.5400027}
   m_Center: {x: 0.014978856, y: 1.055922, z: -0.6447134}
---- !u!114 &1326364276
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1326364273}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1326364277
 LODGroup:
   m_ObjectHideFlags: 0
@@ -99763,7 +98505,6 @@ GameObject:
   - component: {fileID: 1434568603}
   - component: {fileID: 1434568606}
   - component: {fileID: 1434568605}
-  - component: {fileID: 1434568604}
   - component: {fileID: 1434568607}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (5)
@@ -99790,42 +98531,6 @@ Transform:
   - {fileID: 152723260}
   m_Father: {fileID: 339619663}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1434568604
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1434568602}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &1434568605
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -101978,7 +100683,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1465070207}
   - component: {fileID: 1465070210}
-  - component: {fileID: 1465070209}
   - component: {fileID: 1465070208}
   - component: {fileID: 1465070211}
   m_Layer: 0
@@ -102027,42 +100731,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2878197, y: 2.6877205, z: 1.607392}
   m_Center: {x: 0.04411991, y: 1.318015, z: -0.73506385}
---- !u!114 &1465070209
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1465070206}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1465070210
 LODGroup:
   m_ObjectHideFlags: 0
@@ -103150,7 +101818,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1478254343}
   - component: {fileID: 1478254345}
-  - component: {fileID: 1478254344}
   - component: {fileID: 1478254346}
   m_Layer: 0
   m_Name: Door_Balkon_LOD (1)
@@ -103177,42 +101844,6 @@ Transform:
   - {fileID: 525067801}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &1478254344
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1478254342}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1478254345
 LODGroup:
   m_ObjectHideFlags: 0
@@ -105074,7 +103705,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1500338622}
   - component: {fileID: 1500338624}
-  - component: {fileID: 1500338623}
   - component: {fileID: 1500338625}
   m_Layer: 0
   m_Name: Door_Balkon_LOD (2)
@@ -105101,42 +103731,6 @@ Transform:
   - {fileID: 1472345181}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &1500338623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1500338621}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1500338624
 LODGroup:
   m_ObjectHideFlags: 0
@@ -109430,7 +108024,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1574790226}
   - component: {fileID: 1574790228}
-  - component: {fileID: 1574790227}
   - component: {fileID: 1574790229}
   m_Layer: 0
   m_Name: Door_Room_LOD (8)
@@ -109456,42 +108049,6 @@ Transform:
   - {fileID: 1639936653}
   m_Father: {fileID: 473744439}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!114 &1574790227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1574790225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1574790228
 LODGroup:
   m_ObjectHideFlags: 0
@@ -120514,7 +119071,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1760120228}
   - component: {fileID: 1760120230}
-  - component: {fileID: 1760120229}
   - component: {fileID: 1760120231}
   m_Layer: 0
   m_Name: Door_Room_LOD (3)
@@ -120540,42 +119096,6 @@ Transform:
   - {fileID: 2084015329}
   m_Father: {fileID: 339619663}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &1760120229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1760120227}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1760120230
 LODGroup:
   m_ObjectHideFlags: 0
@@ -125997,7 +124517,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1865049640}
   - component: {fileID: 1865049642}
-  - component: {fileID: 1865049641}
   - component: {fileID: 1865049643}
   m_Layer: 0
   m_Name: Door_Room_LOD (4)
@@ -126023,42 +124542,6 @@ Transform:
   - {fileID: 1203852026}
   m_Father: {fileID: 339619663}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &1865049641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1865049639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &1865049642
 LODGroup:
   m_ObjectHideFlags: 0
@@ -135959,7 +134442,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2027373668}
   - component: {fileID: 2027373671}
-  - component: {fileID: 2027373670}
   - component: {fileID: 2027373669}
   - component: {fileID: 2027373672}
   m_Layer: 0
@@ -136007,42 +134489,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7253789, y: 2.7496986, z: 0.3210793}
   m_Center: {x: 0.71062386, y: 1.3107686, z: -0.02237909}
---- !u!114 &2027373670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2027373667}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &2027373671
 LODGroup:
   m_ObjectHideFlags: 0
@@ -136541,7 +134987,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2039461616}
   - component: {fileID: 2039461619}
-  - component: {fileID: 2039461618}
   - component: {fileID: 2039461617}
   - component: {fileID: 2039461620}
   m_Layer: 0
@@ -136590,42 +135035,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.29382935, y: 2.6083517, z: 1.4839861}
   m_Center: {x: 0.0114005655, y: 1.3438425, z: -0.6983446}
---- !u!114 &2039461618
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2039461615}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &2039461619
 LODGroup:
   m_ObjectHideFlags: 0
@@ -138751,7 +137160,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2066204946}
   - component: {fileID: 2066204948}
-  - component: {fileID: 2066204947}
   - component: {fileID: 2066204949}
   m_Layer: 0
   m_Name: Door_Room_LOD (11)
@@ -138777,42 +137185,6 @@ Transform:
   - {fileID: 846158774}
   m_Father: {fileID: 473744439}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &2066204947
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2066204945}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!205 &2066204948
 LODGroup:
   m_ObjectHideFlags: 0
@@ -139276,7 +137648,6 @@ GameObject:
   - component: {fileID: 2070106395}
   - component: {fileID: 2070106398}
   - component: {fileID: 2070106397}
-  - component: {fileID: 2070106396}
   - component: {fileID: 2070106399}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (5)
@@ -139303,42 +137674,6 @@ Transform:
   - {fileID: 937617895}
   m_Father: {fileID: 1517708487}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2070106396
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2070106394}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2070106397
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -142551,7 +140886,6 @@ GameObject:
   - component: {fileID: 2123666273}
   - component: {fileID: 2123666276}
   - component: {fileID: 2123666275}
-  - component: {fileID: 2123666274}
   - component: {fileID: 2123666277}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD
@@ -142578,42 +140912,6 @@ Transform:
   - {fileID: 303973336}
   m_Father: {fileID: 339619663}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2123666274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2123666272}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  doorCloseSound: {fileID: 8300000, guid: 0e1b885f04ea74c40a7b1fd6773368fa, type: 3}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!65 &2123666275
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -152942,7 +151240,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1876739491560564361}
   - component: {fileID: 1791992258932654933}
-  - component: {fileID: 1875161216726950089}
   - component: {fileID: 1876739491560564362}
   m_Layer: 0
   m_Name: Door_Room_LOD (2)
@@ -152979,7 +151276,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1876668107975457887}
   - component: {fileID: 1791909281474768223}
-  - component: {fileID: 1875161216681000373}
   - component: {fileID: 1876668107975457888}
   m_Layer: 0
   m_Name: Door_Room_LOD (11)
@@ -153124,7 +151420,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1876630031721721793}
   - component: {fileID: 1791959187678475605}
-  - component: {fileID: 1875161216870501092}
   - component: {fileID: 1528809689062972323}
   - component: {fileID: 1876630031721721795}
   m_Layer: 0
@@ -153160,7 +151455,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1876707140387489403}
   - component: {fileID: 1791626225473175809}
-  - component: {fileID: 1875161218628684183}
   - component: {fileID: 1876707140387489404}
   m_Layer: 0
   m_Name: Door_Room_LOD (4)
@@ -153329,7 +151623,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1879558091537109991}
   - component: {fileID: 1791420712106999885}
-  - component: {fileID: 1875161217056796249}
   - component: {fileID: 1879558091537109992}
   m_Layer: 0
   m_Name: Door_Room_LOD (8)
@@ -153383,7 +151676,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1879614732177390105}
   - component: {fileID: 1792285144473676423}
-  - component: {fileID: 1875161216609219847}
   - component: {fileID: 1498214080562857700}
   - component: {fileID: 1879614732177390107}
   m_Layer: 0
@@ -153725,7 +152017,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1879488396289454673}
   - component: {fileID: 1791398150110447667}
-  - component: {fileID: 1875161217053721719}
   - component: {fileID: 1879488396289454674}
   m_Layer: 0
   m_Name: Door_Room_LOD (3)
@@ -153948,7 +152239,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1876455092701696801}
   - component: {fileID: 1792040300594366519}
-  - component: {fileID: 1875161216683219789}
   - component: {fileID: 8128831679578322674}
   - component: {fileID: 8128831679578322676}
   m_Layer: 0
@@ -154004,7 +152294,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1879345764369267869}
   - component: {fileID: 1792145199522481639}
-  - component: {fileID: 1875161217345970595}
   - component: {fileID: 1879345764369267870}
   m_Layer: 0
   m_Name: Door_Room_LOD (7)
@@ -154023,7 +152312,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1876742323217504935}
   - component: {fileID: 1792104057972195323}
-  - component: {fileID: 4972927520766968499}
   - component: {fileID: 6978536067212778488}
   - component: {fileID: 6978536067212778489}
   m_Layer: 0
@@ -154189,7 +152477,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1876394151078201459}
   - component: {fileID: 1791663757458950875}
-  - component: {fileID: 1875161218498077181}
   - component: {fileID: 5411702062035160465}
   - component: {fileID: 5411702062035160467}
   m_Layer: 0
@@ -154610,42 +152897,6 @@ Transform:
   - {fileID: 2602228875520937803}
   m_Father: {fileID: 1875161216735787417}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!114 &1875161216609219847
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873888420683840239}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 1
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216612700763
 Transform:
   m_ObjectHideFlags: 0
@@ -154766,114 +153017,6 @@ Transform:
   - {fileID: 5760534429502977364}
   m_Father: {fileID: 1875161216735787417}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1875161216681000373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873703475497349105}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
---- !u!114 &1875161216683219789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874423990281934407}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 1
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
---- !u!114 &1875161216726950089
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873684772904769889}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216731409326
 Transform:
   m_ObjectHideFlags: 0
@@ -155115,42 +153258,6 @@ Transform:
   - {fileID: 2630739365351974404}
   m_Father: {fileID: 1875161216735787417}
   m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
---- !u!114 &1875161216870501092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873769200726274311}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 1
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161216913999824
 Transform:
   m_ObjectHideFlags: 0
@@ -155277,78 +153384,6 @@ Transform:
   - {fileID: 6264337585210204658}
   m_Father: {fileID: 1875161216735787417}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!114 &1875161217053721719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874043866255937373}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
---- !u!114 &1875161217056796249
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873829573103147087}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161217121920507
 Transform:
   m_ObjectHideFlags: 0
@@ -155492,42 +153527,6 @@ Transform:
   - {fileID: 6566138036945251126}
   m_Father: {fileID: 1875161216735787417}
   m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
---- !u!114 &1875161217345970595
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874429375789236659}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!1 &1875161217394332177
 GameObject:
   m_ObjectHideFlags: 0
@@ -156796,42 +154795,6 @@ Transform:
   - {fileID: 3127600950078419252}
   m_Father: {fileID: 1875161216735787417}
   m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
---- !u!114 &1875161218498077181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874491473996026743}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 1
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218516245653
 Transform:
   m_ObjectHideFlags: 0
@@ -156904,42 +154867,6 @@ Transform:
   - {fileID: 1618352031599341968}
   m_Father: {fileID: 1875161216735787417}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1875161218628684183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1873780771543925503}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!4 &1875161218673369673
 Transform:
   m_ObjectHideFlags: 0
@@ -157106,7 +155033,6 @@ GameObject:
   - component: {fileID: 1876565983423246349}
   - component: {fileID: 1792075733157342573}
   - component: {fileID: 1994951600003332328}
-  - component: {fileID: 6096234473738546699}
   - component: {fileID: 6096234473738546701}
   m_Layer: 0
   m_Name: Door_Room_Entry_LOD (5)
@@ -177232,42 +175158,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4972927520766968499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874437464251344307}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 0
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!1 &4980424876354919502
 GameObject:
   m_ObjectHideFlags: 0
@@ -181218,42 +179108,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1875161217343531640}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6096234473738546699
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1875279496819915869}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6de038802b5c743bdd6aec2153b03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  XAngle: 0
-  YAngle: 90
-  ZAngle: 0
-  doorSpeed: 2
-  doorOpenSound: {fileID: 0}
-  doorCloseSound: {fileID: 0}
-  useKeyButton: {fileID: 0}
-  isLockedDoor: 0
-  doorLockedSound: {fileID: 0}
-  doorUnlockSound: {fileID: 0}
-  isUnlockable: 0
-  isRoomCompleted: 0
-  doorID: 0
-  shouldStartTimer: 1
-  timerDuration: 60
-  roomManager: {fileID: 0}
-  chemicalBomb: {fileID: 0}
-  throwButton: {fileID: 0}
-  gameTimerContainer: {fileID: 0}
-  bombsUI: {fileID: 0}
-  remainingAliensCountContainer: {fileID: 0}
-  interactionText: {fileID: 0}
-  crosshairImage: {fileID: 0}
-  lockedDoorAnimator: {fileID: 0}
 --- !u!82 &6096234473738546701
 AudioSource:
   m_ObjectHideFlags: 0

@@ -108,31 +108,32 @@ public class PlayerInteraction : MonoBehaviour
             // Check if we hit a door
             if (hitObject.CompareTag("Door"))
             {
-                // Get the door interaction component
                 DoorInteraction rayDoorInteraction = hitObject.GetComponent<DoorInteraction>();
                 if (rayDoorInteraction != null && rayDoorInteraction.enabled)
                 {
-                    // Check if we're within interaction distance (using sqrMagnitude for better performance)
                     float distanceSqr = (transform.position - hitObject.transform.position).sqrMagnitude;
                     if (distanceSqr <= interactDistance * interactDistance)
                     {
-                        // We're looking at a door and within range
                         this.doorInteraction = rayDoorInteraction;
-                        if(interactButton != null && !interactButton.activeSelf)
+
+                        // If the door is locked, show the 'Use Key' button.
+                        if (rayDoorInteraction.IsLocked())
                         {
-                            interactButton.SetActive(true);
+                            if (useKeyButton != null) useKeyButton.SetActive(true);
+                            if (interactButton != null) interactButton.SetActive(false);
+                        }
+                        // Otherwise, show the regular 'Interact' button.
+                        else
+                        {
+                            if (interactButton != null) interactButton.SetActive(true);
+                            if (useKeyButton != null) useKeyButton.SetActive(false);
                         }
                     }
                     else
                     {
-                        if(interactButton != null && interactButton.activeSelf)
-                        {
-                            interactButton.SetActive(false);
-                        }
-                        if(useKeyButton != null && useKeyButton.activeSelf)
-                        {
-                            useKeyButton.SetActive(false);
-                        }
+                        // Player is looking at a door but is out of range.
+                        if (interactButton != null) interactButton.SetActive(false);
+                        if (useKeyButton != null) useKeyButton.SetActive(false);
                     }
                 }
             }

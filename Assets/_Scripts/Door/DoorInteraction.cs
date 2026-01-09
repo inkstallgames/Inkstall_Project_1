@@ -374,14 +374,20 @@ public class DoorInteraction : MonoBehaviour
             lockedDoorAnimator.enabled = false;
             // Flag that the door was just unlocked but not yet opened
             justUnlocked = true;
-            
+
             // Notify FloorSpawnManager that a door was unlocked
             if (FloorSpawnManager.Instance != null)
             {
                 FloorSpawnManager.Instance.OnDoorUnlocked(doorID);
             }
-            
+
             // The use key button will be disabled by PlayerInteraction
+        }
+        else
+        {
+            // Player does not have a key, play locked effects.
+            PlayDoorLockedAnimation();
+            PlayDoorLockedSound();
         }
     }
 

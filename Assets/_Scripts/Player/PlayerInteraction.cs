@@ -116,15 +116,16 @@ public class PlayerInteraction : MonoBehaviour
                     {
                         this.doorInteraction = rayDoorInteraction;
 
-                        // If the door is locked, show the 'Use Key' button.
-                        if (rayDoorInteraction.IsLocked())
+                        // Check the state of the door to determine which button to show.
+                        if (rayDoorInteraction.IsLocked() && rayDoorInteraction.IsUnlockable())
                         {
+                            // If the door is locked AND unlockable, show the 'Use Key' button.
                             if (useKeyButton != null) useKeyButton.SetActive(true);
                             if (interactButton != null) interactButton.SetActive(false);
                         }
-                        // Otherwise, show the regular 'Interact' button.
                         else
                         {
+                            // For all other cases (unlocked, or locked but not unlockable), show the 'Interact' button.
                             if (interactButton != null) interactButton.SetActive(true);
                             if (useKeyButton != null) useKeyButton.SetActive(false);
                         }

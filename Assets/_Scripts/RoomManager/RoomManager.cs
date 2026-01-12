@@ -18,6 +18,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private GameTimer roomTimer;  // Reference to the room's timer
     [SerializeField] public bool isFinalRoom = false;          // Is this the final room in the level?
     [SerializeField] public int maxBombs = 6; // Max bombs for this room
+    [SerializeField] public float extraTimeAmount = 30f; // Extra time for this specific room
 
     [SerializeField] private int alienFoundCoins = 10; 
     [SerializeField] private string alienFoundDescription = "Alien Found"; 
@@ -77,6 +78,12 @@ public class RoomManager : MonoBehaviour
     {
         if (isRoomActive) return; // Prevent multiple activations
         isRoomActive = true;
+
+        // Set the extra time for this room
+        if (GameTimer.instance != null)
+        {
+            GameTimer.instance.SetRoomExtraTime(extraTimeAmount);
+        }
 
         if (ChemicalBombManager.Instance != null)
         {

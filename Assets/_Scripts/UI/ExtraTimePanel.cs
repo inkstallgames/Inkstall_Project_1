@@ -120,13 +120,41 @@ public class ExtraTimePanel : MonoBehaviour
         adWatched = true;
         Debug.Log("[ExtraTimePanel] Reward granted, adding extra time.");
         
-        // Add extra time and resume the game
-        if (GameTimer.instance != null)
+        try
         {
-            GameTimer.instance.AddTime(GameTimer.instance.extraTimeAmount);
+            // Add extra time and resume the game
+            if (GameTimer.instance != null)
+            {
+                // Add the extra time for the current room
+                GameTimer.instance.AddTime();
+                
+                // Start a coroutine to delay the panel deactivation
+                StartCoroutine(DisablePanelAfterDelay(0.5f));
+            }
+            else
+            {
+                Debug.LogError("[ExtraTimePanel] GameTimer.instance is null when trying to add extra time");
+                if (!wasGamePaused)
+                {
+                    Time.timeScale = 1f;
+                }
+                gameObject.SetActive(false);
+            }
         }
-        
-        // Hide the panel
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[ExtraTimePanel] Error in OnRewardGranted: {e.Message}");
+            if (!wasGamePaused)
+            {
+                Time.timeScale = 1f;
+            }
+            gameObject.SetActive(false);
+        }
+    }
+    
+    private IEnumerator DisablePanelAfterDelay(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
         gameObject.SetActive(false);
     }
 

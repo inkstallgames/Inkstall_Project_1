@@ -16,7 +16,8 @@ public class GameTimer : MonoBehaviour
 
     [Header("Extra Time Settings")]
     [SerializeField] private GameObject extraTimePanel;
-    [SerializeField] public float extraTimeAmount = 30f; // Amount of extra time to give
+    [SerializeField] private float defaultExtraTime = 30f; // Default extra time if not set by room
+    private float currentExtraTime = 30f; // Current extra time amount
     private bool hasUsedExtraTime = false; // Track if extra time has been used this session
 
     private bool warningTriggered = false;
@@ -56,13 +57,70 @@ public class GameTimer : MonoBehaviour
         StartTimer();
     }
 
+
+    public void SetRoomExtraTime(float extraTime)
+    {
+        currentExtraTime = extraTime;
+        Debug.Log($"[GameTimer] Set room extra time to: {currentExtraTime} seconds");
+    }
+
+    public void AddTime()
+    {
+        Debug.Log($"[GameTimer] Adding {currentExtraTime} seconds of extra time");
+        
+        // Reset the game over state first
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetGameOverState();
+        }
+        
+        // Reset the timer values
+        currentTime = currentExtraTime;
+        hasUsedExtraTime = true;
+        timerRunning = true;
+        
+        // Reset the last displayed time to force UI update
+        lastDisplayedMinutes = -1;
+        lastDisplayedSeconds = -1;
+        
+        // Update UI immediately
+        UpdateTimerUI();
+        
+        // Make sure the extra time panel is hidden
+        if (extraTimePanel != null && extraTimePanel.activeSelf)
+        {
+            extraTimePanel.SetActive(false);
+        }
+    }
+    
+    // Kept for backward compatibility
     public void AddTime(float timeToAdd)
     {
-        currentTime += timeToAdd;
-        hasUsedExtraTime = true; // Mark that extra time has been used
-        if (!timerRunning)
+        Debug.Log($"[GameTimer] Adding {timeToAdd} seconds of extra time");
+        
+        // Reset the game over state first
+        if (GameManager.Instance != null)
         {
-            StartTimer();
+            GameManager.Instance.ResetGameOverState();
+        }
+        
+        // Reset the timer values
+        currentTime = currentExtraTime;
+        hasUsedExtraTime = true;
+        timerRunning = true;
+        
+        // Reset the last displayed time to force UI update
+        lastDisplayedMinutes = -1;
+        lastDisplayedSeconds = -1;
+        
+        // Update UI immediately
+        UpdateTimerUI();
+        Debug.Log($"[GameTimer] Timer restarted with {currentTime} seconds");
+        
+        // Make sure the extra time panel is hidden
+        if (extraTimePanel != null && extraTimePanel.activeSelf)
+        {
+            extraTimePanel.SetActive(false);
         }
     }
 
@@ -157,14 +215,19 @@ public class GameTimer : MonoBehaviour
             timerRunning = false;
             StopTicking();
             
-            // Only show extra time panel if it hasn't been used yet
-            if (!hasUsedExtraTime && extraTimePanel != null)
+            // Only show extra time panel if it hasn't been used yet and we're not already showing it
+            if (!hasUsedExtraTime && extraTimePanel != null && !extraTimePanel.activeSelf)
             {
+                Debug.Log("[GameTimer] Showing extra time panel");
                 extraTimePanel.SetActive(true);
+                
+                // Don't proceed to game over yet - wait for player action
+                return;
             }
-            else
+            
+            // If we get here, either extra time was used or panel is missing
+            if (hasUsedExtraTime || extraTimePanel == null)
             {
-                // If extra time was already used or panel is missing, end the game
                 Debug.Log("[GameTimer] Extra time already used or panel missing, ending game.");
                 GameManager.Instance.GameOver();
             }

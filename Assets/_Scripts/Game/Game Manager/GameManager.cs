@@ -57,9 +57,20 @@ public class GameManager : MonoBehaviour
         // Set game over flag
         isGameOver = true;
         
-        // TODO: Play Loose Sound        
+        // Play Loose Sound
+        if (looseSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(looseSound);
+        }
         
         StartCoroutine(ResetGame());
+    }
+    
+    public void ResetGameOverState()
+    {
+        Debug.Log("[GameManager] Resetting game over state");
+        isGameOver = false;
+        StopAllCoroutines(); // Stop any pending game over sequences
     }
     
     public void LevelWin()

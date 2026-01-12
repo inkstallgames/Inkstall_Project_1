@@ -88,6 +88,7 @@ public class RoomManager : MonoBehaviour
         if (ChemicalBombManager.Instance != null)
         {
             ChemicalBombManager.Instance.InitializeBombs(maxBombs);
+            ChemicalBombManager.Instance.OnRoomEntered();
         }
         
         // Collect all children

@@ -9,11 +9,14 @@ public class ChemicalBombManager : MonoBehaviour
     [Header("Bullet Settings")]
     public int maxBombs = 6;
     public int currentBombs = 0;
+    private int bombsPurchasedThisRoom = 0;
+    private const int MAX_BOMB_PURCHASES_PER_ROOM = 3;
     
     [Header("UI References")]
-    public GameObject bombsContainerUI;
+    public GameObject bombsContainerUI;  // Reference to the bomb panel that should be disabled
     public GameObject[] bombsUIElements;
     public Button shopButton;
+    public TextMeshProUGUI bombsRemainingText; // Add this in the Unity Inspector
     
     // Flag to track if the purchase limit has been reached
     private bool purchaseLimitReached = false;
@@ -95,7 +98,29 @@ public class ChemicalBombManager : MonoBehaviour
     public void AddBombs(int amount)
     {
         currentBombs = Mathf.Min(currentBombs + amount, maxBombs);
+        bombsPurchasedThisRoom++;
         UpdateBombsUI();
+        
+        // Check if we've reached the purchase limit for this room
+        if (bombsPurchasedThisRoom >= MAX_BOMB_PURCHASES_PER_ROOM)
+        {
+            DisableShopButton();
+            // Disable the bomb panel
+            if (bombsContainerUI != null)
+            {
+                bombsContainerUI.SetActive(false);
+            }
+            
+            if (bombsRemainingText != null)
+            {
+                bombsRemainingText.text = "Max Purchases Reached";
+            }
+        }
+        else if (bombsRemainingText != null)
+        {
+            int remaining = MAX_BOMB_PURCHASES_PER_ROOM - bombsPurchasedThisRoom;
+            bombsRemainingText.text = $"Bombs Left: {remaining}/{MAX_BOMB_PURCHASES_PER_ROOM}";
+        }
     }
     
     public void UpdateShopButtonState()
@@ -130,6 +155,24 @@ public class ChemicalBombManager : MonoBehaviour
             shopButton.gameObject.SetActive(false);
         }
         Debug.Log("Shop button permanently disabled - purchase limit reached");
+    }
+    
+    // Call this when entering a new room
+    public void OnRoomEntered()
+    {
+        bombsPurchasedThisRoom = 0;
+        ResetPurchaseLimit();
+        
+        // Re-enable the bomb panel when entering a new room
+        if (bombsContainerUI != null)
+        {
+            bombsContainerUI.SetActive(true);
+        }
+        
+        if (bombsRemainingText != null)
+        {
+            bombsRemainingText.text = $"Bombs Left: {MAX_BOMB_PURCHASES_PER_ROOM}/{MAX_BOMB_PURCHASES_PER_ROOM}";
+        }
     }
     
     // Public method to reset the purchase limit (call this when starting a new game)

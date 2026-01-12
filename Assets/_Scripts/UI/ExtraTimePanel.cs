@@ -43,12 +43,6 @@ public class ExtraTimePanel : MonoBehaviour
             AdManager.Instance.OnRewardedAdLoadFailed -= OnAdLoadFailed;
         }
 
-        // Only resume the game if no ad is showing
-        if (!isAdShowing && !wasGamePaused)
-        {
-            Time.timeScale = 1f; 
-        }
-        
         // Stop the countdown coroutine if it's running
         if (countdownCoroutine != null)
         {
@@ -140,16 +134,20 @@ public class ExtraTimePanel : MonoBehaviour
     {
         Debug.Log("[ExtraTimePanel] Ad closed");
         isAdShowing = false;
-        
-        // If the ad was watched, deactivate the panel
+
+        // If the ad was watched, unpause the game and deactivate the panel
         if (adWatched)
         {
+            if (!wasGamePaused)
+            {
+                Time.timeScale = 1f;
+            }
             gameObject.SetActive(false);
         }
-        // If the ad wasn't watched (user closed without watching), resume the game
-        else if (!wasGamePaused)
-        { 
-            Time.timeScale = 1f;
+        // If the ad wasn't watched (e.g., user skipped), trigger game over
+        else
+        {
+            gameObject.SetActive(false);
         }
     }
 

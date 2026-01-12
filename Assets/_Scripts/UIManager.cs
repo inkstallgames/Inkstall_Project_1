@@ -114,9 +114,8 @@ public class UIManager : MonoBehaviour
     // This method will be called whenever the keys count changes
     private void UpdateAdButtonState()
     {
-        if (watchAdButton != null && KeyManager.Instance != null)
+        if (watchAdButton != null && KeyManager.Instance != null && KeyRefreshTimer.Instance != null)
         {
-            // Deactivate the watch ad button if keys count is maxKeys or more
             int currentKeys = KeyManager.Instance.GetCurrentKeyCount();
             int maxKeys = KeyRefreshTimer.Instance.maxKeys;
             
@@ -128,7 +127,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[UIManager] UpdateAdButtonState: Missing references (watchAdButton or KeyManager)");
+            Debug.LogWarning("[UIManager] UpdateAdButtonState: Missing references (watchAdButton, KeyManager, or KeyRefreshTimer)");
         }
     }
     

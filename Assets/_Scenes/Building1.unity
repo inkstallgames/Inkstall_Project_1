@@ -11616,9 +11616,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1888635512}
     m_Modifications:
+    - target: {fileID: 1084404098417284, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1428814400818248, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_Name
       value: Cabinet_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1428814400818248, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4904199861950686, guid: 0ff98eeb9bb99e5478390555bd891392, type: 3}
       propertyPath: m_LocalPosition.x

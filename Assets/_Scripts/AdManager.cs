@@ -8,6 +8,7 @@ using UnityEngine.Audio;
 public class AdManager : MonoBehaviour
 {
     public event System.Action OnRewardGranted;
+    public event System.Action OnRewardedAdLoadFailed;
     public static AdManager Instance;
     
     private const string ADS_REMOVED_KEY = "AdsRemoved";
@@ -222,12 +223,14 @@ public class AdManager : MonoBehaviour
                 Debug.LogError("[Rewarded] NO AD / LOAD FAILED");
                 Debug.LogError("[Rewarded] Code: " + error.GetCode());
                 Debug.LogError("[Rewarded] Message: " + error.GetMessage());
+                OnRewardedAdLoadFailed?.Invoke();
                 return;
             }
 
             if (ad == null)
             {
                 Debug.LogError("[Rewarded] NO AD RETURNED (ad == null)");
+                OnRewardedAdLoadFailed?.Invoke();
                 return;
             }
 

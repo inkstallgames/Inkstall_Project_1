@@ -29,10 +29,20 @@ public class ExtraTimePanel : MonoBehaviour
         // Reset states when panel is enabled
         adWatched = false;
         isAdShowing = false;
+
+        if (AdManager.Instance != null)
+        {
+            AdManager.Instance.OnRewardedAdLoadFailed += OnAdLoadFailed;
+        }
     }
 
     private void OnDisable()
     {
+        if (AdManager.Instance != null)
+        {
+            AdManager.Instance.OnRewardedAdLoadFailed -= OnAdLoadFailed;
+        }
+
         // Only resume the game if no ad is showing
         if (!isAdShowing && !wasGamePaused)
         {
@@ -140,6 +150,18 @@ public class ExtraTimePanel : MonoBehaviour
         else if (!wasGamePaused)
         { 
             Time.timeScale = 1f;
+        }
+    }
+
+    private void OnAdLoadFailed()
+    {
+        Debug.LogWarning("[ExtraTimePanel] Rewarded ad failed to load. Resetting state.");
+        isAdShowing = false;
+
+        // Restart the countdown since the ad failed
+        if (countdownCoroutine == null)
+        {
+            countdownCoroutine = StartCoroutine(CountdownCoroutine());
         }
     }
     

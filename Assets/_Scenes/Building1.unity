@@ -8393,7 +8393,7 @@ MonoBehaviour:
   timerText: {fileID: 1194441157}
   timerRunning: 0
   extraTimePanel: {fileID: 290394161292792245}
-  extraTimeAmount: 30
+  defaultExtraTime: 30
   tickVolume: 1
   normalTickSound: {fileID: 8300000, guid: 56142b65afa61f846bfe82c909c2c9ec, type: 3}
   fastTickSound: {fileID: 8300000, guid: 6b0be388e64d4434e9fd48055ba71a4c, type: 3}
@@ -12952,6 +12952,7 @@ MonoBehaviour:
   roomTimer: {fileID: 1194441159}
   isFinalRoom: 0
   maxBombs: 3
+  extraTimeAmount: 30
   alienFoundCoins: 5
   alienFoundDescription: Alien Found
   roomCompletionCoins: 10
@@ -18170,7 +18171,7 @@ PrefabInstance:
     - target: {fileID: 3218370127332946291, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: timerDuration
-      value: 90
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3218370127332946291, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}

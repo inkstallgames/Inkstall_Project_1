@@ -12,6 +12,7 @@ public class ExtraTimePanel : MonoBehaviour
     [SerializeField] private Slider countdownSlider;
     private bool adWatched = false;
     private bool wasGamePaused = false;
+    private bool isAdShowing = false;
     private Coroutine countdownCoroutine;
 
 
@@ -25,39 +26,28 @@ public class ExtraTimePanel : MonoBehaviour
             Time.timeScale = 0f; // Pause the game
         }
 
-        // Reset ad watched state when panel is enabled
+        // Reset states when panel is enabled
         adWatched = false;
-        
-        // Subscribe to ad reward event
-        if (AdManager.Instance != null)
-        {
-            AdManager.Instance.OnRewardGranted += OnRewardGranted;
-        }
+        isAdShowing = false;
     }
 
     private void OnDisable()
     {
-        // Unsubscribe from ad reward event
-        if (AdManager.Instance != null)
-        {
-            AdManager.Instance.OnRewardGranted -= OnRewardGranted;
-        }
-        
-        // Resume game if it wasn't paused before
-        if (!wasGamePaused)
+        // Only resume the game if no ad is showing
+        if (!isAdShowing && !wasGamePaused)
         {
             Time.timeScale = 1f; // Resume the game
         }
         
-        // Only trigger game over if ad wasn't watched
+        // Stop the countdown coroutine if it's running
         if (countdownCoroutine != null)
         {
             StopCoroutine(countdownCoroutine);
             countdownCoroutine = null;
         }
 
-        // Only trigger game over if ad wasn't watched
-        if (!adWatched && GameManager.Instance != null)
+        // Only trigger game over if ad wasn't watched and no ad is showing
+        if (!adWatched && !isAdShowing && GameManager.Instance != null)
         {
             GameManager.Instance.GameOver();
             Debug.Log("[ExtraTimePanel] Panel disabled without watching ad, triggering game over.");
@@ -97,58 +87,49 @@ public class ExtraTimePanel : MonoBehaviour
         Debug.Log("[ExtraTimePanel] 'Watch Ad' button clicked.");
         if (AdManager.Instance != null)
         {
-            // Disable the button to prevent multiple clicks
-            // You might want to add a loading indicator here
+            // Set flag to indicate ad is showing
+            isAdShowing = true;
             
-            // Show the ad for extra time
+            // Show the ad for extra time with a callback for when the ad is closed
             AdManager.Instance.ShowRewardedAdForExtraTime(() => {
-                Debug.Log("[ExtraTimePanel] Extra time reward callback received");
-                OnRewardGranted();
+                Debug.Log("[ExtraTimePanel] Extra time reward granted");
+                adWatched = true;
+                
+                // Add the extra time immediately
+                if (GameTimer.instance != null)
+                {
+                    GameTimer.instance.AddTime();
+                }
+                
+                // The ad is still showing at this point, so we'll wait for it to close
+                // before resuming the game
             });
+            
+            // The ad will be closed by the AdManager's OnAdFullScreenContentClosed event
+            // We'll handle the game resumption there
         }
         else
         {
             Debug.LogError("[ExtraTimePanel] AdManager.Instance is not found!");
+            isAdShowing = false;
         }
     }
 
-    /// <summary>
-    /// Callback when the rewarded ad is successfully watched
-    /// </summary>
-    private void OnRewardGranted()
+    // This method is called when the ad is fully closed
+    public void OnAdClosed()
     {
-        adWatched = true;
-        Debug.Log("[ExtraTimePanel] Reward granted, adding extra time.");
+        Debug.Log("[ExtraTimePanel] Ad closed");
+        isAdShowing = false;
         
-        try
+        // If the ad was watched, deactivate the panel
+        if (adWatched)
         {
-            // Add extra time and resume the game
-            if (GameTimer.instance != null)
-            {
-                // Add the extra time for the current room
-                GameTimer.instance.AddTime();
-                
-                // Start a coroutine to delay the panel deactivation
-                StartCoroutine(DisablePanelAfterDelay(0.5f));
-            }
-            else
-            {
-                Debug.LogError("[ExtraTimePanel] GameTimer.instance is null when trying to add extra time");
-                if (!wasGamePaused)
-                {
-                    Time.timeScale = 1f;
-                }
-                gameObject.SetActive(false);
-            }
+            StartCoroutine(DisablePanelAfterDelay(0.1f));
         }
-        catch (System.Exception e)
+        // If the ad wasn't watched (user closed without watching), resume the game
+        else if (!wasGamePaused)
         {
-            Debug.LogError($"[ExtraTimePanel] Error in OnRewardGranted: {e.Message}");
-            if (!wasGamePaused)
-            {
-                Time.timeScale = 1f;
-            }
-            gameObject.SetActive(false);
+            Time.timeScale = 1f;
         }
     }
     

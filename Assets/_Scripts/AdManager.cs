@@ -372,15 +372,28 @@ public class AdManager : MonoBehaviour
 
         try
         {
+            // Store the current ExtraTimePanel if it exists
+            var extraTimePanel = FindObjectOfType<ExtraTimePanel>();
+            
+            // Set up the ad closed callback
+            rewardedAd.OnAdFullScreenContentClosed = () =>
+            {
+                Debug.Log("[Rewarded] Ad fully closed");
+                // Notify ExtraTimePanel that the ad is closed
+                extraTimePanel?.OnAdClosed();
+                
+                // Preload next ad
+                RequestRewarded();
+            };
+            
+            // Show the ad
             rewardedAd.Show(reward =>
             {
                 Debug.Log($"[Rewarded] USER EARNED REWARD - Amount: {reward.Amount}, Type: {reward.Type}");
                 // Only invoke the callback when reward is actually earned
                 onReward?.Invoke();
-
-                // Preload next ad
-                RequestRewarded();
             });
+            
             return true;
         }
         catch (Exception e)

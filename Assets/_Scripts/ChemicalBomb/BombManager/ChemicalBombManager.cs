@@ -18,6 +18,9 @@ public class ChemicalBombManager : MonoBehaviour
     // Flag to track if the purchase limit has been reached
     private bool purchaseLimitReached = false;
     
+    // Flag to track if we've shown the shop button for the first time
+    private bool hasShownShopButton = false;
+    
     private void Awake()
     {
         // Singleton pattern
@@ -97,24 +100,24 @@ public class ChemicalBombManager : MonoBehaviour
     
     public void UpdateShopButtonState()
     {
+        if (shopButton == null) return;
+        
         // If purchase limit is reached, keep shop button disabled
         if (purchaseLimitReached)
         {
-            if (shopButton != null)
-            {
-                shopButton.gameObject.SetActive(false);
-            }
+            shopButton.gameObject.SetActive(false);
             return;
         }
         
-        // Original logic
-        if (shopButton != null && currentBombs <= 1)
+        // Only show the shop button the first time bomb count reaches 1
+        if (currentBombs <= 1 && !hasShownShopButton)
         {
             shopButton.gameObject.SetActive(true);
+            hasShownShopButton = true;
         }
-        else if (shopButton != null && currentBombs > 1)
+        else if (currentBombs > 1)
         {
-            shopButton.gameObject.SetActive(false);    
+            shopButton.gameObject.SetActive(false);
         }
     }
     
@@ -133,6 +136,7 @@ public class ChemicalBombManager : MonoBehaviour
     public void ResetPurchaseLimit()
     {
         purchaseLimitReached = false;
+        hasShownShopButton = false;
         UpdateShopButtonState();
     }
 }

@@ -75,7 +75,7 @@ public class CloudSaveManager : MonoBehaviour
         if (!PlayerPrefs.HasKey("KeysCount"))
         {
             Debug.Log("[CloudSaveManager] KeysCount not found in PlayerPrefs. Setting defaults.");
-            PlayerPrefs.SetInt("CurrentCoins", 0);
+            PlayerPrefs.SetInt("CurrentCoins", 10);
             PlayerPrefs.SetInt("KeysCount", 5);
             PlayerPrefs.SetString("StudentDoorData", "");
             PlayerPrefs.Save();
@@ -91,7 +91,7 @@ public class CloudSaveManager : MonoBehaviour
 
     public async Task SaveAllPlayerDataToCloud()
     {
-        int coins = PlayerPrefs.GetInt("CurrentCoins", 0);
+        int coins = PlayerPrefs.GetInt("CurrentCoins", 10);
         int keys = PlayerPrefs.GetInt("KeysCount", 5);
         string studentDoorData = PlayerPrefs.GetString("StudentDoorData", "");
 
@@ -166,12 +166,12 @@ public class CloudSaveManager : MonoBehaviour
         {
             // No cloud or local data. Initialize with defaults.
             Debug.Log("[CloudSaveManager] No save data found anywhere. Initializing with defaults.");
-            PlayerPrefs.SetInt("CurrentCoins", 0);
+            PlayerPrefs.SetInt("CurrentCoins", 10);
             PlayerPrefs.SetInt("KeysCount", 5);
             PlayerPrefs.SetString("StudentDoorData", "");
             PlayerPrefs.Save();
             SaveTimestamp();
-            Debug.Log("[CloudSaveManager] Defaults initialized: Keys=5, Coins=0");
+            Debug.Log("[CloudSaveManager] Defaults initialized: Keys=5, Coins=10");
         }
     }
 

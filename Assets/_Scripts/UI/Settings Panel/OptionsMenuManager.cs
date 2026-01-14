@@ -8,6 +8,7 @@ public class OptionsMenuManager : MonoBehaviour
 {
     public GameObject SettingsPanel; 
     public GameObject MainCanvas; 
+    public GameObject DeletePopUp; 
     
     [Header("UI Controls")]
     public Slider sensitivitySlider; 
@@ -36,29 +37,29 @@ public class OptionsMenuManager : MonoBehaviour
         // Find references
         playerController = FindObjectOfType<FirstPersonController>();
         audioManager = AudioManager.Instance;
-        
+
         // Load saved settings
         LoadSettings();
-        
+
         // Initialize UI elements with saved values
         UpdateUIFromSettings();
-        
+
         // Apply settings
         ApplySensitivity(screenSensitivity);
         ApplyVolume(volumeLevel);
         ApplyMusicVolume(musicVolume);
-        
+
         // Add listeners to UI elements
         if (sensitivitySlider != null)
             sensitivitySlider.onValueChanged.AddListener(ApplySensitivity);
-            
+
         if (volumeSlider != null)
             volumeSlider.onValueChanged.AddListener(ApplyVolume);
-            
+
         if (musicSlider != null)
             musicSlider.onValueChanged.AddListener(ApplyMusicVolume);
     }
-    
+
     // Call this function when button is clicked
     public void EnableOptionsMenu()
     {
@@ -181,6 +182,16 @@ public class OptionsMenuManager : MonoBehaviour
         screenSensitivity = PlayerPrefs.GetFloat(SENSITIVITY_KEY, 0.5f);
         volumeLevel = PlayerPrefs.GetFloat(VOLUME_KEY, 0.5f);
         musicVolume = PlayerPrefs.GetFloat(MUSIC_KEY, 0.5f);
+    }
+
+    public void OnDeleteButtonClicked()
+    {
+        DeletePopUp.SetActive(true);
+    }
+
+    public void OnNotDeleteButtonClicked()
+    {
+        DeletePopUp.SetActive(false);
     }
 
     private void OnApplicationQuit()

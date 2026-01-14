@@ -65568,9 +65568,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
-        m_MethodName: OnMenuButtonClicked
+      - m_Target: {fileID: 1483859721}
+        m_TargetAssemblyTypeName: DeleteOptions, Assembly-CSharp
+        m_MethodName: OnNotDeleteButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -82872,7 +82872,7 @@ GameObject:
   - component: {fileID: 1175714508}
   - component: {fileID: 1175714507}
   m_Layer: 5
-  m_Name: Button
+  m_Name: DeleteAcc Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -82941,7 +82941,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8046756040115735086}
+        m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
+        m_MethodName: OnDeleteButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1175714508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95466,7 +95478,7 @@ GameObject:
   - component: {fileID: 1371991215}
   - component: {fileID: 1371991214}
   m_Layer: 5
-  m_Name: NO (1)
+  m_Name: Yes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95536,9 +95548,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
-        m_MethodName: OnMenuButtonClicked
+      - m_Target: {fileID: 1483859721}
+        m_TargetAssemblyTypeName: DeleteOptions, Assembly-CSharp
+        m_MethodName: OnDeleteButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -103245,6 +103257,7 @@ GameObject:
   - component: {fileID: 1483859718}
   - component: {fileID: 1483859720}
   - component: {fileID: 1483859719}
+  - component: {fileID: 1483859721}
   m_Layer: 5
   m_Name: Delete Pop Up
   m_TagString: Untagged
@@ -103312,6 +103325,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1483859717}
   m_CullTransparentMesh: 1
+--- !u!114 &1483859721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1483859717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d0511c53c6f66b4291fc78d2ba7d7d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  notificationText: {fileID: 512679949}
 --- !u!1 &1483952623
 GameObject:
   m_ObjectHideFlags: 0
@@ -189213,6 +189239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SettingsPanel: {fileID: 1001816843811986852}
   MainCanvas: {fileID: 5890610881071145636}
+  DeletePopUp: {fileID: 1483859717}
   sensitivitySlider: {fileID: 391978493815882574}
   volumeSlider: {fileID: 4170851053482464029}
   musicSlider: {fileID: 7775194833228683896}

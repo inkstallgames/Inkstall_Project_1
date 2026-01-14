@@ -10,6 +10,7 @@ public class Tutorial : MonoBehaviour
     public GameObject tutorialText1;
     public GameObject tutorialText2;
     public List<GameObject> buildingsTasks;
+    public GameObject taskText;
     
     private void Awake()
     {
@@ -34,11 +35,16 @@ public class Tutorial : MonoBehaviour
             if (tutorialText1 != null) tutorialText1.SetActive(true);
             if (tutorialText2 != null) tutorialText2.SetActive(true);
         }
-
-        if(PlayerPrefs.HasKey("TutorialCompleted"))
+        else
         {
             if (tutorialText1 != null) tutorialText1.SetActive(false);
             if (tutorialText2 != null) tutorialText2.SetActive(false);
+            
+            // Check if all tasks were previously completed
+            if (PlayerPrefs.GetInt("AllTasksCompleted", 0) == 1 && taskText != null)
+            {
+                taskText.SetActive(false);
+            }
         }
 
         Debug.Log($"[Tutorial] buildingsTasks count: {buildingsTasks.Count}");
@@ -78,6 +84,26 @@ public class Tutorial : MonoBehaviour
         {
             buildingsTasks[taskIndex].SetActive(false);
             Debug.Log($"[Tutorial] Task {taskIndex} UI disabled");
+            
+            // Check if all building tasks are inactive
+            bool allTasksInactive = true;
+            foreach (var task in buildingsTasks)
+            {
+                if (task != null && task.activeInHierarchy)
+                {
+                    allTasksInactive = false;
+                    break;
+                }
+            }
+            
+            // Only hide taskText if all building tasks are inactive
+            if (allTasksInactive && taskText != null)
+            {
+                taskText.SetActive(false);
+                PlayerPrefs.SetInt("AllTasksCompleted", 1);
+                PlayerPrefs.Save();
+                Debug.Log("[Tutorial] All building tasks are inactive, hiding task text and saving state to PlayerPrefs");
+            }
         }
         else
         {

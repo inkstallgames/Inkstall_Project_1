@@ -25,9 +25,15 @@ public class DeleteOptions : MonoBehaviour
 
     public void OnDeleteButtonClicked()
     {
+        // Auto-detect account type if not set
         if (string.IsNullOrEmpty(accountTypeToDelete))
         {
-            Debug.LogWarning("No account type specified for deletion.");
+            accountTypeToDelete = DetectAccountType();
+        }
+
+        if (string.IsNullOrEmpty(accountTypeToDelete))
+        {
+            StartCoroutine(ShowNotification("Unable to detect account type. Please sign in first.", 3f));
             return;
         }
 
@@ -44,7 +50,7 @@ public class DeleteOptions : MonoBehaviour
                 break;
 
             default:
-                Debug.LogError("Unknown account type: " + accountTypeToDelete);
+                StartCoroutine(ShowNotification("Unknown account type: " + accountTypeToDelete, 3f));
                 break;
         }
 
@@ -125,6 +131,39 @@ public class DeleteOptions : MonoBehaviour
         {
             isDeletingAccount = false;
         }
+    }
+
+    private string DetectAccountType()
+    {
+        if (!AuthenticationService.Instance.IsSignedIn)
+        {
+            Debug.LogWarning("User is not signed in.");
+            return null;
+        }
+
+        var playerInfo = AuthenticationService.Instance.PlayerInfo;
+        
+        if (playerInfo != null && playerInfo.Identities != null)
+        {
+            foreach (var identity in playerInfo.Identities)
+            {
+#if UNITY_ANDROID
+                if (identity.TypeId == "google_play_games")
+                {
+                    return "Google";
+                }
+#endif
+#if UNITY_IOS
+                if (identity.TypeId == "apple.com")
+                {
+                    return "Apple";
+                }
+#endif
+            }
+        }
+
+        Debug.LogWarning("Could not detect account type from identities.");
+        return null;
     }
 
     private IEnumerator ShowNotification(string message, float duration)

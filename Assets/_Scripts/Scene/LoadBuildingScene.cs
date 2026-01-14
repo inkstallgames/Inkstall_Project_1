@@ -53,6 +53,8 @@ public class LoadBuildingScene : MonoBehaviour
             {
                 meshRenderer.enabled = false; 
             }
+            PlayerPrefs.SetInt("TutorialCompleted", 1);
+            PlayerPrefs.Save();
 
             Invoke("LoadNextScene", loadDelay);
         }

@@ -53,6 +53,12 @@ public class ExtraTimePanel : MonoBehaviour
         // Only trigger game over if ad wasn't watched and no ad is showing
         if (!adWatched && !isAdShowing && GameManager.Instance != null)
         {
+            // Unpause the game before triggering game over so the coroutine can run
+            if (!wasGamePaused)
+            {
+                Time.timeScale = 1f;
+            }
+            
             GameManager.Instance.GameOver();
             Debug.Log("[ExtraTimePanel] Panel disabled without watching ad, triggering game over.");
         }

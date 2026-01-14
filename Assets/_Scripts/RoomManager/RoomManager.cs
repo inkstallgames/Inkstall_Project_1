@@ -26,6 +26,8 @@ public class RoomManager : MonoBehaviour
     [SerializeField] private int roomCompletionCoins = 200;
     [SerializeField] private string roomCompletionDescription = "Room Completed";
 
+    [Header("Tutorial")]
+    [SerializeField] private Tutorial tutorial;
     
     private List<GameObject> alienProps = new List<GameObject>();  // Track all alien props
     private bool isRoomActive = false;  // Track if this room is active
@@ -168,6 +170,12 @@ public class RoomManager : MonoBehaviour
             aliensRemaining--;
             
             UpdateRemainingAliensUI();
+            
+            // Complete tutorial task for finding an alien
+            if (tutorial != null)
+            {
+                tutorial.CompleteTask(1);
+            }
             
             // If all aliens are caught, stop the timer
             if (aliensRemaining <= 0)

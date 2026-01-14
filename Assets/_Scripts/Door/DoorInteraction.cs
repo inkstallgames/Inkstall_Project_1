@@ -50,6 +50,7 @@ public class DoorInteraction : MonoBehaviour
     private AudioSource audioSource;
     private GameTimer attachedTimer;
     public Animator lockedDoorAnimator;
+    public Tutorial tutorial;
     
     // Event to notify when door is unlocked
     public delegate void DoorUnlockedHandler();
@@ -300,6 +301,8 @@ public class DoorInteraction : MonoBehaviour
 
     private void ActivateGameElements()
     {
+        
+
         if (remainingAliensCountContainer != null)
         {
             remainingAliensCountContainer.gameObject.SetActive(true);
@@ -379,6 +382,12 @@ public class DoorInteraction : MonoBehaviour
             if (FloorSpawnManager.Instance != null)
             {
                 FloorSpawnManager.Instance.OnDoorUnlocked(doorID);
+            }
+
+            // Complete tutorial task for using a key
+            if (tutorial != null)
+            {
+                tutorial.CompleteTask(0);
             }
 
             // The use key button will be disabled by PlayerInteraction

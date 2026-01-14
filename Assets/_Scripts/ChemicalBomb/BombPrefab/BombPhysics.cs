@@ -13,10 +13,12 @@ public class BombPhysics : MonoBehaviour
     private Transform player;
     
     private AudioSource audioSource;
+    private Tutorial tutorial;
     private bool hasCollided = false;  // Flag to track if collision has been processed
 
     private void Start()
     {
+        tutorial = GameObject.FindObjectOfType<Tutorial>();
         // Find the player object
         player = GameObject.FindGameObjectWithTag("Player").transform;
         
@@ -78,6 +80,7 @@ public class BombPhysics : MonoBehaviour
         PlayHitEffect();
         PlayHitSound();
         Destroy(gameObject);
+
     }
 
     // Check if the object or any of its parents has the AlienProp tag

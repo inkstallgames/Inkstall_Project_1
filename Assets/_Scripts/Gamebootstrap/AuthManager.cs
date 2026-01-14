@@ -95,6 +95,7 @@ public class AuthManager : MonoBehaviour
         if (IsGoogleAlreadyLinked())
         {
             Debug.Log("ℹ Google already linked. Just loading cloud data.");
+            UIManager.Instance.ShowNotificationMessage("Already signed in!");
             _ = CloudSaveManager.Instance?.LoadAllPlayerDataFromCloud();
             return;
         }
@@ -113,6 +114,10 @@ public class AuthManager : MonoBehaviour
             if (!success)
             {
                 Debug.LogError("❌ Google Play Games login failed.");
+                if (UIManager.Instance != null)
+                {
+                    UIManager.Instance.ShowNotificationMessage("Sign in cancelled or failed.");
+                }
                 return;
             }
 
@@ -123,6 +128,10 @@ public class AuthManager : MonoBehaviour
                 if (string.IsNullOrEmpty(authCode))
                 {
                     Debug.LogError("❌ Server auth code is null.");
+                    if (UIManager.Instance != null)
+                    {
+                        UIManager.Instance.ShowNotificationMessage("Sign in failed. Please try again.");
+                    }
                     return;
                 }
 
@@ -193,6 +202,7 @@ public class AuthManager : MonoBehaviour
         if (IsAppleAlreadyLinked())
         {
             Debug.Log("ℹ Apple already linked. Just loading cloud data.");
+            UIManager.Instance.ShowNotificationMessage("Already signed in!");
             _ = CloudSaveManager.Instance?.LoadAllPlayerDataFromCloud();
             return;
         }

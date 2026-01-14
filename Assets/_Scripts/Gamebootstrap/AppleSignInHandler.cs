@@ -64,8 +64,19 @@ public class AppleSignInHandler : MonoBehaviour
             error =>
             {
                 Debug.LogError($"[AppleSignInHandler] Apple Sign-In failed: {error}");
+                
+                // Hide the "Signing you in..." notification
+                if (UIManager.Instance != null)
+                {
+                    UIManager.Instance.HideNotification();
+                    
+                    // Show error message if it's not a user cancellation
+                    if (error.Code != AuthorizationErrorCode.Canceled)
+                    {
+                        UIManager.Instance.ShowNotificationMessage("Sign in failed. Please try again.");
+                    }
+                }
             });
     }
 #endif
 }
-  

@@ -51,12 +51,9 @@ public class DeleteOptions : MonoBehaviour
 
             default:
                 StartCoroutine(ShowNotification("Unknown account type: " + accountTypeToDelete, 3f));
+                accountTypeToDelete = null;
                 break;
         }
-
-        // Reset the account type and close the pop-up
-        accountTypeToDelete = null;
-        gameObject.SetActive(false);
     }
 
     private async void DeleteGoogleAccount()
@@ -74,25 +71,26 @@ public class DeleteOptions : MonoBehaviour
         {
             if (!AuthenticationService.Instance.IsSignedIn)
             {
-                StartCoroutine(ShowNotification("User is not signed in.", 3f));
+                StartCoroutine(ShowNotificationAndClose("User is not signed in.", 3f));
                 isDeletingAccount = false;
                 return;
             }
 
             await AuthenticationService.Instance.DeleteAccountAsync();
-            StartCoroutine(ShowNotification("Account deleted successfully.", 3f));
+            StartCoroutine(ShowNotificationAndClose("Account deleted successfully.", 3f));
         }
         catch (AuthenticationException ex)
         {
-            StartCoroutine(ShowNotification($"Error: {ex.Message}", 3f));
+            StartCoroutine(ShowNotificationAndClose($"Error: {ex.Message}", 3f));
         }
         catch (RequestFailedException ex)
         {
-            StartCoroutine(ShowNotification($"Request failed: {ex.Message}", 3f));
+            StartCoroutine(ShowNotificationAndClose($"Request failed: {ex.Message}", 3f));
         }
         finally
         {
             isDeletingAccount = false;
+            accountTypeToDelete = null;
         }
     }
 
@@ -111,25 +109,26 @@ public class DeleteOptions : MonoBehaviour
         {
             if (!AuthenticationService.Instance.IsSignedIn)
             {
-                StartCoroutine(ShowNotification("User is not signed in.", 3f));
+                StartCoroutine(ShowNotificationAndClose("User is not signed in.", 3f));
                 isDeletingAccount = false;
                 return;
             }
 
             await AuthenticationService.Instance.DeleteAccountAsync();
-            StartCoroutine(ShowNotification("Account deleted successfully.", 3f));
+            StartCoroutine(ShowNotificationAndClose("Account deleted successfully.", 3f));
         }
         catch (AuthenticationException ex)
         {
-            StartCoroutine(ShowNotification($"Error: {ex.Message}", 3f));
+            StartCoroutine(ShowNotificationAndClose($"Error: {ex.Message}", 3f));
         }
         catch (RequestFailedException ex)
         {
-            StartCoroutine(ShowNotification($"Request failed: {ex.Message}", 3f));
+            StartCoroutine(ShowNotificationAndClose($"Request failed: {ex.Message}", 3f));
         }
         finally
         {
             isDeletingAccount = false;
+            accountTypeToDelete = null;
         }
     }
 
@@ -179,5 +178,23 @@ public class DeleteOptions : MonoBehaviour
         {
             Debug.LogWarning("Notification Text component is not assigned.");
         }
+    }
+
+    private IEnumerator ShowNotificationAndClose(string message, float duration)
+    {
+        if (notificationText != null)
+        {
+            notificationText.text = message;
+            notificationText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(duration);
+            notificationText.gameObject.SetActive(false);
+        }
+        else
+        {
+            Debug.LogWarning("Notification Text component is not assigned.");
+        }
+        
+        // Close the popup after showing the notification
+        gameObject.SetActive(false);
     }
 }

@@ -366,7 +366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 4781439091653830241, guid: 65624b1c99087214c87e96480a11dc5f,
     type: 3}
-  spawnArea: {x: 5, y: 0, z: 5}
+  spawnArea: {x: 5, y: 1, z: 5}
 --- !u!114 &728351428
 MonoBehaviour:
   m_ObjectHideFlags: 0

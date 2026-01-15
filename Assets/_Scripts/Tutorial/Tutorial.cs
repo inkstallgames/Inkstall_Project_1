@@ -26,9 +26,22 @@ public class Tutorial : MonoBehaviour
         }
     }
     
+    private void OnEnable()
+    {
+        ProgressManager.OnDataLoaded += CheckDoor1Completion;
+    }
+    
+    private void OnDisable()
+    {
+        ProgressManager.OnDataLoaded -= CheckDoor1Completion;
+    }
+    
     private void Start()
     {
         Debug.Log($"[Tutorial] Start() called. Checking PlayerPrefs...");
+        
+        // Check if door 1 room is completed
+        CheckDoor1Completion();
         
         if(!PlayerPrefs.HasKey("TutorialCompleted"))
         {
@@ -72,6 +85,19 @@ public class Tutorial : MonoBehaviour
         }
     }
 
+    private void CheckDoor1Completion()
+    {
+        if (ProgressManager.Instance != null && ProgressManager.Instance.isDataLoaded)
+        {
+            DoorData door1Data = ProgressManager.Instance.GetDoorData(1);
+            if (door1Data != null && door1Data.isRoomCompleted)
+            {
+                Debug.Log("[Tutorial] Door 1 room is completed, deactivating tutorial GameObject");
+                gameObject.SetActive(false);
+            }
+        }
+    }
+    
     public void CompleteTask(int taskIndex)
     {   
        string taskKey = "Task_" + taskIndex + "_Completed";

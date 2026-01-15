@@ -5,7 +5,7 @@ using Fusion.Sockets;
 public class NetworkPlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private Vector3 spawnArea = new Vector3(5f, 0f, 5f);
+    [SerializeField] private Vector3 spawnArea = new Vector3(5f, 1f, 5f);
 
     private void Start()
     {

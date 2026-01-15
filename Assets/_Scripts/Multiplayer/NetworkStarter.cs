@@ -1,23 +1,59 @@
 using Fusion;
 using Fusion.Sockets;
-using System.Runtime.InteropServices;
+using System;
 using System.Threading.Tasks;
 using UnityEngine;
 
 public class NetworkStarter : MonoBehaviour
 {
-    private NetworkRunner runner;
+    [SerializeField] private NetworkRunner _runner;
+    [SerializeField] private NetworkSceneManagerDefault _sceneManager;
 
-    async void Start()
+    private void Start()
     {
-        runner = gameObject.AddComponent<NetworkRunner>();
-        runner.ProvideInput = true;
-
-        await runner.StartGame(new StartGameArgs()
+        // Get references to required components
+        _runner = GetComponent<NetworkRunner>();
+        _sceneManager = GetComponent<NetworkSceneManagerDefault>();
+        
+        if (_runner == null)
         {
-            GameMode = GameMode.Shared, // or Host
-            SessionName = "MyRoom",
-            SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
-        });
+            Debug.LogError("NetworkRunner component is missing! Make sure it's attached to the same GameObject.");
+            return;
+        }
+        
+        if (_sceneManager == null)
+        {
+            _sceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>();
+        }
+        
+        StartGame();
+    }
+
+    private async void StartGame()
+    {
+        try
+        {
+            // Configure the runner
+            _runner.ProvideInput = true;
+
+            // Initialize the NetworkRunner
+            await _runner.StartGame(new StartGameArgs()
+            {
+                GameMode = GameMode.Shared,
+                SessionName = "MyRoom",
+                SceneManager = _sceneManager,
+                PlayerCount = 4,
+                Scene = SceneRef.FromIndex(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex)
+            });
+
+            if (_runner.IsRunning)
+            {
+                Debug.Log("NetworkRunner started successfully");
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to start NetworkRunner: {e.Message}\n{e.StackTrace}");
+        }
     }
 }

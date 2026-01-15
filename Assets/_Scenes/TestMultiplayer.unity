@@ -346,7 +346,7 @@ GameObject:
   - component: {fileID: 728351428}
   - component: {fileID: 728351427}
   m_Layer: 0
-  m_Name: NetworkRunner
+  m_Name: NetworkManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -366,6 +366,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 4781439091653830241, guid: 65624b1c99087214c87e96480a11dc5f,
     type: 3}
+  spawnArea: {x: 5, y: 0, z: 5}
 --- !u!114 &728351428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,6 +379,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b175981758061d5459f3aa3f774129bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _runner: {fileID: 728351430}
+  _sceneManager: {fileID: 728351429}
 --- !u!114 &728351429
 MonoBehaviour:
   m_ObjectHideFlags: 0

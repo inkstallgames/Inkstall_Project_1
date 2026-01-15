@@ -4,15 +4,48 @@ using Fusion.Sockets;
 
 public class NetworkPlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
-    public GameObject playerPrefab;
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private Vector3 spawnArea = new Vector3(5f, 0f, 5f);
+
+    private void Start()
+    {
+        // Register this component to receive network callbacks
+        var runner = GetComponent<NetworkRunner>();
+        if (runner != null)
+        {
+            runner.AddCallbacks(this);
+        }
+        else
+        {
+            Debug.LogError("NetworkRunner not found on this GameObject!");
+        }
+    }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
+        Debug.Log($"Player {player.PlayerId} joined the game");
+        
         if (player == runner.LocalPlayer)
         {
+            if (playerPrefab == null)
+            {
+                Debug.LogError("Player prefab is not assigned in the inspector!");
+                return;
+            }
+
+            // Calculate a random spawn position within the spawn area
+            Vector3 spawnPosition = new Vector3(
+                Random.Range(-spawnArea.x, spawnArea.x),
+                spawnArea.y,
+                Random.Range(-spawnArea.z, spawnArea.z)
+            );
+
+            Debug.Log($"Spawning player at position: {spawnPosition}");
+            
+            // Spawn the player
             runner.Spawn(
                 playerPrefab,
-                new Vector3(Random.Range(-3, 3), 1, Random.Range(-3, 3)),
+                spawnPosition,
                 Quaternion.identity,
                 player
             );

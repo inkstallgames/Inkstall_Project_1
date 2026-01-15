@@ -71,7 +71,7 @@ public class AppleSignInHandler : MonoBehaviour
                     UIManager.Instance.HideNotification();
                     
                     // Show error message if it's not a user cancellation
-                    if (error.Code != AuthorizationErrorCode.Canceled)
+                    if (error.Code != (int)AuthorizationErrorCode.Canceled)
                     {
                         UIManager.Instance.ShowNotificationMessage("Sign in failed. Please try again.");
                     }

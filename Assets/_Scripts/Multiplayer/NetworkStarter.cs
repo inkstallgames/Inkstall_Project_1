@@ -39,7 +39,7 @@ public class NetworkStarter : MonoBehaviour
             // Initialize the NetworkRunner
             await _runner.StartGame(new StartGameArgs()
             {
-                GameMode = GameMode.Shared,
+                GameMode = Fusion.GameMode.Shared,
                 SessionName = "MyRoom",
                 SceneManager = _sceneManager,
                 PlayerCount = 4,

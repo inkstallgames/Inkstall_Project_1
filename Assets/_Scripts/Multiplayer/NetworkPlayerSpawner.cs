@@ -1,23 +1,50 @@
 using Fusion;
 using UnityEngine;
 using Fusion.Sockets;
+using System.Collections.Generic;
+using System.Linq;
 
-public class NetworkPlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
+public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
 {
+    [Header("Player Settings")]
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private Vector3 spawnArea = new Vector3(5f, 1f, 5f);
+    [SerializeField] private LayerMask groundLayer;
+    
+    [Header("Spawning")]
+    [SerializeField] private float spawnRadius = 2f;
+    [SerializeField] private int maxSpawnAttempts = 10;
+    
+    private List<PlayerSpawnPoint> spawnPoints = new List<PlayerSpawnPoint>();
+    private NetworkLobbyManager lobbyManager;
+    private NetworkGameManager gameManager;
 
-    private void Start()
+    private void Awake()
     {
-        // Register this component to receive network callbacks
-        var runner = GetComponent<NetworkRunner>();
-        if (runner != null)
+        // Find all spawn points in the scene
+        spawnPoints = FindObjectsOfType<PlayerSpawnPoint>().ToList();
+        
+        // Get references to managers
+        lobbyManager = FindObjectOfType<NetworkLobbyManager>();
+        gameManager = NetworkGameManager.Instance;
+        
+        if (spawnPoints.Count == 0)
         {
-            runner.AddCallbacks(this);
+            Debug.LogWarning("No spawn points found in the scene. Using default spawn behavior.");
         }
-        else
+    }
+
+    public override void Spawned()
+    {
+        // Register for network callbacks
+        if (Runner != null)
         {
-            Debug.LogError("NetworkRunner not found on this GameObject!");
+            Runner.AddCallbacks(this);
+        }
+        
+        // If this is the host and we have a lobby manager, register for game start
+        if (Object.HasStateAuthority && lobbyManager != null)
+        {
+            // The game will start through the lobby manager
         }
     }
 
@@ -25,31 +52,108 @@ public class NetworkPlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     {
         Debug.Log($"Player {player.PlayerId} joined the game");
         
-        if (player == runner.LocalPlayer)
+        // If we have a lobby, let it handle the player joining
+        if (lobbyManager != null)
         {
-            if (playerPrefab == null)
+            lobbyManager.AddPlayerToLobby(player, $"Player_{player.PlayerId}");
+            
+            // If we're in the lobby, don't spawn the player yet
+            if (gameManager == null || gameManager.CurrentGameState == GameState.Lobby)
             {
-                Debug.LogError("Player prefab is not assigned in the inspector!");
                 return;
             }
-
-            // Calculate a random spawn position within the spawn area
-            Vector3 spawnPosition = new Vector3(
-                Random.Range(-spawnArea.x, spawnArea.x),
-                spawnArea.y,
-                Random.Range(-spawnArea.z, spawnArea.z)
-            );
-
-            Debug.Log($"Spawning player at position: {spawnPosition}");
-            
-            // Spawn the player
-            runner.Spawn(
-                playerPrefab,
-                spawnPosition,
-                Quaternion.identity,
-                player
-            );
         }
+        
+        // Spawn the player in the game
+        SpawnPlayer(player);
+    }
+    
+    public void SpawnPlayer(PlayerRef player)
+    {
+        if (playerPrefab == null)
+        {
+            Debug.LogError("Player prefab is not assigned in the inspector!");
+            return;
+        }
+        
+        // Get the player's team ID (default to -1 if not in a team)
+        int teamId = -1;
+        var networkData = Runner.GetPlayerObject(player)?.GetComponent<PlayerNetworkData>();
+        if (networkData != null)
+        {
+            teamId = networkData.TeamId;
+        }
+        
+        // Find a suitable spawn point
+        Vector3 spawnPosition = GetSpawnPosition(teamId);
+        Quaternion spawnRotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
+        
+        Debug.Log($"Spawning player {player.PlayerId} (Team {teamId}) at position: {spawnPosition}");
+        
+        // Spawn the player
+        var playerObject = Runner.Spawn(
+            playerPrefab,
+            spawnPosition,
+            spawnRotation,
+            player
+        );
+        
+        // Initialize player data if it's the local player
+        if (player == Runner.LocalPlayer && playerObject != null)
+        {
+            // The PlayerNetworkData component will handle the rest
+        }
+    }
+    
+    private Vector3 GetSpawnPosition(int teamId)
+    {
+        // Try to find a team-specific spawn point first
+        var teamSpawnPoints = spawnPoints.Where(p => p.teamId == teamId).ToList();
+        if (teamSpawnPoints.Count > 0)
+        {
+            // Find an unoccupied spawn point
+            var availableSpawns = teamSpawnPoints.Where(p => !p.isOccupied).ToList();
+            if (availableSpawns.Count == 0)
+            {
+                // If all team spawns are occupied, use any team spawn
+                availableSpawns = teamSpawnPoints;
+            }
+            
+            // Pick a random spawn point from available ones
+            var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
+            return spawnPoint.transform.position;
+        }
+        
+        // If no team spawn points, try to find any spawn point
+        if (spawnPoints.Count > 0)
+        {
+            var availableSpawns = spawnPoints.Where(p => !p.isOccupied).ToList();
+            if (availableSpawns.Count == 0)
+            {
+                availableSpawns = spawnPoints;
+            }
+            
+            var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
+            return spawnPoint.transform.position;
+        }
+        
+        // Fallback to random position in spawn area
+        Debug.LogWarning("No spawn points found. Using random spawn position.");
+        
+        // Try to find a valid position on the ground
+        for (int i = 0; i < maxSpawnAttempts; i++)
+        {
+            Vector2 randomCircle = Random.insideUnitCircle * spawnRadius;
+            Vector3 randomPosition = new Vector3(randomCircle.x, 10f, randomCircle.y);
+            
+            if (Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 20f, groundLayer))
+            {
+                return hit.point + Vector3.up * 1f; // Slightly above ground
+            }
+        }
+        
+        // If all else fails, return a default position
+        return Vector3.up * 2f;
     }
 
     // Empty required callbacks

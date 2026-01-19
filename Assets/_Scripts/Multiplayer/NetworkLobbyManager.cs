@@ -14,7 +14,7 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Networked] public string JoinCode { get; set; }
     
     // Generate a random join code
-    private string GenerateJoinCode()
+    public string GenerateJoinCode()
     {
         const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
         return new string(Enumerable.Repeat(chars, 6)
@@ -39,29 +39,56 @@ public class NetworkLobbyManager : NetworkBehaviour
     public override void Spawned()
     {
         base.Spawned();
+        Debug.Log("[NetworkLobbyManager] Spawned called");
+        
         uiManager = LobbyUIManager.Instance;
+        Debug.Log($"[NetworkLobbyManager] UI Manager found: {uiManager != null}");
 
         // Only the host generates a join code
-        if (Runner.IsServer && string.IsNullOrEmpty(JoinCode))
+        if (Runner.IsServer)
         {
-            JoinCode = GenerateJoinCode();
-            Debug.Log($"Join Code: {JoinCode}");
-            
-            // Add self to lobby
-            AddPlayerToLobby(Runner.LocalPlayer, true);
+            Debug.Log("[NetworkLobbyManager] This is the server");
+            if (string.IsNullOrEmpty(JoinCode))
+            {
+                JoinCode = GenerateJoinCode();
+                Debug.Log($"[NetworkLobbyManager] Generated Join Code: {JoinCode}");
+                
+                // Add self to lobby
+                AddPlayerToLobby(Runner.LocalPlayer, true);
+            }
+            else
+            {
+                Debug.Log($"[NetworkLobbyManager] Using existing Join Code: {JoinCode}");
+            }
+        }
+        else
+        {
+            Debug.Log("[NetworkLobbyManager] This is a client");
         }
 
         // All clients initialize UI
-        var modeOptions = System.Enum.GetNames(typeof(GameMode)).ToList();
-        uiManager.InitializeLobbyUI(mapOptions, modeOptions, timeOptions);
-        
-        // Update UI with join code if we have one
-        if (!string.IsNullOrEmpty(JoinCode) && LobbyUIManager.Instance != null)
+        if (uiManager != null)
         {
-            uiManager.SetJoinCode(JoinCode);
+            var modeOptions = System.Enum.GetNames(typeof(GameMode)).ToList();
+            uiManager.InitializeLobbyUI(mapOptions, modeOptions, timeOptions);
+            
+            // Update UI with join code if we have one
+            if (!string.IsNullOrEmpty(JoinCode))
+            {
+                Debug.Log($"[NetworkLobbyManager] Setting join code in UI: {JoinCode}");
+                uiManager.SetJoinCode(JoinCode);
+            }
+            else
+            {
+                Debug.Log("[NetworkLobbyManager] No join code to display");
+            }
+            
+            uiManager.ShowLobby(true);
         }
-        
-        uiManager.ShowLobby(true);
+        else
+        {
+            Debug.LogError("[NetworkLobbyManager] UI Manager is null!");
+        }
 
         if (NetworkGameManager.Instance != null)
         {

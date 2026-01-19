@@ -147,7 +147,16 @@ public class LobbyUIManager : MonoBehaviour
 
     public void SetJoinCode(string joinCode)
     {
-        joinCodeText.text = $"Join Code: {joinCode}";
+        Debug.Log($"[LobbyUIManager] Setting join code to: {joinCode}");
+        if (joinCodeText != null)
+        {
+            joinCodeText.text = $"Join Code: {joinCode}";
+            Debug.Log($"[LobbyUIManager] Join code text set to: {joinCodeText.text}");
+        }
+        else
+        {
+            Debug.LogError("[LobbyUIManager] joinCodeText is not assigned in the inspector!");
+        }
     }
 
     public void SetStartButtonState(bool interactable)

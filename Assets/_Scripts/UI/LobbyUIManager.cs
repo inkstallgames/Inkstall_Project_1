@@ -35,28 +35,57 @@ public class LobbyUIManager : MonoBehaviour
     public TMP_InputField chatInput;
     public Button sendChatButton;
 
-    private void Start()
+    private void Awake()
+    {
+        // Singleton pattern
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        
+        // Initialize UI event listeners
+        InitializeUI();
+    }
+    
+    private void InitializeUI()
     {
         // Host controls
-        startGameButton.onClick.AddListener(() => NetworkLobbyManager.Instance.StartGame());
-        mapDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance.OnMapSelectionChanged(val));
-        modeDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance.OnModeSelectionChanged(val));
-        timeDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance.OnTimeSelectionChanged(val));
+        if (startGameButton != null)
+            startGameButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.StartGame());
+            
+        if (mapDropdown != null)
+            mapDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance?.OnMapSelectionChanged(val));
+            
+        if (modeDropdown != null)
+            modeDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance?.OnModeSelectionChanged(val));
+            
+        if (timeDropdown != null)
+            timeDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance?.OnTimeSelectionChanged(val));
 
         // Player controls
-        readyButton.onClick.AddListener(() => NetworkLobbyManager.Instance.ToggleReadyStatus());
-        leaveButton.onClick.AddListener(() => 
+        if (readyButton != null)
+            readyButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.ToggleReadyStatus());
+            
+        if (leaveButton != null)
         {
-            var networkStarter = FindObjectOfType<NetworkStarter>();
-            if (networkStarter != null)
+            leaveButton.onClick.AddListener(() => 
             {
-                networkStarter.ShutdownRunner();
-            }
-        });
+                var networkStarter = FindObjectOfType<NetworkStarter>();
+                networkStarter?.ShutdownRunner();
+            });
+        }
 
         // Chat controls
-        sendChatButton.onClick.AddListener(SendChatMessage);
-        chatInput.onSubmit.AddListener((_) => SendChatMessage());
+        if (sendChatButton != null)
+            sendChatButton.onClick.AddListener(SendChatMessage);
+            
+        if (chatInput != null)
+            chatInput.onSubmit.AddListener((_) => SendChatMessage());
     }
 
     private void SendChatMessage()
@@ -82,17 +111,6 @@ public class LobbyUIManager : MonoBehaviour
         chatContent.text = chatLog;
     }
 
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     public void InitializeLobbyUI(List<string> mapOptions, List<string> modeOptions, List<string> timeOptions)
     {

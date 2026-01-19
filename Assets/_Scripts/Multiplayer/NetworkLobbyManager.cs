@@ -11,7 +11,15 @@ public class NetworkLobbyManager : NetworkBehaviour
     public int minPlayersToStart = 2;
     [Networked] public NetworkDictionary<PlayerRef, PlayerLobbyData> LobbyPlayers { get; } 
 
-    [Networked] public string JoinCode { get; private set; }
+    [Networked] public string JoinCode { get; set; }
+    
+    // Generate a random join code
+    private string GenerateJoinCode()
+    {
+        const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        return new string(Enumerable.Repeat(chars, 6)
+            .Select(s => s[UnityEngine.Random.Range(0, s.Length)]).ToArray());
+    }
     [Networked] public int SelectedMapIndex { get; set; }
     [Networked] public int SelectedModeIndex { get; set; }
     [Networked] public int SelectedTimeIndex { get; set; }
@@ -33,10 +41,11 @@ public class NetworkLobbyManager : NetworkBehaviour
         base.Spawned();
         uiManager = LobbyUIManager.Instance;
 
-        if (Runner.IsServer)
+        // Only the host generates a join code
+        if (Runner.IsServer && string.IsNullOrEmpty(JoinCode))
         {
-            // Host generates a join code
             JoinCode = GenerateJoinCode();
+            Debug.Log($"Join Code: {JoinCode}");
             
             // Add self to lobby
             AddPlayerToLobby(Runner.LocalPlayer, true);
@@ -45,9 +54,14 @@ public class NetworkLobbyManager : NetworkBehaviour
         // All clients initialize UI
         var modeOptions = System.Enum.GetNames(typeof(GameMode)).ToList();
         uiManager.InitializeLobbyUI(mapOptions, modeOptions, timeOptions);
-        uiManager.SetJoinCode(JoinCode);
+        
+        // Update UI with join code if we have one
+        if (!string.IsNullOrEmpty(JoinCode) && LobbyUIManager.Instance != null)
+        {
+            uiManager.SetJoinCode(JoinCode);
+        }
+        
         uiManager.ShowLobby(true);
-
 
         if (NetworkGameManager.Instance != null)
         {
@@ -194,13 +208,6 @@ public class NetworkLobbyManager : NetworkBehaviour
                 LobbyPlayers.Remove(player);
             }
         }
-    }
-
-    private string GenerateJoinCode()
-    {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        return new string(Enumerable.Repeat(chars, 6)
-          .Select(s => s[Random.Range(0, s.Length)]).ToArray());
     }
 }
 

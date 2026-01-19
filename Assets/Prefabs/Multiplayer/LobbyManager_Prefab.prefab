@@ -1,0 +1,131 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5065319533953001694
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8102381296110623718}
+  - component: {fileID: 6245237686680589253}
+  - component: {fileID: 2843740617578589797}
+  - component: {fileID: 7668196171965703673}
+  - component: {fileID: 8257605488467610688}
+  m_Layer: 0
+  m_Name: LobbyManager_Prefab
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8102381296110623718
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5065319533953001694}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6245237686680589253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5065319533953001694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 1871275198
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 2843740617578589797}
+  - {fileID: 7668196171965703673}
+  - {fileID: 8257605488467610688}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &2843740617578589797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5065319533953001694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bb3f7d6af0ff37458deab0e51057725, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minPlayersToStart: 2
+  _LobbyPlayers:
+    _items: []
+  _JoinCode: 
+  _SelectedMapIndex: 0
+  _SelectedModeIndex: 0
+  _SelectedTimeIndex: 0
+--- !u!114 &7668196171965703673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5065319533953001694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b2b868cd70196c44be27fa34f18dfc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameSettingsHeader: 0
+  _CurrentGameMode: 0
+  _RoundTime: 300
+  _RoundsToWin: 3
+  _CurrentGameState: 0
+  _GameStartTime: 0
+  _RoundStartTime: 0
+  _RoundEndTime: 0
+  _CurrentRound: 1
+  _BlueTeamScore: 0
+  _RedTeamScore: 0
+  _WinningTeam: -1
+  _PlayersAlive: 0
+  _MaxPlayers: 10
+  _RespawnTime: 5
+  _AllPlayers: []
+  _AlivePlayers: []
+  _PlayerKills:
+    _items: []
+  _PlayerDeaths:
+    _items: []
+  spawnPoints: []
+  blueTeamSpawns: []
+  redTeamSpawns: []
+  playerPrefab: {fileID: 0}
+  weaponPrefabs: []
+  killsToWin: 20
+  maxRounds: 5
+  warmupTime: 10
+  roundEndTime: 5
+--- !u!114 &8257605488467610688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5065319533953001694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c65e63046058c47846f1ceafa4118b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

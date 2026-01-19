@@ -5,17 +5,20 @@ using System.Linq;
 
 public enum GameMode
 {
-    FreeForAll,
-    TeamDeathmatch
+    FreeForAll,      // Classic deathmatch
+    TeamDeathmatch,  // Team-based deathmatch
+    BattleRoyale,    // Last player/team standing
+    GunGame,         // Progress through weapons on each kill
+    OneInTheChamber  // One bullet, one kill
 }
 
 public enum GameState
 {
-    Lobby,
-    Starting,
-    InProgress,
-    RoundOver,
-    GameOver
+    Lobby,          // Players joining/selecting teams
+    Starting,       // Countdown before game starts
+    InProgress,     // Game is active
+    RoundOver,      // Round has ended, show scores
+    GameOver        // Match complete, show final results
 }
 
 public class NetworkGameManager : NetworkBehaviour
@@ -24,25 +27,43 @@ public class NetworkGameManager : NetworkBehaviour
 
     [Header("Game Settings")]
     [SerializeField] private bool _gameSettingsHeader;
-    [Networked] public GameMode CurrentGameMode { get; set; }
+    [Networked] public GameMode CurrentGameMode { get; set; } = GameMode.FreeForAll;
     [Networked] public int RoundTime { get; private set; } = 300; // 5 minutes default
     [Networked] public int RoundsToWin { get; private set; } = 3;
     [Networked] public GameState CurrentGameState { get; private set; }
     [Networked] public float GameStartTime { get; private set; }
     [Networked] public float RoundStartTime { get; private set; }
+    [Networked] public float RoundEndTime { get; private set; }
     [Networked] public int CurrentRound { get; private set; } = 1;
     [Networked] public int BlueTeamScore { get; private set; }
     [Networked] public int RedTeamScore { get; private set; }
     [Networked] public int WinningTeam { get; private set; } = -1;
+    [Networked] public int PlayersAlive { get; private set; }
+    [Networked] public int MaxPlayers { get; private set; } = 10; // Adjust based on your game's needs
+    [Networked] public float RespawnTime { get; private set; } = 5f; // Time before players respawn
+    
+    [Networked, Capacity(20)] public NetworkLinkedList<PlayerRef> AllPlayers => default;
+    [Networked, Capacity(10)] public NetworkLinkedList<PlayerRef> AlivePlayers => default;
+    [Networked, Capacity(10)] public NetworkDictionary<PlayerRef, int> PlayerKills => default;
+    [Networked, Capacity(10)] public NetworkDictionary<PlayerRef, int> PlayerDeaths => default;
 
     [Header("References")]
+    public Transform[] spawnPoints;
     public Transform[] blueTeamSpawns;
     public Transform[] redTeamSpawns;
-    public Transform[] freeForAllSpawns;
+    public GameObject playerPrefab;
+    public GameObject[] weaponPrefabs; // Array of available weapons
+    
+    [Header("Game Rules")]
+    public int killsToWin = 20; // For FreeForAll and TeamDeathmatch
+    public int maxRounds = 5;   // For round-based modes
+    public float warmupTime = 10f;
+    public float roundEndTime = 5f;
 
     private Dictionary<PlayerRef, PlayerNetworkData> players = new Dictionary<PlayerRef, PlayerNetworkData>();
-    private NetworkLobbyManager lobbyManager;
     private NetworkPlayerSpawner playerSpawner;
+    private Dictionary<PlayerRef, float> respawnTimers = new Dictionary<PlayerRef, float>();
+    private List<NetworkObject> activeProjectiles = new List<NetworkObject>();
 
     // Events
     public event System.Action OnGameStarted;
@@ -62,9 +83,19 @@ public class NetworkGameManager : NetworkBehaviour
             Destroy(gameObject);
         }
 
-        // Find references
-        lobbyManager = FindObjectOfType<NetworkLobbyManager>();
         playerSpawner = FindObjectOfType<NetworkPlayerSpawner>();
+    }
+
+    public void StartGame(GameMode mode, int time, string sceneName)
+    {
+        if (!Object.HasStateAuthority) return;
+
+        CurrentGameMode = mode;
+        RoundTime = time;
+        CurrentGameState = GameState.Starting;
+        
+        // Load the selected map scene for all players
+        Runner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
     }
 
     public override void Spawned()
@@ -107,36 +138,6 @@ public class NetworkGameManager : NetworkBehaviour
             {
                 CheckGameEndConditions();
             }
-        }
-    }
-
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_StartGame(GameMode gameMode, int roundTime, int roundsToWin)
-    {
-        if (CurrentGameState != GameState.Lobby) return;
-        
-        CurrentGameMode = gameMode;
-        RoundTime = roundTime;
-        RoundsToWin = roundsToWin;
-        CurrentGameState = GameState.Starting;
-        
-        // Assign teams if in team mode
-        if (gameMode == GameMode.TeamDeathmatch)
-        {
-            AssignTeams();
-        }
-        
-        // Start the game after a short delay
-        StartCoroutine(StartGameAfterDelay(3f));
-    }
-    
-    private System.Collections.IEnumerator StartGameAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        
-        if (Object.HasStateAuthority)
-        {
-            StartNewRound();
         }
     }
     
@@ -266,6 +267,19 @@ public class NetworkGameManager : NetworkBehaviour
         WinningTeam = winningTeam;
         
         RPC_OnGameEnded(winningTeam);
+
+        // Return to lobby after a short delay
+        StartCoroutine(ReturnToLobbyAfterDelay(10f));
+    }
+
+    private System.Collections.IEnumerator ReturnToLobbyAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (Object.HasStateAuthority)
+        {
+            // Assuming the lobby is at build index 0
+            Runner.LoadScene(SceneRef.FromIndex(0), UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
     }
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -277,7 +291,7 @@ public class NetworkGameManager : NetworkBehaviour
 
     public Transform GetSpawnPoint(int teamId)
     {
-        Transform[] spawns = freeForAllSpawns;
+        Transform[] spawns = spawnPoints;
         if (CurrentGameMode == GameMode.TeamDeathmatch)
         {
             spawns = teamId == 0 ? blueTeamSpawns : redTeamSpawns;

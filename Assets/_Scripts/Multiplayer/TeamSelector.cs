@@ -23,7 +23,7 @@ public class TeamSelector : NetworkBehaviour
         int teamId = index;
         if (lobbyManager != null && Runner != null)
         {
-            lobbyManager.RPC_SetPlayerTeam(Runner.LocalPlayer, teamId);
+            lobbyManager.RPC_SetPlayerTeam(teamId);
         }
     }
 }

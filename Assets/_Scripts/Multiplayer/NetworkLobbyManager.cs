@@ -1,313 +1,213 @@
 using Fusion;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using System.Linq;
 
 public class NetworkLobbyManager : NetworkBehaviour
 {
     public static NetworkLobbyManager Instance { get; private set; }
 
-    [Header("UI References")]
-    public GameObject lobbyPanel;
-    public Button startButton;
-    public TextMeshProUGUI playerListText;
-    public Toggle readyToggle;
-    public TMP_Dropdown teamDropdown;
-    public TMP_Dropdown gameModeDropdown;
-    public TMP_InputField playerNameInput;
-
     [Header("Game Settings")]
     public int minPlayersToStart = 2;
-    public int maxPlayers = 4;
+    [Networked] public NetworkDictionary<PlayerRef, PlayerLobbyData> LobbyPlayers { get; } 
 
-    [Networked] private TickTimer startGameTimer { get; set; }
-    private bool isHost => Runner != null && Runner.IsSharedModeMasterClient;
-    private string playerName = "Player";
+    [Networked] public string JoinCode { get; private set; }
+    [Networked] public int SelectedMapIndex { get; set; }
+    [Networked] public int SelectedModeIndex { get; set; }
+    [Networked] public int SelectedTimeIndex { get; set; }
 
-    private Dictionary<PlayerRef, PlayerLobbyData> lobbyPlayers = new Dictionary<PlayerRef, PlayerLobbyData>();
+    private readonly List<string> mapOptions = new List<string> { "Map 1", "Map 2", "Map 3" };
+    private readonly List<string> timeOptions = new List<string> { "3:00", "5:00", "10:00" };
+    private readonly int[] timeInSeconds = { 180, 300, 600 };
+
+    private LobbyUIManager uiManager;
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
     }
 
     public override void Spawned()
     {
         base.Spawned();
+        uiManager = LobbyUIManager.Instance;
 
-        // Initialize UI
-        if (isHost)
+        if (Runner.IsServer)
         {
-            startButton.gameObject.SetActive(true);
-            startButton.onClick.AddListener(OnStartGameClicked);
-            gameModeDropdown.interactable = true;
-        }
-        else
-        {
-            startButton.gameObject.SetActive(false);
-            gameModeDropdown.interactable = false;
+            // Host generates a join code
+            JoinCode = GenerateJoinCode();
+            
+            // Add self to lobby
+            AddPlayerToLobby(Runner.LocalPlayer, true);
         }
 
-        // Set up UI callbacks
-        readyToggle.onValueChanged.AddListener(OnReadyToggleChanged);
-        teamDropdown.onValueChanged.AddListener(OnTeamSelected);
-        playerNameInput.onEndEdit.AddListener(OnPlayerNameChanged);
+        // All clients initialize UI
+        var modeOptions = System.Enum.GetNames(typeof(GameMode)).ToList();
+        uiManager.InitializeLobbyUI(mapOptions, modeOptions, timeOptions);
+        uiManager.SetJoinCode(JoinCode);
+        uiManager.ShowLobby(true);
 
-        // Set initial player name
-        playerName = PlayerPrefs.GetString("PlayerName", $"Player_{Random.Range(1000, 9999)}");
-        playerNameInput.text = playerName;
 
-        // Register with the game manager
         if (NetworkGameManager.Instance != null)
         {
             NetworkGameManager.Instance.OnGameStarted += OnGameStarted;
         }
     }
 
-    public void AddPlayerToLobby(PlayerRef player, string defaultName = null)
+    public override void Despawned(NetworkRunner runner, bool hasState)
     {
-        if (!lobbyPlayers.ContainsKey(player))
-        {
-            var playerData = new PlayerLobbyData
-            {
-                PlayerRef = player,
-                PlayerName = defaultName ?? $"Player_{player.PlayerId}",
-                IsReady = false,
-                TeamId = 0,
-                IsHost = player == Runner.LocalPlayer && isHost
-            };
-
-            lobbyPlayers.Add(player, playerData);
-            UpdateLobbyUI();
-        }
-    }
-
-    public void RemovePlayerFromLobby(PlayerRef player)
-    {
-        if (lobbyPlayers.Remove(player))
-        {
-            UpdateLobbyUI();
-        }
-    }
-
-
-    private void UpdateLobbyUI()
-    {
-        if (lobbyPanel == null) return;
-
-        // Update player list text
-        playerListText.text = "Players:\n";
-        int readyCount = 0;
-
-        foreach (var playerData in lobbyPlayers.Values)
-        {
-            string status = playerData.IsReady ? "<color=green>Ready</color>" : "<color=red>Not Ready</color>";
-            string team = playerData.TeamId == 0 ? "Blue" : "Red";
-            playerListText.text += $"{playerData.PlayerName} (Team {team}) - {status}\n";
-
-            if (playerData.IsReady) readyCount++;
-        }
-
-        // Update start button state
-        if (isHost)
-        {
-            bool canStart = readyCount >= minPlayersToStart && readyCount == lobbyPlayers.Count;
-            startButton.interactable = canStart;
-        }
-
-        // Update team dropdown based on current player count
-        UpdateTeamSelectionUI();
-    }
-
-    private void UpdateTeamSelectionUI()
-    {
-        if (lobbyPlayers.TryGetValue(Runner.LocalPlayer, out var localPlayer))
-        {
-            // Disable team selection if already in a team with players
-            bool canChangeTeam = CanPlayerChangeTeam(localPlayer.TeamId);
-            teamDropdown.interactable = canChangeTeam && !localPlayer.IsReady;
-        }
-    }
-
-    private bool CanPlayerChangeTeam(int newTeamId)
-    {
-        // Check if the team is full
-        int teamSize = lobbyPlayers.Values.Count(p => p.TeamId == newTeamId);
-        int otherTeamSize = lobbyPlayers.Values.Count(p => p.TeamId != newTeamId);
-
-        // Allow switching if teams are balanced or if the other team has more players
-        return teamSize <= otherTeamSize + 1;
-    }
-
-    // UI Event Handlers
-    private void OnReadyToggleChanged(bool isReady)
-    {
-        if (Runner != null && Runner.IsRunning)
-        {
-            RPC_SetPlayerReady(Runner.LocalPlayer, isReady);
-        }
-    }
-
-    private void OnTeamSelected(int teamIndex)
-    {
-        if (Runner != null && Runner.IsRunning && lobbyPlayers.TryGetValue(Runner.LocalPlayer, out var playerData))
-        {
-            if (CanPlayerChangeTeam(teamIndex))
-            {
-                RPC_SetPlayerTeam(Runner.LocalPlayer, teamIndex);
-            }
-            else
-            {
-                // Revert to previous team if can't switch
-                teamDropdown.SetValueWithoutNotify(playerData.TeamId);
-            }
-        }
-    }
-
-    private void OnPlayerNameChanged(string newName)
-    {
-        playerName = newName.Trim();
-        PlayerPrefs.SetString("PlayerName", playerName);
-        
-        if (Runner != null && Runner.IsRunning)
-        {
-            RPC_SetPlayerName(Runner.LocalPlayer, playerName);
-        }
-    }
-
-    private void OnStartGameClicked()
-    {
-        if (isHost && Runner.IsSharedModeMasterClient)
-        {
-            // Get selected game mode
-            GameMode gameMode = gameModeDropdown.value == 0 ? GameMode.FreeForAll : GameMode.TeamDeathmatch;
-            
-            // Start a countdown before the game starts
-            startGameTimer = TickTimer.CreateFromSeconds(Runner, 5f);
-            RPC_StartGameCountdown(5);
-            
-            // Disable UI interactions during countdown
-            startButton.interactable = false;
-            readyToggle.interactable = false;
-            teamDropdown.interactable = false;
-            gameModeDropdown.interactable = false;
-        }
-    }
-
-    private void OnGameStarted()
-    {
-        // Hide lobby UI when game starts
-        if (lobbyPanel != null)
-        {
-            lobbyPanel.SetActive(false);
-        }
-    }
-
-    // RPCs
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_SetPlayerReady(PlayerRef player, bool isReady)
-    {
-        if (lobbyPlayers.TryGetValue(player, out var playerData))
-        {
-            playerData.IsReady = isReady;
-            UpdateLobbyUI();
-            RPC_UpdatePlayerReady(player, isReady);
-        }
-    }
-
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_SetPlayerTeam(PlayerRef player, int teamId)
-    {
-        if (lobbyPlayers.TryGetValue(player, out var playerData))
-        {
-            playerData.TeamId = teamId;
-            UpdateLobbyUI();
-            RPC_UpdatePlayerTeam(player, teamId);
-        }
-    }
-
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    private void RPC_SetPlayerName(PlayerRef player, string playerName)
-    {
-        if (lobbyPlayers.TryGetValue(player, out var playerData))
-        {
-            playerData.PlayerName = playerName;
-            UpdateLobbyUI();
-            RPC_UpdatePlayerName(player, playerName);
-        }
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_UpdatePlayerReady(PlayerRef player, bool isReady) { }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_UpdatePlayerTeam(PlayerRef player, int teamId) { }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_UpdatePlayerName(PlayerRef player, string playerName) { }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_StartGameCountdown(int seconds)
-    {
-        // Show countdown in UI
-        startButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Starting in {seconds}...";
-    }
-
-    // Network callbacks
-    public override void FixedUpdateNetwork()
-    {
-        if (startGameTimer.Expired(Runner))
-        {
-            startGameTimer = TickTimer.None;
-            if (isHost)
-            {
-                // Start the game with selected settings
-                GameMode gameMode = gameModeDropdown.value == 0 ? GameMode.FreeForAll : GameMode.TeamDeathmatch;
-                NetworkGameManager.Instance.RPC_StartGame(gameMode, 300, 3); // 5min rounds, 3 rounds to win
-            }
-        }
-        else if (startGameTimer.IsRunning)
-        {
-            // Update countdown
-            int remaining = (int)startGameTimer.RemainingTime(Runner).Value;
-            RPC_UpdateGameCountdown(remaining);
-        }
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_UpdateGameCountdown(int seconds)
-    {
-        if (startButton != null)
-        {
-            startButton.GetComponentInChildren<TextMeshProUGUI>().text = $"Starting in {seconds}...";
-        }
-    }
-
-    private void OnDestroy()
-    {
+        base.Despawned(runner, hasState);
         if (NetworkGameManager.Instance != null)
         {
             NetworkGameManager.Instance.OnGameStarted -= OnGameStarted;
         }
     }
+
+    public void AddPlayerToLobby(PlayerRef player, bool isHost)
+    {
+        string playerName = $"Player_{player.PlayerId}";
+        var data = new PlayerLobbyData { PlayerName = playerName, IsHost = isHost, IsReady = false };
+        LobbyPlayers.Add(player, data);
+    }
+
+    // UI Callbacks
+    public void OnMapSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedMapIndex), index);
+    public void OnModeSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedModeIndex), index);
+    public void OnTimeSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedTimeIndex), index);
+
+    public void ToggleReadyStatus()
+    {
+        RPC_SetPlayerReady(!LobbyPlayers[Runner.LocalPlayer].IsReady);
+    }
+
+    public void StartGame()
+    {
+        if (Runner.IsServer)
+        {
+            // Start the game with selected settings
+            GameMode gameMode = (GameMode)SelectedModeIndex;
+            int gameTime = timeInSeconds[SelectedTimeIndex];
+            string sceneName = mapOptions[SelectedMapIndex];
+
+            // TODO: Replace with actual scene loading logic
+            Debug.Log($"Starting game on {sceneName} with mode {gameMode} for {gameTime}s");
+            NetworkGameManager.Instance.StartGame(gameMode, gameTime, sceneName);
+        }
+    }
+
+    private void OnGameStarted()
+    {
+        uiManager.ShowLobby(false);
+    }
+
+    public override void Render()
+    {
+        base.Render();
+        UpdateLobbyUI();
+        UpdateGameSettingsUI();
+    }
+
+    private void UpdateLobbyUI()
+    {
+        if (uiManager == null) return;
+
+        // Update player list
+        var playerDict = LobbyPlayers.ToDictionary(kvp => kvp.Key.PlayerId, kvp => kvp.Value);
+        uiManager.UpdatePlayerList(playerDict);
+
+        // Update ready button state for local player
+        if (LobbyPlayers.ContainsKey(Runner.LocalPlayer))
+        {
+            var localPlayerData = LobbyPlayers[Runner.LocalPlayer];
+            uiManager.SetReadyButtonState(localPlayerData.IsReady);
+        }
+
+        // Update start button for host
+        if (Runner.IsServer)
+        {
+            bool allReady = LobbyPlayers.Count >= minPlayersToStart && LobbyPlayers.All(p => p.Value.IsReady);
+            uiManager.SetStartButtonState(allReady);
+        }
+    }
+
+    private void UpdateGameSettingsUI()
+    {
+        if (uiManager == null) return;
+
+        uiManager.mapDropdown.SetValueWithoutNotify(SelectedMapIndex);
+        uiManager.modeDropdown.SetValueWithoutNotify(SelectedModeIndex);
+        uiManager.timeDropdown.SetValueWithoutNotify(SelectedTimeIndex);
+
+        bool isHost = Runner.IsServer;
+        uiManager.mapDropdown.interactable = isHost;
+        uiManager.modeDropdown.interactable = isHost;
+        uiManager.timeDropdown.interactable = isHost;
+    }
+
+    // RPCs
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_SetPlayerReady(bool isReady)
+    {
+        var data = LobbyPlayers[Runner.LocalPlayer];
+        data.IsReady = isReady;
+        LobbyPlayers.Set(Runner.LocalPlayer, data);
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_SetGameSetting(string settingName, int value)
+    {
+        switch (settingName)
+        {
+            case nameof(SelectedMapIndex): SelectedMapIndex = value; break;
+            case nameof(SelectedModeIndex): SelectedModeIndex = value; break;
+            case nameof(SelectedTimeIndex): SelectedTimeIndex = value; break;
+        }
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_SetPlayerTeam(int teamId, RpcInfo info = default)
+    {
+        if (LobbyPlayers.ContainsKey(info.Source))
+        {
+            var data = LobbyPlayers[info.Source];
+            data.TeamID = teamId;
+            LobbyPlayers.Set(info.Source, data);
+        }
+    }
+
+    // Player Connection Handling
+    public void OnPlayerJoined(PlayerRef player)
+    {
+        if (Runner.IsServer)
+        {
+            AddPlayerToLobby(player, false);
+        }
+    }
+
+    public void OnPlayerLeft(PlayerRef player)
+    {
+        if (Runner.IsServer)
+        {
+            if (LobbyPlayers.ContainsKey(player))
+            {
+                LobbyPlayers.Remove(player);
+            }
+        }
+    }
+
+    private string GenerateJoinCode()
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        return new string(Enumerable.Repeat(chars, 6)
+          .Select(s => s[Random.Range(0, s.Length)]).ToArray());
+    }
 }
 
-[System.Serializable]
-public class PlayerLobbyData : INetworkStruct
+public struct PlayerLobbyData : INetworkStruct
 {
-    public PlayerRef PlayerRef { get; set; }
-    public string PlayerName { get; set; }
-    public bool IsReady { get; set; }
-    public int TeamId { get; set; }
-    public bool IsHost { get; set; }
+    public NetworkString<_16> PlayerName;
+    public bool IsReady;
+    public bool IsHost;
+    public int TeamID;
 }

@@ -55,7 +55,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
         // If we have a lobby, let it handle the player joining
         if (lobbyManager != null)
         {
-            lobbyManager.AddPlayerToLobby(player, $"Player_{player.PlayerId}");
+            lobbyManager.AddPlayerToLobby(player, false);
             
             // If we're in the lobby, don't spawn the player yet
             if (gameManager == null || gameManager.CurrentGameState == GameState.Lobby)

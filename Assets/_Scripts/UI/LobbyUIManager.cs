@@ -147,15 +147,27 @@ public class LobbyUIManager : MonoBehaviour
 
     public void SetJoinCode(string joinCode)
     {
-        Debug.Log($"[LobbyUIManager] Setting join code to: {joinCode}");
+        Debug.Log($"[LobbyUIManager] SetJoinCode called with: {joinCode}");
+        Debug.Log($"[LobbyUIManager] joinCodeText reference: {joinCodeText != null}");
+        
         if (joinCodeText != null)
         {
+            Debug.Log($"[LobbyUIManager] Setting join code text to: {joinCode}");
             joinCodeText.text = $"Join Code: {joinCode}";
-            Debug.Log($"[LobbyUIManager] Join code text set to: {joinCodeText.text}");
+            Debug.Log($"[LobbyUIManager] Text component value set. Current text: {joinCodeText.text}");
+            
+            // Force update the canvas to ensure the text is rendered
+            Canvas.ForceUpdateCanvases();
+            Debug.Log("[LobbyUIManager] Canvas update forced");
         }
         else
         {
-            Debug.LogError("[LobbyUIManager] joinCodeText is not assigned in the inspector!");
+            Debug.LogError("[LobbyUIManager] joinCodeText is null! Make sure to assign it in the inspector.");
+            Debug.LogError($"[LobbyUIManager] GameObject active: {gameObject.activeInHierarchy}");
+            
+            // Try to find the text component if not assigned
+            var foundText = GetComponentInChildren<TextMeshProUGUI>(true);
+            Debug.Log($"[LobbyUIManager] Found TextMeshProUGUI in children: {foundText != null}");
         }
     }
 

@@ -17,6 +17,9 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private int _maxPlayers = 10;
     [SerializeField] private NetworkObject _lobbyManagerPrefab;
     
+    // Store the current join code so it can be accessed by other scripts
+    public string CurrentJoinCode { get; private set; }
+
     private NetworkRunner _runner;
     private NetworkSceneManagerDefault _sceneManager;
     private bool _isShuttingDown = false;
@@ -89,35 +92,43 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
         try
         {
-            // Generate the join code and use it as the session name
-            var joinCode = GenerateJoinCode();
+            // Generate and store the join code
+            CurrentJoinCode = GenerateJoinCode();
+            Debug.Log($"[NetworkStarter] Generated join code: {CurrentJoinCode}");
             
             var startGameArgs = new StartGameArgs()
             {
                 GameMode = Fusion.GameMode.Host,
-                SessionName = joinCode, // Use the generated code as the session name
+                SessionName = CurrentJoinCode,  // Use join code as session name
                 PlayerCount = _maxPlayers,
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager
             };
 
-            Debug.Log($"Starting Host with Join Code: {joinCode}");
-            
+            Debug.Log($"[NetworkStarter] Starting host with session name: {CurrentJoinCode}");
             var result = await _runner.StartGame(startGameArgs);
 
             if (result.Ok)
             {
-                Debug.Log("Host started successfully.");
-                // Spawn the lobby manager for the host
+                Debug.Log("[NetworkStarter] Host started successfully");
+                Debug.Log($"[NetworkStarter] Runner.IsServer: {_runner.IsServer}, LobbyManager Prefab: {_lobbyManagerPrefab != null}");
+                
                 if (_runner.IsServer && _lobbyManagerPrefab != null)
                 {
+                    Debug.Log("[NetworkStarter] Spawning LobbyManager...");
                     _runner.Spawn(_lobbyManagerPrefab);
                 }
 
-                // Update the UI with the join code
+                // Update UI with join code
+                Debug.Log($"[NetworkStarter] Updating UI with join code: {CurrentJoinCode}");
                 if (LobbyUIManager.Instance != null)
                 {
-                    LobbyUIManager.Instance.SetJoinCode(joinCode);
+                    Debug.Log("[NetworkStarter] Found LobbyUIManager instance, setting join code");
+                    LobbyUIManager.Instance.SetJoinCode(CurrentJoinCode);
+                }
+                else
+                {
+                    Debug.LogError("[NetworkStarter] LobbyUIManager.Instance is null!");
                 }
             }
             else

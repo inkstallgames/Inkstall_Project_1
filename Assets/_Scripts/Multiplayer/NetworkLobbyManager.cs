@@ -39,26 +39,44 @@ public class NetworkLobbyManager : NetworkBehaviour
     public override void Spawned()
     {
         base.Spawned();
-        Debug.Log("[NetworkLobbyManager] Spawned called");
+        Debug.Log($"[NetworkLobbyManager] Spawned called. Object: {gameObject.name}, IsServer: {Runner.IsServer}, LocalPlayer: {Runner.LocalPlayer}");
         
         uiManager = LobbyUIManager.Instance;
         Debug.Log($"[NetworkLobbyManager] UI Manager found: {uiManager != null}");
+        
+        if (uiManager == null)
+        {
+            Debug.LogError("[NetworkLobbyManager] LobbyUIManager.Instance is null! Make sure it exists in the scene.");
+        }
 
         // Only the host generates a join code
         if (Runner.IsServer)
         {
-            Debug.Log("[NetworkLobbyManager] This is the server");
-            if (string.IsNullOrEmpty(JoinCode))
+            Debug.Log("[NetworkLobbyManager] This is the server (host)");
+            
+            // Get the join code from NetworkStarter instead of generating a new one
+            var networkStarter = FindObjectOfType<NetworkStarter>();
+            if (networkStarter != null && !string.IsNullOrEmpty(networkStarter.CurrentJoinCode))
             {
-                JoinCode = GenerateJoinCode();
-                Debug.Log($"[NetworkLobbyManager] Generated Join Code: {JoinCode}");
-                
-                // Add self to lobby
-                AddPlayerToLobby(Runner.LocalPlayer, true);
+                JoinCode = networkStarter.CurrentJoinCode;
+                Debug.Log($"[NetworkLobbyManager] Using join code from NetworkStarter: {JoinCode}");
             }
-            else
+            else if (string.IsNullOrEmpty(JoinCode))
             {
-                Debug.Log($"[NetworkLobbyManager] Using existing Join Code: {JoinCode}");
+                // Fallback to generating a new code if not provided by NetworkStarter
+                JoinCode = GenerateJoinCode();
+                Debug.Log($"[NetworkLobbyManager] Generated new Join Code: {JoinCode}");
+            }
+            
+            // Add self to lobby
+            Debug.Log("[NetworkLobbyManager] Adding host player to lobby");
+            AddPlayerToLobby(Runner.LocalPlayer, true);
+            
+            // Force update UI with join code
+            if (uiManager != null)
+            {
+                Debug.Log("[NetworkLobbyManager] Updating UI with join code from Spawned");
+                uiManager.SetJoinCode(JoinCode);
             }
         }
         else

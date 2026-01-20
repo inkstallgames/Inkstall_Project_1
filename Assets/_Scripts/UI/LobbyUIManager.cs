@@ -92,19 +92,10 @@ public class LobbyUIManager : MonoBehaviour
     {
         if (!string.IsNullOrWhiteSpace(chatInput.text))
         {
-            // Limit message length to prevent RPC payload size issues
-            string message = chatInput.text;
-            int maxLength = 100; // Conservative limit to stay well under 512 bytes
-            if (message.Length > maxLength)
-            {
-                message = message.Substring(0, maxLength);
-                Debug.LogWarning($"Message truncated to {maxLength} characters to prevent RPC size limit issues");
-            }
-            
             var chatManager = FindObjectOfType<LobbyChatManager>();
             if (chatManager != null)
             {
-                chatManager.RPC_SendChatMessage(message);
+                chatManager.RPC_SendChatMessage(chatInput.text);
                 chatInput.text = "";
             }
         }

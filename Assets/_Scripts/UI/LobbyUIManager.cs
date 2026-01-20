@@ -90,26 +90,14 @@ public class LobbyUIManager : MonoBehaviour
 
     private void SendChatMessage()
     {
-        if (string.IsNullOrWhiteSpace(chatInput.text))
-            return;
-            
-        // Trim and limit message length to 64 characters
-        string message = chatInput.text.Trim();
-        if (message.Length > 64)
+        if (!string.IsNullOrWhiteSpace(chatInput.text))
         {
-            message = message.Substring(0, 64);
-            Debug.LogWarning("Message was truncated to 64 characters");
-        }
-        
-        var chatManager = FindObjectOfType<LobbyChatManager>();
-        if (chatManager != null)
-        {
-            chatManager.RPC_SendChatMessage(message);
-            chatInput.text = "";
-        }
-        else
-        {
-            Debug.LogError("ChatManager not found!");
+            var chatManager = FindObjectOfType<LobbyChatManager>();
+            if (chatManager != null)
+            {
+                chatManager.RPC_SendChatMessage(chatInput.text);
+                chatInput.text = "";
+            }
         }
     }
 

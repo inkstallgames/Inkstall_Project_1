@@ -90,19 +90,22 @@ public class LobbyUIManager : MonoBehaviour
 
     private void SendChatMessage()
     {
+        const int MAX_MESSAGE_LENGTH = 60; // Match the server-side limit
+        
         string message = chatInput.text?.Trim();
         
         if (string.IsNullOrWhiteSpace(message))
             return;
             
         // Client-side validation
-        if (message.Length > 100) // Match the server-side limit
+        if (message.Length > MAX_MESSAGE_LENGTH)
         {
-            Debug.LogWarning("Message is too long. Maximum 100 characters allowed.");
-            // Optional: Show error message to user
+            string errorMsg = $"<color=red>Message too long (max {MAX_MESSAGE_LENGTH} characters)</color>";
+            Debug.LogWarning(errorMsg);
+            
+            // Show error message to user
             if (chatContent != null)
             {
-                string errorMsg = "<color=red>Message too long (max 100 characters)</color>";
                 chatContent.text += $"\n{errorMsg}";
                 // Auto-scroll to bottom
                 Canvas.ForceUpdateCanvases();
@@ -114,7 +117,9 @@ public class LobbyUIManager : MonoBehaviour
         var chatManager = FindObjectOfType<LobbyChatManager>();
         if (chatManager != null)
         {
-            chatManager.RPC_SendChatMessage(message);
+            // Ensure we're not sending more than the allowed size
+            var truncatedMessage = message.Length > 64 ? message.Substring(0, 64) : message;
+            chatManager.RPC_SendChatMessage(truncatedMessage);
             chatInput.text = "";
             chatInput.ActivateInputField(); // Keep focus on input field
         }

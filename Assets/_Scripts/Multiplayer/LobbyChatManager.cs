@@ -1,5 +1,6 @@
 using Fusion;
 using System.Collections.Generic;
+using UnityEngine;
 
 // A struct to hold the data for a single chat message.
 public struct ChatMessage : INetworkStruct

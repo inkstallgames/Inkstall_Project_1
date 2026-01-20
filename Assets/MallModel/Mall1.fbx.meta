@@ -1,0 +1,1959 @@
+fileFormatVersion: 2
+guid: bc65240c436f7a44dbde775aa25e8b8b
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_0
+    second: {fileID: 2800000, guid: 1157d7bb206d3d4408dfed7cdc38dd2b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_1
+    second: {fileID: 2800000, guid: 37147143c66e02443a136e76c2a39cb9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_10
+    second: {fileID: 2800000, guid: 2980ada751655a54db962bb62c12a17a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_100
+    second: {fileID: 2800000, guid: 4677c43d0c8ca0f40bf157f5be24a659, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_101
+    second: {fileID: 2800000, guid: 6f31cbc7a8f87c846a7058757e830fb8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_102
+    second: {fileID: 2800000, guid: 8d2b74e80db7812478636b9325312065, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_103
+    second: {fileID: 2800000, guid: a76f8e63db629af4eba7a7da07f0a3e2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_104
+    second: {fileID: 2800000, guid: 664b194fe5dcce54da55872b5d66c8d5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_105
+    second: {fileID: 2800000, guid: 12a05bef7f43c9641ba213ef3093ff5f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_106
+    second: {fileID: 2800000, guid: 068225f1706f75e43b03035910808fa0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_107
+    second: {fileID: 2800000, guid: cd5ab4615fd15c64b925940954048ccf, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_108
+    second: {fileID: 2800000, guid: 2f72504bd4014944eba9507426822a16, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_109
+    second: {fileID: 2800000, guid: 21ebae8acfa6b2546946b13b05080988, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_11
+    second: {fileID: 2800000, guid: 77fff5e8573e20c438343d28a89963e6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_110
+    second: {fileID: 2800000, guid: fce8dc75ebc9cf54c88c1a8fb3367eae, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_111
+    second: {fileID: 2800000, guid: 5775bac2f916b2a4dbcf1effb8fb99d3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_112
+    second: {fileID: 2800000, guid: 770f84f38a6fe0b4c9a5bed230fefa5b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_113
+    second: {fileID: 2800000, guid: 70cd061646ed24f419c0b9643a20f3a4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_114
+    second: {fileID: 2800000, guid: e81e63ad8acb1234e86637fd0bcc9aa2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_115
+    second: {fileID: 2800000, guid: 670bd19f6057daf49a8bcd178c5591c2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_116
+    second: {fileID: 2800000, guid: 29f04ebdb2b88474e8e3c3b84e23395b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_117
+    second: {fileID: 2800000, guid: 1879715536e3ee04d8e238f2e02d6dfd, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_118
+    second: {fileID: 2800000, guid: feab40df994970e419830cbc519f4f85, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_119
+    second: {fileID: 2800000, guid: daa67e88509b88040bacef2c8ea6d263, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_12
+    second: {fileID: 2800000, guid: 9b4d8319c3cc2a64f98885db9c768414, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_120
+    second: {fileID: 2800000, guid: 7b3a436d8c8e5c74d848777f061e13e4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_121
+    second: {fileID: 2800000, guid: 9a24e052b762a774e914b41dfb338871, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_122
+    second: {fileID: 2800000, guid: c5a38cfa46d88a842a57c5101e79d78a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_123
+    second: {fileID: 2800000, guid: d8bd89811ec3c664aa335acf0e09bab6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_124
+    second: {fileID: 2800000, guid: f26dd45f445374647a9f5873a230ccc8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_125
+    second: {fileID: 2800000, guid: d6e99dc03bc46ee409862d6bc7319a52, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_126
+    second: {fileID: 2800000, guid: a3ccd5a325c5f174d9faab7630dea2e3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_127
+    second: {fileID: 2800000, guid: edbf931ad62e34f42beda5a2894dbc85, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_128
+    second: {fileID: 2800000, guid: 19f647c6e0f92af4cb47f1939ad2ba83, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_129
+    second: {fileID: 2800000, guid: 116e64faa7446a448a9e3b7c0b162c44, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_13
+    second: {fileID: 2800000, guid: 7d78bec6bb81e6c4785f5890c4487e67, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_130
+    second: {fileID: 2800000, guid: d2e5766e011d53e4db2dfd18efece079, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_131
+    second: {fileID: 2800000, guid: a89190483cc7a52489ad1d1f520c951f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_132
+    second: {fileID: 2800000, guid: 26839aa8209cc5547996e3ba0e259e1e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_133
+    second: {fileID: 2800000, guid: 4e0d5ef83947ad6439f83d52e45d9796, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_134
+    second: {fileID: 2800000, guid: 61bea9c3ca813de4bbebb5924522e551, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_135
+    second: {fileID: 2800000, guid: 0ac71bd2059f9a84fb7e83bdce2e74c8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_136
+    second: {fileID: 2800000, guid: cc7d99a97b77d664e886600532a2ab95, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_137
+    second: {fileID: 2800000, guid: 8c5faf350d0bebf428da4f00033a029a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_138
+    second: {fileID: 2800000, guid: b682a5a2d72aecf4c92f8d26b04ae1ce, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_139
+    second: {fileID: 2800000, guid: 2ad1932e3d343cf4388f94621bce0251, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_14
+    second: {fileID: 2800000, guid: 4002f55013af5664492fc1a74b372840, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_140
+    second: {fileID: 2800000, guid: 5eb75fa2bd9e5474aa7328de12ac5317, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_141
+    second: {fileID: 2800000, guid: fef9a671fa000dd4b9ef9508318e6d4d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_142
+    second: {fileID: 2800000, guid: 1cf3d574a724cc7409d7ca3b22778cfa, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_143
+    second: {fileID: 2800000, guid: a871db33e1fabe4478ef6f242f9b0300, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_144
+    second: {fileID: 2800000, guid: b654ab37082a07f4e82d5ee6361cc9c5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_145
+    second: {fileID: 2800000, guid: 67e73df24f9bbfa48b42edb72a57ae1e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_146
+    second: {fileID: 2800000, guid: 9e6e60f14556c9e49a03b4e4f89c23f4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_147
+    second: {fileID: 2800000, guid: 3402fcd8803868d4d936ea834782d8e0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_148
+    second: {fileID: 2800000, guid: f85839882f799ad4f8c1f7867662cae3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_149
+    second: {fileID: 2800000, guid: 1121ed4c2484445459404df17dfe17cc, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_15
+    second: {fileID: 2800000, guid: 04c62f7ff325cf947844789c53d00cfe, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_150
+    second: {fileID: 2800000, guid: 89d8d51030f5703489a009222ef87827, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_151
+    second: {fileID: 2800000, guid: c0760bac3c76a2b4fb1ace80ab26f6ff, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_152
+    second: {fileID: 2800000, guid: 014d55f8593edd94c989db7f95b1af69, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_153
+    second: {fileID: 2800000, guid: e2de23355a5a2114ebab1b493be902e8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_154
+    second: {fileID: 2800000, guid: 62c54d3a0b2bb874c9e17b9e4cce6890, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_155
+    second: {fileID: 2800000, guid: 66efd42a798b9ef4290969db4fe5d115, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_156
+    second: {fileID: 2800000, guid: 4f8f317de506d6b458f56e63ac42ed0d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_157
+    second: {fileID: 2800000, guid: 785b69c7ceb75b84c8b320e269a0cea4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_158
+    second: {fileID: 2800000, guid: 703f84adaa6249949b80191ca5241c26, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_159
+    second: {fileID: 2800000, guid: 00794f5426b010144b0deb0c0fd2508f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_16
+    second: {fileID: 2800000, guid: 9c16cfdfda4d3674d9b32bcd289c6d0d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_160
+    second: {fileID: 2800000, guid: 5e16d48462e7de4469290ef757d48283, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_161
+    second: {fileID: 2800000, guid: c3cc9cc4b7992ad4e95bdc8b741e8f55, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_162
+    second: {fileID: 2800000, guid: f84c2917e1e341945a16d122583206c0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_163
+    second: {fileID: 2800000, guid: 312b734514752e34fa3bc7c27485d403, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_164
+    second: {fileID: 2800000, guid: d1f8f3b982ca5b14bacb90fea3aae6db, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_165
+    second: {fileID: 2800000, guid: 9e146f7596d212449b62d5a5db8b105d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_166
+    second: {fileID: 2800000, guid: b218b3f774c665b488f4af9af65fd1af, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_167
+    second: {fileID: 2800000, guid: c30d4f58a296c08449f6c153203f7e96, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_168
+    second: {fileID: 2800000, guid: dad9e41d31d4fbf4fa988a106e1024ba, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_169
+    second: {fileID: 2800000, guid: 2dcebc04ccb064940898a1a98a42cb3e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_17
+    second: {fileID: 2800000, guid: 3179a342b8a4fc045b78e84d214daf26, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_170
+    second: {fileID: 2800000, guid: bc6818909895f884e800536d264bf7f9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_171
+    second: {fileID: 2800000, guid: 4fa6b18e86b397c4793a73133f48d8b5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_172
+    second: {fileID: 2800000, guid: b2686f8ed04176445aea64fed94459c3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_173
+    second: {fileID: 2800000, guid: 207b87b119914b04694a7793cad83e0b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_174
+    second: {fileID: 2800000, guid: b5f393265ac09954b8935eea0fd68509, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_175
+    second: {fileID: 2800000, guid: a45f0ec5f77e69f4c8038d75b305b413, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_176
+    second: {fileID: 2800000, guid: 774253584783cf9428ac3d11a3af6fe1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_177
+    second: {fileID: 2800000, guid: 3ce969f63fdca8044b039edc74020c06, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_178
+    second: {fileID: 2800000, guid: a1602a5ff9d2e62498a68052ed7466e1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_179
+    second: {fileID: 2800000, guid: 6db07f1ed8eb60a43b219dd088862d61, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_18
+    second: {fileID: 2800000, guid: 86554e403b3900e44826bbefdf72eb81, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_180
+    second: {fileID: 2800000, guid: 2901e4c5554bd5640aa3167416eda7ab, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_181
+    second: {fileID: 2800000, guid: e7518421d5d7a084ea711315fe6e0c71, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_182
+    second: {fileID: 2800000, guid: c52e384bc5886204ea9cd2c6cdcb9019, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_183
+    second: {fileID: 2800000, guid: b5204a189ca074242a18a12f8a98689a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_184
+    second: {fileID: 2800000, guid: c1af1d6507a487f4c934fc5edf6706eb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_185
+    second: {fileID: 2800000, guid: 7aa53de51ed626b4984073ef9e8b0381, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_186
+    second: {fileID: 2800000, guid: 087e020d73de81a4592374a903e1b22a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_187
+    second: {fileID: 2800000, guid: 8c7657f1115367842b4b30dc28f76e0d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_188
+    second: {fileID: 2800000, guid: f9ce01e7201473b4e9c4952ab8e87066, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_189
+    second: {fileID: 2800000, guid: 815b54caa2c202a4f9727256abeabcaf, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_19
+    second: {fileID: 2800000, guid: 1c75ec15e624bb64f943fbc1c6b93683, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_190
+    second: {fileID: 2800000, guid: fdb77eb22f10bdc45aecd95f68a4de74, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_191
+    second: {fileID: 2800000, guid: d534d1c18d0a9064a9d7f370529e9486, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_192
+    second: {fileID: 2800000, guid: 70a81e92faf575545844e99afc3421ba, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_193
+    second: {fileID: 2800000, guid: 7dd4e5f99f92d834193bd30a157a883b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_194
+    second: {fileID: 2800000, guid: ab006a82b71f3804d843308eb501b41a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_195
+    second: {fileID: 2800000, guid: 7115fbc3e8d7e9d48a24e885c52b3982, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_196
+    second: {fileID: 2800000, guid: b1c7ab9a68dcdda43849df9ecba159a2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_197
+    second: {fileID: 2800000, guid: 5fc053102c1f41045a15d6db7b597567, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_198
+    second: {fileID: 2800000, guid: 5e3364cac1a25b74b87ec6236f3e18a1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_199
+    second: {fileID: 2800000, guid: d04a6c049ce3c1a41a36e5f84f23e5ef, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_2
+    second: {fileID: 2800000, guid: e3566728605bed7479e78ad8c66b9f95, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_20
+    second: {fileID: 2800000, guid: c419a92b982f5b344bbeafa422948e45, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_200
+    second: {fileID: 2800000, guid: 179999a463034614cba000079c30c9ab, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_201
+    second: {fileID: 2800000, guid: 5f805cb176085cf4abc3ce9fd67f754c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_202
+    second: {fileID: 2800000, guid: 3813737d201cfbe4c855d2742c44bc34, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_203
+    second: {fileID: 2800000, guid: 24b51ac40a8029542b1cfb80a59099ed, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_204
+    second: {fileID: 2800000, guid: f3d97b71c5bf7fa48bd91c7d0d2ce0ae, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_205
+    second: {fileID: 2800000, guid: 8fd6e7e17e3bbda418974b587d7133c9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_206
+    second: {fileID: 2800000, guid: 7fe94fa9fba25034082db7e39f2fb085, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_207
+    second: {fileID: 2800000, guid: 36c17ab663a8b6144b5758e1251e34a9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_208
+    second: {fileID: 2800000, guid: 1da0ac71463d11540902a46c0ae9dba1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_209
+    second: {fileID: 2800000, guid: 88ac6c0a4f995104e8cff9071b7ddab2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_21
+    second: {fileID: 2800000, guid: 50d760a8557d35e44b12a5411014422d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_210
+    second: {fileID: 2800000, guid: f76e1d8c68d934346b29e037d862c0ea, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_211
+    second: {fileID: 2800000, guid: 2833cffb221a39446b0d73357aa2ab3c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_212
+    second: {fileID: 2800000, guid: 34ead938383dff042bf0a8f78a58e423, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_213
+    second: {fileID: 2800000, guid: 0825f3677a4fd8d42bf443501f683a90, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_214
+    second: {fileID: 2800000, guid: 7409048b558c0934892f99efcf5175aa, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_215
+    second: {fileID: 2800000, guid: 665fb9fc813f9454bb49c80b60b8d754, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_216
+    second: {fileID: 2800000, guid: fd16d14d68e62d649861d22d9c55296a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_217
+    second: {fileID: 2800000, guid: 31e6b6c29193b4746a7b9e01313f7340, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_218
+    second: {fileID: 2800000, guid: 3486073960647c444be828bb9f92fe37, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_219
+    second: {fileID: 2800000, guid: 6e6eb8ce533de664db52a20e562a3e47, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_22
+    second: {fileID: 2800000, guid: 6d60efe9f76f60c499bafc9d909556dc, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_220
+    second: {fileID: 2800000, guid: 4746d2e5b8108b042a13034a94bacfd9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_221
+    second: {fileID: 2800000, guid: e45f6352dbf148b46bf7008f17775f0b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_222
+    second: {fileID: 2800000, guid: cb0dee905bb08d84ba70fd41eadfb6e2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_223
+    second: {fileID: 2800000, guid: a3cfda356edd6b743b1e33ab37aca0bd, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_224
+    second: {fileID: 2800000, guid: b46ac0cf61340fc4bb3a6092d12ec0eb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_225
+    second: {fileID: 2800000, guid: 0fbd230e5e52e1b41b51dfd9c5c8c64d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_226
+    second: {fileID: 2800000, guid: d5a9c6b398940994fa739dc058bb68c9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_227
+    second: {fileID: 2800000, guid: 9ce17f6b4fd92824b81cf0db04d21936, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_228
+    second: {fileID: 2800000, guid: 85cce6a20ae9ac048b3d61f6086a8a02, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_229
+    second: {fileID: 2800000, guid: d5dd74077013e474fbb325f6274a72b3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_23
+    second: {fileID: 2800000, guid: 7a429215bb11bbd4e99af92c6047ab0b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_230
+    second: {fileID: 2800000, guid: 560c56111226ee442a9d1a8aca2ef502, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_231
+    second: {fileID: 2800000, guid: 9398e47043222b24283eaf08b77269f2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_232
+    second: {fileID: 2800000, guid: a08995047a847e643a9f00cee7ba6974, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_233
+    second: {fileID: 2800000, guid: a4afed3c7cd16c94fb293eee787f3c1f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_234
+    second: {fileID: 2800000, guid: 92621d7ee7445be49b38169b8b9b1806, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_235
+    second: {fileID: 2800000, guid: 49a35577302d0a647975fa290556f369, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_236
+    second: {fileID: 2800000, guid: 3bbd756c61a56b24498a4efd6a267654, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_237
+    second: {fileID: 2800000, guid: 51ab707cf8467cf4080fe70cecc25e7b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_238
+    second: {fileID: 2800000, guid: 5b2bf127fd66ab1478e9c385d13f97b8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_239
+    second: {fileID: 2800000, guid: 26718abd2f9face4188968c1e3377afb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_24
+    second: {fileID: 2800000, guid: e36bd3b753319734aada1d7cd5cb6cac, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_240
+    second: {fileID: 2800000, guid: e92f1f197c18d364e9750a9107186f23, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_241
+    second: {fileID: 2800000, guid: 24c883f57260e8745afa785997dbd324, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_242
+    second: {fileID: 2800000, guid: 0ecdcf548668b9847ade955bb7727834, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_243
+    second: {fileID: 2800000, guid: 3639694035789004ea6b2c92d4a9d44f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_244
+    second: {fileID: 2800000, guid: 85950be09edee1943a1d61def7201d3c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_245
+    second: {fileID: 2800000, guid: 3d164cc31063116458df831028ada7c3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_246
+    second: {fileID: 2800000, guid: 4659e28ee4f09f34581368b6092c0eee, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_247
+    second: {fileID: 2800000, guid: 5f5e0023161465440ba70be42a3d373c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_248
+    second: {fileID: 2800000, guid: 71dc0b92821ee1645895b3da0438042a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_249
+    second: {fileID: 2800000, guid: fc6c018acfe34524eb46ccfff8415d2d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_25
+    second: {fileID: 2800000, guid: 1b0305863e740da44aa2c520df0e0cbf, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_250
+    second: {fileID: 2800000, guid: f96daf29f5da46343bfb5d8ed659f947, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_251
+    second: {fileID: 2800000, guid: 54023e02fa15d1842a296cfee237d8e4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_252
+    second: {fileID: 2800000, guid: d6cf40b53418e0540b6d04e9264abd9a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_253
+    second: {fileID: 2800000, guid: 2435ad38d72cb9646aaae5d9971cfdb5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_254
+    second: {fileID: 2800000, guid: c0e0ffb4127f18c4ab4f04b0c167e746, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_256
+    second: {fileID: 2800000, guid: bb9f2c72abf89e8448f00c825bcadbc0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_257
+    second: {fileID: 2800000, guid: 8fa28815be0e9364380bafd4fe3eb68f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_258
+    second: {fileID: 2800000, guid: b183688920d6c9f48ad7edcbec99185d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_259
+    second: {fileID: 2800000, guid: 4b7b105b0213adc47864cd42a62b278a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_26
+    second: {fileID: 2800000, guid: d71ea7d11c27ef9458941210909f5302, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_260
+    second: {fileID: 2800000, guid: 79a818660ae62744c927518ee0f03f1b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_261
+    second: {fileID: 2800000, guid: 18cf9698576e04640812b8220b7d9b10, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_262
+    second: {fileID: 2800000, guid: da34f744c1b69f84b8b42e13593ee5e2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_263
+    second: {fileID: 2800000, guid: e066438692b94a148bdd0e354239fdde, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_264
+    second: {fileID: 2800000, guid: 0230d1ac294ae2c43897dc08a6a0e445, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_265
+    second: {fileID: 2800000, guid: 3310004aff4aacc40b5db3cf124d176f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_266
+    second: {fileID: 2800000, guid: c52a6453c186c8d4fb5e8cdc2fd583b9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_267
+    second: {fileID: 2800000, guid: 6e49278a24d51e14a92fbb2421cb2f6a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_268
+    second: {fileID: 2800000, guid: f13899a9e66743c4f934ceab4523330d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_269
+    second: {fileID: 2800000, guid: 3c602c3df9702a641a5995ebd70733a7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_27
+    second: {fileID: 2800000, guid: bf32dc5d2b0df544e9f4e8251eaeb0bb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_270
+    second: {fileID: 2800000, guid: 3672c936b478e704fb674434eb7ccd9e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_271
+    second: {fileID: 2800000, guid: 9546d458b920c194ab15fd81f424dd37, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_272
+    second: {fileID: 2800000, guid: 20d98375d61deeb42b100a05d93a3898, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_273
+    second: {fileID: 2800000, guid: cd4bad69088f03348b64c11b758903e7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_274
+    second: {fileID: 2800000, guid: 059eea8c7d4673e4f99afc319a95cde7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_275
+    second: {fileID: 2800000, guid: 3648fad606ef8794cac49c2c09e33d33, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_276
+    second: {fileID: 2800000, guid: 47f26ae5c0cf4f24cbe6454c403ec859, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_277
+    second: {fileID: 2800000, guid: 679dfb8716313e24588aabb065f8d54d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_278
+    second: {fileID: 2800000, guid: da3a99634c5c19241b304217a2c5189b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_279
+    second: {fileID: 2800000, guid: 26bbf2f75ebcf7e41802ac88758af987, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_28
+    second: {fileID: 2800000, guid: 1e7f283f11841124987e2d01a20726df, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_280
+    second: {fileID: 2800000, guid: 45cedcfed79b4c64a8ff989413f9efda, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_281
+    second: {fileID: 2800000, guid: 104f09982d997b948b929836de021a9a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_282
+    second: {fileID: 2800000, guid: 9ad932cfdf79bc24d9886364270c46f3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_283
+    second: {fileID: 2800000, guid: 6d3046565c8641747bd95eb269cfc3a5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_284
+    second: {fileID: 2800000, guid: e705dbf230e93a3468c8fefce43afc5b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_285
+    second: {fileID: 2800000, guid: 07f7bb3046037ba4e8da0f92d0851da9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_286
+    second: {fileID: 2800000, guid: 1d1f750cfeaa7914fa26b51c275982ba, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_287
+    second: {fileID: 2800000, guid: cde18032e95a72d409d953fabb314dd8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_288
+    second: {fileID: 2800000, guid: 0f2b2833a23b35c43b760fa5a0336589, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_289
+    second: {fileID: 2800000, guid: 83ea5272b5d2fba499f2f67ee6c263b8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_29
+    second: {fileID: 2800000, guid: 205991ca0ba3c5f4586db4f99dd20fcd, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_290
+    second: {fileID: 2800000, guid: df0eaec3b9c33d8419a10804b45cf686, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_291
+    second: {fileID: 2800000, guid: ddf5a294d51f79144b66aef3324c3f36, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_292
+    second: {fileID: 2800000, guid: bce2be995fcd978468e6cf78ad9454f8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_293
+    second: {fileID: 2800000, guid: e84306a8042789348b62a9080c8826fd, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_294
+    second: {fileID: 2800000, guid: 85133df40b208a647b7145ccaffa26c1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_295
+    second: {fileID: 2800000, guid: 6437952c94258b6489f01442fa000b63, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_296
+    second: {fileID: 2800000, guid: 792701c34b1a9e147ac96bfc3fa3af93, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_297
+    second: {fileID: 2800000, guid: 1bf7bca4129880c4599682ba76ad8d41, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_298
+    second: {fileID: 2800000, guid: 12faefbf68bdabe4b81359d99603ead6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_299
+    second: {fileID: 2800000, guid: f4f25489e4a13134ebb990b83b4ea4f2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_3
+    second: {fileID: 2800000, guid: 6b154ee51403e934f8aa295dba4507c2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_30
+    second: {fileID: 2800000, guid: 622a06a752379914f85225d6c28e2b36, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_300
+    second: {fileID: 2800000, guid: 0bace0a2d833a394b96a36d861a3ed6a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_301
+    second: {fileID: 2800000, guid: 7fa3545efd01f964199ec3927a67c4cd, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_302
+    second: {fileID: 2800000, guid: 5ebd175da6fa2744aa64120af221c7cf, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_303
+    second: {fileID: 2800000, guid: da29e5495850a8a45a889521f1e4dfb3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_304
+    second: {fileID: 2800000, guid: 2b395c8e5bab6514493af52fdd84ef3b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_305
+    second: {fileID: 2800000, guid: 33c169a6909f3c24a901a4a50fb13e81, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_306
+    second: {fileID: 2800000, guid: ef69ed4b2c1433146842cd5062f192d1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_307
+    second: {fileID: 2800000, guid: 2564351a6af12544aa14dd68c718b2a8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_308
+    second: {fileID: 2800000, guid: b10c69430de02ef4f830b36bdb0a83f9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_309
+    second: {fileID: 2800000, guid: 686141a9b7238a24cb0ff2ddb8b9425a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_31
+    second: {fileID: 2800000, guid: a573272dc02b5dd459f1a87f29adf6dc, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_310
+    second: {fileID: 2800000, guid: 15511633d4b22184089761dfa5aa2635, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_311
+    second: {fileID: 2800000, guid: d2439d82449e0544f8ddb04f1def1900, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_312
+    second: {fileID: 2800000, guid: 447408259483b424da43a83e8d36333c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_313
+    second: {fileID: 2800000, guid: 3047ceec67e3d7349ba61c3a77c2b163, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_314
+    second: {fileID: 2800000, guid: 5f5cdc9052e073b48bbacb349e32a7b1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_315
+    second: {fileID: 2800000, guid: c450ec9aeff1d5a4cbb11fa48a676277, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_316
+    second: {fileID: 2800000, guid: 8daefa5eeb635b245837b90a321614ba, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_317
+    second: {fileID: 2800000, guid: 54adad9a354add340b60064c51c068e4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_318
+    second: {fileID: 2800000, guid: 793548eedefda264690881b7b44d2541, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_319
+    second: {fileID: 2800000, guid: af73dc79dea2e9d48abf960a436b56f4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_32
+    second: {fileID: 2800000, guid: b4b9706c32d3e354ab65a2237a269d93, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_320
+    second: {fileID: 2800000, guid: 02140da91a2ce624cb5c7669091bb4f7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_321
+    second: {fileID: 2800000, guid: e44c63971ec3d5c49869218b10fe8d7e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_322
+    second: {fileID: 2800000, guid: ab82c871137c7bd47814838fc14b667c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_323
+    second: {fileID: 2800000, guid: ff181df57d9808a439b48a54722e7445, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_324
+    second: {fileID: 2800000, guid: 742b076fd31d9c44887a5505a3cae0af, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_325
+    second: {fileID: 2800000, guid: 110660adaf3c77c4dbf326fff46b0d55, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_326
+    second: {fileID: 2800000, guid: b6e10537ac6ca5148905560357389af9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_327
+    second: {fileID: 2800000, guid: d058cd2fd0750a742bf4728529f08783, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_328
+    second: {fileID: 2800000, guid: bcfb554f044cc1c47b8ad43aae06d469, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_329
+    second: {fileID: 2800000, guid: c1b778a68557b6e449bdfd7e3fb71716, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_33
+    second: {fileID: 2800000, guid: 133c00957b1eafc48b7d0bf77f42671f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_330
+    second: {fileID: 2800000, guid: 51b3aea798849dd468ed25a900ba5095, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_331
+    second: {fileID: 2800000, guid: 7c32964d5b9c70f49a01d2d33b1c300c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_332
+    second: {fileID: 2800000, guid: f703a4c56c8314f4e8d7cce3355e5647, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_333
+    second: {fileID: 2800000, guid: da84a3afc3aa04e4baf218a603c27a40, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_334
+    second: {fileID: 2800000, guid: e46d16521d5cd6a4a889347ac33f64f6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_335
+    second: {fileID: 2800000, guid: 0fa10e32da082a840a1fc2f2b6d045ff, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_336
+    second: {fileID: 2800000, guid: 520a9a39a5d04084a8c7c7d3a14edce6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_337
+    second: {fileID: 2800000, guid: ad20aef17b21377459a99673d48a863c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_338
+    second: {fileID: 2800000, guid: 3cc708d82f8d5f9489b3a7a4527eb54f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_339
+    second: {fileID: 2800000, guid: ce3811c7def8bbf4cbf7b2b8b64620a7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_34
+    second: {fileID: 2800000, guid: a3cc45947609dd346ba6b620aa9a3083, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_340
+    second: {fileID: 2800000, guid: 96173e2bb7ecc2645962eaf185a77b5f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_341
+    second: {fileID: 2800000, guid: 842f2dcde59027745bc4e9b84a4220d0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_342
+    second: {fileID: 2800000, guid: 37d22149744addd4fad8a32d38bacfda, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_343
+    second: {fileID: 2800000, guid: 880ce342c0dde6e42a144adfeff5c13a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_344
+    second: {fileID: 2800000, guid: 069177ab3698f2c4194d89c7d60a8bb0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_345
+    second: {fileID: 2800000, guid: c7fe8e78ad76a6b4590f58b4083f14ec, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_346
+    second: {fileID: 2800000, guid: 0b3408243ccceb64697b7067a95047c9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_347
+    second: {fileID: 2800000, guid: de340a8cb2d11444389f56f51601e62e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_348
+    second: {fileID: 2800000, guid: 76ea2c4b2144ba84e939cb8870a16946, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_349
+    second: {fileID: 2800000, guid: 69df4ff0aeeda0644a6e5bdb91c12988, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_35
+    second: {fileID: 2800000, guid: 5994beb85487a5c45bca540acba37d4f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_350
+    second: {fileID: 2800000, guid: 5e3e60fdae9e1fe498d1ec92e7f6c2af, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_351
+    second: {fileID: 2800000, guid: a2bd8e642b931ca47817bd616b21c00a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_352
+    second: {fileID: 2800000, guid: 870b3f295697a714bbf28855361908b3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_353
+    second: {fileID: 2800000, guid: 3993b2c1d323e8b43995e09f7f879d59, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_354
+    second: {fileID: 2800000, guid: f65ef6bc6d4ba8143a0ca5fcd799eca4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_355
+    second: {fileID: 2800000, guid: 5939ce227f60a0843a460228ca2ad405, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_356
+    second: {fileID: 2800000, guid: 656cff7154ed3e54d9e615d4c54d6202, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_357
+    second: {fileID: 2800000, guid: 49f239a52d73409409e6cd170e07489d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_358
+    second: {fileID: 2800000, guid: ac204da9412600d4aacf7695c1a83a5f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_359
+    second: {fileID: 2800000, guid: be396561aa362c94395d14be9fa2217d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_36
+    second: {fileID: 2800000, guid: f07d8f5787425714a9a2c634dabfc02f, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_360
+    second: {fileID: 2800000, guid: f63cccc2d26fea84490669a7ceb4b6bb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_361
+    second: {fileID: 2800000, guid: 12bd40cff9d2b0b4b87f399ab95685e8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_362
+    second: {fileID: 2800000, guid: 9ba9f24f4072e5f49946b8dea62b82e4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_363
+    second: {fileID: 2800000, guid: 076344b7198c5ce49b50d4353329c169, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_364
+    second: {fileID: 2800000, guid: c12354df54897c7429ad92d160cf112e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_365
+    second: {fileID: 2800000, guid: 60f7c438c165560449e9ab31e437e141, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_366
+    second: {fileID: 2800000, guid: c07c179a9e0c969448626daed6cc2896, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_367
+    second: {fileID: 2800000, guid: 756c7720ec73b674695f4c0cd7868640, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_368
+    second: {fileID: 2800000, guid: 502dc2f1f0e5538489240c76e20bcfe7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_369
+    second: {fileID: 2800000, guid: deed46b57413fb9479a7f0b65a82b3de, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_37
+    second: {fileID: 2800000, guid: cb08761334e2f2e46a115b0b8babbb6d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_370
+    second: {fileID: 2800000, guid: 051a29f7d2d07a942af79df88b02d7a1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_38
+    second: {fileID: 2800000, guid: 5dcc10e30911f0a4c9ca6138a6c677b7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_39
+    second: {fileID: 2800000, guid: bc25b98be891e1c41983e2b30f271ed4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_4
+    second: {fileID: 2800000, guid: a0706fd28c1058b4399ad735eb3ce44d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_40
+    second: {fileID: 2800000, guid: 1ee2b4b267bbfb142ad76b84b3b39990, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_41
+    second: {fileID: 2800000, guid: 38f1edec97edd774894b05a129bb74e3, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_42
+    second: {fileID: 2800000, guid: 5e7cafc0f5dd0224f8c752e4cf3e4d37, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_43
+    second: {fileID: 2800000, guid: 08e75e243f809e74eb061a67e15b2d51, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_44
+    second: {fileID: 2800000, guid: 047b57657c092e841af3ee3d328f9d79, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_45
+    second: {fileID: 2800000, guid: 857dd48f0c9af5f4e8e781f5098b5069, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_46
+    second: {fileID: 2800000, guid: 933fce051fe0de54eaad1135331a20a5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_47
+    second: {fileID: 2800000, guid: aa2c2907dd825db489a2590b843e2cb5, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_48
+    second: {fileID: 2800000, guid: cc71461f3743f1a4d9dcfc541c9bd9b2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_49
+    second: {fileID: 2800000, guid: 9c918c704b9b82c4a9de9568c7e0ef10, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_5
+    second: {fileID: 2800000, guid: e608ac6c32af95a4a8690eda918f97a1, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_50
+    second: {fileID: 2800000, guid: 20209569aeb0e664aa22bbea90054359, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_51
+    second: {fileID: 2800000, guid: 31ec2a4e4f8bd8243b3d815aede592e9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_52
+    second: {fileID: 2800000, guid: 1c84a996effd3f34bb1710ef52be6d8a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_53
+    second: {fileID: 2800000, guid: cd076a761aec7244bbc5e9a5412b182d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_54
+    second: {fileID: 2800000, guid: 306262f8f1d2c9f4594d5b412530762d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_55
+    second: {fileID: 2800000, guid: 61f4108aeba9305449af8954a5ff739b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_56
+    second: {fileID: 2800000, guid: 43e13c050d23a534a844ddfba9b0ae72, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_57
+    second: {fileID: 2800000, guid: e62e000b5e23eed4c9910fdf81ac853e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_58
+    second: {fileID: 2800000, guid: d164913d625f40348a5990561ef336fc, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_59
+    second: {fileID: 2800000, guid: c15a875d3bae70f4fa1c62817cefb601, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_6
+    second: {fileID: 2800000, guid: 3b2595a9027b0384eb93fc5d3d81412e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_60
+    second: {fileID: 2800000, guid: 1771b9bbd7cc0b041acf8490ede16344, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_61
+    second: {fileID: 2800000, guid: fb0aa7414a8030043b3106d95c86eddf, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_62
+    second: {fileID: 2800000, guid: b112dfe7db25d7a4b9a3d9b4ab514d4d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_63
+    second: {fileID: 2800000, guid: 520265dcd128076498515aaaba22f537, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_64
+    second: {fileID: 2800000, guid: 7658b77b8d8f9694c9082f97d619345d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_65
+    second: {fileID: 2800000, guid: b21b2bc7d5be601498f199520a6548da, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_66
+    second: {fileID: 2800000, guid: 63b0ef780dc4b3c42bcba1f14cf0ab3e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_67
+    second: {fileID: 2800000, guid: 1845fff260f736146bbd3bfcff298278, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_68
+    second: {fileID: 2800000, guid: 2831d2850367f86418aa1984f32d89b9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_69
+    second: {fileID: 2800000, guid: 349ffc2ff365e984394a6b157a2addbc, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_7
+    second: {fileID: 2800000, guid: 4854871f933a9fc46bc0f7f384a7920a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_70
+    second: {fileID: 2800000, guid: 531caec8f6a830442baf5981953fa8c4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_71
+    second: {fileID: 2800000, guid: ffc7daf8d8ec90f428244f893cc99cc4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_72
+    second: {fileID: 2800000, guid: 11fd4772b6e43194687622a8c0e4b530, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_73
+    second: {fileID: 2800000, guid: ee543d5fe683d7c4c854776d858cf855, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_74
+    second: {fileID: 2800000, guid: c7b073cdca0337f41aa25c375c56460b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_75
+    second: {fileID: 2800000, guid: 159f926921d7cc64e92ce22d29ab187c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_76
+    second: {fileID: 2800000, guid: 2ed7ca1159c473143ade1654fa9298a0, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_77
+    second: {fileID: 2800000, guid: b06fb1c868a2cf441b3f3464c5d8d12d, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_78
+    second: {fileID: 2800000, guid: 84be041c9e41c7e44a5b8f9159b86d7b, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_79
+    second: {fileID: 2800000, guid: 34eabc9ee37bfa54d8481124ec6952fa, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_8
+    second: {fileID: 2800000, guid: 25b4974380016d84dbe6c0c0f9a0fddb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_80
+    second: {fileID: 2800000, guid: 82622e10c3808164ba6f57e82731f5ea, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_81
+    second: {fileID: 2800000, guid: e1811bb26ca05bb4a9ffa1c965d9d26c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_82
+    second: {fileID: 2800000, guid: 1c5edaedb86205a40bf1ee0c37326534, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_83
+    second: {fileID: 2800000, guid: e3260f5145c77e4439a2e1e7122fe555, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_84
+    second: {fileID: 2800000, guid: b13c91a1ee1e4d84dbbad7d40502de66, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_85
+    second: {fileID: 2800000, guid: 4ecdb33e35ef3f84886c5004e6d8fc14, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_86
+    second: {fileID: 2800000, guid: 23277a3c777f0a648b6a3b44d796ab50, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_87
+    second: {fileID: 2800000, guid: 2933489398495c142aa8b19d0960e9fe, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_88
+    second: {fileID: 2800000, guid: 80cd6b36b0f3d844cb6b1934ba7ad5d9, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_89
+    second: {fileID: 2800000, guid: 5d17dd0ccd641b64f9bf7e726c9f1009, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_9
+    second: {fileID: 2800000, guid: 0912c1f9f9a9d8546b90281095d4baca, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_90
+    second: {fileID: 2800000, guid: 6e8e645f1af970a4a9e79b49bcba5f82, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_91
+    second: {fileID: 2800000, guid: b8482610daf20ed4daa813ebe0bfb608, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_92
+    second: {fileID: 2800000, guid: 458cae0bf0459c6468e226000efd50a8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_93
+    second: {fileID: 2800000, guid: a89ea7042ac82e74d99f6fee0d8e0940, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_94
+    second: {fileID: 2800000, guid: 4e41bd313feb25648aa56f7b419f1a35, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_95
+    second: {fileID: 2800000, guid: de7347667ccedae41a2f947ad91ba10c, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_96
+    second: {fileID: 2800000, guid: a26481c62faf5d9488d68330ab32bbcb, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_97
+    second: {fileID: 2800000, guid: cf6d700656510194a807d6ae6919bfa2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_98
+    second: {fileID: 2800000, guid: 71e0fac6d916aad46b77618ffd2d88b8, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: zs_abandoned_mall_v6b_texture_99
+    second: {fileID: 2800000, guid: b89d9fee2f18bd04a8c82bbd397a79da, type: 3}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

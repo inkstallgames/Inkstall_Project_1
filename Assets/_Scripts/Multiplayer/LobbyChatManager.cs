@@ -26,6 +26,13 @@ public class LobbyChatManager : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SendChatMessage(NetworkString<_128> message, RpcInfo info = default)
     {
+        // Ensure message is not null and within size limits
+        if (message.Value == null || message.Value.Length > 100) // Reduced from 128 to 100 to leave room for player name and other data
+        {
+            Debug.LogWarning("Chat message is too long or null. Max length is 100 characters.");
+            return;
+        }
+
         if (Messages.Count >= 30)
         {
             // Remove the oldest message if the log is full.

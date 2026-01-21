@@ -142,7 +142,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    public async void JoinSession(string sessionCode)
+    public async void JoinSession(string sessionCode, Action<bool> onComplete = null)
     {
         if (_isShuttingDown || string.IsNullOrEmpty(sessionCode)) return;
         
@@ -172,9 +172,20 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             
             var result = await _runner.StartGame(startGameArgs);
 
-            if (!result.Ok)
+            if (result.Ok)
             {
-                Debug.LogError($"Failed to Join Session: {result.ShutdownReason}");
+                Debug.Log($"Successfully joined session: {sessionCode}");
+                onComplete?.Invoke(true);
+            }
+            else
+            {
+                string error = $"Failed to Join Session: {result.ShutdownReason}";
+                Debug.LogError(error);
+                onComplete?.Invoke(false);
+                
+                // Show error to user (you might want to show this in the UI)
+                // For now, we'll just log it
+                Debug.LogError(error);
             }
         }
         catch (Exception e)

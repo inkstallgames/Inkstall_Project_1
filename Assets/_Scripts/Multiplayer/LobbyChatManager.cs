@@ -1,5 +1,6 @@
 using Fusion;
 using System.Collections.Generic;
+using UnityEngine;
 
 // A struct to hold the data for a single chat message.
 public struct ChatMessage : INetworkStruct
@@ -26,7 +27,24 @@ public class LobbyChatManager : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SendChatMessage(NetworkString<_128> message, RpcInfo info = default)
     {
-        if (Messages.Count >= 30)
+        // Safety check - ensure we have a valid message
+        if (string.IsNullOrEmpty(message.Value))
+        {
+            Debug.LogWarning("Received empty chat message");
+            return;
+        }
+
+        // Limit message length to prevent RPC size issues
+        const int MAX_MESSAGE_LENGTH = 100; // Conservative limit to stay under RPC size limit
+        NetworkString<_128> safeMessage = message;
+        if (message.Length > MAX_MESSAGE_LENGTH)
+        {
+            Debug.LogWarning($"Truncating long message from {message.Length} to {MAX_MESSAGE_LENGTH} characters");
+            safeMessage = message.Value.Substring(0, MAX_MESSAGE_LENGTH);
+        }
+
+        // Clean up old messages if needed
+        while (Messages.Count >= 30)
         {
             // Remove the oldest message if the log is full.
             foreach (var msg in Messages)
@@ -43,10 +61,11 @@ public class LobbyChatManager : NetworkBehaviour
             playerName = NetworkLobbyManager.Instance.LobbyPlayers[info.Source].PlayerName.ToString();
         }
 
+        // Add the new message
         Messages.Add(new ChatMessage
         {
             PlayerName = playerName,
-            Message = message
+            Message = safeMessage
         });
     }
 }

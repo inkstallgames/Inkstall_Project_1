@@ -1,6 +1,7 @@
 using Fusion;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 
 public class NetworkLobbyManager : NetworkBehaviour
@@ -54,6 +55,12 @@ public class NetworkLobbyManager : NetworkBehaviour
         {
             Debug.Log("[NetworkLobbyManager] This is the server (host)");
             
+            // Immediately show the lobby UI for host
+            if (uiManager != null)
+            {
+                uiManager.ShowLobby(true);
+            }
+            
             // Get the join code from NetworkStarter instead of generating a new one
             var networkStarter = FindObjectOfType<NetworkStarter>();
             if (networkStarter != null && !string.IsNullOrEmpty(networkStarter.CurrentJoinCode))
@@ -68,27 +75,47 @@ public class NetworkLobbyManager : NetworkBehaviour
                 Debug.Log($"[NetworkLobbyManager] Generated new Join Code: {JoinCode}");
             }
             
+            // Update UI with join code immediately
+            if (uiManager != null)
+            {
+                uiManager.SetJoinCode(JoinCode);
+            }
+            
             // Add self to lobby
             Debug.Log("[NetworkLobbyManager] Adding host player to lobby");
             AddPlayerToLobby(Runner.LocalPlayer, true);
-            
-            // Force update UI with join code
-            if (uiManager != null)
-            {
-                Debug.Log("[NetworkLobbyManager] Updating UI with join code from Spawned");
-                uiManager.SetJoinCode(JoinCode);
-            }
         }
         else
         {
             Debug.Log("[NetworkLobbyManager] This is a client");
         }
 
-        // All clients initialize UI
+        // Initialize UI only after room is fully created
         if (uiManager != null)
         {
+            // Hide lobby panel initially
+            uiManager.ShowLobby(false);
+            
+            // Set up UI callbacks
             var modeOptions = System.Enum.GetNames(typeof(GameMode)).ToList();
-            uiManager.InitializeLobbyUI(mapOptions, modeOptions, timeOptions);
+            bool isHost = Runner.IsServer;
+            
+            // Initialize UI with host/client specific settings
+            uiManager.InitializeLobbyUI(mapOptions, modeOptions, timeOptions, isHost);
+            
+            // If this is the host, 
+            if (isHost && LobbyPlayers.ContainsKey(Runner.LocalPlayer))
+            {
+                var hostData = LobbyPlayers[Runner.LocalPlayer];
+                hostData.IsReady = true;
+                LobbyPlayers.Set(Runner.LocalPlayer, hostData);
+                
+                // Update the UI for all clients
+                RPC_UpdateLobbyUI();
+                
+                // Show lobby panel for host after setup
+                uiManager.ShowLobby(true);
+            }
             
             // Update UI with join code if we have one
             if (!string.IsNullOrEmpty(JoinCode))
@@ -100,8 +127,6 @@ public class NetworkLobbyManager : NetworkBehaviour
             {
                 Debug.Log("[NetworkLobbyManager] No join code to display");
             }
-            
-            uiManager.ShowLobby(true);
         }
         else
         {
@@ -123,14 +148,37 @@ public class NetworkLobbyManager : NetworkBehaviour
         }
     }
 
-    public void AddPlayerToLobby(PlayerRef player, bool isHost)
+    public void AddPlayerToLobby(PlayerRef player, bool isHost = false)
     {
-        string playerName = $"Player_{player.PlayerId}";
-        var data = new PlayerLobbyData { PlayerName = playerName, IsHost = isHost, IsReady = false };
-        LobbyPlayers.Add(player, data);
+        if (LobbyPlayers.ContainsKey(player)) return;
+        
+        var playerData = new PlayerLobbyData
+        {
+            PlayerName = $"Player {LobbyPlayers.Count + 1}",
+            IsReady = isHost, // Host is automatically ready
+            IsHost = isHost
+        };
+        
+        LobbyPlayers.Add(player, playerData);
+        Debug.Log($"[NetworkLobbyManager] Added player {player.PlayerId} to lobby. IsHost: {isHost}");
+        
+        // If this is the host, update their ready status in the UI immediately
+        if (isHost && uiManager != null)
+        {
+            uiManager.SetReadyButtonState(true);
+            
+            // Enable start button for host
+            var startButton = uiManager.GetComponentInChildren<Button>(true);
+            if (startButton != null)
+            {
+                startButton.interactable = true;
+            }
+        }
+        
+        // Update the UI for all clients
+        RPC_UpdateLobbyUI();
     }
 
-    // UI Callbacks
     public void OnMapSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedMapIndex), index);
     public void OnModeSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedModeIndex), index);
     public void OnTimeSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedTimeIndex), index);
@@ -165,6 +213,21 @@ public class NetworkLobbyManager : NetworkBehaviour
         base.Render();
         UpdateLobbyUI();
         UpdateGameSettingsUI();
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    private void RPC_UpdateLobbyUI()
+    {
+        if (uiManager != null)
+        {
+            // Update the player list
+            var players = new Dictionary<int, PlayerLobbyData>();
+            foreach (var kvp in LobbyPlayers)
+            {
+                players[kvp.Key.PlayerId] = kvp.Value;
+            }
+            uiManager.UpdatePlayerList(players);
+        }
     }
 
     private void UpdateLobbyUI()

@@ -17,7 +17,6 @@ public class LobbyUIManager : MonoBehaviour
     public TMP_Dropdown mapDropdown;
     public TMP_Dropdown modeDropdown;
     public TMP_Dropdown timeDropdown;
-    public Button startGameButton;
 
     [Header("Player List")]
     public GameObject playerListContent;
@@ -28,6 +27,7 @@ public class LobbyUIManager : MonoBehaviour
 
     [Header("Player Controls")]
     public Button readyButton;
+    public Button startGameButton;
     public Button leaveButton;
     public TextMeshProUGUI readyButtonText;
 
@@ -36,6 +36,8 @@ public class LobbyUIManager : MonoBehaviour
     public TMP_InputField chatInput;
     public Button sendChatButton;
 
+    private bool isHost = false;
+    
     private void Awake()
     {
         // Singleton pattern
@@ -123,16 +125,58 @@ public class LobbyUIManager : MonoBehaviour
     }
 
 
-    public void InitializeLobbyUI(List<string> mapOptions, List<string> modeOptions, List<string> timeOptions)
+    public void InitializeLobbyUI(List<string> mapOptions, List<string> modeOptions, List<string> timeOptions, bool isHostPlayer)
     {
-        mapDropdown.ClearOptions();
-        mapDropdown.AddOptions(mapOptions);
+        // Show the lobby panel immediately
+        ShowLobby(true);
+        
+        // Set loading state
+        if (joinCodeText != null) joinCodeText.text = isHostPlayer ? "Creating room..." : "Joining room...";
+        
+        // Initialize UI state
+        isHost = isHostPlayer;
+        
+        // Show/hide buttons based on host/client role
+        if (readyButton != null) 
+        {
+            readyButton.gameObject.SetActive(!isHost);
+            readyButton.interactable = !isHost;
+        }
+        
+        if (startGameButton != null) 
+        {
+            startGameButton.gameObject.SetActive(isHost);
+            startGameButton.interactable = false; // Disable until room is ready
+        }
+        
+        // Only host can interact with game settings
+        if (mapDropdown != null) 
+        {
+            mapDropdown.interactable = isHost;
+            mapDropdown.ClearOptions();
+            mapDropdown.AddOptions(mapOptions);
+        }
 
-        modeDropdown.ClearOptions();
-        modeDropdown.AddOptions(modeOptions);
+        if (modeDropdown != null)
+        {
+            modeDropdown.interactable = isHost;
+            modeDropdown.ClearOptions();
+            modeDropdown.AddOptions(modeOptions);
+        }
 
-        timeDropdown.ClearOptions();
-        timeDropdown.AddOptions(timeOptions);
+        if (timeDropdown != null)
+        {
+            timeDropdown.interactable = isHost;
+            timeDropdown.ClearOptions();
+            timeDropdown.AddOptions(timeOptions);
+        }
+        
+        // Host is automatically ready once room is created
+        if (isHost && NetworkLobbyManager.Instance != null)
+        {
+            // We'll call ToggleReadyStatus after room is fully created
+            // This will be handled by the NetworkLobbyManager
+        }
     }
 
     public void UpdatePlayerList(Dictionary<int, PlayerLobbyData> players)
@@ -184,7 +228,10 @@ public class LobbyUIManager : MonoBehaviour
 
     public void SetStartButtonState(bool interactable)
     {
-        startGameButton.interactable = interactable;
+        if (startGameButton != null)
+        {
+            startGameButton.interactable = interactable;
+        }
     }
 
     public void SetReadyButtonState(bool isReady)

@@ -132,17 +132,64 @@ public class LobbyUIManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
+        // Ensure the content has a VerticalLayoutGroup
+        var layoutGroup = playerListContent.GetComponent<VerticalLayoutGroup>();
+        if (layoutGroup == null)
+        {
+            layoutGroup = playerListContent.AddComponent<VerticalLayoutGroup>();
+            layoutGroup.childControlWidth = true;
+            layoutGroup.childControlHeight = true;
+            layoutGroup.childForceExpandWidth = true;
+            layoutGroup.childForceExpandHeight = false;
+            layoutGroup.spacing = 10f; // Add some space between items
+            layoutGroup.padding = new RectOffset(5, 5, 5, 5); // Add some padding
+        }
+
+        // Add ContentSizeFitter to handle dynamic resizing
+        var contentFitter = playerListContent.GetComponent<ContentSizeFitter>();
+        if (contentFitter == null)
+        {
+            contentFitter = playerListContent.AddComponent<ContentSizeFitter>();
+            contentFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        }
+
+        // Ensure the scroll view's viewport is set up correctly
+        var scrollRect = playerListContent.GetComponentInParent<ScrollRect>();
+        if (scrollRect != null && scrollRect.viewport == null)
+        {
+            // If no viewport is set, try to find it in the hierarchy
+            var viewport = scrollRect.transform.Find("Viewport");
+            if (viewport != null)
+            {
+                scrollRect.viewport = viewport.GetComponent<RectTransform>();
+            }
+        }
+
         // Populate with new player data
         foreach (var player in players.Values)
         {
+            if (playerListItemPrefab == null) continue;
+            
             GameObject item = Instantiate(playerListItemPrefab, playerListContent.transform);
-            // Assuming the prefab has a script to set player info
+            
+            // Ensure the item has a LayoutElement for better control
+            var layoutElement = item.GetComponent<LayoutElement>();
+            if (layoutElement == null)
+            {
+                layoutElement = item.AddComponent<LayoutElement>();
+                layoutElement.minHeight = 40f; // Set a minimum height for each item
+            }
+            
+            // Set the player info
             PlayerListItemUI listItem = item.GetComponent<PlayerListItemUI>();
             if (listItem != null)
             {
                 listItem.SetPlayerInfo(player.PlayerName.ToString(), player.IsReady, player.IsHost);
             }
         }
+        
+        // Force update the layout
+        LayoutRebuilder.ForceRebuildLayoutImmediate(playerListContent.GetComponent<RectTransform>());
     }
 
     public void SetJoinCode(string joinCode)

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using System;
 
 public class LobbyUIManager : MonoBehaviour
 {
@@ -90,13 +91,23 @@ public class LobbyUIManager : MonoBehaviour
 
     private void SendChatMessage()
     {
-        if (!string.IsNullOrWhiteSpace(chatInput.text))
+        string message = chatInput?.text?.Trim();
+        if (!string.IsNullOrEmpty(message))
         {
             var chatManager = FindObjectOfType<LobbyChatManager>();
             if (chatManager != null)
             {
-                chatManager.RPC_SendChatMessage(chatInput.text);
-                chatInput.text = "";
+                try 
+                {
+                    // The RPC will handle further truncation if needed
+                    chatManager.RPC_SendChatMessage(message);
+                    chatInput.text = "";
+                    chatInput.ActivateInputField(); // Keep focus on the input field
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Failed to send chat message: {e.Message}");
+                }
             }
         }
     }

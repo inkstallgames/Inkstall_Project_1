@@ -25,22 +25,21 @@ public class LobbyChatManager : NetworkBehaviour
 
     // RPC for clients to send a message to the host.
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_SendChatMessage(NetworkString<_128> message, RpcInfo info = default)
+    public void RPC_SendChatMessage(string message, RpcInfo info = default)
     {
         // Safety check - ensure we have a valid message
-        if (string.IsNullOrEmpty(message.Value))
+        if (string.IsNullOrEmpty(message))
         {
             Debug.LogWarning("Received empty chat message");
             return;
         }
 
         // Limit message length to prevent RPC size issues
-        const int MAX_MESSAGE_LENGTH = 100; // Conservative limit to stay under RPC size limit
-        NetworkString<_128> safeMessage = message;
+        const int MAX_MESSAGE_LENGTH = 80; // Reduced further to account for RPC overhead
         if (message.Length > MAX_MESSAGE_LENGTH)
         {
             Debug.LogWarning($"Truncating long message from {message.Length} to {MAX_MESSAGE_LENGTH} characters");
-            safeMessage = message.Value.Substring(0, MAX_MESSAGE_LENGTH);
+            message = message.Substring(0, MAX_MESSAGE_LENGTH);
         }
 
         // Clean up old messages if needed
@@ -62,10 +61,16 @@ public class LobbyChatManager : NetworkBehaviour
         }
 
         // Add the new message
-        Messages.Add(new ChatMessage
+        // Create the network message with the truncated string
+        var chatMessage = new ChatMessage
         {
             PlayerName = playerName,
-            Message = safeMessage
-        });
+            Message = message
+        };
+        
+        Messages.Add(chatMessage);
+        
+        // Debug the message size for troubleshooting
+        //Debug.Log($"Added message from {playerName}. Length: {message?.Length ?? 0}");
     }
 }

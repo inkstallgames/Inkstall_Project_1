@@ -7,9 +7,10 @@ public class PlayerListItemUI : MonoBehaviour
     public TextMeshProUGUI playerStatusText;
     public GameObject hostIcon;
 
-    public void SetPlayerInfo(string playerName, bool isReady, bool isHost)
+    public void SetPlayerInfo(string playerName, bool isReady, bool isHost, Color playerColor)
     {
         playerNameText.text = playerName;
+        playerNameText.color = playerColor;
         if (isHost)
         {
             playerStatusText.text = "<color=orange>Host</color>";

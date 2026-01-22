@@ -59,7 +59,7 @@ public class LobbyChatManager : NetworkBehaviour
         Color playerColor = Color.white;
         
         PlayerRef sender = info.Source;
-        if (!sender.IsValid)
+        if (sender == PlayerRef.None)
         {
             sender = Runner.LocalPlayer;
         }

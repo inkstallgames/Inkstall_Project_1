@@ -16,11 +16,14 @@ public class PlayerNetworkData : NetworkBehaviour
     public Slider healthBar;
     public GameObject[] teamIndicators;
 
+    private string _lastPlayerName;
+    private int _lastTeamId;
+
     public override void Spawned()
     {
         if (Object.HasStateAuthority)
         {
-            // Generate a random name if not set
+            // Initial random name as fallback
             if (string.IsNullOrEmpty(PlayerName))
             {
                 PlayerName = $"Player_{Random.Range(1000, 9999)}";
@@ -28,6 +31,16 @@ public class PlayerNetworkData : NetworkBehaviour
             
             // Register with the game manager
             NetworkGameManager.Instance?.RegisterPlayer(Object.InputAuthority, this);
+        }
+
+        // If we are the owner (InputAuthority), send our preferred name
+        if (Object.HasInputAuthority)
+        {
+            string savedName = PlayerPrefs.GetString("PlayerName", "");
+            if (!string.IsNullOrEmpty(savedName))
+            {
+                RPC_SetPlayerName(savedName);
+            }
         }
 
         UpdateVisuals();
@@ -139,6 +152,23 @@ public class PlayerNetworkData : NetworkBehaviour
             // Re-enable control and visibility
             if (controller != null) controller.enabled = true;
             foreach (var r in renderers) r.enabled = true;
+        }
+    }
+
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_SetPlayerName(string name)
+    {
+        PlayerName = name;
+    }
+
+    public override void Render()
+    {
+        if (_lastPlayerName != PlayerName || _lastTeamId != TeamId)
+        {
+            _lastPlayerName = PlayerName;
+            _lastTeamId = TeamId;
+            UpdateVisuals();
         }
     }
 }

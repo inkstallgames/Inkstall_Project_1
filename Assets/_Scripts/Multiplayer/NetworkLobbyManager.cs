@@ -191,8 +191,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             }
         }
         
-        // Update the UI for all clients
-        RPC_UpdateLobbyUI();
+        // The UI will be updated when the client sends its name via RPC_SetLobbyPlayerName
     }
 
     public void OnMapSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedMapIndex), index);
@@ -330,6 +329,9 @@ public class NetworkLobbyManager : NetworkBehaviour
             var data = LobbyPlayers[info.Source];
             data.PlayerName = name;
             LobbyPlayers.Set(info.Source, data);
+
+            // After updating the name, force a UI update for all clients
+            RPC_UpdateLobbyUI();
         }
     }
 

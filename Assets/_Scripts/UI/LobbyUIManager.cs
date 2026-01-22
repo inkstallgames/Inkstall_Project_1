@@ -91,6 +91,13 @@ public class LobbyUIManager : MonoBehaviour
             
         if (chatInput != null)
             chatInput.onSubmit.AddListener((_) => SendChatMessage());
+        
+        // Enable rich text for chat
+        if (chatContent != null)
+        {
+            chatContent.richText = true;
+            chatContent.color = Color.white;
+        }
     }
 
     private void SendChatMessage()
@@ -118,12 +125,21 @@ public class LobbyUIManager : MonoBehaviour
 
     public void UpdateChat(NetworkLinkedList<ChatMessage> messages)
     {
+        if (chatContent != null)
+        {
+            chatContent.richText = true;
+            chatContent.color = Color.white;
+        }
+        
         string chatLog = "";
         foreach (var msg in messages)
         {
-            chatLog += $"<b>{msg.PlayerName}:</b> {msg.Message}\n";
+            string colorHex = ColorUtility.ToHtmlStringRGB(msg.PlayerColor);
+            Debug.Log($"Player: {msg.PlayerName}, Color: {msg.PlayerColor}, Hex: {colorHex}");
+            chatLog += $"<b><color=#{colorHex}>{msg.PlayerName}:</color></b> {msg.Message}\n";
         }
         chatContent.text = chatLog;
+        Debug.Log($"Chat text set to: {chatLog}");
     }
 
 
@@ -202,7 +218,7 @@ public class LobbyUIManager : MonoBehaviour
             PlayerListItemUI listItem = item.GetComponent<PlayerListItemUI>();
             if (listItem != null)
             {
-                listItem.SetPlayerInfo(player.PlayerName.ToString(), player.IsReady, player.IsHost);
+                listItem.SetPlayerInfo(player.PlayerName.ToString(), player.IsReady, player.IsHost, player.PlayerColor);
             }
         }
     }

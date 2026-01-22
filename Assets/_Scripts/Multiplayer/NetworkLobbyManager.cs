@@ -27,6 +27,17 @@ public class NetworkLobbyManager : NetworkBehaviour
 
     private readonly List<string> mapOptions = new List<string> { "Map 1", "Map 2", "Map 3" };
     private readonly List<string> timeOptions = new List<string> { "3:00", "5:00", "10:00" };
+    private readonly List<Color> playerColors = new List<Color>
+    {
+        Color.blue,
+        Color.yellow,
+        Color.magenta,
+        Color.cyan,
+        new Color(1f, 0.5f, 0f),  // Orange
+        Color.white,
+        new Color(0.5f, 0f, 1f),  // Purple
+        new Color(0f, 1f, 0.5f)   // Teal
+    };
     private readonly int[] timeInSeconds = { 180, 300, 600 };
 
     private LobbyUIManager uiManager;
@@ -176,7 +187,19 @@ public class NetworkLobbyManager : NetworkBehaviour
         };
         
         LobbyPlayers.Add(player, playerData);
-        Debug.Log($"[NetworkLobbyManager] Added player {player.PlayerId} to lobby. IsHost: {isHost}");
+        
+        // Set the networked PlayerColor property using the retrieve-modify-set pattern
+        int colorIndex = LobbyPlayers.Count - 1;
+        Color assignedColor = playerColors[colorIndex];
+        Debug.Log($"[NetworkLobbyManager] Assigning color at index {colorIndex}: {assignedColor} (R:{assignedColor.r}, G:{assignedColor.g}, B:{assignedColor.b})");
+        
+        var data = LobbyPlayers[player];
+        data.PlayerColor = assignedColor;
+        LobbyPlayers.Set(player, data);
+        
+        // Verify the color was set
+        var verifyData = LobbyPlayers[player];
+        Debug.Log($"[NetworkLobbyManager] Added player {player.PlayerId} to lobby. IsHost: {isHost}, Assigned Color: {assignedColor}, Stored Color: {verifyData.PlayerColor}");
         
         // If this is the host, update their ready status in the UI immediately
         if (isHost && uiManager != null)
@@ -373,6 +396,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             if (LobbyPlayers.ContainsKey(player))
             {
                 LobbyPlayers.Remove(player);
+                UpdateLobbyUI();
             }
         }
     }
@@ -384,4 +408,5 @@ public struct PlayerLobbyData : INetworkStruct
     public bool IsReady;
     public bool IsHost;
     public int TeamID;
+    [Networked] public Color PlayerColor { get; set; }
 }

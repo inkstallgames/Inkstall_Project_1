@@ -7,6 +7,7 @@ public struct ChatMessage : INetworkStruct
 {
     public NetworkString<_32> PlayerName;
     public NetworkString<_128> Message;
+    [Networked] public Color PlayerColor { get; set; }
 }
 
 public class LobbyChatManager : NetworkBehaviour
@@ -53,19 +54,31 @@ public class LobbyChatManager : NetworkBehaviour
             }
         }
 
-        // Get the sender's name from the lobby manager.
+        // Get the sender's name and color from the lobby manager.
         string playerName = PlayerPrefs.GetString("PlayerName", "Player");
-        if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(info.Source))
+        Color playerColor = Color.white;
+        
+        // Use Runner.LocalPlayer to get the actual player reference
+        PlayerRef sender = Runner.LocalPlayer;
+        
+        if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(sender))
         {
-            playerName = NetworkLobbyManager.Instance.LobbyPlayers[info.Source].PlayerName.ToString();
+            var playerData = NetworkLobbyManager.Instance.LobbyPlayers[sender];
+            playerName = playerData.PlayerName.ToString();
+            playerColor = playerData.PlayerColor;
+            Debug.Log($"[LobbyChatManager] Retrieved color for {playerName}: {playerColor} (R:{playerColor.r}, G:{playerColor.g}, B:{playerColor.b})");
+        }
+        else
+        {
+            Debug.LogWarning($"[LobbyChatManager] Could not find player data for {sender}");
         }
 
         // Add the new message
-        // Create the network message with the truncated string
         var chatMessage = new ChatMessage
         {
             PlayerName = playerName,
-            Message = message
+            Message = message,
+            PlayerColor = playerColor
         };
         
         Messages.Add(chatMessage);

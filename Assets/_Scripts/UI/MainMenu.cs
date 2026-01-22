@@ -14,12 +14,31 @@ public class MainMenu : MonoBehaviour
     public TMP_InputField joinCodeInputField;
     public Button joinConfirmButton;
     public Button joinCancelButton;
+    public TMP_InputField playerNameInputField; // New Input Field for Player Name
 
     private NetworkStarter networkStarter;
 
     private void Start()
     {
         networkStarter = FindObjectOfType<NetworkStarter>();
+
+        // Load or set default player name
+        string savedName = PlayerPrefs.GetString("PlayerName", "");
+        if (string.IsNullOrEmpty(savedName))
+        {
+            savedName = $"Player {UnityEngine.Random.Range(1000, 9999)}";
+            PlayerPrefs.SetString("PlayerName", savedName);
+        }
+
+        if (playerNameInputField != null)
+        {
+            playerNameInputField.text = savedName;
+            playerNameInputField.onValueChanged.AddListener((val) => 
+            {
+                if (string.IsNullOrEmpty(val)) return;
+                PlayerPrefs.SetString("PlayerName", val);
+            });
+        }
 
         // Set up button listeners
         hostButton.onClick.AddListener(OnHostClicked);

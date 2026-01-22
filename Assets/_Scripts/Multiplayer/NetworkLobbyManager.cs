@@ -137,6 +137,14 @@ public class NetworkLobbyManager : NetworkBehaviour
         {
             NetworkGameManager.Instance.OnGameStarted += OnGameStarted;
         }
+
+        // If we are a client (not the host/server), we need to tell the host our name
+        if (Runner.IsClient && !Runner.IsServer)
+        {
+            string playerName = PlayerPrefs.GetString("PlayerName", "Unknown Player");
+            Debug.Log($"[NetworkLobbyManager] Sending player name to host: {playerName}");
+            RPC_SetLobbyPlayerName(playerName);
+        }
     }
 
     public override void Despawned(NetworkRunner runner, bool hasState)
@@ -152,9 +160,17 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         if (LobbyPlayers.ContainsKey(player)) return;
         
+        string initialName = $"Player {LobbyPlayers.Count + 1}";
+        
+        // If adding self (Host), use saved name
+        if (player == Runner.LocalPlayer)
+        {
+             initialName = PlayerPrefs.GetString("PlayerName", initialName);
+        }
+
         var playerData = new PlayerLobbyData
         {
-            PlayerName = $"Player {LobbyPlayers.Count + 1}",
+            PlayerName = initialName,
             IsReady = isHost, // Host is automatically ready
             IsHost = isHost
         };
@@ -284,6 +300,18 @@ public class NetworkLobbyManager : NetworkBehaviour
             case nameof(SelectedMapIndex): SelectedMapIndex = value; break;
             case nameof(SelectedModeIndex): SelectedModeIndex = value; break;
             case nameof(SelectedTimeIndex): SelectedTimeIndex = value; break;
+        }
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_SetLobbyPlayerName(string name, RpcInfo info = default)
+    {
+        Debug.Log($"[NetworkLobbyManager] Received name update from {info.Source}: {name}");
+        if (LobbyPlayers.ContainsKey(info.Source))
+        {
+            var data = LobbyPlayers[info.Source];
+            data.PlayerName = name;
+            LobbyPlayers.Set(info.Source, data);
         }
     }
 

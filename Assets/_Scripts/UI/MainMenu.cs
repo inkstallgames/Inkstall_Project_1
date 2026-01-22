@@ -15,8 +15,10 @@ public class MainMenu : MonoBehaviour
     public Button joinConfirmButton;
     public Button joinCancelButton;
     public TMP_InputField playerNameInputField; // New Input Field for Player Name
+
     public Button changeUserNameButton; // NEW: Reference to the button opening the rename panel
     public GameObject changeUserNamePanel;
+    public TMP_Text playerNameText; // Display the current player name
     private NetworkStarter networkStarter;
 
     private void Start()
@@ -34,6 +36,11 @@ public class MainMenu : MonoBehaviour
         if (playerNameInputField != null)
         {
             playerNameInputField.text = savedName;
+        }
+
+        if (playerNameText != null)
+        {
+            playerNameText.text = savedName;
         }
 
         // Set up button listeners
@@ -155,6 +162,11 @@ public class MainMenu : MonoBehaviour
                 PlayerPrefs.SetString("PlayerName", newName);
                 HideChangeUserName();
                 Debug.Log($"Player name changed to: {newName}");
+                
+                if (playerNameText != null)
+                {
+                    playerNameText.text = newName;
+                }
             }
         }
     }

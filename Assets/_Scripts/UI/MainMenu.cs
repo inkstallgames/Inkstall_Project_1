@@ -11,7 +11,8 @@ public class MainMenu : MonoBehaviour
     public GameObject mainMenuPanel;
     public GameObject lobbyPanel;
     public GameObject joinCodeInputPanel;
-    public TMP_Text statusText; // For showing status messages like "Creating room..."
+    public TMP_Text hostStatusText; // For showing status messages like "Creating room..."
+    public TMP_Text joinStatusText; // For showing status messages like "Joining room..."
     public TMP_InputField joinCodeInputField;
     public Button joinConfirmButton;
     public Button joinCancelButton;
@@ -62,8 +63,10 @@ public class MainMenu : MonoBehaviour
     private System.Collections.IEnumerator HideStatusAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        if (statusText != null)
-            statusText.gameObject.SetActive(false);
+        if (hostStatusText != null)
+            hostStatusText.gameObject.SetActive(false);
+        if (joinStatusText != null)
+            joinStatusText.gameObject.SetActive(false);
     }
 
     private void OnHostClicked()
@@ -74,10 +77,10 @@ public class MainMenu : MonoBehaviour
             hostButton.interactable = false;
             
             // Show creating message
-            if (statusText != null)
+            if (hostStatusText != null)
             {
-                statusText.text = "Creating Room...";
-                statusText.gameObject.SetActive(true);
+                hostStatusText.text = "Creating Room...";
+                hostStatusText.gameObject.SetActive(true);
             }
             
             // Start hosting and wait for room to be ready
@@ -86,8 +89,8 @@ public class MainMenu : MonoBehaviour
                     if (success)
                     {
                         // Clear status text when room is created
-                        if (statusText != null)
-                            statusText.gameObject.SetActive(false);
+                        if (hostStatusText != null)
+                            hostStatusText.gameObject.SetActive(false);
                             
                         // Only switch to lobby after room is created
                         SwitchToLobby();
@@ -96,9 +99,9 @@ public class MainMenu : MonoBehaviour
                     {
                         // Re-enable button and update status if failed
                         hostButton.interactable = true;
-                        if (statusText != null)
+                        if (hostStatusText != null)
                         {
-                            statusText.text = "Failed to create room. Try again.";
+                            hostStatusText.text = "Failed to create room. Try again.";
                             // Hide the error message after 3 seconds
                             StartCoroutine(HideStatusAfterDelay(3f));
                         }
@@ -138,7 +141,15 @@ public class MainMenu : MonoBehaviour
         if (networkStarter != null && joinCodeInputField != null && !string.IsNullOrWhiteSpace(joinCodeInputField.text))
         {
             string joinCode = joinCodeInputField.text.Trim().ToUpper();
-            // Show loading state
+            
+            // Show joining status
+            if (joinStatusText != null)
+            {
+                joinStatusText.text = "Joining game...";
+                joinStatusText.gameObject.SetActive(true);
+            }
+            
+            // Disable confirm button while joining
             joinConfirmButton.interactable = false;
             
             // Create a callback for join result
@@ -149,6 +160,10 @@ public class MainMenu : MonoBehaviour
                     
                     if (success)
                     {
+                        // Clear status text when joined successfully
+                        if (joinStatusText != null)
+                            joinStatusText.gameObject.SetActive(false);
+                            
                         // Only switch to lobby if join was successful
                         SwitchToLobby();
                         changeUserNameButton.gameObject.SetActive(false);
@@ -156,8 +171,12 @@ public class MainMenu : MonoBehaviour
                     else
                     {
                         // Show error message to user
+                        if (joinStatusText != null)
+                        {
+                            joinStatusText.text = "Game not found. Please check the code.";
+                            StartCoroutine(HideStatusAfterDelay(3f));
+                        }
                         Debug.LogError("Failed to join room. Please check the join code and try again.");
-                        // You could show an error message to the user here
                     }
                 });
             };
@@ -167,6 +186,11 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
+            if (joinStatusText != null)
+            {
+                joinStatusText.text = "Please enter a valid join code";
+                StartCoroutine(HideStatusAfterDelay(3f));
+            }
             Debug.LogError("Please enter a valid join code");
         }
     }

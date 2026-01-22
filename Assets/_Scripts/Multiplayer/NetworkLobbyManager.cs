@@ -10,7 +10,7 @@ public class NetworkLobbyManager : NetworkBehaviour
 
     [Header("Game Settings")]
     public int minPlayersToStart = 2;
-    [Networked] public NetworkDictionary<PlayerRef, PlayerLobbyData> LobbyPlayers { get; } 
+    [Networked, Capacity(8)] public NetworkDictionary<PlayerRef, PlayerLobbyData> LobbyPlayers { get; } 
 
     [Networked] public string JoinCode { get; set; }
     

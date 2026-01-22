@@ -236,5 +236,25 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    
+    public void ShowMainMenuPanel()
+    {
+        if (mainMenuPanel != null)
+            mainMenuPanel.SetActive(true);
+
+        if (lobbyPanel != null)
+            lobbyPanel.SetActive(false);
+
+        if (joinCodeInputPanel != null)
+            joinCodeInputPanel.SetActive(false);
+
+        // Re-enable host/join buttons
+        if (hostButton != null)
+            hostButton.interactable = true;
+
+        if (joinButton != null)
+            joinButton.interactable = true;
+
+        if (changeUserNameButton != null)
+            changeUserNameButton.gameObject.SetActive(true);
+    }
 }

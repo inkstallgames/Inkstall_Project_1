@@ -235,14 +235,13 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
     public async Task ShutdownRunner()
     {
-        if (_isShuttingDown || _runner == null) return;
+        if (_isShuttingDown || _runner == null || !_runner.IsRunning) return;
         _isShuttingDown = true;
-        
+
         try
         {
             Debug.Log("[NetworkStarter] Shutting down NetworkRunner...");
-            await _runner.Shutdown(false, ShutdownReason.Ok);
-            Debug.Log("[NetworkStarter] NetworkRunner shutdown complete");
+            await _runner.Shutdown();
         }
         catch (Exception e)
         {
@@ -252,19 +251,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         {
             _isShuttingDown = false;
         }
-        
-        _isShuttingDown = true;
-        
-        if (_runner.IsRunning)
-        {
-            _runner.Shutdown(false, ShutdownReason.Ok);
-        }
-        
-        _isShuttingDown = false;
-        _runner = null;
-        
-        // Reload the current scene
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     // --- INetworkRunnerCallbacks Implementation ---
@@ -284,6 +270,23 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
         Debug.Log($"[Network] Shutdown: {shutdownReason}");
+
+        // Use the dispatcher to ensure UI updates happen on the main thread
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            var mainMenu = FindObjectOfType<MainMenu>();
+            if (mainMenu != null)
+            {
+                mainMenu.ShowMainMenuPanel();
+            }
+            else
+            {
+                // Fallback to reloading the scene if MainMenu is not found
+                Debug.LogWarning("MainMenu not found, reloading scene as a fallback.");
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+        });
+
         _runner = null;
     }
     

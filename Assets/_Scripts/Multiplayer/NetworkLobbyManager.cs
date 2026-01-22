@@ -189,7 +189,8 @@ public class NetworkLobbyManager : NetworkBehaviour
         LobbyPlayers.Add(player, playerData);
         
         // Set the networked PlayerColor property using the retrieve-modify-set pattern
-        int colorIndex = LobbyPlayers.Count - 1;
+        // Use modulo to cycle through available colors if we have more players than colors
+        int colorIndex = (LobbyPlayers.Count - 1) % playerColors.Count;
         Color assignedColor = playerColors[colorIndex];
         Debug.Log($"[NetworkLobbyManager] Assigning color at index {colorIndex}: {assignedColor} (R:{assignedColor.r}, G:{assignedColor.g}, B:{assignedColor.b})");
         

@@ -15,7 +15,8 @@ public class MainMenu : MonoBehaviour
     public Button joinConfirmButton;
     public Button joinCancelButton;
     public TMP_InputField playerNameInputField; // New Input Field for Player Name
-
+    public Button changeUserNameButton; // NEW: Reference to the button opening the rename panel
+    public GameObject changeUserNamePanel;
     private NetworkStarter networkStarter;
 
     private void Start()
@@ -33,11 +34,6 @@ public class MainMenu : MonoBehaviour
         if (playerNameInputField != null)
         {
             playerNameInputField.text = savedName;
-            playerNameInputField.onValueChanged.AddListener((val) => 
-            {
-                if (string.IsNullOrEmpty(val)) return;
-                PlayerPrefs.SetString("PlayerName", val);
-            });
         }
 
         // Set up button listeners
@@ -75,6 +71,7 @@ public class MainMenu : MonoBehaviour
                 joinCodeInputField.text = "";
                 joinCodeInputField.Select();
                 joinCodeInputField.ActivateInputField();
+                changeUserNameButton.gameObject.SetActive(false);
             }
         }
     }
@@ -84,6 +81,7 @@ public class MainMenu : MonoBehaviour
         if (joinCodeInputPanel != null)
         {
             joinCodeInputPanel.SetActive(false);
+            changeUserNameButton.gameObject.SetActive(true);
         }
     }
     
@@ -105,6 +103,7 @@ public class MainMenu : MonoBehaviour
                     {
                         // Only switch to lobby if join was successful
                         SwitchToLobby();
+                        changeUserNameButton.gameObject.SetActive(false);
                     }
                     else
                     {
@@ -128,5 +127,37 @@ public class MainMenu : MonoBehaviour
     {
         mainMenuPanel.SetActive(false);
         lobbyPanel.SetActive(true);
+
+        // Disable changing name once in a lobby
+        if (changeUserNameButton != null)
+        {
+            changeUserNameButton.gameObject.SetActive(false);
+        }
     }
+
+    public void ChangeUserName()
+    {
+        changeUserNamePanel.SetActive(true);
+    }
+
+    public void HideChangeUserName()
+    {
+        changeUserNamePanel.SetActive(false);
+    }
+
+    public void ConfirmChangeUserName()
+    {
+        if (playerNameInputField != null)
+        {
+            string newName = playerNameInputField.text.Trim();
+            if (!string.IsNullOrEmpty(newName))
+            {
+                PlayerPrefs.SetString("PlayerName", newName);
+                HideChangeUserName();
+                Debug.Log($"Player name changed to: {newName}");
+            }
+        }
+    }
+
+    
 }

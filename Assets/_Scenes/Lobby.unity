@@ -984,6 +984,8 @@ MonoBehaviour:
   joinConfirmButton: {fileID: 1848190158}
   joinCancelButton: {fileID: 2097561888}
   playerNameInputField: {fileID: 2098669932}
+  changeUserNameButton: {fileID: 2018648020}
+  changeUserNamePanel: {fileID: 205929343}
 --- !u!4 &176666938
 Transform:
   m_ObjectHideFlags: 0
@@ -5674,7 +5676,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1035067900}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 176666937}
+        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+        m_MethodName: HideChangeUserName
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1035067900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9540,7 +9554,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1787535576}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 176666937}
+        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+        m_MethodName: ConfirmChangeUserName
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1787535576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10460,7 +10486,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2018648021}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 176666937}
+        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+        m_MethodName: ChangeUserName
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2018648021
 MonoBehaviour:
   m_ObjectHideFlags: 0

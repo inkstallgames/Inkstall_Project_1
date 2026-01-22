@@ -231,18 +231,36 @@ public class NetworkLobbyManager : NetworkBehaviour
         UpdateGameSettingsUI();
     }
 
-    [Rpc(RpcSources.All, RpcTargets.All)]
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_UpdateLobbyUI()
     {
-        if (uiManager != null)
+        if (uiManager != null && Runner != null)
         {
-            // Update the player list
+            // Create a dictionary with all players in the lobby
             var players = new Dictionary<int, PlayerLobbyData>();
             foreach (var kvp in LobbyPlayers)
             {
                 players[kvp.Key.PlayerId] = kvp.Value;
+                Debug.Log($"[RPC_UpdateLobbyUI] Adding player {kvp.Key.PlayerId}: {kvp.Value.PlayerName} (Host: {kvp.Value.IsHost}, Ready: {kvp.Value.IsReady})");
             }
+            
+            // Update the player list in the UI
             uiManager.UpdatePlayerList(players);
+            
+            // Update ready button state for local player
+            if (LobbyPlayers.ContainsKey(Runner.LocalPlayer))
+            {
+                var localPlayerData = LobbyPlayers[Runner.LocalPlayer];
+                uiManager.SetReadyButtonState(localPlayerData.IsReady);
+            }
+
+            // Update start button state for host
+            if (Runner.IsServer)
+            {
+                bool allReady = LobbyPlayers.Count >= minPlayersToStart && 
+                              LobbyPlayers.All(p => p.Value.IsReady);
+                uiManager.SetStartButtonState(allReady);
+            }
         }
     }
 
@@ -331,7 +349,18 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         if (Runner.IsServer)
         {
+            Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} joined the lobby");
             AddPlayerToLobby(player, false);
+            
+            // Force update the UI for all clients
+            RPC_UpdateLobbyUI();
+            
+            // Log the current player count for debugging
+            Debug.Log($"[NetworkLobbyManager] Total players in lobby: {LobbyPlayers.Count}");
+            foreach (var kvp in LobbyPlayers)
+            {
+                Debug.Log($"- Player {kvp.Key.PlayerId}: {kvp.Value.PlayerName} (Host: {kvp.Value.IsHost}, Ready: {kvp.Value.IsReady})");
+            }
         }
     }
 

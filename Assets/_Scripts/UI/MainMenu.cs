@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour
     public GameObject mainMenuPanel;
     public GameObject lobbyPanel;
     public GameObject joinCodeInputPanel;
+    public TMP_Text statusText; // For showing status messages like "Creating room..."
     public TMP_InputField joinCodeInputField;
     public Button joinConfirmButton;
     public Button joinCancelButton;
@@ -58,12 +59,52 @@ public class MainMenu : MonoBehaviour
             joinCodeInputPanel.SetActive(false);
     }
 
+    private System.Collections.IEnumerator HideStatusAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (statusText != null)
+            statusText.gameObject.SetActive(false);
+    }
+
     private void OnHostClicked()
     {
         if (networkStarter != null)
         {
-            networkStarter.StartHost();
-            SwitchToLobby();
+            // Disable button to prevent multiple clicks
+            hostButton.interactable = false;
+            
+            // Show creating message
+            if (statusText != null)
+            {
+                statusText.text = "Creating Room...";
+                statusText.gameObject.SetActive(true);
+            }
+            
+            // Start hosting and wait for room to be ready
+            networkStarter.StartHost((success) => {
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    if (success)
+                    {
+                        // Clear status text when room is created
+                        if (statusText != null)
+                            statusText.gameObject.SetActive(false);
+                            
+                        // Only switch to lobby after room is created
+                        SwitchToLobby();
+                    }
+                    else
+                    {
+                        // Re-enable button and update status if failed
+                        hostButton.interactable = true;
+                        if (statusText != null)
+                        {
+                            statusText.text = "Failed to create room. Try again.";
+                            // Hide the error message after 3 seconds
+                            StartCoroutine(HideStatusAfterDelay(3f));
+                        }
+                    }
+                });
+            });
         }
     }
 

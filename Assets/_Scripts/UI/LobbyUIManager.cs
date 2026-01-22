@@ -25,6 +25,7 @@ public class LobbyUIManager : MonoBehaviour
 
     [Header("Join Info")]
     public TextMeshProUGUI joinCodeText;
+    public TextMeshProUGUI lobbyStatusText; // Used for 'Creating room...' message
 
     [Header("Player Controls")]
     public Button readyButton;
@@ -208,27 +209,29 @@ public class LobbyUIManager : MonoBehaviour
 
     public void SetJoinCode(string joinCode)
     {
-        Debug.Log($"[LobbyUIManager] SetJoinCode called with: {joinCode}");
-        Debug.Log($"[LobbyUIManager] joinCodeText reference: {joinCodeText != null}");
-        
         if (joinCodeText != null)
         {
-            Debug.Log($"[LobbyUIManager] Setting join code text to: {joinCode}");
             joinCodeText.text = $"Join Code: {joinCode}";
-            Debug.Log($"[LobbyUIManager] Text component value set. Current text: {joinCodeText.text}");
-            
-            // Force update the canvas to ensure the text is rendered
-            Canvas.ForceUpdateCanvases();
-            Debug.Log("[LobbyUIManager] Canvas update forced");
         }
-        else
+
+        // Once the join code is set, the room is ready, so we can clear the status text.
+        if (lobbyStatusText != null)
         {
-            Debug.LogError("[LobbyUIManager] joinCodeText is null! Make sure to assign it in the inspector.");
-            Debug.LogError($"[LobbyUIManager] GameObject active: {gameObject.activeInHierarchy}");
-            
-            // Try to find the text component if not assigned
-            var foundText = GetComponentInChildren<TextMeshProUGUI>(true);
-            Debug.Log($"[LobbyUIManager] Found TextMeshProUGUI in children: {foundText != null}");
+            lobbyStatusText.text = "";
+        }
+    }
+
+    public void SetLobbyStatusText(string status)
+    {
+        if (lobbyStatusText != null)
+        {
+            lobbyStatusText.text = status;
+        }
+
+        // Clear the join code text while a status is being shown.
+        if (joinCodeText != null)
+        {
+            joinCodeText.text = "";
         }
     }
 

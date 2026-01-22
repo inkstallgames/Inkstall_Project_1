@@ -54,7 +54,7 @@ public class LobbyChatManager : NetworkBehaviour
         }
 
         // Get the sender's name from the lobby manager.
-        string playerName = "Player";
+        string playerName = PlayerPrefs.GetString("PlayerName", "Player");
         if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(info.Source))
         {
             playerName = NetworkLobbyManager.Instance.LobbyPlayers[info.Source].PlayerName.ToString();

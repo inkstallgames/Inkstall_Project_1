@@ -58,19 +58,16 @@ public class LobbyChatManager : NetworkBehaviour
         string playerName = PlayerPrefs.GetString("PlayerName", "Player");
         Color playerColor = Color.white;
         
-        // Use Runner.LocalPlayer to get the actual player reference
-        PlayerRef sender = Runner.LocalPlayer;
-        
-        if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(sender))
+        if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(info.Source))
         {
-            var playerData = NetworkLobbyManager.Instance.LobbyPlayers[sender];
+            var playerData = NetworkLobbyManager.Instance.LobbyPlayers[info.Source];
             playerName = playerData.PlayerName.ToString();
             playerColor = playerData.PlayerColor;
-            Debug.Log($"[LobbyChatManager] Retrieved color for {playerName}: {playerColor} (R:{playerColor.r}, G:{playerColor.g}, B:{playerColor.b})");
         }
         else
         {
-            Debug.LogWarning($"[LobbyChatManager] Could not find player data for {sender}");
+            // Fallback for safety, though this should ideally not be hit in a normal game flow.
+            Debug.LogWarning($"[LobbyChatManager] Could not find player data for sender {info.Source}. Using default name.");
         }
 
         // Add the new message

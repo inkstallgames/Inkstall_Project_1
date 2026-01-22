@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public class LobbyUIManager : MonoBehaviour
 {
@@ -187,11 +188,16 @@ public class LobbyUIManager : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        // Populate with new player data
-        foreach (var player in players.Values)
+        // Convert dictionary to list and sort: host first, then others by join order
+        var sortedPlayers = players
+            .OrderByDescending(p => p.Value.IsHost)  // Host comes first
+            .ThenBy(p => p.Key)                     // Then order by player ID (join order)
+            .Select(p => p.Value);
+
+        // Populate with sorted player data
+        foreach (var player in sortedPlayers)
         {
             GameObject item = Instantiate(playerListItemPrefab, playerListContent.transform);
-            // Assuming the prefab has a script to set player info
             PlayerListItemUI listItem = item.GetComponent<PlayerListItemUI>();
             if (listItem != null)
             {

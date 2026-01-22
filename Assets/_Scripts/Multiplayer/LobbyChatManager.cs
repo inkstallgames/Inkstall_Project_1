@@ -35,7 +35,7 @@ public class LobbyChatManager : NetworkBehaviour
         }
 
         // Limit message length to prevent RPC size issues
-        const int MAX_MESSAGE_LENGTH = 80; // Reduced further to account for RPC overhead
+        const int MAX_MESSAGE_LENGTH = 80;
         if (message.Length > MAX_MESSAGE_LENGTH)
         {
             Debug.LogWarning($"Truncating long message from {message.Length} to {MAX_MESSAGE_LENGTH} characters");
@@ -53,12 +53,33 @@ public class LobbyChatManager : NetworkBehaviour
             }
         }
 
-        // Get the sender's name from the lobby manager.
-        string playerName = PlayerPrefs.GetString("PlayerName", "Player");
-        if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(info.Source))
+        // Get the sender's name from the lobby manager
+        string playerName = "Player";
+        
+        // First try to get the name from the player's local preferences
+        if (info.Source == Runner.LocalPlayer)
         {
-            playerName = NetworkLobbyManager.Instance.LobbyPlayers[info.Source].PlayerName.ToString();
+            playerName = PlayerPrefs.GetString("PlayerName", "Player");
         }
+        
+        // Then try to get it from the lobby players list
+        if (NetworkLobbyManager.Instance != null)
+        {
+            // First check if the player is in the lobby
+            if (NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(info.Source))
+            {
+                playerName = NetworkLobbyManager.Instance.LobbyPlayers[info.Source].PlayerName.ToString();
+            }
+            // If not found, try to find by player ID in the runner
+            else if (Runner.TryGetPlayerObject(info.Source, out var networkObject) && 
+                    networkObject != null && 
+                    networkObject.TryGetComponent<PlayerNetworkData>(out var playerData))
+            {
+                playerName = playerData.PlayerName;
+            }
+        }
+        
+        Debug.Log($"[Chat] Message from {playerName} (Player {info.Source.PlayerId}): {message}");
 
         // Add the new message
         // Create the network message with the truncated string

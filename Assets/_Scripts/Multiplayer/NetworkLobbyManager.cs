@@ -312,16 +312,35 @@ public class NetworkLobbyManager : NetworkBehaviour
 
     private void UpdateGameSettingsUI()
     {
-        if (uiManager == null) return;
+        if (uiManager == null) 
+        {
+            Debug.LogError("[NetworkLobbyManager] uiManager is not assigned in the inspector!");
+            return;
+        }
 
-        uiManager.mapDropdown.SetValueWithoutNotify(SelectedMapIndex);
-        uiManager.modeDropdown.SetValueWithoutNotify(SelectedModeIndex);
-        uiManager.timeDropdown.SetValueWithoutNotify(SelectedTimeIndex);
+        if (uiManager.mapButton == null || 
+            uiManager.modeDropdown == null || 
+            uiManager.timeDropdown == null)
+        {
+            Debug.LogError("[NetworkLobbyManager] One or more UI elements are not assigned in the inspector!");
+            return;
+        }
 
-        bool isHost = Runner.IsServer;
-        uiManager.mapDropdown.interactable = isHost;
-        uiManager.modeDropdown.interactable = isHost;
-        uiManager.timeDropdown.interactable = isHost;
+        try 
+        {
+            // Map selection is now handled by the button's click handler
+            uiManager.modeDropdown.SetValueWithoutNotify(SelectedModeIndex);
+            uiManager.timeDropdown.SetValueWithoutNotify(SelectedTimeIndex);
+
+            bool isHost = Runner != null && Runner.IsServer;
+            uiManager.mapButton.interactable = isHost;
+            uiManager.modeDropdown.interactable = isHost;
+            uiManager.timeDropdown.interactable = isHost;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[NetworkLobbyManager] Error updating game settings UI: {e.Message}");
+        }
     }
 
     // RPCs

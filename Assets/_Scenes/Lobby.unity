@@ -2547,7 +2547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyPanel: {fileID: 1067298859}
   inGameUIPanel: {fileID: 1036121996}
-  mapDropdown: {fileID: 0}
+  mapButton: {fileID: 2069412694}
   modeDropdown: {fileID: 461199614}
   timeDropdown: {fileID: 1760398452}
   playerListContent: {fileID: 111473344}

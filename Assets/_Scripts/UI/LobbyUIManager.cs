@@ -2,6 +2,7 @@ using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
 using System.Linq;
@@ -15,7 +16,7 @@ public class LobbyUIManager : MonoBehaviour
     public GameObject inGameUIPanel;
 
     [Header("Host Settings")]
-    public TMP_Dropdown mapDropdown;
+    public Button mapButton;
     public TMP_Dropdown modeDropdown;
     public TMP_Dropdown timeDropdown;
 
@@ -63,8 +64,8 @@ public class LobbyUIManager : MonoBehaviour
         if (startGameButton != null)
             startGameButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.StartGame());
             
-        if (mapDropdown != null)
-            mapDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance?.OnMapSelectionChanged(val));
+        if (mapButton != null)
+            mapButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.OnMapSelectionChanged(mapButton.GetComponent<TMP_Dropdown>().value));
             
         if (modeDropdown != null)
             modeDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance?.OnModeSelectionChanged(val));
@@ -135,11 +136,9 @@ public class LobbyUIManager : MonoBehaviour
         foreach (var msg in messages)
         {
             string colorHex = ColorUtility.ToHtmlStringRGB(msg.PlayerColor);
-            Debug.Log($"Player: {msg.PlayerName}, Color: {msg.PlayerColor}, Hex: {colorHex}");
             chatLog += $"<b><color=#{colorHex}>{msg.PlayerName}:</color></b> {msg.Message}\n";
         }
         chatContent.text = chatLog;
-        Debug.Log($"Chat text set to: {chatLog}");
     }
 
 
@@ -168,11 +167,11 @@ public class LobbyUIManager : MonoBehaviour
         }
         
         // Only host can interact with game settings
-        if (mapDropdown != null) 
+        if (mapButton != null) 
         {
-            mapDropdown.interactable = isHost;
-            mapDropdown.ClearOptions();
-            mapDropdown.AddOptions(mapOptions);
+            mapButton.interactable = isHost;
+            // Map options are now handled by the button's click handler
+            // The actual dropdown is a child component that will be shown on click
         }
 
         if (modeDropdown != null)

@@ -183,53 +183,90 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
     public async void JoinSession(string sessionCode, Action<bool> onComplete = null)
     {
-        if (_isShuttingDown || string.IsNullOrEmpty(sessionCode)) return;
+        if (_isShuttingDown || string.IsNullOrEmpty(sessionCode))
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                onComplete?.Invoke(false);
+            });
+            return;
+        }
         
         InitializeRunner();
         
         if (_runner == null)
         {
             Debug.LogError("Failed to initialize NetworkRunner!");
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                onComplete?.Invoke(false);
+            });
             return;
         }
 
         if (_runner.IsRunning)
         {
             Debug.LogWarning("NetworkRunner is already running!");
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                onComplete?.Invoke(false);
+            });
             return;
         }
 
         try
         {
+            // Normalize the session code to match host format (uppercase, trimmed)
+            string normalizedCode = sessionCode.Trim().ToUpper();
+            
             var startGameArgs = new StartGameArgs()
             {
                 GameMode = Fusion.GameMode.Client,
-                SessionName = sessionCode.Trim()
+                SessionName = normalizedCode,
+                Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
+                SceneManager = _sceneManager
             };
 
-            Debug.Log($"Joining session: {sessionCode}");
+            Debug.Log($"[NetworkStarter] Attempting to join session: {normalizedCode}");
             
-            var result = await _runner.StartGame(startGameArgs);
+            // Add timeout for join attempt
+            var startTask = _runner.StartGame(startGameArgs);
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(15)); // 15 second timeout for joining
+            var completedTask = await Task.WhenAny(startTask, timeoutTask);
+
+            if (completedTask == timeoutTask)
+            {
+                Debug.LogError("[NetworkStarter] Join attempt timed out!");
+                await ShutdownRunner();
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    onComplete?.Invoke(false);
+                });
+                return;
+            }
+
+            var result = await startTask;
 
             if (result.Ok)
             {
-                Debug.Log($"Successfully joined session: {sessionCode}");
-                onComplete?.Invoke(true);
+                Debug.Log($"[NetworkStarter] Successfully joined session: {normalizedCode}");
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    onComplete?.Invoke(true);
+                });
             }
             else
             {
-                string error = $"Failed to Join Session: {result.ShutdownReason}";
+                string error = $"Failed to Join Session '{normalizedCode}': {result.ShutdownReason}";
                 Debug.LogError(error);
-                onComplete?.Invoke(false);
                 
-                // Show error to user (you might want to show this in the UI)
-                // For now, we'll just log it
-                Debug.LogError(error);
+                // Ensure callback is on main thread
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    onComplete?.Invoke(false);
+                });
             }
         }
         catch (Exception e)
         {
-            Debug.LogError($"Error joining session: {e}");
+            Debug.LogError($"[NetworkStarter] Error joining session: {e.Message}\n{e.StackTrace}");
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                onComplete?.Invoke(false);
+            });
         }
     }
 

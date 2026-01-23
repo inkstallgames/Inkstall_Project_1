@@ -178,6 +178,10 @@ public class MainMenu : MonoBehaviour
         return Application.internetReachability != NetworkReachability.NotReachable;
     }
     
+    private const int MAX_JOIN_ATTEMPTS = 3;
+    private int currentJoinAttempt = 0;
+    private string currentJoinCode = "";
+    
     private void OnJoinConfirmed()
     {
         if (!HasInternetConnection())
@@ -193,64 +197,84 @@ public class MainMenu : MonoBehaviour
         
         if (networkStarter != null && joinCodeInputField != null && !string.IsNullOrWhiteSpace(joinCodeInputField.text))
         {
-            string joinCode = joinCodeInputField.text.Trim().ToUpper();
+            currentJoinCode = joinCodeInputField.text.Trim().ToUpper();
+            currentJoinAttempt = 1;
             
-            // Show joining status
-            if (joinStatusText != null)
-            {
-                joinStatusText.text = "Joining game...";
-                joinStatusText.gameObject.SetActive(true);
-            }
+            // Show initial joining status
+            UpdateJoinStatus($"Attempting to join {currentJoinCode}... (Attempt {currentJoinAttempt}/{MAX_JOIN_ATTEMPTS})", false);
             
             // Disable confirm button while joining
             joinConfirmButton.interactable = false;
             
-            // Create a callback for join result
-            Action<bool> onJoinComplete = (success) => {
-                // Run on main thread since this is a Unity UI update
-                UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    joinConfirmButton.interactable = true;
-                    
-                    if (success)
-                    {
-                        // Clear status text when joined successfully
-                        if (joinStatusText != null)
-                            joinStatusText.gameObject.SetActive(false);
-                            
-                        // Only switch to lobby if join was successful
-                        SwitchToLobby();
-                        changeUserNameButton.gameObject.SetActive(false);
-                    }
-                    else
-                    {
-                        // Show error message to user
-                        if (joinStatusText != null)
-                        {
-                            joinStatusText.text = "Game not found. Please check the code.";
-                            joinStatusText.gameObject.SetActive(true);
-                            StartCoroutine(HideStatusAfterDelay(3f));
-                        }
-                        // Keep the join panel open and re-enable input
-                        joinCodeInputField.text = "";
-                        joinCodeInputField.Select();
-                        joinCodeInputField.ActivateInputField();
-                        Debug.LogError("Failed to join room. Please check the join code and try again.");
-                    }
-                });
-            };
-            
-            // Start the join process
-            networkStarter.JoinSession(joinCode, onJoinComplete);
+            // Start the join process with a small delay to ensure host is ready
+            StartCoroutine(AttemptJoinWithDelay(1f));
         }
         else
         {
-            if (joinStatusText != null)
+            UpdateJoinStatus("Please enter a valid join code", true);
+        }
+    }
+    
+    private IEnumerator AttemptJoinWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        // Create a callback for join result
+        Action<bool> onJoinComplete = (success) => {
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                joinConfirmButton.interactable = true;
+                
+                if (success)
+                {
+                    // Successfully joined, handled by OnConnectedToServer
+                    Debug.Log($"[MainMenu] Successfully joined the game after {currentJoinAttempt} attempt(s)");
+                }
+                else if (currentJoinAttempt < MAX_JOIN_ATTEMPTS)
+                {
+                    // Retry with exponential backoff
+                    currentJoinAttempt++;
+                    float retryDelay = Mathf.Pow(2, currentJoinAttempt); // Exponential backoff: 2s, 4s, 8s, etc.
+                    UpdateJoinStatus($"Retrying... (Attempt {currentJoinAttempt}/{MAX_JOIN_ATTEMPTS})", false);
+                    StartCoroutine(AttemptJoinWithDelay(retryDelay));
+                }
+                else
+                {
+                    // All attempts failed
+                    UpdateJoinStatus("Failed to join room. Please check the code and try again.", true);
+                    Debug.LogError($"[MainMenu] Failed to join after {MAX_JOIN_ATTEMPTS} attempts");
+                }
+            });
+        };
+        
+        // Start the join process
+        networkStarter.JoinSession(currentJoinCode, onJoinComplete);
+    }
+    
+    private void UpdateJoinStatus(string message, bool isError)
+    {
+        if (joinStatusText != null)
+        {
+            joinStatusText.text = message;
+            joinStatusText.gameObject.SetActive(true);
+            
+            if (isError)
             {
-                joinStatusText.text = "Please enter a valid join code";
-                joinStatusText.gameObject.SetActive(true);
-                StartCoroutine(HideStatusAfterDelay(3f));
+                joinStatusText.color = Color.red;
+                StartCoroutine(HideStatusAfterDelay(5f));
             }
-            Debug.LogError("Please enter a valid join code");
+            else
+            {
+                joinStatusText.color = Color.white;
+            }
+        }
+        
+        if (isError)
+        {
+            Debug.LogError($"[MainMenu] {message}");
+        }
+        else
+        {
+            Debug.Log($"[MainMenu] {message}");
         }
     }
 

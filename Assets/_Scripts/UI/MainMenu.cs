@@ -1,7 +1,8 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using System;
+using System.Collections;
 
 public class MainMenu : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class MainMenu : MonoBehaviour
     public GameObject changeUserNamePanel;
     public TMP_Text playerNameText; // Display the current player name
     private NetworkStarter networkStarter;
+
+    private IEnumerator hostAnimationCoroutine;
 
     private void Start()
     {
@@ -74,6 +77,18 @@ public class MainMenu : MonoBehaviour
             joinStatusText.gameObject.SetActive(false);
         }
     }
+    
+    private IEnumerator AnimateLoadingText(TMP_Text textComponent, string baseText)
+    {
+        int dotCount = 0;
+        while (textComponent != null && textComponent.gameObject.activeInHierarchy)
+        {
+            string dots = new string('.', (dotCount % 3) + 1);
+            textComponent.text = $"{baseText}{dots}";
+            dotCount++;
+            yield return new WaitForSeconds(0.5f);
+        }
+    }
 
     private void OnHostClicked()
     {
@@ -96,8 +111,12 @@ public class MainMenu : MonoBehaviour
             // Show creating message
             if (hostStatusText != null)
             {
-                hostStatusText.text = "Creating Room...";
                 hostStatusText.gameObject.SetActive(true);
+                // Stop any existing animation
+                if (hostAnimationCoroutine != null)
+                    StopCoroutine(hostAnimationCoroutine);
+                hostAnimationCoroutine = AnimateLoadingText(hostStatusText, "Creating Room");
+                StartCoroutine(hostAnimationCoroutine);
             }
             
             // Start hosting and wait for room to be ready

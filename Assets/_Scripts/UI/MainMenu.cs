@@ -63,14 +63,31 @@ public class MainMenu : MonoBehaviour
     private System.Collections.IEnumerator HideStatusAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        if (hostStatusText != null)
+        if (hostStatusText != null && hostStatusText.gameObject.activeSelf)
+        {
+            hostStatusText.text = "";
             hostStatusText.gameObject.SetActive(false);
-        if (joinStatusText != null)
+        }
+        if (joinStatusText != null && joinStatusText.gameObject.activeSelf)
+        {
+            joinStatusText.text = "";
             joinStatusText.gameObject.SetActive(false);
+        }
     }
 
     private void OnHostClicked()
     {
+        if (!HasInternetConnection())
+        {
+            if (hostStatusText != null)
+            {
+                hostStatusText.text = "No internet connection. Please try again.";
+                hostStatusText.gameObject.SetActive(true);
+                StartCoroutine(HideStatusAfterDelay(3f));
+            }
+            return;
+        }
+
         if (networkStarter != null)
         {
             // Disable button to prevent multiple clicks
@@ -136,8 +153,25 @@ public class MainMenu : MonoBehaviour
         }
     }
     
+    // Check if the device has an active internet connection
+    private bool HasInternetConnection()
+    {
+        return Application.internetReachability != NetworkReachability.NotReachable;
+    }
+    
     private void OnJoinConfirmed()
     {
+        if (!HasInternetConnection())
+        {
+            if (joinStatusText != null)
+            {
+                joinStatusText.text = "No internet connection. Please check your connection and try again.";
+                joinStatusText.gameObject.SetActive(true);
+                StartCoroutine(HideStatusAfterDelay(3f));
+            }
+            return;
+        }
+        
         if (networkStarter != null && joinCodeInputField != null && !string.IsNullOrWhiteSpace(joinCodeInputField.text))
         {
             string joinCode = joinCodeInputField.text.Trim().ToUpper();
@@ -174,8 +208,13 @@ public class MainMenu : MonoBehaviour
                         if (joinStatusText != null)
                         {
                             joinStatusText.text = "Game not found. Please check the code.";
+                            joinStatusText.gameObject.SetActive(true);
                             StartCoroutine(HideStatusAfterDelay(3f));
                         }
+                        // Keep the join panel open and re-enable input
+                        joinCodeInputField.text = "";
+                        joinCodeInputField.Select();
+                        joinCodeInputField.ActivateInputField();
                         Debug.LogError("Failed to join room. Please check the join code and try again.");
                     }
                 });
@@ -199,6 +238,12 @@ public class MainMenu : MonoBehaviour
     {
         mainMenuPanel.SetActive(false);
         lobbyPanel.SetActive(true);
+        
+        // Hide the join code input panel when successfully joining a lobby
+        if (joinCodeInputPanel != null)
+        {
+            joinCodeInputPanel.SetActive(false);
+        }
 
         // Disable changing name once in a lobby
         if (changeUserNameButton != null)

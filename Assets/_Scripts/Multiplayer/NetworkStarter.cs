@@ -271,7 +271,15 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     {
         Debug.Log($"[Network] Shutdown: {shutdownReason}");
 
-        // Use the dispatcher to ensure UI updates happen on the main thread
+        // If the shutdown was caused by a failed join attempt, don't reset the whole UI.
+        // The join failure logic in MainMenu will handle the UI updates.
+        if (shutdownReason == ShutdownReason.GameNotFound || shutdownReason == ShutdownReason.InvalidAuthentication)
+        {
+            _runner = null;
+            return;
+        }
+
+        // For all other shutdown reasons (e.g., host leaving), reset to the main menu.
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             var mainMenu = FindObjectOfType<MainMenu>();

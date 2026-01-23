@@ -86,7 +86,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             .Select(s => s[UnityEngine.Random.Range(0, s.Length)]).ToArray());
     }
 
-
     public async void StartHost(Action<bool> onRoomReady = null)
     {
         if (_isShuttingDown) return;
@@ -110,7 +109,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             // Generate and store the join code
             CurrentJoinCode = GenerateJoinCode();
             Debug.Log($"[NetworkStarter] Generated join code: {CurrentJoinCode}");
-
+            
             // Basic network settings - using only standard Fusion properties
             var startGameArgs = new StartGameArgs()
             {
@@ -119,6 +118,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 PlayerCount = _maxPlayers,
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager,
+                // Standard Fusion properties
                 ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>()
             };
             
@@ -183,90 +183,53 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
     public async void JoinSession(string sessionCode, Action<bool> onComplete = null)
     {
-        if (_isShuttingDown || string.IsNullOrEmpty(sessionCode))
-        {
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                onComplete?.Invoke(false);
-            });
-            return;
-        }
+        if (_isShuttingDown || string.IsNullOrEmpty(sessionCode)) return;
         
         InitializeRunner();
         
         if (_runner == null)
         {
             Debug.LogError("Failed to initialize NetworkRunner!");
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                onComplete?.Invoke(false);
-            });
             return;
         }
 
         if (_runner.IsRunning)
         {
             Debug.LogWarning("NetworkRunner is already running!");
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                onComplete?.Invoke(false);
-            });
             return;
         }
 
         try
         {
-            // Normalize the session code to match host format (uppercase, trimmed)
-            string normalizedCode = sessionCode.Trim().ToUpper();
-            
             var startGameArgs = new StartGameArgs()
             {
                 GameMode = Fusion.GameMode.Client,
-                SessionName = normalizedCode,
-                Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
-                SceneManager = _sceneManager
+                SessionName = sessionCode.Trim()
             };
 
-            Debug.Log($"[NetworkStarter] Attempting to join session: {normalizedCode}");
+            Debug.Log($"Joining session: {sessionCode}");
             
-            // Add timeout for join attempt
-            var startTask = _runner.StartGame(startGameArgs);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(15)); // 15 second timeout for joining
-            var completedTask = await Task.WhenAny(startTask, timeoutTask);
-
-            if (completedTask == timeoutTask)
-            {
-                Debug.LogError("[NetworkStarter] Join attempt timed out!");
-                await ShutdownRunner();
-                UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    onComplete?.Invoke(false);
-                });
-                return;
-            }
-
-            var result = await startTask;
+            var result = await _runner.StartGame(startGameArgs);
 
             if (result.Ok)
             {
-                Debug.Log($"[NetworkStarter] Successfully joined session: {normalizedCode}");
-                UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    onComplete?.Invoke(true);
-                });
+                Debug.Log($"Successfully joined session: {sessionCode}");
+                onComplete?.Invoke(true);
             }
             else
             {
-                string error = $"Failed to Join Session '{normalizedCode}': {result.ShutdownReason}";
+                string error = $"Failed to Join Session: {result.ShutdownReason}";
                 Debug.LogError(error);
+                onComplete?.Invoke(false);
                 
-                // Ensure callback is on main thread
-                UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    onComplete?.Invoke(false);
-                });
+                // Show error to user (you might want to show this in the UI)
+                // For now, we'll just log it
+                Debug.LogError(error);
             }
         }
         catch (Exception e)
         {
-            Debug.LogError($"[NetworkStarter] Error joining session: {e.Message}\n{e.StackTrace}");
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                onComplete?.Invoke(false);
-            });
+            Debug.LogError($"Error joining session: {e}");
         }
     }
 

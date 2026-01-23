@@ -136,9 +136,11 @@ public class LobbyUIManager : MonoBehaviour
         foreach (var msg in messages)
         {
             string colorHex = ColorUtility.ToHtmlStringRGB(msg.PlayerColor);
+            Debug.Log($"Player: {msg.PlayerName}, Color: {msg.PlayerColor}, Hex: {colorHex}");
             chatLog += $"<b><color=#{colorHex}>{msg.PlayerName}:</color></b> {msg.Message}\n";
         }
         chatContent.text = chatLog;
+        Debug.Log($"Chat text set to: {chatLog}");
     }
 
 
@@ -170,8 +172,8 @@ public class LobbyUIManager : MonoBehaviour
         if (mapButton != null) 
         {
             mapButton.interactable = isHost;
-            // Map options are now handled by the button's click handler
-            // The actual dropdown is a child component that will be shown on click
+            mapButton.ClearOptions();
+            mapButton.AddOptions(mapOptions);
         }
 
         if (modeDropdown != null)

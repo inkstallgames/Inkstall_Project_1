@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using Photon.Realtime;
 
 public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -75,6 +76,14 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 {
                     _sceneManager = _runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
                 }
+
+                // Set a fixed region to ensure all players connect to the same server
+                var appSettings = Photon.Realtime.PhotonAppSettings.Instance;
+                if (appSettings != null && string.IsNullOrEmpty(appSettings.AppSettings.FixedRegion))
+                {
+                    appSettings.AppSettings.FixedRegion = "us"; // You can change this to your preferred region (e.g., "eu", "asia")
+                    Debug.Log($"[NetworkStarter] Set Photon region to: {appSettings.AppSettings.FixedRegion}");
+                }
             }
         }
     }
@@ -127,7 +136,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
             // Start with timeout
             var startTask = _runner.StartGame(startGameArgs);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(10)); // 10 second timeout
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(20)); // 20 second timeout
             var completedTask = await Task.WhenAny(startTask, timeoutTask);
 
             if (completedTask == timeoutTask)
@@ -269,7 +278,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-        Debug.Log($"[Network] Shutdown: {shutdownReason}");
+        Debug.LogWarning($"[Network] Runner Shutdown. Reason: {shutdownReason}");
 
         // If the shutdown was caused by a failed join attempt, don't reset the whole UI.
         // The join failure logic in MainMenu will handle the UI updates.
@@ -329,3 +338,4 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 }
+ 

@@ -86,6 +86,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             .Select(s => s[UnityEngine.Random.Range(0, s.Length)]).ToArray());
     }
 
+
     public async void StartHost(Action<bool> onRoomReady = null)
     {
         if (_isShuttingDown) return;
@@ -109,7 +110,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             // Generate and store the join code
             CurrentJoinCode = GenerateJoinCode();
             Debug.Log($"[NetworkStarter] Generated join code: {CurrentJoinCode}");
-            
+
             // Basic network settings - using only standard Fusion properties
             var startGameArgs = new StartGameArgs()
             {
@@ -118,7 +119,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 PlayerCount = _maxPlayers,
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager,
-                // Standard Fusion properties
                 ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>()
             };
             

@@ -28,8 +28,18 @@ public class HeroSelection : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void Lockin()
     {
-        
+        if (selectedButton != null)
+        {
+            var colors = selectedButton.colors;
+            colors.disabledColor = colors.pressedColor;
+            selectedButton.colors = colors;
+        }
+
+        foreach (var button in heroButtons)
+        {
+            button.interactable = false;
+        }
     }
 }

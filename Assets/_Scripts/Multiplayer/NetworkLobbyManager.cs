@@ -314,14 +314,25 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         if (uiManager == null) return;
 
-        uiManager.mapDropdown.SetValueWithoutNotify(SelectedMapIndex);
-        uiManager.modeDropdown.SetValueWithoutNotify(SelectedModeIndex);
-        uiManager.timeDropdown.SetValueWithoutNotify(SelectedTimeIndex);
-
+        // Update button interactability based on host status
         bool isHost = Runner.IsServer;
-        uiManager.mapDropdown.interactable = isHost;
-        uiManager.modeDropdown.interactable = isHost;
-        uiManager.timeDropdown.interactable = isHost;
+        
+        if (uiManager.mapButton != null)
+        {
+            uiManager.mapButton.interactable = isHost;
+        }
+        
+        if (uiManager.modeDropdown != null)
+        {
+            uiManager.modeDropdown.SetValueWithoutNotify(SelectedModeIndex);
+            uiManager.modeDropdown.interactable = isHost;
+        }
+        
+        if (uiManager.timeDropdown != null)
+        {
+            uiManager.timeDropdown.SetValueWithoutNotify(SelectedTimeIndex);
+            uiManager.timeDropdown.interactable = isHost;
+        }
     }
 
     // RPCs

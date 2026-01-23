@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
-using Photon.Realtime;
 
 public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -76,14 +75,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 {
                     _sceneManager = _runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
                 }
-
-                // Set a fixed region to ensure all players connect to the same server
-                var appSettings = Photon.Realtime.PhotonAppSettings.Instance;
-                if (appSettings != null && string.IsNullOrEmpty(appSettings.AppSettings.FixedRegion))
-                {
-                    appSettings.AppSettings.FixedRegion = "us"; // You can change this to your preferred region (e.g., "eu", "asia")
-                    Debug.Log($"[NetworkStarter] Set Photon region to: {appSettings.AppSettings.FixedRegion}");
-                }
             }
         }
     }
@@ -118,6 +109,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             // Generate and store the join code
             CurrentJoinCode = GenerateJoinCode();
             Debug.Log($"[NetworkStarter] Generated join code: {CurrentJoinCode}");
+            Debug.Log($"[NetworkStarter] Attempting to connect to Photon Cloud...");
             
             // Basic network settings - using only standard Fusion properties
             var startGameArgs = new StartGameArgs()
@@ -136,7 +128,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
             // Start with timeout
             var startTask = _runner.StartGame(startGameArgs);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(20)); // 20 second timeout
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30)); // 30 second timeout for cloud connection
             var completedTask = await Task.WhenAny(startTask, timeoutTask);
 
             if (completedTask == timeoutTask)
@@ -192,53 +184,90 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
     public async void JoinSession(string sessionCode, Action<bool> onComplete = null)
     {
-        if (_isShuttingDown || string.IsNullOrEmpty(sessionCode)) return;
+        if (_isShuttingDown || string.IsNullOrEmpty(sessionCode))
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                onComplete?.Invoke(false);
+            });
+            return;
+        }
         
         InitializeRunner();
         
         if (_runner == null)
         {
             Debug.LogError("Failed to initialize NetworkRunner!");
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                onComplete?.Invoke(false);
+            });
             return;
         }
 
         if (_runner.IsRunning)
         {
             Debug.LogWarning("NetworkRunner is already running!");
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                onComplete?.Invoke(false);
+            });
             return;
         }
 
         try
         {
+            // Normalize the session code to match host format (uppercase, trimmed)
+            string normalizedCode = sessionCode.Trim().ToUpper();
+            
             var startGameArgs = new StartGameArgs()
             {
                 GameMode = Fusion.GameMode.Client,
-                SessionName = sessionCode.Trim()
+                SessionName = normalizedCode,
+                Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
+                SceneManager = _sceneManager
             };
 
-            Debug.Log($"Joining session: {sessionCode}");
+            Debug.Log($"[NetworkStarter] Attempting to join session: {normalizedCode}");
             
-            var result = await _runner.StartGame(startGameArgs);
+            // Add timeout for join attempt
+            var startTask = _runner.StartGame(startGameArgs);
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30)); // 30 second timeout for joining
+            var completedTask = await Task.WhenAny(startTask, timeoutTask);
+
+            if (completedTask == timeoutTask)
+            {
+                Debug.LogError("[NetworkStarter] Join attempt timed out!");
+                await ShutdownRunner();
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    onComplete?.Invoke(false);
+                });
+                return;
+            }
+
+            var result = await startTask;
 
             if (result.Ok)
             {
-                Debug.Log($"Successfully joined session: {sessionCode}");
-                onComplete?.Invoke(true);
+                Debug.Log($"[NetworkStarter] Successfully joined session: {normalizedCode}");
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    onComplete?.Invoke(true);
+                });
             }
             else
             {
-                string error = $"Failed to Join Session: {result.ShutdownReason}";
+                string error = $"Failed to Join Session '{normalizedCode}': {result.ShutdownReason}";
                 Debug.LogError(error);
-                onComplete?.Invoke(false);
                 
-                // Show error to user (you might want to show this in the UI)
-                // For now, we'll just log it
-                Debug.LogError(error);
+                // Ensure callback is on main thread
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    onComplete?.Invoke(false);
+                });
             }
         }
         catch (Exception e)
         {
-            Debug.LogError($"Error joining session: {e}");
+            Debug.LogError($"[NetworkStarter] Error joining session: {e.Message}\n{e.StackTrace}");
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                onComplete?.Invoke(false);
+            });
         }
     }
 
@@ -278,7 +307,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-        Debug.LogWarning($"[Network] Runner Shutdown. Reason: {shutdownReason}");
+        Debug.Log($"[Network] Shutdown: {shutdownReason}");
 
         // If the shutdown was caused by a failed join attempt, don't reset the whole UI.
         // The join failure logic in MainMenu will handle the UI updates.
@@ -310,8 +339,12 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     public void OnConnectedToServer(NetworkRunner runner) => Debug.Log("[Network] Connected to server");
     public void OnDisconnectedFromServer(NetworkRunner runner) => Debug.Log("[Network] Disconnected from server");
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
-    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) => 
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
+    {
         Debug.LogError($"[Network] Connect failed: {reason}");
+        Debug.LogError($"[Network] Remote Address: {remoteAddress}");
+        Debug.LogError($"[Network] Check firewall/antivirus settings if this persists");
+    }
     
     // Unused callbacks with empty implementations
     public void OnInput(NetworkRunner runner, NetworkInput input) {}

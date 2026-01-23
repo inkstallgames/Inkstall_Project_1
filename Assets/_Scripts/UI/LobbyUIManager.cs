@@ -65,7 +65,7 @@ public class LobbyUIManager : MonoBehaviour
             startGameButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.StartGame());
             
         if (mapButton != null)
-            mapButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.OnMapSelectionChanged(mapButton.GetComponent<TMP_Dropdown>().value));
+            mapButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.OnMapSelectionChanged(0));
             
         if (modeDropdown != null)
             modeDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance?.OnModeSelectionChanged(val));
@@ -172,8 +172,6 @@ public class LobbyUIManager : MonoBehaviour
         if (mapButton != null) 
         {
             mapButton.interactable = isHost;
-            mapButton.ClearOptions();
-            mapButton.AddOptions(mapOptions);
         }
 
         if (modeDropdown != null)

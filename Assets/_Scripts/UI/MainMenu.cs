@@ -87,7 +87,7 @@ public class MainMenu : MonoBehaviour
             }
             return;
         }
-
+        
         if (networkStarter != null)
         {
             // Disable button to prevent multiple clicks
@@ -165,7 +165,7 @@ public class MainMenu : MonoBehaviour
         {
             if (joinStatusText != null)
             {
-                joinStatusText.text = "No internet connection. Please check your connection and try again.";
+                joinStatusText.text = "No internet connection. Please try again.";
                 joinStatusText.gameObject.SetActive(true);
                 StartCoroutine(HideStatusAfterDelay(3f));
             }
@@ -228,6 +228,7 @@ public class MainMenu : MonoBehaviour
             if (joinStatusText != null)
             {
                 joinStatusText.text = "Please enter a valid join code";
+                joinStatusText.gameObject.SetActive(true);
                 StartCoroutine(HideStatusAfterDelay(3f));
             }
             Debug.LogError("Please enter a valid join code");

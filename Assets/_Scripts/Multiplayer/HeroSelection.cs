@@ -2,29 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class HeroSelection : MonoBehaviour
 {
-    public List<Button> heroButtons;
-    private Button selectedButton;
-
+    public List<HeroButton> heroButtons;
+    private HeroButton selectedButton;
+    public TextMeshProUGUI heroNameText;
+    public TextMeshProUGUI heroDescriptionText;
+    public TextMeshProUGUI Timer;
     void Start()
     {
-        foreach (Button button in heroButtons)
+        foreach (HeroButton heroBtn in heroButtons)
         {
-            button.onClick.AddListener(() => Select(button));
+            Button button = heroBtn.GetComponent<Button>();
+            button.onClick.AddListener(() => Select(heroBtn));
+        }
+
+        StartCoroutine(Countdown());
+
+        // Select the first hero by default
+        if (heroButtons.Count > 0)
+        {
+            Select(heroButtons[0]);
         }
     }
 
-    void Select(Button button)
+    void Select(HeroButton heroBtn)
     {
         if (selectedButton != null)
         {
-            selectedButton.interactable = true;
+            selectedButton.GetComponent<Button>().interactable = true;
         }
 
-        button.interactable = false;
-        selectedButton = button;
+        heroBtn.GetComponent<Button>().interactable = false;
+        selectedButton = heroBtn;
+
+        // Update UI Text
+        if (heroBtn.heroData != null)
+        {
+            heroNameText.text = heroBtn.heroData.heroName;
+            heroDescriptionText.text = heroBtn.heroData.heroDescription;
+        }
     }
 
     // Update is called once per frame
@@ -32,14 +51,40 @@ public class HeroSelection : MonoBehaviour
     {
         if (selectedButton != null)
         {
-            var colors = selectedButton.colors;
+            Button selectedUIButton = selectedButton.GetComponent<Button>();
+            var colors = selectedUIButton.colors;
             colors.disabledColor = colors.pressedColor;
-            selectedButton.colors = colors;
+            selectedUIButton.colors = colors;
         }
 
-        foreach (var button in heroButtons)
+        foreach (var heroBtn in heroButtons)
         {
-            button.interactable = false;
+            heroBtn.GetComponent<Button>().interactable = false;
         }
     }
+
+    private IEnumerator Countdown()
+    {
+        float duration = 30f;
+        float timer = duration;
+
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            UpdateTimer(timer);
+            yield return null;
+        }
+
+        UpdateTimer(0);
+        Lockin();
+    }
+
+    public void UpdateTimer(float time)
+    {
+        if (time < 0) time = 0;
+        Timer.text = time.ToString("00");
+    }
+
+
+
 }

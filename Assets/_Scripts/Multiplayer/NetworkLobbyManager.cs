@@ -1,4 +1,5 @@
 using Fusion;
+using Fusion.Sockets;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +25,8 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Networked] public int SelectedMapIndex { get; set; }
     [Networked] public int SelectedModeIndex { get; set; }
     [Networked] public int SelectedTimeIndex { get; set; }
+
+    [Networked, OnChangedRender(nameof(OnHeroSelectionStateChanged))] public bool IsHeroSelectionActive { get; set; }
 
     private readonly List<string> mapOptions = new List<string> { "Map 1", "Map 2", "Map 3" };
     private readonly List<string> timeOptions = new List<string> { "3:00", "5:00", "10:00" };
@@ -231,14 +234,8 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         if (Runner.IsServer)
         {
-            // Start the game with selected settings
-            GameMode gameMode = (GameMode)SelectedModeIndex;
-            int gameTime = timeInSeconds[SelectedTimeIndex];
-            string sceneName = mapOptions[SelectedMapIndex];
-
-            // TODO: Replace with actual scene loading logic
-            Debug.Log($"Starting game on {sceneName} with mode {gameMode} for {gameTime}s");
-            NetworkGameManager.Instance.StartGame(gameMode, gameTime, sceneName);
+            // Instead of starting the game, we now activate the hero selection phase.
+            IsHeroSelectionActive = true;
         }
     }
 
@@ -409,6 +406,17 @@ public class NetworkLobbyManager : NetworkBehaviour
             {
                 LobbyPlayers.Remove(player);
                 UpdateLobbyUI();
+            }
+        }
+    }
+
+    public void OnHeroSelectionStateChanged()
+    {
+        if (IsHeroSelectionActive)
+        {
+            if (LobbyUIManager.Instance != null)
+            {
+                LobbyUIManager.Instance.ShowHeroSelectionPanel(true);
             }
         }
     }

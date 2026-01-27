@@ -279,7 +279,6 @@ public class NetworkLobbyManager : NetworkBehaviour
             {
                 bool allReady = LobbyPlayers.Count >= minPlayersToStart && 
                               LobbyPlayers.All(p => p.Value.IsReady);
-                uiManager.SetStartButtonState(allReady);
             }
         }
     }
@@ -303,7 +302,6 @@ public class NetworkLobbyManager : NetworkBehaviour
         if (Runner.IsServer)
         {
             bool allReady = LobbyPlayers.Count >= minPlayersToStart && LobbyPlayers.All(p => p.Value.IsReady);
-            uiManager.SetStartButtonState(allReady);
         }
     }
 

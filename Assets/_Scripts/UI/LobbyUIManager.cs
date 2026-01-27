@@ -166,7 +166,6 @@ public class LobbyUIManager : MonoBehaviour
         if (startGameButton != null) 
         {
             startGameButton.gameObject.SetActive(isHost);
-            startGameButton.interactable = false; // Disable until room is ready
         }
         
         // Only host can interact with game settings
@@ -248,14 +247,6 @@ public class LobbyUIManager : MonoBehaviour
         if (joinCodeText != null)
         {
             joinCodeText.text = "";
-        }
-    }
-
-    public void SetStartButtonState(bool interactable)
-    {
-        if (startGameButton != null)
-        {
-            startGameButton.interactable = interactable;
         }
     }
 

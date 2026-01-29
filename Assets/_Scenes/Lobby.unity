@@ -2573,6 +2573,7 @@ MonoBehaviour:
     type: 3}
   joinCodeText: {fileID: 1249020709}
   lobbyStatusText: {fileID: 359000645}
+  notificationText: {fileID: 0}
   readyButton: {fileID: 80775353}
   startGameButton: {fileID: 187963820}
   leaveButton: {fileID: 704183304}
@@ -7123,7 +7124,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.15040982, g: 1, b: 0, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -12233,10 +12234,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heroPrefabs:
-  - {fileID: 6253451510713049805, guid: abb445046943392458fcf1b8904d66cb, type: 3}
-  - {fileID: 7703202293754620781, guid: 992888de14613c14ba68710c7d8689d8, type: 3}
-  - {fileID: 3554656709769639163, guid: d174f4f4194fc04438293a47f6488f17, type: 3}
-  - {fileID: -3601060146899358, guid: b5f844e4141efbd4d9752186f5cc861d, type: 3}
+  - {fileID: 8741235711646507819, guid: 2a87f7abf71fcfb4f947ac376007aa7e, type: 3}
+  - {fileID: 8741235711646507819, guid: d0a958100ccbde44eb504cb82eac741c, type: 3}
+  - {fileID: 8741235711646507819, guid: aa44e8c95b88d174abb4cfddf9efac67, type: 3}
+  - {fileID: 8741235711646507819, guid: d372f4f23d302844ab14050c302fc486, type: 3}
 --- !u!4 &1832839268
 Transform:
   m_ObjectHideFlags: 0

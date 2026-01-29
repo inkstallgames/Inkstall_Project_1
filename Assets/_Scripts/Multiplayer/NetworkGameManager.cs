@@ -84,6 +84,15 @@ public class NetworkGameManager : NetworkBehaviour
         }
 
         playerSpawner = FindObjectOfType<NetworkPlayerSpawner>();
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        if (scene.name == "MallMap")
+        {
+            FindAndAssignSpawnPoints();
+        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -178,7 +187,7 @@ public class NetworkGameManager : NetworkBehaviour
             return redTeamSpawns[Random.Range(0, redTeamSpawns.Length)];
         
         // If no spawn points are set, use the game object's position
-        Debug.LogWarning($"No spawn points found for team {teamId}, using default position");
+        Debug.LogWarning($"No spawn points configured for team {teamId} in NetworkGameManager. Assign spawn points in the inspector. Using default position.");
         return transform;
     }
     
@@ -241,10 +250,51 @@ public class NetworkGameManager : NetworkBehaviour
         }
     }
 
+    private void FindAndAssignSpawnPoints()
+    {
+        Debug.Log("Finding and assigning spawn points...");
+
+        var spawnPointObjects = GameObject.FindGameObjectsWithTag("SpawnPoint");
+
+        var generalSpawns = new List<Transform>();
+        var blueSpawns = new List<Transform>();
+        var redSpawns = new List<Transform>();
+
+        foreach (var spawnObj in spawnPointObjects)
+        {
+            var spawnPointComponent = spawnObj.GetComponent<PlayerSpawnPoint>();
+            if (spawnPointComponent != null)
+            {
+                switch (spawnPointComponent.teamId)
+                {
+                    case 0: // Blue team
+                        blueSpawns.Add(spawnObj.transform);
+                        break;
+                    case 1: // Red team
+                        redSpawns.Add(spawnObj.transform);
+                        break;
+                    default: // Free for all (-1 or any other value)
+                        generalSpawns.Add(spawnObj.transform);
+                        break;
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"GameObject {spawnObj.name} has 'SpawnPoint' tag but no PlayerSpawnPoint component.");
+            }
+        }
+
+        spawnPoints = generalSpawns.ToArray();
+        blueTeamSpawns = blueSpawns.ToArray();
+        redTeamSpawns = redSpawns.ToArray();
+
+        Debug.Log($"Found {spawnPoints.Length} general, {blueTeamSpawns.Length} blue, and {redTeamSpawns.Length} red spawn points.");
+    }
+
     private void InitializeGame()
     {
         if (!Runner.IsServer) return;
-        
+
         Debug.Log("[NetworkGameManager] Initializing game...");
         
         // Reset all players

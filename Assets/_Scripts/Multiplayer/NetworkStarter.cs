@@ -303,16 +303,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer)
         {
             UnityEngine.Debug.Log("[NetworkStarter] Server is processing player join...");
-            // Only spawn players in the game scene
-            if (currentScene.name != "Lobby")
-            {
-                UnityEngine.Debug.Log("[NetworkStarter] Not in Lobby, attempting to spawn player...");
-                SpawnPlayer(runner, player);
-            }
-            else
-            {
-                UnityEngine.Debug.Log("[NetworkStarter] In Lobby, player spawning is handled by lobby manager");
-            }
+            // Player spawning is now handled by the NetworkLobbyManager
         }
         else
         {

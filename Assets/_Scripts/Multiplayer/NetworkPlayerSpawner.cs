@@ -27,9 +27,11 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
         lobbyManager = FindObjectOfType<NetworkLobbyManager>();
         gameManager = NetworkGameManager.Instance;
         
+        Debug.Log($"Found {spawnPoints.Count} spawn points in the scene.");
+
         if (spawnPoints.Count == 0)
         {
-            Debug.LogWarning("No spawn points found in the scene. Using default spawn behavior.");
+            Debug.LogError("No spawn points found in the scene. Players will spawn at the world origin.");
         }
     }
 
@@ -137,23 +139,9 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
             return spawnPoint.transform.position;
         }
         
-        // Fallback to random position in spawn area
-        Debug.LogWarning("No spawn points found. Using random spawn position.");
-        
-        // Try to find a valid position on the ground
-        for (int i = 0; i < maxSpawnAttempts; i++)
-        {
-            Vector2 randomCircle = Random.insideUnitCircle * spawnRadius;
-            Vector3 randomPosition = new Vector3(randomCircle.x, 10f, randomCircle.y);
-            
-            if (Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 20f, groundLayer))
-            {
-                return hit.point + Vector3.up * 1f; // Slightly above ground
-            }
-        }
-        
-        // If all else fails, return a default position
-        return Vector3.up * 2f;
+        // Fallback to world origin if no spawn points are available
+        Debug.LogError("No available spawn points. Spawning at world origin.");
+        return Vector3.zero;
     }
 
     // Empty required callbacks

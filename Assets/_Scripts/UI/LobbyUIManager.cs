@@ -15,6 +15,7 @@ public class LobbyUIManager : MonoBehaviour
     public GameObject lobbyPanel;
     public GameObject heroSelectionPanel;
     public GameObject inGameUIPanel;
+    public GameObject loadingScreenPanel;
 
     [Header("Host Settings")]
     public Button mapButton;
@@ -27,7 +28,8 @@ public class LobbyUIManager : MonoBehaviour
 
     [Header("Join Info")]
     public TextMeshProUGUI joinCodeText;
-    public TextMeshProUGUI lobbyStatusText; // Used for 'Creating room...' message
+        public TextMeshProUGUI lobbyStatusText; // Used for 'Creating room...' message
+    public TextMeshProUGUI notificationText; // Used for general notifications
 
     [Header("Player Controls")]
     public Button readyButton;
@@ -137,11 +139,9 @@ public class LobbyUIManager : MonoBehaviour
         foreach (var msg in messages)
         {
             string colorHex = ColorUtility.ToHtmlStringRGB(msg.PlayerColor);
-            Debug.Log($"Player: {msg.PlayerName}, Color: {msg.PlayerColor}, Hex: {colorHex}");
             chatLog += $"<b><color=#{colorHex}>{msg.PlayerName}:</color></b> {msg.Message}\n";
         }
         chatContent.text = chatLog;
-        Debug.Log($"Chat text set to: {chatLog}");
     }
 
 
@@ -156,11 +156,24 @@ public class LobbyUIManager : MonoBehaviour
         // Initialize UI state
         isHost = isHostPlayer;
         
-        // Show/hide buttons based on host/client role
-        if (readyButton != null) 
+        // Show ready button only for clients, show start button for host
+        if (isHostPlayer)
         {
-            readyButton.gameObject.SetActive(!isHost);
-            readyButton.interactable = !isHost;
+            // Host always shows start button and is always ready
+            if (readyButton != null) readyButton.gameObject.SetActive(false);
+            if (startGameButton != null) startGameButton.gameObject.SetActive(true);
+            
+        }
+        else
+        {
+            // Clients see the ready button
+            if (readyButton != null) 
+            {
+                readyButton.gameObject.SetActive(true);
+                readyButton.interactable = true;
+                SetReadyButtonState(false); // Start as not ready for clients
+            }
+            if (startGameButton != null) startGameButton.gameObject.SetActive(false);
         }
         
         if (startGameButton != null) 
@@ -188,12 +201,8 @@ public class LobbyUIManager : MonoBehaviour
             timeDropdown.AddOptions(timeOptions);
         }
         
-        // Host is automatically ready once room is created
-        if (isHost && NetworkLobbyManager.Instance != null)
-        {
-            // We'll call ToggleReadyStatus after room is fully created
-            // This will be handled by the NetworkLobbyManager
-        }
+        // Host starts as not ready and must click ready like everyone else
+        // The NetworkLobbyManager will handle the initial state
     }
 
     public void UpdatePlayerList(Dictionary<int, PlayerLobbyData> players)
@@ -250,22 +259,51 @@ public class LobbyUIManager : MonoBehaviour
         }
     }
 
-    public void SetReadyButtonState(bool isReady)
+        public void SetReadyButtonState(bool isReady)
     {
         readyButtonText.text = isReady ? "Ready" : "Not Ready";
     }
 
+    public void ShowMessage(string message)
+    {
+        if (notificationText != null)
+        {
+            notificationText.text = message;
+            notificationText.gameObject.SetActive(true);
+            StartCoroutine(HideMessageAfterDelay(3f));
+        }
+    }
+
+    private System.Collections.IEnumerator HideMessageAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (notificationText != null)
+        {
+            notificationText.gameObject.SetActive(false);
+        }
+    }
+
     public void ShowLobby(bool show)
     {
-        lobbyPanel.SetActive(show);
+        if(lobbyPanel != null) lobbyPanel.SetActive(show);
         if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
         if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
+        if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
     }
 
     public void ShowHeroSelectionPanel(bool show)
     {
         if (lobbyPanel != null) lobbyPanel.SetActive(!show);
         if (heroSelectionPanel != null) heroSelectionPanel.SetActive(show);
+        if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
+        if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
+    }
+
+    public void ShowLoadingScreen()
+    {
+        if (loadingScreenPanel != null) loadingScreenPanel.SetActive(true);
+        if (lobbyPanel != null) lobbyPanel.SetActive(false);
+        if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
         if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
     }
 }

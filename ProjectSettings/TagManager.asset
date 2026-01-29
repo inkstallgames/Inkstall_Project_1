@@ -16,6 +16,7 @@ TagManager:
   - BuildingCollider
   - BuildingPortal
   - CollectPointsTextTag
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

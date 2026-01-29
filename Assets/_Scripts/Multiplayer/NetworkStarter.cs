@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
+// Removed System.Diagnostics to avoid ambiguity with UnityEngine.Debug
 
 public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -46,7 +47,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         {
             // Preload network prefabs
             var prefabs = Resources.LoadAll<NetworkObject>("");
-            Debug.Log($"[NetworkStarter] Prewarming {prefabs.Length} network prefabs");
+            UnityEngine.Debug.Log($"[NetworkStarter] Prewarming {prefabs.Length} network prefabs");
             
             // Warm up the network transport layer
             await Task.Delay(100); // Small delay to allow Unity to initialize
@@ -96,20 +97,20 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             
             if (_runner == null)
             {
-                Debug.LogError("Failed to initialize NetworkRunner!");
+                UnityEngine.Debug.LogError("Failed to initialize NetworkRunner!");
                 return;
             }
 
             if (_runner.IsRunning)
             {
-                Debug.LogWarning("NetworkRunner is already running!");
+                UnityEngine.Debug.LogWarning("NetworkRunner is already running!");
                 return;
             }
 
             // Generate and store the join code
             CurrentJoinCode = GenerateJoinCode();
-            Debug.Log($"[NetworkStarter] Generated join code: {CurrentJoinCode}");
-            Debug.Log($"[NetworkStarter] Attempting to connect to Photon Cloud...");
+            UnityEngine.Debug.Log($"[NetworkStarter] Generated join code: {CurrentJoinCode}");
+            UnityEngine.Debug.Log($"[NetworkStarter] Attempting to connect to Photon Cloud...");
             
             // Basic network settings - using only standard Fusion properties
             var startGameArgs = new StartGameArgs()
@@ -133,7 +134,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
             if (completedTask == timeoutTask)
             {
-                Debug.LogError("Host start timed out!");
+                UnityEngine.Debug.LogError("Host start timed out!");
                 await ShutdownRunner();
                 return;
             }
@@ -142,11 +143,11 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
             if (result.Ok)
             {
-                Debug.Log("[NetworkStarter] Host started successfully");
+                UnityEngine.Debug.Log("[NetworkStarter] Host started successfully");
                 
                 if (_runner.IsServer && _lobbyManagerPrefab != null)
                 {
-                    Debug.Log("[NetworkStarter] Spawning LobbyManager...");
+                    UnityEngine.Debug.Log("[NetworkStarter] Spawning LobbyManager...");
                     _runner.Spawn(_lobbyManagerPrefab);
                 }
 
@@ -162,22 +163,22 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             else
             {
                 string error = $"Failed to Start Host: {result.ShutdownReason}";
-                Debug.LogError(error);
+                UnityEngine.Debug.LogError(error);
                 // Show error to user and notify room creation failed
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
                     onRoomReady?.Invoke(false);
-                    Debug.LogError(error);
+                    UnityEngine.Debug.LogError(error);
                 });
             }
         }
         catch (Exception e)
         {
             string error = $"Error starting host: {e.Message}";
-            Debug.LogError(error);
+            UnityEngine.Debug.LogError(error);
             // Show error to user and notify room creation failed
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 onRoomReady?.Invoke(false);
-                Debug.LogError(error);
+                UnityEngine.Debug.LogError(error);
             });
         }
     }
@@ -196,7 +197,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         
         if (_runner == null)
         {
-            Debug.LogError("Failed to initialize NetworkRunner!");
+            UnityEngine.Debug.LogError("Failed to initialize NetworkRunner!");
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 onComplete?.Invoke(false);
             });
@@ -205,7 +206,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
         if (_runner.IsRunning)
         {
-            Debug.LogWarning("NetworkRunner is already running!");
+            UnityEngine.Debug.LogWarning("NetworkRunner is already running!");
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 onComplete?.Invoke(false);
             });
@@ -225,7 +226,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 SceneManager = _sceneManager
             };
 
-            Debug.Log($"[NetworkStarter] Attempting to join session: {normalizedCode}");
+            UnityEngine.Debug.Log($"[NetworkStarter] Attempting to join session: {normalizedCode}");
             
             // Add timeout for join attempt
             var startTask = _runner.StartGame(startGameArgs);
@@ -234,7 +235,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
             if (completedTask == timeoutTask)
             {
-                Debug.LogError("[NetworkStarter] Join attempt timed out!");
+                UnityEngine.Debug.LogError("[NetworkStarter] Join attempt timed out!");
                 await ShutdownRunner();
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
                     onComplete?.Invoke(false);
@@ -246,7 +247,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
             if (result.Ok)
             {
-                Debug.Log($"[NetworkStarter] Successfully joined session: {normalizedCode}");
+                UnityEngine.Debug.Log($"[NetworkStarter] Successfully joined session: {normalizedCode}");
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
                     onComplete?.Invoke(true);
                 });
@@ -254,7 +255,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             else
             {
                 string error = $"Failed to Join Session '{normalizedCode}': {result.ShutdownReason}";
-                Debug.LogError(error);
+                UnityEngine.Debug.LogError(error);
                 
                 // Ensure callback is on main thread
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
@@ -264,7 +265,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         }
         catch (Exception e)
         {
-            Debug.LogError($"[NetworkStarter] Error joining session: {e.Message}\n{e.StackTrace}");
+            UnityEngine.Debug.LogError($"[NetworkStarter] Error joining session: {e.Message}\n{e.StackTrace}");
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 onComplete?.Invoke(false);
             });
@@ -278,12 +279,12 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
         try
         {
-            Debug.Log("[NetworkStarter] Shutting down NetworkRunner...");
+            UnityEngine.Debug.Log("[NetworkStarter] Shutting down NetworkRunner...");
             await _runner.Shutdown();
         }
         catch (Exception e)
         {
-            Debug.LogError($"[NetworkStarter] Error during shutdown: {e}");
+            UnityEngine.Debug.LogError($"[NetworkStarter] Error during shutdown: {e}");
         }
         finally
         {
@@ -295,19 +296,77 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        Debug.Log($"[Network] Player {player.PlayerId} joined");
-        NetworkLobbyManager.Instance?.OnPlayerJoined(player);
+        UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} joined. IsServer: {runner.IsServer}");
+        var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        UnityEngine.Debug.Log($"[NetworkStarter] Current scene: {currentScene.name}");
+
+        if (runner.IsServer)
+        {
+            UnityEngine.Debug.Log("[NetworkStarter] Server is processing player join...");
+            // Only spawn players in the game scene
+            if (currentScene.name != "Lobby")
+            {
+                UnityEngine.Debug.Log("[NetworkStarter] Not in Lobby, attempting to spawn player...");
+                SpawnPlayer(runner, player);
+            }
+            else
+            {
+                UnityEngine.Debug.Log("[NetworkStarter] In Lobby, player spawning is handled by lobby manager");
+            }
+        }
+        else
+        {
+            UnityEngine.Debug.Log("[NetworkStarter] This is a client, not spawning player");
+        }
+
+        var lobbyManager = NetworkLobbyManager.Instance;
+        if (lobbyManager != null)
+        {
+            UnityEngine.Debug.Log("[NetworkStarter] Notifying NetworkLobbyManager about new player");
+            lobbyManager.OnPlayerJoined(player);
+        }
+        else
+        {
+            UnityEngine.Debug.LogError("[NetworkStarter] NetworkLobbyManager.Instance is null!");
+        }
+    }
+
+    private void SpawnPlayer(NetworkRunner runner, PlayerRef player)
+    {
+        if (runner.IsServer)
+        {
+            var playerObject = runner.GetPlayerObject(player);
+            if (playerObject != null) return; // Player already spawned
+
+            if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(player))
+            {
+                var lobbyData = NetworkLobbyManager.Instance.LobbyPlayers[player];
+                int heroId = lobbyData.SelectedHeroId;
+                NetworkObject heroPrefab = HeroManager.Instance.GetHeroPrefab(heroId);
+
+                if (heroPrefab != null)
+                {
+                    Transform spawnPoint = NetworkGameManager.Instance.GetSpawnPoint(lobbyData.TeamID);
+                    NetworkObject networkPlayerObject = runner.Spawn(heroPrefab, spawnPoint.position, spawnPoint.rotation, player);
+                    runner.SetPlayerObject(player, networkPlayerObject);
+                }
+                else
+                {
+                    UnityEngine.Debug.LogError($"Hero prefab with ID {heroId} not found!");
+                }
+            }
+        }
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        Debug.Log($"[Network] Player {player.PlayerId} left");
+        UnityEngine.Debug.Log($"[Network] Player {player.PlayerId} left");
         NetworkLobbyManager.Instance?.OnPlayerLeft(player);
     }
     
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-        Debug.Log($"[Network] Shutdown: {shutdownReason}");
+        UnityEngine.Debug.Log($"[Network] Shutdown: {shutdownReason}");
 
         // If the shutdown was caused by a failed join attempt, don't reset the whole UI.
         // The join failure logic in MainMenu will handle the UI updates.
@@ -328,7 +387,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             else
             {
                 // Fallback to reloading the scene if MainMenu is not found
-                Debug.LogWarning("MainMenu not found, reloading scene as a fallback.");
+                UnityEngine.Debug.LogWarning("MainMenu not found, reloading scene as a fallback.");
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         });
@@ -336,14 +395,14 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         _runner = null;
     }
     
-    public void OnConnectedToServer(NetworkRunner runner) => Debug.Log("[Network] Connected to server");
-    public void OnDisconnectedFromServer(NetworkRunner runner) => Debug.Log("[Network] Disconnected from server");
+    public void OnConnectedToServer(NetworkRunner runner) => UnityEngine.Debug.Log("[Network] Connected to server");
+    public void OnDisconnectedFromServer(NetworkRunner runner) => UnityEngine.Debug.Log("[Network] Disconnected from server");
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
     {
-        Debug.LogError($"[Network] Connect failed: {reason}");
-        Debug.LogError($"[Network] Remote Address: {remoteAddress}");
-        Debug.LogError($"[Network] Check firewall/antivirus settings if this persists");
+        UnityEngine.Debug.LogError($"[Network] Connect failed: {reason}");
+        UnityEngine.Debug.LogError($"[Network] Remote Address: {remoteAddress}");
+        UnityEngine.Debug.LogError($"[Network] Check firewall/antivirus settings if this persists");
     }
     
     // Unused callbacks with empty implementations
@@ -354,7 +413,18 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) {}
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) {}
     public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ArraySegment<byte> data) {}
-    public void OnSceneLoadDone(NetworkRunner runner) {}
+    public void OnSceneLoadDone(NetworkRunner runner)
+    {
+        // This is called on all clients when a new scene is loaded
+        if (runner.IsServer)
+        {
+            // Spawn all players who are already in the lobby
+            foreach (var player in runner.ActivePlayers)
+            {
+                SpawnPlayer(runner, player);
+            }
+        }
+    }
     public void OnSceneLoadStart(NetworkRunner runner) {}
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}

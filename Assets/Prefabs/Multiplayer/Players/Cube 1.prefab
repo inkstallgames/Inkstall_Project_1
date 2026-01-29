@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 8647551420409029784}
   - component: {fileID: 6429052663661974432}
   - component: {fileID: 2954403369633973482}
+  - component: {fileID: 7703202293754620781}
+  - component: {fileID: -3883992420928794794}
+  - component: {fileID: -5577798375755939401}
   m_Layer: 0
   m_Name: Cube 1
   m_TagString: Untagged
@@ -105,3 +108,61 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7703202293754620781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3184549876009858805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 1302941420
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: -3883992420928794794}
+  - {fileID: -5577798375755939401}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &-3883992420928794794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3184549876009858805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a15cc5ee1d1fba646a8e952e50b0f24d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Health: 100
+  _TeamId: -1
+  _PlayerName: 
+  _Kills: 0
+  _Deaths: 0
+  _IsReady: 0
+  nameTag: {fileID: 0}
+  healthBar: {fileID: 0}
+  teamIndicators: []
+--- !u!114 &-5577798375755939401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3184549876009858805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Fusion;
 
 public class HeroSelection : MonoBehaviour
 {
@@ -19,8 +20,6 @@ public class HeroSelection : MonoBehaviour
             button.onClick.AddListener(() => Select(heroBtn));
         }
 
-        StartCoroutine(Countdown());
-
         // Select the first hero by default
         if (heroButtons.Count > 0)
         {
@@ -28,55 +27,61 @@ public class HeroSelection : MonoBehaviour
         }
     }
 
-    void Select(HeroButton heroBtn)
+    public void Select(HeroButton button)
     {
-        if (selectedButton != null)
+        if (button == null) return;
+        
+        if (selectedButton != null && selectedButton != button)
         {
             selectedButton.GetComponent<Button>().interactable = true;
         }
 
-        heroBtn.GetComponent<Button>().interactable = false;
-        selectedButton = heroBtn;
-
+        selectedButton = button;
+        
         // Update UI Text
-        if (heroBtn.heroData != null)
-        {
-            heroNameText.text = heroBtn.heroData.heroName;
-            heroDescriptionText.text = heroBtn.heroData.heroDescription;
-        }
+        if (heroNameText != null) heroNameText.text = button.heroData.heroName;
+        if (heroDescriptionText != null) heroDescriptionText.text = button.heroData.heroDescription;
     }
 
-    // Update is called once per frame
+    // Called when the player clicks the lock in button
     public void Lockin()
     {
-        if (selectedButton != null)
+        if (selectedButton == null) 
         {
+            Debug.Log("No hero selected!");
+            return;
+        }
+
+        int selectedHeroId = heroButtons.IndexOf(selectedButton);
+        if (selectedHeroId == -1)
+        {
+            Debug.LogError("Invalid hero selection!");
+            return;
+        }
+
+        // Check if the hero is already selected by someone else
+        if (NetworkLobbyManager.Instance != null && 
+            NetworkLobbyManager.Instance.SelectedHeroIds.Contains(selectedHeroId))
+        {
+            Debug.Log("This hero is already selected by another player!");
+            return;
+        }
+
+        // Notify the server about the hero selection
+        if (NetworkLobbyManager.Instance != null)
+        {
+            NetworkLobbyManager.Instance.RPC_SetSelectedHero(selectedHeroId);
+
+            // Update the UI to show the selection
             Button selectedUIButton = selectedButton.GetComponent<Button>();
-            var colors = selectedUIButton.colors;
-            colors.disabledColor = colors.pressedColor;
-            selectedUIButton.colors = colors;
+            if (selectedUIButton != null)
+            {
+                var colors = selectedUIButton.colors;
+                colors.disabledColor = colors.pressedColor;
+                selectedUIButton.colors = colors;
+                selectedUIButton.interactable = false;
+            }
         }
-
-        foreach (var heroBtn in heroButtons)
-        {
-            heroBtn.GetComponent<Button>().interactable = false;
-        }
-    }
-
-    private IEnumerator Countdown()
-    {
-        float duration = 30f;
-        float timer = duration;
-
-        while (timer > 0)
-        {
-            timer -= Time.deltaTime;
-            UpdateTimer(timer);
-            yield return null;
-        }
-
-        UpdateTimer(0);
-        Lockin();
     }
 
     public void UpdateTimer(float time)
@@ -85,6 +90,35 @@ public class HeroSelection : MonoBehaviour
         Timer.text = time.ToString("00");
     }
 
-
-
+    public void UpdateAvailableHeroes(NetworkLinkedList<int> selectedIds)
+    {
+        if (heroButtons == null || heroButtons.Count == 0)
+            return;
+            
+        for (int i = 0; i < heroButtons.Count; i++)
+        {
+            if (heroButtons[i] == null) continue;
+            
+            var button = heroButtons[i].GetComponent<Button>();
+            if (button == null) continue;
+            
+            // If this is the selected button, keep it enabled but mark it as selected
+            if (heroButtons[i] == selectedButton)
+            {
+                button.interactable = true;
+                var colors = button.colors;
+                colors.disabledColor = colors.pressedColor;
+                button.colors = colors;
+                button.interactable = false;
+            }
+            else
+            {
+                // Otherwise, enable/disable based on whether the hero is taken
+                button.interactable = !selectedIds.Contains(i);
+            }
+        }
+    }
 }
+
+
+

@@ -86,16 +86,180 @@ public class NetworkGameManager : NetworkBehaviour
         playerSpawner = FindObjectOfType<NetworkPlayerSpawner>();
     }
 
-    public void StartGame(GameMode mode, int time, string sceneName)
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_NotifyGameStarting()
     {
-        if (!Object.HasStateAuthority) return;
+        Debug.Log("[NetworkGameManager] Game is starting, preparing to load scene...");
+        // You can add any client-side preparation here
+    }
 
+    public void StartGame(GameMode mode = GameMode.FreeForAll, int time = 300, string sceneName = null)
+    {
+        if (!Object.HasStateAuthority) 
+        {
+            Debug.LogError("[NetworkGameManager] Only the server can start the game!");
+            return;
+        }
+
+        Debug.Log($"[NetworkGameManager] Starting game with mode: {mode}, time: {time}, scene: {sceneName}");
+        
         CurrentGameMode = mode;
         RoundTime = time;
         CurrentGameState = GameState.Starting;
+        GameStartTime = Time.time;
+        CurrentRound = 1;
+        BlueTeamScore = 0;
+        RedTeamScore = 0;
+        WinningTeam = -1;
+        
+        // Clear previous game data
+        PlayerKills.Clear();
+        PlayerDeaths.Clear();
+        AlivePlayers.Clear();
+        respawnTimers.Clear();
+
+        // Initialize player stats
+        foreach (var player in Runner.ActivePlayers)
+        {
+            PlayerKills.Set(player, 0);
+            PlayerDeaths.Set(player, 0);
+        }
+
+        // If no scene name provided, use current scene
+        if (string.IsNullOrEmpty(sceneName))
+        {
+            sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        }
+
+        // Notify all clients that the game is starting
+        RPC_NotifyGameStarting();
         
         // Load the selected map scene for all players
-        Runner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+        try 
+        {
+            Debug.Log($"[NetworkGameManager] Loading scene: {sceneName}");
+            Runner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+            
+            // Start coroutine to initialize game after scene loads
+            StartCoroutine(InitializeGameAfterDelay(1f)); // 1 second delay to ensure scene is fully loaded
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[NetworkGameManager] Error loading scene {sceneName}: {e.Message}");
+            Debug.LogException(e);
+            // Fall back to current scene if loading fails
+            Runner.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
+    }
+    
+    public Transform GetSpawnPoint(int teamId = 0)
+    {
+        // For team-based modes, use team-specific spawn points
+        if (CurrentGameMode == GameMode.TeamDeathmatch)
+        {
+            if (teamId == 0 && blueTeamSpawns != null && blueTeamSpawns.Length > 0)
+            return blueTeamSpawns[Random.Range(0, blueTeamSpawns.Length)];
+            
+            if (teamId == 1 && redTeamSpawns != null && redTeamSpawns.Length > 0)
+                return redTeamSpawns[Random.Range(0, redTeamSpawns.Length)];
+        }
+        
+        // Fall back to general spawn points if available
+        if (spawnPoints != null && spawnPoints.Length > 0)
+        {
+            return spawnPoints[Random.Range(0, spawnPoints.Length)];
+        }
+        
+        // Fall back to team-specific spawns if general spawns aren't available
+        if (teamId == 0 && blueTeamSpawns != null && blueTeamSpawns.Length > 0)
+            return blueTeamSpawns[Random.Range(0, blueTeamSpawns.Length)];
+            
+        if (teamId == 1 && redTeamSpawns != null && redTeamSpawns.Length > 0)
+            return redTeamSpawns[Random.Range(0, redTeamSpawns.Length)];
+        
+        // If no spawn points are set, use the game object's position
+        Debug.LogWarning($"No spawn points found for team {teamId}, using default position");
+        return transform;
+    }
+    
+    private void RespawnPlayer(PlayerRef player)
+    {
+        if (!Runner.IsServer) return;
+        
+        Debug.Log($"[NetworkGameManager] Respawning player {player.PlayerId}");
+        
+        // Get player's team ID (default to 0 if not found)
+        int teamId = 0;
+        var playerObj = Runner.GetPlayerObject(player);
+        if (playerObj != null)
+        {
+            var playerData = playerObj.GetComponent<PlayerNetworkData>();
+            if (playerData != null)
+            {
+                teamId = playerData.TeamId;
+            }
+        }
+        
+        // Get a spawn point based on team or free-for-all
+        Transform spawnPoint = GetSpawnPoint(teamId);
+        
+        // Spawn the player if they don't exist, otherwise move them
+        if (playerObj == null)
+        {
+            // Spawn new player
+            playerObj = Runner.Spawn(playerPrefab, spawnPoint.position, spawnPoint.rotation, player);
+        }
+        else
+        {
+            // Move existing player
+            var networkTransform = playerObj.GetComponent<NetworkTransform>();
+            if (networkTransform != null)
+            {
+                playerObj.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+            }
+            else
+            {
+                playerObj.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+            }
+        }
+        
+        // Reset player state
+        var playerHealth = playerObj.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            playerHealth.ResetHealth();
+        }
+    }
+    
+    private System.Collections.IEnumerator InitializeGameAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (Runner.IsServer)
+        {
+            Debug.Log("[NetworkGameManager] Scene loaded, initializing game...");
+            InitializeGame();
+        }
+    }
+
+    private void InitializeGame()
+    {
+        if (!Runner.IsServer) return;
+        
+        Debug.Log("[NetworkGameManager] Initializing game...");
+        
+        // Reset all players
+        foreach (var player in Runner.ActivePlayers)
+        {
+            RespawnPlayer(player);
+            AlivePlayers.Add(player);
+        }
+        
+        PlayersAlive = AlivePlayers.Count;
+        RoundStartTime = Time.time;
+        CurrentGameState = GameState.InProgress;
+        
+        Debug.Log($"[NetworkGameManager] Game started with {PlayersAlive} players");
+        OnGameStarted?.Invoke();
     }
 
     public override void Spawned()
@@ -289,21 +453,5 @@ public class NetworkGameManager : NetworkBehaviour
         OnGameEnded?.Invoke();
     }
 
-    public Transform GetSpawnPoint(int teamId)
-    {
-        Transform[] spawns = spawnPoints;
-        if (CurrentGameMode == GameMode.TeamDeathmatch)
-        {
-            spawns = teamId == 0 ? blueTeamSpawns : redTeamSpawns;
-        }
-
-        if (spawns != null && spawns.Length > 0)
-        {
-            return spawns[Random.Range(0, spawns.Length)];
-        }
-
-        Debug.LogWarning($"No spawn points found for team {teamId}. Using default spawn.");
-        return transform; // Fallback
-    }
 }
 

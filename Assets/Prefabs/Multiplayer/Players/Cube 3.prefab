@@ -12,6 +12,9 @@ GameObject:
   - component: {fileID: 4963484112387134965}
   - component: {fileID: 2704842298521462085}
   - component: {fileID: 1354788582806412376}
+  - component: {fileID: -3601060146899358}
+  - component: {fileID: -1750500469943353173}
+  - component: {fileID: 1292914114958388872}
   m_Layer: 0
   m_Name: Cube 3
   m_TagString: Untagged
@@ -105,3 +108,61 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-3601060146899358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2325963174054043713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SortKey: 234340674
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: -1750500469943353173}
+  - {fileID: 1292914114958388872}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &-1750500469943353173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2325963174054043713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a15cc5ee1d1fba646a8e952e50b0f24d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Health: 100
+  _TeamId: -1
+  _PlayerName: 
+  _Kills: 0
+  _Deaths: 0
+  _IsReady: 0
+  nameTag: {fileID: 0}
+  healthBar: {fileID: 0}
+  teamIndicators: []
+--- !u!114 &1292914114958388872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2325963174054043713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0

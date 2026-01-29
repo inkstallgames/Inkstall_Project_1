@@ -2562,7 +2562,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lobbyPanel: {fileID: 1067298859}
+  heroSelectionPanel: {fileID: 1133356497}
   inGameUIPanel: {fileID: 1036121996}
+  loadingScreenPanel: {fileID: 0}
   mapButton: {fileID: 2069412694}
   modeDropdown: {fileID: 461199614}
   timeDropdown: {fileID: 1760398452}
@@ -10937,7 +10939,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2020896971}
   m_Direction: 0
   m_Value: 1
-  m_Size: 0.99999994
+  m_Size: 0.9999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -12201,6 +12203,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1802990695}
   m_CullTransparentMesh: 1
+--- !u!1 &1832839266
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1832839268}
+  - component: {fileID: 1832839267}
+  m_Layer: 0
+  m_Name: HeroManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1832839267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832839266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8020989b1f949a4d9183db96d867abf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heroPrefabs:
+  - {fileID: 6253451510713049805, guid: abb445046943392458fcf1b8904d66cb, type: 3}
+  - {fileID: 7703202293754620781, guid: 992888de14613c14ba68710c7d8689d8, type: 3}
+  - {fileID: 3554656709769639163, guid: d174f4f4194fc04438293a47f6488f17, type: 3}
+  - {fileID: -3601060146899358, guid: b5f844e4141efbd4d9752186f5cc861d, type: 3}
+--- !u!4 &1832839268
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832839266}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 42.656296, y: 27.342793, z: -52.262337}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1848190156
 GameObject:
   m_ObjectHideFlags: 0
@@ -12995,7 +13046,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1055211318}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.000000059604645, y: 0}
+  m_AnchorMin: {x: 0.00000017881393, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -13312,7 +13363,7 @@ GameObject:
   - component: {fileID: 2069412695}
   - component: {fileID: 2069412694}
   m_Layer: 5
-  m_Name: MapSelection
+  m_Name: Map1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14174,3 +14225,4 @@ SceneRoots:
   - {fileID: 249196697}
   - {fileID: 17963811}
   - {fileID: 69999578}
+  - {fileID: 1832839268}

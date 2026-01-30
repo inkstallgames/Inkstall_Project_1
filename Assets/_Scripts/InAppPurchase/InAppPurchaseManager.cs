@@ -1,12 +1,16 @@
 using UnityEngine;
 using UnityEngine.Purchasing;
 
-public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
+public class InAppPurchaseManager : MonoBehaviour, IStoreListener
 {
 
     private static IStoreController storeController;
     private static IExtensionProvider storeExtensionProvider;
     private static bool isInitialized = false;
+
+    [Header("Parental Gate Settings")]
+    [Tooltip("The Parental Gate panel to be shown on iOS before purchase.")]
+    public GameObject parentalGatePanel;
 
     public static string REMOVE_ADS = "remove_ads";
     
@@ -23,6 +27,16 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
             InitializePurchasing();
             isInitialized = true;
         }
+    }
+
+    private void OnEnable()
+    {
+        ParentalGate.OnPurchaseApproved += ProceedWithPurchase;
+    }
+
+    private void OnDisable()
+    {
+        ParentalGate.OnPurchaseApproved -= ProceedWithPurchase;
     }
 
     // ===================== INIT =====================
@@ -58,6 +72,23 @@ public class IAPRemoveAdsManager : MonoBehaviour, IStoreListener
 
     // ===================== BUY =====================
     public void BuyRemoveAds()
+    {
+#if UNITY_IOS || UNITY_EDITOR
+        if (parentalGatePanel != null)
+        {
+            parentalGatePanel.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("Parental Gate Panel is not assigned in the InAppPurchaseManager.");
+        }
+#else
+        // For non-iOS platforms, proceed directly with the purchase.
+        ProceedWithPurchase();
+#endif
+    }
+
+    private void ProceedWithPurchase()
     {
         if (storeController == null)
         {

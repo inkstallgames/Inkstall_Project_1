@@ -535,6 +535,12 @@ public class NetworkLobbyManager : NetworkBehaviour
             
             // Update the UI for all clients
             OnHeroSelectionModified();
+            
+            // Check if all players have locked in their heroes
+            if (Runner.IsServer)
+            {
+                CheckIfAllPlayersLockedIn();
+            }
         }
         else
         {
@@ -625,6 +631,40 @@ public class NetworkLobbyManager : NetworkBehaviour
         if (heroSelection != null)
         {
             heroSelection.UpdateAvailableHeroes(SelectedHeroIds);
+        }
+    }
+
+    // Check if all players have locked in their hero selections
+    private void CheckIfAllPlayersLockedIn()
+    {
+        if (!Runner.IsServer || !IsHeroSelectionActive) return;
+        
+        // Check if all players have selected a hero (not -1)
+        bool allPlayersLockedIn = true;
+        int playersWithSelection = 0;
+        
+        foreach (var kvp in LobbyPlayers)
+        {
+            var playerData = kvp.Value;
+            if (playerData.SelectedHeroId == -1)
+            {
+                allPlayersLockedIn = false;
+                Debug.Log($"[CheckIfAllPlayersLockedIn] Player {kvp.Key.PlayerId} ({playerData.PlayerName}) has not locked in yet");
+            }
+            else
+            {
+                playersWithSelection++;
+                Debug.Log($"[CheckIfAllPlayersLockedIn] Player {kvp.Key.PlayerId} ({playerData.PlayerName}) locked in with hero {playerData.SelectedHeroId}");
+            }
+        }
+        
+        Debug.Log($"[CheckIfAllPlayersLockedIn] {playersWithSelection}/{LobbyPlayers.Count} players have locked in");
+        
+        if (allPlayersLockedIn && LobbyPlayers.Count > 0)
+        {
+            Debug.Log("[CheckIfAllPlayersLockedIn] All players have locked in! Starting game early...");
+            IsHeroSelectionActive = false; // Stop the hero selection phase
+            AllPlayersLockedIn();
         }
     }
 

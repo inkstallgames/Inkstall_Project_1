@@ -508,24 +508,11 @@ public class NetworkLobbyManager : NetworkBehaviour
         {
             var data = LobbyPlayers[info.Source];
             
-            // If the hero is already taken by someone else, don't allow selection
-            if (SelectedHeroIds.Contains(heroId) && data.SelectedHeroId != heroId)
-            {
-                Debug.Log($"Hero {heroId} is already selected by another player");
-                return;
-            }
-
-            // If the player has already selected a hero, remove it from the list
-            if (data.SelectedHeroId != -1)
-            {
-                SelectedHeroIds.Remove(data.SelectedHeroId);
-            }
-
-            // Update the player's selected hero
+            // Update the player's selected hero (allowing duplicates)
             data.SelectedHeroId = heroId;
             LobbyPlayers.Set(info.Source, data);
             
-            // Add the new hero selection if it's valid
+            // Add the hero selection to the list (duplicates allowed)
             if (heroId != -1)
             {
                 SelectedHeroIds.Add(heroId);

@@ -144,10 +144,9 @@ public class PlayerNetworkData : NetworkBehaviour
             Health = 100;
             RPC_UpdateHealth(Health);
             
-            // Find a spawn point based on team
-            var spawnPoint = NetworkGameManager.Instance.GetSpawnPoint(TeamId);
-            transform.position = spawnPoint.position;
-            transform.rotation = spawnPoint.rotation;
+            // Reset player at a default position. The NetworkPlayerSpawner will handle proper respawning.
+            transform.position = Vector3.up * 2f;
+            transform.rotation = Quaternion.identity;
             
             // Re-enable control and visibility
             if (controller != null) controller.enabled = true;

@@ -48,9 +48,6 @@ public class NetworkGameManager : NetworkBehaviour
     [Networked, Capacity(10)] public NetworkDictionary<PlayerRef, int> PlayerDeaths => default;
 
     [Header("References")]
-    public Transform[] spawnPoints;
-    public Transform[] blueTeamSpawns;
-    public Transform[] redTeamSpawns;
     public GameObject playerPrefab;
     public GameObject[] weaponPrefabs; // Array of available weapons
     
@@ -152,84 +149,6 @@ public class NetworkGameManager : NetworkBehaviour
         }
     }
     
-    public Transform GetSpawnPoint(int teamId = 0)
-    {
-        // For team-based modes, use team-specific spawn points
-        if (CurrentGameMode == GameMode.TeamDeathmatch)
-        {
-            if (teamId == 0 && blueTeamSpawns != null && blueTeamSpawns.Length > 0)
-            return blueTeamSpawns[Random.Range(0, blueTeamSpawns.Length)];
-            
-            if (teamId == 1 && redTeamSpawns != null && redTeamSpawns.Length > 0)
-                return redTeamSpawns[Random.Range(0, redTeamSpawns.Length)];
-        }
-        
-        // Fall back to general spawn points if available
-        if (spawnPoints != null && spawnPoints.Length > 0)
-        {
-            return spawnPoints[Random.Range(0, spawnPoints.Length)];
-        }
-        
-        // Fall back to team-specific spawns if general spawns aren't available
-        if (teamId == 0 && blueTeamSpawns != null && blueTeamSpawns.Length > 0)
-            return blueTeamSpawns[Random.Range(0, blueTeamSpawns.Length)];
-            
-        if (teamId == 1 && redTeamSpawns != null && redTeamSpawns.Length > 0)
-            return redTeamSpawns[Random.Range(0, redTeamSpawns.Length)];
-        
-        // If no spawn points are set, use the game object's position
-        Debug.LogWarning($"No spawn points found for team {teamId}, using default position");
-        return transform;
-    }
-    
-    private void RespawnPlayer(PlayerRef player)
-    {
-        if (!Runner.IsServer) return;
-        
-        Debug.Log($"[NetworkGameManager] Respawning player {player.PlayerId}");
-        
-        // Get player's team ID (default to 0 if not found)
-        int teamId = 0;
-        var playerObj = Runner.GetPlayerObject(player);
-        if (playerObj != null)
-        {
-            var playerData = playerObj.GetComponent<PlayerNetworkData>();
-            if (playerData != null)
-            {
-                teamId = playerData.TeamId;
-            }
-        }
-        
-        // Get a spawn point based on team or free-for-all
-        Transform spawnPoint = GetSpawnPoint(teamId);
-        
-        // Spawn the player if they don't exist, otherwise move them
-        if (playerObj == null)
-        {
-            // Spawn new player
-            playerObj = Runner.Spawn(playerPrefab, spawnPoint.position, spawnPoint.rotation, player);
-        }
-        else
-        {
-            // Move existing player
-            var networkTransform = playerObj.GetComponent<NetworkTransform>();
-            if (networkTransform != null)
-            {
-                playerObj.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
-            }
-            else
-            {
-                playerObj.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
-            }
-        }
-        
-        // Reset player state
-        var playerHealth = playerObj.GetComponent<PlayerHealth>();
-        if (playerHealth != null)
-        {
-            playerHealth.ResetHealth();
-        }
-    }
     
     private System.Collections.IEnumerator InitializeGameAfterDelay(float delay)
     {
@@ -247,10 +166,17 @@ public class NetworkGameManager : NetworkBehaviour
         
         Debug.Log("[NetworkGameManager] Initializing game...");
         
-        // Reset all players
+        // Spawn all players
         foreach (var player in Runner.ActivePlayers)
         {
-            RespawnPlayer(player);
+            if (playerSpawner != null)
+            {
+                playerSpawner.SpawnPlayer(player);
+            }
+            else
+            {
+                Debug.LogError("[NetworkGameManager] NetworkPlayerSpawner not found, cannot spawn players!");
+            }
             AlivePlayers.Add(player);
         }
         

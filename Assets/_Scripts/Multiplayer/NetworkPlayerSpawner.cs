@@ -10,17 +10,15 @@ using System.Linq;
 
 
 
-public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
+public class NetworkPlayerSpawner : MonoBehaviour
 
 {
-
-    [Header("Player Settings")]
 
     [SerializeField] private GameObject playerPrefab;
 
     [SerializeField] private LayerMask groundLayer;
 
-    
+
 
     [Header("Spawning")]
 
@@ -28,13 +26,15 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
 
     [SerializeField] private int maxSpawnAttempts = 10;
 
-    
+
 
     private List<PlayerSpawnPoint> spawnPoints = new List<PlayerSpawnPoint>();
 
     private NetworkLobbyManager lobbyManager;
 
     private NetworkGameManager gameManager;
+
+    private NetworkRunner _runner;
 
 
 
@@ -46,7 +46,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
 
         spawnPoints = FindObjectsOfType<PlayerSpawnPoint>().ToList();
 
-        
+
 
         // Get references to managers
 
@@ -54,7 +54,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
 
         gameManager = NetworkGameManager.Instance;
 
-        
+
 
         if (spawnPoints.Count == 0)
 
@@ -68,31 +68,13 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
 
 
 
-    public override void Spawned()
+    public void Init(NetworkRunner runner)
 
     {
 
-        // Register for network callbacks
+        _runner = runner;
 
-        if (Runner != null)
-
-        {
-
-            Runner.AddCallbacks(this);
-
-        }
-
-        
-
-        // If this is the host and we have a lobby manager, register for game start
-
-        if (Object.HasStateAuthority && lobbyManager != null)
-
-        {
-
-            // The game will start through the lobby manager
-
-        }
+        Debug.Log($"[NetworkPlayerSpawner] Initialized with Runner. IsServer: {_runner.IsServer}");
 
     }
 
@@ -104,7 +86,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
 
         Debug.Log($"Player {player.PlayerId} joined the game");
 
-        
+
 
         // If we have a lobby, let it handle the player joining
 
@@ -114,7 +96,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
 
             lobbyManager.AddPlayerToLobby(player, false);
 
-            
+
 
             // If we're in the lobby, don't spawn the player yet
 
@@ -128,7 +110,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
 
         }
 
-        
+
 
         // Spawn the player in the game
 
@@ -139,177 +121,110 @@ public class NetworkPlayerSpawner : NetworkBehaviour, INetworkRunnerCallbacks
     
 
     public void SpawnPlayer(PlayerRef player)
-
     {
+        Debug.Log($"[NetworkPlayerSpawner] SpawnPlayer called for player {player.PlayerId}");
 
-        if (playerPrefab == null)
+        GameObject heroPrefab = null;
+        int teamId = -1; // Default to FreeForAll
 
+        if (lobbyManager != null && lobbyManager.LobbyPlayers.ContainsKey(player))
         {
+            var lobbyData = lobbyManager.LobbyPlayers[player];
+            int heroId = lobbyData.SelectedHeroId;
+            teamId = lobbyData.TeamID; // Get teamId from lobby
+            var heroNetworkObject = HeroManager.Instance?.GetHeroPrefab(heroId);
+            heroPrefab = heroNetworkObject?.gameObject;
+            Debug.Log($"[NetworkPlayerSpawner] Using hero prefab {heroId} for player {player.PlayerId}: {(heroPrefab != null ? heroPrefab.name : "Not Found")}");
+            Debug.Log($"[NetworkPlayerSpawner] Got TeamId {teamId} from lobby data for player {player.PlayerId}");
+        }
+        else
+        {
+            // Fallback to generic player prefab if no lobby data
+            heroPrefab = playerPrefab;
+            Debug.LogWarning($"[NetworkPlayerSpawner] Lobby data not found for player {player.PlayerId}. Using generic player prefab and default team.");
+        }
 
-            Debug.LogError("Player prefab is not assigned in the inspector!");
-
+        if (heroPrefab == null)
+        {
+            Debug.LogError("[NetworkPlayerSpawner] No hero prefab available for spawning!");
             return;
-
         }
-
-        
-
-        // Get the player's team ID (default to -1 if not in a team)
-
-        int teamId = -1;
-
-        var networkData = Runner.GetPlayerObject(player)?.GetComponent<PlayerNetworkData>();
-
-        if (networkData != null)
-
-        {
-
-            teamId = networkData.TeamId;
-
-        }
-
-        
-
-        // Find a suitable spawn point
 
         Vector3 spawnPosition = GetSpawnPosition(teamId);
-
         Quaternion spawnRotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
-        
+        Debug.Log($"[NetworkPlayerSpawner] Spawning player {player.PlayerId} (Team {teamId}) at position: {spawnPosition}");
 
-        Debug.Log($"Spawning player {player.PlayerId} (Team {teamId}) at position: {spawnPosition}");
-
-        
-
-        // Spawn the player
-
-        var playerObject = Runner.Spawn(
-
-            playerPrefab,
-
+        var playerObject = _runner.Spawn(
+            heroPrefab,
             spawnPosition,
-
             spawnRotation,
-
             player
-
         );
 
-        
-
-        // Initialize player data if it's the local player
-
-        if (player == Runner.LocalPlayer && playerObject != null)
-
+        if (playerObject != null)
         {
-
-            // The PlayerNetworkData component will handle the rest
-
+            Debug.Log($"[NetworkPlayerSpawner] Successfully spawned player {player.PlayerId} at {spawnPosition}");
+            // The spawned object should already have PlayerNetworkData, which will set its own TeamID.
         }
-
+        else
+        {
+            Debug.LogError($"[NetworkPlayerSpawner] Failed to spawn player {player.PlayerId}");
+        }
     }
 
     
 
     private Vector3 GetSpawnPosition(int teamId)
-
     {
+        Debug.Log($"[NetworkPlayerSpawner] GetSpawnPosition called for TeamId: {teamId}");
 
-        // Try to find a team-specific spawn point first
+        // For FreeForAll (teamId = -1), use any spawn point with teamId = -1
+        if (teamId == -1)
+        {
+            Debug.Log("[NetworkPlayerSpawner] FreeForAll mode - looking for FreeForAll spawn points (teamId = -1)");
+            var freeForAllSpawns = spawnPoints.Where(p => p.teamId == -1).ToList();
+            if (freeForAllSpawns.Count > 0)
+            {
+                var availableSpawns = freeForAllSpawns.Where(p => !p.isOccupied).ToList();
+                if (availableSpawns.Count == 0) availableSpawns = freeForAllSpawns; // Use any if all are occupied
+                
+                var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
+                spawnPoint.isOccupied = true;
+                Debug.Log($"[NetworkPlayerSpawner] Selected FreeForAll spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
+                return spawnPoint.transform.position;
+            }
+        }
 
+        // Try to find a team-specific spawn point
         var teamSpawnPoints = spawnPoints.Where(p => p.teamId == teamId).ToList();
-
         if (teamSpawnPoints.Count > 0)
-
         {
-
-            // Find an unoccupied spawn point
-
             var availableSpawns = teamSpawnPoints.Where(p => !p.isOccupied).ToList();
-
-            if (availableSpawns.Count == 0)
-
-            {
-
-                // If all team spawns are occupied, use any team spawn
-
-                availableSpawns = teamSpawnPoints;
-
-            }
-
-            
-
-            // Pick a random spawn point from available ones
+            if (availableSpawns.Count == 0) availableSpawns = teamSpawnPoints;
 
             var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
-
+            spawnPoint.isOccupied = true;
+            Debug.Log($"[NetworkPlayerSpawner] Selected team spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
             return spawnPoint.transform.position;
-
         }
 
-        
-
-        // If no team spawn points, try to find any spawn point
-
+        // If no team-specific spawns, use any available spawn point as a fallback
         if (spawnPoints.Count > 0)
-
         {
-
+            Debug.LogWarning($"[NetworkPlayerSpawner] No spawn points found for team {teamId}. Using any available spawn point.");
             var availableSpawns = spawnPoints.Where(p => !p.isOccupied).ToList();
-
-            if (availableSpawns.Count == 0)
-
-            {
-
-                availableSpawns = spawnPoints;
-
-            }
-
-            
+            if (availableSpawns.Count == 0) availableSpawns = spawnPoints;
 
             var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
-
+            spawnPoint.isOccupied = true;
+            Debug.Log($"[NetworkPlayerSpawner] Selected fallback spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
             return spawnPoint.transform.position;
-
         }
 
-        
-
-        // Fallback to random position in spawn area
-
-        Debug.LogWarning("No spawn points found. Using random spawn position.");
-
-        
-
-        // Try to find a valid position on the ground
-
-        for (int i = 0; i < maxSpawnAttempts; i++)
-
-        {
-
-            Vector2 randomCircle = Random.insideUnitCircle * spawnRadius;
-
-            Vector3 randomPosition = new Vector3(randomCircle.x, 10f, randomCircle.y);
-
-            
-
-            if (Physics.Raycast(randomPosition, Vector3.down, out RaycastHit hit, 20f, groundLayer))
-
-            {
-
-                return hit.point + Vector3.up * 1f; // Slightly above ground
-
-            }
-
-        }
-
-        
-
-        // If all else fails, return a default position
-
-        return Vector3.up * 2f;
-
+        // Fallback to random position if no spawn points are found at all
+        Debug.LogError("[NetworkPlayerSpawner] No spawn points found in scene. Using random position as fallback.");
+        return new Vector3(Random.Range(-spawnRadius, spawnRadius), 1, Random.Range(-spawnRadius, spawnRadius));
     }
 
 

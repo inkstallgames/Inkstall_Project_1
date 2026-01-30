@@ -336,24 +336,40 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         if (runner.IsServer)
         {
             var playerObject = runner.GetPlayerObject(player);
-            if (playerObject != null) return; // Player already spawned
+            if (playerObject != null)
+            {
+                UnityEngine.Debug.Log($"[SpawnPlayer] Player {player.PlayerId} already has a spawned object, skipping spawn");
+                return; // Player already spawned
+            }
 
             if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(player))
             {
                 var lobbyData = NetworkLobbyManager.Instance.LobbyPlayers[player];
                 int heroId = lobbyData.SelectedHeroId;
+                
+                UnityEngine.Debug.Log($"[SpawnPlayer] Spawning player {player.PlayerId} with hero ID: {heroId}");
+                UnityEngine.Debug.Log($"[SpawnPlayer] Player name: {lobbyData.PlayerName}, Team: {lobbyData.TeamID}");
+                
                 NetworkObject heroPrefab = HeroManager.Instance.GetHeroPrefab(heroId);
 
                 if (heroPrefab != null)
                 {
                     Transform spawnPoint = NetworkGameManager.Instance.GetSpawnPoint(lobbyData.TeamID);
+                    UnityEngine.Debug.Log($"[SpawnPlayer] Spawn point: {spawnPoint.position}");
+                    
                     NetworkObject networkPlayerObject = runner.Spawn(heroPrefab, spawnPoint.position, spawnPoint.rotation, player);
                     runner.SetPlayerObject(player, networkPlayerObject);
+                    
+                    UnityEngine.Debug.Log($"[SpawnPlayer] Successfully spawned player {player.PlayerId} with hero {heroId}");
                 }
                 else
                 {
-                    UnityEngine.Debug.LogError($"Hero prefab with ID {heroId} not found!");
+                    UnityEngine.Debug.LogError($"[SpawnPlayer] Hero prefab with ID {heroId} not found!");
                 }
+            }
+            else
+            {
+                UnityEngine.Debug.LogError($"[SpawnPlayer] NetworkLobbyManager or player {player.PlayerId} not found in LobbyPlayers!");
             }
         }
     }

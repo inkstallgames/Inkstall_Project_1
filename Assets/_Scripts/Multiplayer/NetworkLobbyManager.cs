@@ -504,13 +504,26 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SetSelectedHero(int heroId, RpcInfo info = default)
     {
-        if (LobbyPlayers.ContainsKey(info.Source))
+        PlayerRef player = info.Source;
+        
+        // If the source is invalid (e.g., host calling on themselves), use the local player
+        if (player == default(PlayerRef))
         {
-            var data = LobbyPlayers[info.Source];
+            player = Runner.LocalPlayer;
+            Debug.Log($"[RPC_SetSelectedHero] Source was invalid, using LocalPlayer: {player.PlayerId}");
+        }
+        
+        Debug.Log($"[RPC_SetSelectedHero] Player {player.PlayerId} attempting to select hero {heroId}");
+        
+        if (LobbyPlayers.ContainsKey(player))
+        {
+            var data = LobbyPlayers[player];
+            
+            Debug.Log($"[RPC_SetSelectedHero] Previous hero ID for {data.PlayerName}: {data.SelectedHeroId}");
             
             // Update the player's selected hero (allowing duplicates)
             data.SelectedHeroId = heroId;
-            LobbyPlayers.Set(info.Source, data);
+            LobbyPlayers.Set(player, data);
             
             // Add the hero selection to the list (duplicates allowed)
             if (heroId != -1)
@@ -518,10 +531,14 @@ public class NetworkLobbyManager : NetworkBehaviour
                 SelectedHeroIds.Add(heroId);
             }
 
-            Debug.Log($"Player {data.PlayerName} selected hero ID: {heroId}");
+            Debug.Log($"[RPC_SetSelectedHero] Player {data.PlayerName} (ID: {player.PlayerId}) selected hero ID: {heroId}");
             
             // Update the UI for all clients
             OnHeroSelectionModified();
+        }
+        else
+        {
+            Debug.LogError($"[RPC_SetSelectedHero] Player {player.PlayerId} not found in LobbyPlayers!");
         }
     }
     

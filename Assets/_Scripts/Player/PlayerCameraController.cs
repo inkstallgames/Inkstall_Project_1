@@ -40,20 +40,31 @@ public class PlayerCameraController : NetworkBehaviour
         // Find the virtual camera
         if (autoFindCamera)
         {
-            virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+            // Find all virtual cameras and use the first one that's not already assigned to another player
+            var allVirtualCameras = FindObjectsOfType<CinemachineVirtualCamera>();
+            
+            foreach (var cam in allVirtualCameras)
+            {
+                // Check if this camera is already following another player
+                if (cam.Follow == null || cam.Follow == cameraTarget.transform)
+                {
+                    virtualCamera = cam;
+                    Debug.Log($"[PlayerCameraController] Found available virtual camera: {cam.name}");
+                    break;
+                }
+            }
             
             if (virtualCamera == null)
             {
                 // Create a new virtual camera if none exists
+                Debug.Log("[PlayerCameraController] No available camera found, creating new one");
                 GameObject cameraObject = new GameObject("PlayerVirtualCamera");
-                cameraObject.tag = "MainCamera";
                 virtualCamera = cameraObject.AddComponent<CinemachineVirtualCamera>();
                 
-                // Add Camera component if not present
-                if (cameraObject.GetComponent<Camera>() == null)
-                {
-                    cameraObject.AddComponent<Camera>();
-                }
+                // Set priority higher than any existing cameras
+                virtualCamera.Priority = 100;
+                
+                Debug.Log("[PlayerCameraController] Created new virtual camera");
             }
         }
         
@@ -64,15 +75,22 @@ public class PlayerCameraController : NetworkBehaviour
             virtualCamera.LookAt = cameraTarget.transform;
             virtualCamera.gameObject.SetActive(true);
             
-            // Configure third-person follow
-            var thirdPersonFollow = virtualCamera.AddCinemachineComponent<Cinemachine3rdPersonFollow>();
-            if (thirdPersonFollow != null)
+            // Set high priority to ensure this camera is active for the local player
+            virtualCamera.Priority = 100;
+            
+            // Configure third-person follow if not already present
+            var thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
+            if (thirdPersonFollow == null)
             {
-                thirdPersonFollow.CameraDistance = 5f;
-                thirdPersonFollow.ShoulderOffset = new Vector3(0, 2f, 0);
+                thirdPersonFollow = virtualCamera.AddCinemachineComponent<Cinemachine3rdPersonFollow>();
+                if (thirdPersonFollow != null)
+                {
+                    thirdPersonFollow.CameraDistance = 5f;
+                    thirdPersonFollow.ShoulderOffset = new Vector3(0, 2f, 0);
+                }
             }
             
-            Debug.Log("[PlayerCameraController] Camera configured to follow local player");
+            Debug.Log($"[PlayerCameraController] Camera configured to follow local player. Camera: {virtualCamera.name}, Target: {cameraTarget.name}");
         }
         else
         {

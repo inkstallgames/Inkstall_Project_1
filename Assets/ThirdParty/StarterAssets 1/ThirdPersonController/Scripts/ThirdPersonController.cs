@@ -133,8 +133,12 @@ namespace StarterAssets
 
         private void Start()
         {
-            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            _cinemachineTargetPitch = CinemachineCameraTarget.transform.rotation.eulerAngles.x;
+            // Initialize camera target rotation if available
+            if (CinemachineCameraTarget != null)
+            {
+                _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+                _cinemachineTargetPitch = CinemachineCameraTarget.transform.rotation.eulerAngles.x;
+            }
 
             if (Cursor.lockState != CursorLockMode.Locked && Object.HasInputAuthority)
             {
@@ -249,6 +253,8 @@ namespace StarterAssets
 
         private void CameraRotation()
         {
+            if (CinemachineCameraTarget == null) return;
+
             if (_nativeInput.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Runner.DeltaTime;

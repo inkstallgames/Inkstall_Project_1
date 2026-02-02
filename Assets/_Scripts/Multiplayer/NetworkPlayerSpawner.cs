@@ -122,7 +122,15 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
     public void SpawnPlayer(PlayerRef player)
     {
-        Debug.Log($"[NetworkPlayerSpawner] SpawnPlayer called for player {player.PlayerId}");
+        Debug.Log($"[NetworkPlayerSpawner] SpawnPlayer called for player {player.PlayerId}. IsServer: {_runner.IsServer}, IsClient: {_runner.IsClient}");
+
+        // Check if player already has an object
+        var existingObject = _runner.GetPlayerObject(player);
+        if (existingObject != null)
+        {
+            Debug.LogWarning($"[NetworkPlayerSpawner] Player {player.PlayerId} already has a spawned object: {existingObject.name}");
+            return;
+        }
 
         GameObject heroPrefab = null;
         int teamId = -1; // Default to FreeForAll
@@ -150,10 +158,18 @@ public class NetworkPlayerSpawner : MonoBehaviour
             return;
         }
 
+        // Verify the prefab has NetworkObject component
+        var networkObject = heroPrefab.GetComponent<NetworkObject>();
+        if (networkObject == null)
+        {
+            Debug.LogError($"[NetworkPlayerSpawner] Hero prefab {heroPrefab.name} does not have a NetworkObject component!");
+            return;
+        }
+
         Vector3 spawnPosition = GetSpawnPosition(teamId);
         Quaternion spawnRotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
-        Debug.Log($"[NetworkPlayerSpawner] Spawning player {player.PlayerId} (Team {teamId}) at position: {spawnPosition}");
+        Debug.Log($"[NetworkPlayerSpawner] About to spawn player {player.PlayerId} (Team {teamId}) at position: {spawnPosition}");
 
         var playerObject = _runner.Spawn(
             heroPrefab,
@@ -164,12 +180,23 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
         if (playerObject != null)
         {
-            Debug.Log($"[NetworkPlayerSpawner] Successfully spawned player {player.PlayerId} at {spawnPosition}");
-            // The spawned object should already have PlayerNetworkData, which will set its own TeamID.
+            Debug.Log($"[NetworkPlayerSpawner] Successfully spawned NetworkObject for player {player.PlayerId}. Object ID: {playerObject.Id}, IsValid: {playerObject.IsValid}");
+            Debug.Log($"[NetworkPlayerSpawner] Spawned object position: {playerObject.transform.position}, Active: {playerObject.gameObject.activeSelf}");
+            
+            // Verify the object is assigned to the player
+            var verifyObject = _runner.GetPlayerObject(player);
+            if (verifyObject != null)
+            {
+                Debug.Log($"[NetworkPlayerSpawner] Verified: Player {player.PlayerId} now has player object assigned");
+            }
+            else
+            {
+                Debug.LogError($"[NetworkPlayerSpawner] ERROR: Player {player.PlayerId} does NOT have player object assigned after spawn!");
+            }
         }
         else
         {
-            Debug.LogError($"[NetworkPlayerSpawner] Failed to spawn player {player.PlayerId}");
+            Debug.LogError($"[NetworkPlayerSpawner] Failed to spawn player {player.PlayerId} - Runner.Spawn returned null!");
         }
     }
 

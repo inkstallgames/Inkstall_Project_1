@@ -21,6 +21,9 @@ public class PlayerNetworkData : NetworkBehaviour
 
     public override void Spawned()
     {
+        Debug.Log($"[PlayerNetworkData] Spawned() called. PlayerID: {Object.InputAuthority.PlayerId}, HasStateAuthority: {Object.HasStateAuthority}, HasInputAuthority: {Object.HasInputAuthority}, IsServer: {Runner.IsServer}, IsClient: {Runner.IsClient}");
+        Debug.Log($"[PlayerNetworkData] GameObject: {gameObject.name}, Position: {transform.position}, Active: {gameObject.activeSelf}");
+        
         if (Object.HasStateAuthority)
         {
             // Initial random name as fallback
@@ -29,6 +32,8 @@ public class PlayerNetworkData : NetworkBehaviour
                 PlayerName = $"Player_{Random.Range(1000, 9999)}";
             }
             
+            Debug.Log($"[PlayerNetworkData] Server setting initial name: {PlayerName}");
+            
             // Register with the game manager
             NetworkGameManager.Instance?.RegisterPlayer(Object.InputAuthority, this);
         }
@@ -36,14 +41,21 @@ public class PlayerNetworkData : NetworkBehaviour
         // If we are the owner (InputAuthority), send our preferred name
         if (Object.HasInputAuthority)
         {
+            Debug.Log($"[PlayerNetworkData] This is the local player, setting up name");
             string savedName = PlayerPrefs.GetString("PlayerName", "");
             if (!string.IsNullOrEmpty(savedName))
             {
                 RPC_SetPlayerName(savedName);
             }
         }
+        else
+        {
+            Debug.Log($"[PlayerNetworkData] This is a remote player");
+        }
 
         UpdateVisuals();
+        
+        Debug.Log($"[PlayerNetworkData] Spawned() completed for player {Object.InputAuthority.PlayerId}");
     }
 
     public void UpdateVisuals()

@@ -1054,6 +1054,7 @@ GameObject:
   - component: {fileID: 918964218175342091}
   - component: {fileID: 7507724042949624427}
   - component: {fileID: 2671153054746154757}
+  - component: {fileID: 628401403958315635}
   m_Layer: 8
   m_Name: PlayerArmature
   m_TagString: Player
@@ -1326,6 +1327,7 @@ MonoBehaviour:
   - {fileID: 918964218175342091}
   - {fileID: 7507724042949624427}
   - {fileID: 2671153054746154757}
+  - {fileID: 628401403958315635}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
 MonoBehaviour:
@@ -1379,6 +1381,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoFindCamera: 1
   cameraTargetName: CameraTarget
+--- !u!114 &628401403958315635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3928277030421997894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a53b96e7a7d4cd14089a41dcb236a5d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4483834934949140703
 GameObject:
   m_ObjectHideFlags: 0

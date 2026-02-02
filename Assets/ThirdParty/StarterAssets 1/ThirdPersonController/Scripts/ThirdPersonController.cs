@@ -136,10 +136,23 @@ namespace StarterAssets
         private void Start()
         {
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-            
+            _cinemachineTargetPitch = CinemachineCameraTarget.transform.rotation.eulerAngles.x;
+
+            if (Cursor.lockState != CursorLockMode.Locked && Object.HasInputAuthority)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+
+            // Get StarterAssetsInputs component
+            _input = GetComponent<StarterAssetsInputs>();
+            if (_input == null)
+            {
+                _input = gameObject.AddComponent<StarterAssetsInputs>();
+                Debug.LogWarning("[ThirdPersonController] StarterAssetsInputs component was missing, added it dynamically");
+            }
+
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
-            _input = GetComponent<StarterAssetsInputs>();
 #if ENABLE_INPUT_SYSTEM 
             _playerInput = GetComponent<PlayerInput>();
 #else
@@ -155,28 +168,24 @@ namespace StarterAssets
         
         public override void Spawned()
         {
-            Debug.Log($"[ThirdPersonController] Spawned - PlayerID: {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}, IsServer: {Runner.IsServer}");
+            Debug.Log($"[ThirdPersonController] Spawned() called. PlayerID: {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}");
             
-            // Enable PlayerInput only for the local player
-            if (_playerInput != null)
+            // Enable/disable input components based on authority
+            if (_input != null)
             {
-                _playerInput.enabled = Object.HasInputAuthority;
-                Debug.Log($"[ThirdPersonController] PlayerInput enabled set to: {_playerInput.enabled} for player {Object.InputAuthority.PlayerId}");
+                _input.enabled = Object.HasInputAuthority;
+                Debug.Log($"[ThirdPersonController] StarterAssetsInputs enabled: {_input.enabled} for Player {Object.InputAuthority.PlayerId}");
             }
             else
             {
-                Debug.LogWarning($"[ThirdPersonController] PlayerInput component is null for player {Object.InputAuthority.PlayerId}");
+                Debug.LogError($"[ThirdPersonController] StarterAssetsInputs component is NULL for Player {Object.InputAuthority.PlayerId}");
             }
             
             // Only setup camera if this is the local player
             if (Object.HasInputAuthority)
             {
                 SetupCameraAndInput();
-                Debug.Log($"[ThirdPersonController] Camera setup completed for local player {Object.InputAuthority.PlayerId}");
-            }
-            else
-            {
-                Debug.Log($"[ThirdPersonController] Skipping camera setup for remote player {Object.InputAuthority.PlayerId}");
+                Debug.Log($"[ThirdPersonController] Setup camera for local player {Object.InputAuthority.PlayerId}");
             }
         }
         
@@ -199,14 +208,22 @@ namespace StarterAssets
             // Only allow input if this is the local player
             if (!Object.HasInputAuthority)
             {
-                // Debug log to show this is a remote player (comment out to reduce spam)
-                // Debug.Log($"[ThirdPersonController] Skipping Update for remote player {Object.InputAuthority.PlayerId}");
                 return;
             }
-                
-            // Debug log to show this is the local player (comment out to reduce spam)
-            // Debug.Log($"[ThirdPersonController] Processing Update for local player {Object.InputAuthority.PlayerId}");
-                
+            
+            // Check if input is available
+            if (_input == null)
+            {
+                Debug.LogError("[ThirdPersonController] _input is null in Update()!");
+                return;
+            }
+            
+            // Log input values for debugging
+            if (Input.anyKey)
+            {
+                Debug.Log($"[ThirdPersonController] Input - Move: {_input.move}, Sprint: {_input.sprint}, Jump: {_input.jump}");
+            }
+            
             _hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
@@ -218,7 +235,11 @@ namespace StarterAssets
         {
             // Only allow camera rotation if this is the local player
             if (!Object.HasInputAuthority)
+            {
+                // Uncomment to see which players are being blocked
+                // Debug.Log($"[ThirdPersonController] LateUpdate blocked for Player {Object.InputAuthority.PlayerId} - not local player");
                 return;
+            }
                 
             CameraRotation();
         }
@@ -270,52 +291,13 @@ namespace StarterAssets
 
         private void Move()
         {
-            // Check if we have input authority and input component
-            if (!Object.HasInputAuthority)
-            {
-                return;
-            }
-            
-            // Fallback to direct input if StarterAssetsInputs is not working
+            // Check if input is available
             if (_input == null)
             {
-                Debug.LogWarning($"[ThirdPersonController] StarterAssetsInputs is null for player {Object.InputAuthority.PlayerId}, using direct input");
-                
-                // Use direct input as fallback
-                Vector2 directMove = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-                bool directJump = Input.GetKeyDown(KeyCode.Space);
-                bool directSprint = Input.GetKey(KeyCode.LeftShift);
-                
-                if (directMove != Vector2.zero || directJump || directSprint)
-                {
-                    Debug.Log($"[ThirdPersonController] Player {Object.InputAuthority.PlayerId} - Direct Input - Move: {directMove}, Jump: {directJump}, Sprint: {directSprint}");
-                    
-                    // Apply movement directly
-                    float targetSpeed = directSprint ? SprintSpeed : MoveSpeed;
-                    if (directMove == Vector2.zero) targetSpeed = 0.0f;
-                    
-                    Vector3 inputDirection = new Vector3(directMove.x, 0.0f, directMove.y).normalized;
-                    if (directMove != Vector2.zero)
-                    {
-                        transform.rotation = Quaternion.LookRotation(inputDirection, Vector3.up);
-                    }
-                    
-                    _controller.Move(inputDirection * (targetSpeed * Time.deltaTime));
-                    
-                    if (directJump && Grounded)
-                    {
-                        _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-                    }
-                }
+                Debug.LogError("[ThirdPersonController] _input is null in Move() method!");
                 return;
             }
-            
-            // Debug input values to see if they're being received
-            if (_input.move != Vector2.zero || _input.jump || _input.sprint)
-            {
-                Debug.Log($"[ThirdPersonController] Player {Object.InputAuthority.PlayerId} - Move: {_input.move}, Jump: {_input.jump}, Sprint: {_input.sprint}");
-            }
-            
+
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 

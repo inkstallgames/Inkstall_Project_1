@@ -11,10 +11,13 @@ public class PlayerInputHandler : NetworkBehaviour
     
     public override void Spawned()
     {
+        Debug.Log($"[PlayerInputHandler] Spawned() - PlayerID: {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}");
+        
         // Enable PlayerInput only for the local player
         if (playerInput != null)
         {
             playerInput.enabled = Object.HasInputAuthority;
+            Debug.Log($"[PlayerInputHandler] PlayerInput enabled: {playerInput.enabled} for Player {Object.InputAuthority.PlayerId}");
         }
     }
     
@@ -25,13 +28,19 @@ public class PlayerInputHandler : NetworkBehaviour
         {
             playerInput = gameObject.AddComponent<PlayerInput>();
         }
+        
+        Debug.Log($"[PlayerInputHandler] Awake() called on gameObject: {gameObject.name}");
     }
     
     public override void FixedUpdateNetwork()
     {
         // Only process input for the local player
         if (!Object.HasInputAuthority)
+        {
+            // Uncomment to see which players are being blocked
+            // Debug.Log($"[PlayerInputHandler] FixedUpdateNetwork blocked for Player {Object.InputAuthority.PlayerId} - not local player");
             return;
+        }
             
         if (GetInput<PlayerInputData>(out var input))
         {
@@ -62,13 +71,20 @@ public class PlayerInputHandler : NetworkBehaviour
             input.movement = moveInput;
             input.aimDirection = aimInput;
             input.isShooting = isShooting;
+            
+            // Debug logs for input (uncomment to see input values)
+            // Debug.Log($"[PlayerInputHandler] Input - Move: {moveInput}, Aim: {aimInput}, Shoot: {isShooting}");
         }
     }
     
     // Called by the new Input System
     public void OnMove(InputAction.CallbackContext context)
     {
-        moveInput = context.ReadValue<Vector2>();
+        if (Object != null && Object.HasInputAuthority)
+        {
+            moveInput = context.ReadValue<Vector2>();
+            Debug.Log($"[PlayerInputHandler] OnMove called for Player {Object.InputAuthority.PlayerId}: {moveInput}");
+        }
     }
     
     public void OnAim(InputAction.CallbackContext context)

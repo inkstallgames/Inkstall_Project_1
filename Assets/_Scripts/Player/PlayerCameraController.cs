@@ -17,6 +17,8 @@ public class PlayerCameraController : NetworkBehaviour
         // Check if this is the local player
         isLocalPlayer = Object.HasInputAuthority;
         
+        Debug.Log($"[PlayerCameraController] Spawned() - PlayerID: {Object.InputAuthority.PlayerId}, IsLocalPlayer: {isLocalPlayer}");
+        
         if (isLocalPlayer)
         {
             // This is the local player, set up the camera

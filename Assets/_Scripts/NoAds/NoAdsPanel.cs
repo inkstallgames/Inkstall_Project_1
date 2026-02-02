@@ -9,7 +9,7 @@ public class NoAdsPanel : MonoBehaviour
     public TMPro.TextMeshProUGUI buyButtonText;
     public UnityEngine.UI.Button buyButton;
     public UnityEngine.UI.Button restoreButton;
-    public IAPRemoveAdsManager iapManager; // Assign this in the Inspector
+    public InAppPurchaseManager iapManager; // Assign this in the Inspector
     public bool debugChangeText;
 
     private void Start()
@@ -27,12 +27,12 @@ public class NoAdsPanel : MonoBehaviour
 
     private void OnEnable()
     {
-        IAPRemoveAdsManager.OnPurchaseSuccess += UpdateUI;
+        InAppPurchaseManager.OnPurchaseSuccess += UpdateUI;
     }
 
     private void OnDisable()
     {
-        IAPRemoveAdsManager.OnPurchaseSuccess -= UpdateUI;
+        InAppPurchaseManager.OnPurchaseSuccess -= UpdateUI;
     }
 
     private void Update()
@@ -51,7 +51,7 @@ public class NoAdsPanel : MonoBehaviour
 
     void UpdateUI()
     {
-        if (IAPRemoveAdsManager.IsAdsRemoved())
+        if (InAppPurchaseManager.IsAdsRemoved())
         {
             if (buyButtonText != null)
             {
@@ -70,7 +70,7 @@ public class NoAdsPanel : MonoBehaviour
         }
         else
         {
-            Debug.LogError("IAPRemoveAdsManager is not assigned in the Inspector on NoAdsPanel.");
+            Debug.LogError("InAppPurchaseManager is not assigned in the Inspector on NoAdsPanel.");
         }
     }
 

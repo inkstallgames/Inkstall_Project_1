@@ -80,7 +80,25 @@ public class NetworkGameManager : NetworkBehaviour
             Destroy(gameObject);
         }
 
+        RefreshPlayerSpawner();
+    }
+
+    private void RefreshPlayerSpawner()
+    {
         playerSpawner = FindObjectOfType<NetworkPlayerSpawner>();
+        if (playerSpawner != null)
+        {
+            Debug.Log("[NetworkGameManager] NetworkPlayerSpawner found and assigned");
+            if (Runner != null)
+            {
+                playerSpawner.Init(Runner);
+                Debug.Log("[NetworkGameManager] NetworkPlayerSpawner initialized with Runner");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[NetworkGameManager] NetworkPlayerSpawner not found in current scene");
+        }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -166,11 +184,15 @@ public class NetworkGameManager : NetworkBehaviour
         
         Debug.Log("[NetworkGameManager] Initializing game...");
         
+        // Refresh spawner reference in case scene changed
+        RefreshPlayerSpawner();
+        
         // Spawn all players
         foreach (var player in Runner.ActivePlayers)
         {
             if (playerSpawner != null)
             {
+                Debug.Log($"[NetworkGameManager] Spawning player {player.PlayerId}");
                 playerSpawner.SpawnPlayer(player);
             }
             else

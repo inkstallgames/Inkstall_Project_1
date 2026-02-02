@@ -433,12 +433,41 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     public void OnSceneLoadDone(NetworkRunner runner)
     {
         // This is called on all clients when a new scene is loaded
+        UnityEngine.Debug.Log($"[NetworkStarter] OnSceneLoadDone called. IsServer: {runner.IsServer}");
+        
         if (runner.IsServer)
         {
-            // Spawn all players who are already in the lobby
+            var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            UnityEngine.Debug.Log($"[NetworkStarter] Scene loaded: {currentScene.name}");
+            
+            // Check if NetworkGameManager is handling the game initialization
+            if (NetworkGameManager.Instance != null)
+            {
+                var gameState = NetworkGameManager.Instance.CurrentGameState;
+                UnityEngine.Debug.Log($"[NetworkStarter] Current game state: {gameState}");
+                
+                // If game is starting, let NetworkGameManager handle spawning via InitializeGame
+                if (gameState == GameState.Starting)
+                {
+                    UnityEngine.Debug.Log("[NetworkStarter] Game is starting, NetworkGameManager will handle player spawning");
+                    return;
+                }
+            }
+            
+            // For other cases (like players joining mid-game), spawn them here
+            UnityEngine.Debug.Log("[NetworkStarter] Spawning players after scene load");
             foreach (var player in runner.ActivePlayers)
             {
-                SpawnPlayer(runner, player);
+                var playerObject = runner.GetPlayerObject(player);
+                if (playerObject == null)
+                {
+                    UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} needs to be spawned");
+                    SpawnPlayer(runner, player);
+                }
+                else
+                {
+                    UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} already has a player object");
+                }
             }
         }
     }

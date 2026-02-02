@@ -401,5 +401,48 @@ public class NetworkGameManager : NetworkBehaviour
         OnGameEnded?.Invoke();
     }
 
+    public Transform GetSpawnPoint(int teamId)
+    {
+        if (playerSpawner == null)
+        {
+            Debug.LogError("[NetworkGameManager] PlayerSpawner is null, cannot get spawn point!");
+            return null;
+        }
+
+        // Find all spawn points in the scene
+        var spawnPoints = FindObjectsOfType<PlayerSpawnPoint>();
+        
+        if (spawnPoints.Length == 0)
+        {
+            Debug.LogWarning("[NetworkGameManager] No spawn points found in scene!");
+            return null;
+        }
+
+        // Filter spawn points by team ID
+        var teamSpawnPoints = System.Array.FindAll(spawnPoints, sp => sp.teamId == teamId);
+        
+        // If no team-specific spawn points, use any available spawn point
+        if (teamSpawnPoints.Length == 0)
+        {
+            Debug.LogWarning($"[NetworkGameManager] No spawn points found for team {teamId}, using any available spawn point");
+            teamSpawnPoints = spawnPoints;
+        }
+
+        // Find unoccupied spawn points
+        var availableSpawns = System.Array.FindAll(teamSpawnPoints, sp => !sp.isOccupied);
+        
+        // If all are occupied, use any spawn point
+        if (availableSpawns.Length == 0)
+        {
+            availableSpawns = teamSpawnPoints;
+        }
+
+        // Select a random spawn point
+        var selectedSpawn = availableSpawns[UnityEngine.Random.Range(0, availableSpawns.Length)];
+        selectedSpawn.isOccupied = true;
+
+        return selectedSpawn.transform;
+    }
+
 }
 

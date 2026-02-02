@@ -1,4 +1,5 @@
 ﻿ using UnityEngine;
+using Fusion;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 #endif
@@ -12,7 +13,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM 
     [RequireComponent(typeof(PlayerInput))]
 #endif
-    public class ThirdPersonController : MonoBehaviour
+    public class ThirdPersonController : NetworkBehaviour
     {
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
@@ -151,9 +152,42 @@ namespace StarterAssets
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
         }
+        
+        public override void Spawned()
+        {
+            // Enable PlayerInput only for the local player
+            if (_playerInput != null)
+            {
+                _playerInput.enabled = Object.HasInputAuthority;
+            }
+            
+            // Only setup camera if this is the local player
+            if (Object.HasInputAuthority)
+            {
+                SetupCameraAndInput();
+            }
+        }
+        
+        private void SetupCameraAndInput()
+        {
+            // Get camera target from PlayerCameraController if available
+            var cameraController = GetComponent<PlayerCameraController>();
+            if (cameraController != null)
+            {
+                var cameraTarget = cameraController.GetCameraTarget();
+                if (cameraTarget != null)
+                {
+                    CinemachineCameraTarget = cameraTarget.gameObject;
+                }
+            }
+        }
 
         private void Update()
         {
+            // Only allow input if this is the local player
+            if (!Object.HasInputAuthority)
+                return;
+                
             _hasAnimator = TryGetComponent(out _animator);
 
             JumpAndGravity();
@@ -163,6 +197,10 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
+            // Only allow camera rotation if this is the local player
+            if (!Object.HasInputAuthority)
+                return;
+                
             CameraRotation();
         }
 

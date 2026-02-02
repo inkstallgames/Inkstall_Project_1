@@ -185,18 +185,12 @@ namespace StarterAssets
 			// Removed debug log error
 #endif
 
-			// Initialize camera components
-			if (_virtualCamera != null)
+			// Only setup camera and input if this is the local player
+			if (Object.HasInputAuthority)
 			{
-				_thirdPersonFollow = _virtualCamera.GetCinemachineComponent<Cinemachine.Cinemachine3rdPersonFollow>();
-				if (_thirdPersonFollow != null)
-				{
-					_originalCameraOffset = _thirdPersonFollow.ShoulderOffset;
-					_originalCameraDistance = _thirdPersonFollow.CameraDistance;
-					_cameraInitialized = true;
-				}
+				SetupCameraAndInput();
 			}
-
+			
 			// Load sensitivity from PlayerPrefs
 			float savedSensitivity = PlayerPrefs.GetFloat(SENSITIVITY_KEY, DEFAULT_SENSITIVITY);
 			touchSensitivity = savedSensitivity * SENSITIVITY_MULTIPLIER;
@@ -210,6 +204,38 @@ namespace StarterAssets
 			
 			// Setup audio sources if needed
 			SetupAudioSources();
+		}
+		
+		private void SetupCameraAndInput()
+		{
+			// Get camera target from PlayerCameraController if available
+			var cameraController = GetComponent<PlayerCameraController>();
+			if (cameraController != null)
+			{
+				var cameraTarget = cameraController.GetCameraTarget();
+				if (cameraTarget != null)
+				{
+					CinemachineCameraTarget = cameraTarget.gameObject;
+				}
+			}
+			
+			// Initialize camera components
+			if (_virtualCamera != null)
+			{
+				_thirdPersonFollow = _virtualCamera.GetCinemachineComponent<Cinemachine.Cinemachine3rdPersonFollow>();
+				if (_thirdPersonFollow != null)
+				{
+					_originalCameraOffset = _thirdPersonFollow.ShoulderOffset;
+					_originalCameraDistance = _thirdPersonFollow.CameraDistance;
+					_cameraInitialized = true;
+				}
+			}
+			
+			// Enable input for local player
+			if (_playerInput != null)
+			{
+				_playerInput.enabled = true;
+			}
 		}
 
 		private void SetupAudioSources()

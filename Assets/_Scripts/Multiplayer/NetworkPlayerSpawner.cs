@@ -182,17 +182,6 @@ public class NetworkPlayerSpawner : MonoBehaviour
         {
             Debug.Log($"[NetworkPlayerSpawner] Successfully spawned NetworkObject for player {player.PlayerId}. Object ID: {playerObject.Id}, IsValid: {playerObject.IsValid}");
             Debug.Log($"[NetworkPlayerSpawner] Spawned object position: {playerObject.transform.position}, Active: {playerObject.gameObject.activeSelf}");
-            
-            // Verify the object is assigned to the player
-            var verifyObject = _runner.GetPlayerObject(player);
-            if (verifyObject != null)
-            {
-                Debug.Log($"[NetworkPlayerSpawner] Verified: Player {player.PlayerId} now has player object assigned");
-            }
-            else
-            {
-                Debug.LogError($"[NetworkPlayerSpawner] ERROR: Player {player.PlayerId} does NOT have player object assigned after spawn!");
-            }
         }
         else
         {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Fusion;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -10,7 +11,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
 	[RequireComponent(typeof(PlayerInput))]
 #endif
-	public class FirstPersonController : MonoBehaviour
+	public class FirstPersonController : NetworkBehaviour
 	{
 		[Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
@@ -247,6 +248,10 @@ namespace StarterAssets
 
 		private void Update()
 		{
+			// Only allow input if this is the local player
+			if (!Object.HasInputAuthority)
+				return;
+			
 			JumpAndGravity();
 			GroundedCheck();
 			Move();
@@ -261,6 +266,10 @@ namespace StarterAssets
 
 		private void LateUpdate()
 		{
+			// Only allow camera rotation if this is the local player
+			if (!Object.HasInputAuthority)
+				return;
+			
 			CameraRotation();
 		}
 

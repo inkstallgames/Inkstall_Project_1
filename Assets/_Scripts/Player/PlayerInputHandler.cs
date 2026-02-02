@@ -9,6 +9,15 @@ public class PlayerInputHandler : NetworkBehaviour
     private Vector2 aimInput;
     private bool isShooting;
     
+    public override void Spawned()
+    {
+        // Enable PlayerInput only for the local player
+        if (playerInput != null)
+        {
+            playerInput.enabled = Object.HasInputAuthority;
+        }
+    }
+    
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -20,6 +29,10 @@ public class PlayerInputHandler : NetworkBehaviour
     
     public override void FixedUpdateNetwork()
     {
+        // Only process input for the local player
+        if (!Object.HasInputAuthority)
+            return;
+            
         if (GetInput<PlayerInputData>(out var input))
         {
             // Get movement input (WASD/Joystick)

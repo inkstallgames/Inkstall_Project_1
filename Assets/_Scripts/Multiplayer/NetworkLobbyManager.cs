@@ -54,14 +54,18 @@ public class NetworkLobbyManager : NetworkBehaviour
     private LobbyUIManager uiManager;
     private bool _previousHeroSelectionState;
 
-    private void Awake()
-    {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
-    }
-
     public override void Spawned()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         base.Spawned();
         Debug.Log($"[NetworkLobbyManager] Spawned called. Object: {gameObject.name}, IsServer: {Runner.IsServer}, LocalPlayer: {Runner.LocalPlayer}");
         
@@ -176,6 +180,11 @@ public class NetworkLobbyManager : NetworkBehaviour
         if (NetworkGameManager.Instance != null)
         {
             NetworkGameManager.Instance.OnGameStarted -= OnGameStarted;
+        }
+
+        if (Instance == this)
+        {
+            Instance = null;
         }
     }
 

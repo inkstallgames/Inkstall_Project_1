@@ -319,16 +319,8 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             UnityEngine.Debug.Log("[NetworkStarter] This is a client, not spawning player");
         }
 
-        var lobbyManager = NetworkLobbyManager.Instance;
-        if (lobbyManager != null)
-        {
-            UnityEngine.Debug.Log("[NetworkStarter] Notifying NetworkLobbyManager about new player");
-            lobbyManager.OnPlayerJoined(player);
-        }
-        else
-        {
-            UnityEngine.Debug.LogError("[NetworkStarter] NetworkLobbyManager.Instance is null!");
-        }
+        // Use a coroutine to wait for the lobby manager to be ready, especially on clients
+        StartCoroutine(NotifyLobbyManagerOfPlayerJoin(player));
     }
 
     private void SpawnPlayer(NetworkRunner runner, PlayerRef player)
@@ -372,6 +364,28 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         else
         {
             Debug.LogError("[NetworkStarter] FAILED: NetworkPlayerSpawner not found in the current scene! Player will not be spawned. Please ensure the component is added to a GameObject in the 'MallMap' scene.");
+        }
+    }
+
+    private System.Collections.IEnumerator NotifyLobbyManagerOfPlayerJoin(PlayerRef player)
+    {
+        // Wait for the NetworkLobbyManager to be spawned on the client
+        float waitTime = 0;
+        while (NetworkLobbyManager.Instance == null && waitTime < 5.0f) // 5 second timeout
+        {
+            yield return null; // Wait for the next frame
+            waitTime += Time.deltaTime;
+        }
+
+        var lobbyManager = NetworkLobbyManager.Instance;
+        if (lobbyManager != null)
+        {
+            UnityEngine.Debug.Log("[NetworkStarter] Notifying NetworkLobbyManager about new player");
+            lobbyManager.OnPlayerJoined(player);
+        }
+        else
+        {
+            UnityEngine.Debug.LogError("[NetworkStarter] NetworkLobbyManager.Instance is null after waiting!");
         }
     }
 

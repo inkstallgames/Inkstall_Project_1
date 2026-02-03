@@ -154,9 +154,7 @@ public class NetworkGameManager : NetworkBehaviour
         {
             Debug.Log($"[NetworkGameManager] Loading scene: {sceneName}");
             Runner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
-            
-            // Start coroutine to initialize game after scene loads
-            StartCoroutine(InitializeGameAfterDelay(1f)); // 1 second delay to ensure scene is fully loaded
+            // Note: InitializeGame will be called from NetworkStarter.OnSceneLoadDone
         }
         catch (System.Exception e)
         {

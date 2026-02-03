@@ -446,10 +446,11 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 var gameState = NetworkGameManager.Instance.CurrentGameState;
                 UnityEngine.Debug.Log($"[NetworkStarter] Current game state: {gameState}");
                 
-                // If game is starting, let NetworkGameManager handle spawning via InitializeGame
+                // If game is starting, trigger NetworkGameManager to initialize and spawn players
                 if (gameState == GameState.Starting)
                 {
-                    UnityEngine.Debug.Log("[NetworkStarter] Game is starting, NetworkGameManager will handle player spawning");
+                    UnityEngine.Debug.Log("[NetworkStarter] Game is starting, calling NetworkGameManager.InitializeGame");
+                    StartCoroutine(InitializeGameAfterDelay(0.5f));
                     return;
                 }
             }
@@ -471,6 +472,31 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             }
         }
     }
+    
+    private System.Collections.IEnumerator InitializeGameAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        if (NetworkGameManager.Instance != null)
+        {
+            UnityEngine.Debug.Log("[NetworkStarter] Calling NetworkGameManager.InitializeGame after scene load");
+            // Use reflection to call the private InitializeGame method
+            var method = typeof(NetworkGameManager).GetMethod("InitializeGame", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            if (method != null)
+            {
+                method.Invoke(NetworkGameManager.Instance, null);
+            }
+            else
+            {
+                UnityEngine.Debug.LogError("[NetworkStarter] Could not find InitializeGame method on NetworkGameManager");
+            }
+        }
+        else
+        {
+            UnityEngine.Debug.LogError("[NetworkStarter] NetworkGameManager.Instance is null after scene load");
+        }
+    }
+    
     public void OnSceneLoadStart(NetworkRunner runner) {}
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}

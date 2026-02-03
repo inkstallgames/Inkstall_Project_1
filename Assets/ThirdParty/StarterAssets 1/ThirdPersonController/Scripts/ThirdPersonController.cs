@@ -145,16 +145,6 @@ namespace StarterAssets
                 Cursor.lockState = CursorLockMode.Locked;
             }
 
-            _hasAnimator = TryGetComponent(out _animator);
-            _controller = GetComponent<CharacterController>();
-
-#if ENABLE_INPUT_SYSTEM
-            _playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
-#endif
-            Debug.Log($"Start: _controller is {(_controller == null ? "null" : "assigned")}, _animator is {(_animator == null ? "null" : "assigned")}, _playerInput is {(_playerInput == null ? "null" : "assigned")}");
-
             AssignAnimationIDs();
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
@@ -177,6 +167,13 @@ namespace StarterAssets
 
             if (Object.HasInputAuthority)
             {
+                _hasAnimator = TryGetComponent(out _animator);
+                _controller = GetComponent<CharacterController>();
+#if ENABLE_INPUT_SYSTEM
+                _playerInput = GetComponent<PlayerInput>();
+#endif
+                Debug.Log($"Spawned: _controller is {(_controller == null ? "null" : "assigned")}, _animator is {(_animator == null ? "null" : "assigned")}, _playerInput is {(_playerInput == null ? "null" : "assigned")}");
+
                 Runner.AddCallbacks(this);
                 SetupCameraAndInput();
                 Debug.Log($"[ThirdPersonController] Setup camera for local player {Object.InputAuthority.PlayerId}");

@@ -144,20 +144,6 @@ namespace StarterAssets
             {
                 Cursor.lockState = CursorLockMode.Locked;
             }
-
-            _hasAnimator = TryGetComponent(out _animator);
-            _controller = GetComponent<CharacterController>();
-
-#if ENABLE_INPUT_SYSTEM
-            _playerInput = GetComponent<PlayerInput>();
-#else
-			Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
-#endif
-            Debug.Log($"Start: _controller is {(_controller == null ? "null" : "assigned")}, _animator is {(_animator == null ? "null" : "assigned")}, _playerInput is {(_playerInput == null ? "null" : "assigned")}");
-
-            AssignAnimationIDs();
-            _jumpTimeoutDelta = JumpTimeout;
-            _fallTimeoutDelta = FallTimeout;
         }
 
         public override void Spawned()
@@ -177,6 +163,17 @@ namespace StarterAssets
 
             if (Object.HasInputAuthority)
             {
+                _hasAnimator = TryGetComponent(out _animator);
+                _controller = GetComponent<CharacterController>();
+#if ENABLE_INPUT_SYSTEM
+                _playerInput = GetComponent<PlayerInput>();
+#endif
+                Debug.Log($"Spawned: _controller is {(_controller == null ? "null" : "assigned")}, _animator is {(_animator == null ? "null" : "assigned")}, _playerInput is {(_playerInput == null ? "null" : "assigned")}");
+
+                AssignAnimationIDs();
+                _jumpTimeoutDelta = JumpTimeout;
+                _fallTimeoutDelta = FallTimeout;
+
                 Runner.AddCallbacks(this);
                 SetupCameraAndInput();
                 Debug.Log($"[ThirdPersonController] Setup camera for local player {Object.InputAuthority.PlayerId}");
@@ -228,7 +225,6 @@ namespace StarterAssets
                 return;
             }
 
-            CameraRotation();
         }
 
         private void AssignAnimationIDs()
@@ -437,5 +433,11 @@ namespace StarterAssets
         public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress){}
 
         #endregion
+
+        private void LateUpdate()
+        {
+            if (!Object.HasInputAuthority) return;
+            CameraRotation();
+        }
     }
 }

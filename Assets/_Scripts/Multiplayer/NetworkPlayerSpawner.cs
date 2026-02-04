@@ -11,8 +11,8 @@ using System.Linq;
 
 
 public class NetworkPlayerSpawner : NetworkBehaviour
-
 {
+    public static bool IsReady { get; private set; }
 
     [SerializeField] private GameObject playerPrefab;
 
@@ -38,6 +38,18 @@ public class NetworkPlayerSpawner : NetworkBehaviour
     private NetworkRunner _runner;
 
 
+
+    public override void Spawned()
+    {
+        base.Spawned();
+        IsReady = true;
+        Debug.Log("[NetworkPlayerSpawner] Spawned and ready.");
+    }
+
+    private void OnDestroy()
+    {
+        IsReady = false;
+    }
 
     private void Awake()
 

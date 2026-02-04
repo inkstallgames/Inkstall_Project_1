@@ -494,16 +494,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         if (NetworkGameManager.Instance != null)
         {
             UnityEngine.Debug.Log("[NetworkStarter] Calling NetworkGameManager.InitializeGame after scene load");
-            // Use reflection to call the private InitializeGame method
-            var method = typeof(NetworkGameManager).GetMethod("InitializeGame", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            if (method != null)
-            {
-                method.Invoke(NetworkGameManager.Instance, null);
-            }
-            else
-            {
-                UnityEngine.Debug.LogError("[NetworkStarter] Could not find InitializeGame method on NetworkGameManager");
-            }
+            NetworkGameManager.Instance.StartCoroutine(NetworkGameManager.Instance.InitializeGame());
         }
         else
         {

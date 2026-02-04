@@ -176,15 +176,24 @@ public class NetworkGameManager : NetworkBehaviour
         }
     }
 
-    private void InitializeGame()
+    public System.Collections.IEnumerator InitializeGame()
     {
-        if (!Runner.IsServer) return;
-        
+        if (!Runner.IsServer) yield break;
+
         Debug.Log("[NetworkGameManager] Initializing game...");
-        
+
         // Refresh spawner reference in case scene changed
         RefreshPlayerSpawner();
-        
+
+        // Wait until the NetworkPlayerSpawner is ready
+        while (!NetworkPlayerSpawner.IsReady)
+        {
+            Debug.Log("[NetworkGameManager] Waiting for NetworkPlayerSpawner to be ready...");
+            yield return null;
+        }
+
+        Debug.Log("[NetworkGameManager] NetworkPlayerSpawner is ready. Spawning players.");
+
         // Spawn all players
         foreach (var player in Runner.ActivePlayers)
         {
@@ -199,11 +208,11 @@ public class NetworkGameManager : NetworkBehaviour
             }
             AlivePlayers.Add(player);
         }
-        
+
         PlayersAlive = AlivePlayers.Count;
         RoundStartTime = Time.time;
         CurrentGameState = GameState.InProgress;
-        
+
         Debug.Log($"[NetworkGameManager] Game started with {PlayersAlive} players");
         OnGameStarted?.Invoke();
     }

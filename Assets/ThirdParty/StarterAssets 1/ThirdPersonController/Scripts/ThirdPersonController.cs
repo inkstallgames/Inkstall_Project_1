@@ -146,11 +146,18 @@ namespace StarterAssets
 
         public override void Spawned()
         {
-            Debug.Log($"[ThirdPersonController] Spawned() called. PlayerID: {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}");
+            Debug.Log($"[ThirdPersonController] Spawned() called. PlayerID: {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}, Position: {transform.position}");
 
             // Initialize components for ALL players (needed for FixedUpdateNetwork)
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
+            
+            // Disable CharacterController temporarily to allow position to be set correctly
+            if (_controller != null)
+            {
+                _controller.enabled = false;
+            }
+            
 #if ENABLE_INPUT_SYSTEM
             _playerInput = GetComponent<PlayerInput>();
 #endif
@@ -159,6 +166,13 @@ namespace StarterAssets
             AssignAnimationIDs();
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+            
+            // Re-enable CharacterController after position is set
+            if (_controller != null)
+            {
+                _controller.enabled = true;
+                Debug.Log($"[ThirdPersonController] CharacterController re-enabled at position: {transform.position}");
+            }
 
             // Enable/disable input components based on authority
             if (_nativeInput != null)
@@ -174,6 +188,19 @@ namespace StarterAssets
             if (Object.HasInputAuthority)
             {
                 Runner.AddCallbacks(this);
+
+                // Set up camera target
+                var cameraController = GetComponent<PlayerCameraController>();
+                if (cameraController != null)
+                {
+                    var cameraTarget = cameraController.GetCameraTarget();
+                    if (cameraTarget != null)
+                    {
+                        CinemachineCameraTarget = cameraTarget.gameObject;
+                        Debug.Log($"[ThirdPersonController] CinemachineCameraTarget assigned: {CinemachineCameraTarget.name}");
+                    }
+                }
+
                 Debug.Log($"[ThirdPersonController] Setup camera for local player {Object.InputAuthority.PlayerId}");
             }
         }
@@ -250,6 +277,12 @@ namespace StarterAssets
             if (_mainCamera == null && Object.HasInputAuthority)
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+            }
+
+            // Debug movement input
+            if (Object.HasInputAuthority && input.move.sqrMagnitude > 0.01f)
+            {
+                Debug.Log($"[Move] input.move: {input.move}, targetSpeed will be: {(input.sprint ? SprintSpeed : MoveSpeed)}");
             }
 
             // set target speed based on move speed, sprint speed and if sprint is pressed
@@ -396,6 +429,12 @@ namespace StarterAssets
                 data.jump = _nativeInput.jump;
                 data.sprint = _nativeInput.sprint;
                 _nativeInput.jump = false;
+
+                // Debug input values
+                if (data.move.sqrMagnitude > 0.01f || data.look.sqrMagnitude > 0.01f)
+                {
+                    Debug.Log($"[OnInput] move: {data.move}, look: {data.look}");
+                }
             }
             input.Set(data);
         }
@@ -424,7 +463,14 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-            if (!Object.HasInputAuthority || CinemachineCameraTarget == null) return;
+            if (!Object.HasInputAuthority || CinemachineCameraTarget == null)
+            {
+                if (Object.HasInputAuthority && CinemachineCameraTarget == null)
+                {
+                    Debug.LogWarning("[LateUpdate] CinemachineCameraTarget is NULL!");
+                }
+                return;
+            }
 
             if (_mainCamera == null)
             {
@@ -437,6 +483,7 @@ namespace StarterAssets
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
                 _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
                 _cinemachineTargetPitch += _latestInput.look.y * deltaTimeMultiplier;
+                Debug.Log($"[LateUpdate] Rotating camera - look: {_latestInput.look}, yaw: {_cinemachineTargetYaw}, pitch: {_cinemachineTargetPitch}");
             }
 
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);

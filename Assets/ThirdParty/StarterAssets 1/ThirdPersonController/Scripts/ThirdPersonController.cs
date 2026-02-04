@@ -148,6 +148,18 @@ namespace StarterAssets
         {
             Debug.Log($"[ThirdPersonController] Spawned() called. PlayerID: {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}");
 
+            // Initialize components for ALL players (needed for FixedUpdateNetwork)
+            _hasAnimator = TryGetComponent(out _animator);
+            _controller = GetComponent<CharacterController>();
+#if ENABLE_INPUT_SYSTEM
+            _playerInput = GetComponent<PlayerInput>();
+#endif
+            Debug.Log($"Spawned: _controller is {(_controller == null ? "null" : "assigned")}, _animator is {(_animator == null ? "null" : "assigned")}, _playerInput is {(_playerInput == null ? "null" : "assigned")}");
+
+            AssignAnimationIDs();
+            _jumpTimeoutDelta = JumpTimeout;
+            _fallTimeoutDelta = FallTimeout;
+
             // Enable/disable input components based on authority
             if (_nativeInput != null)
             {
@@ -161,17 +173,6 @@ namespace StarterAssets
 
             if (Object.HasInputAuthority)
             {
-                _hasAnimator = TryGetComponent(out _animator);
-                _controller = GetComponent<CharacterController>();
-#if ENABLE_INPUT_SYSTEM
-                _playerInput = GetComponent<PlayerInput>();
-#endif
-                Debug.Log($"Spawned: _controller is {(_controller == null ? "null" : "assigned")}, _animator is {(_animator == null ? "null" : "assigned")}, _playerInput is {(_playerInput == null ? "null" : "assigned")}");
-
-                AssignAnimationIDs();
-                _jumpTimeoutDelta = JumpTimeout;
-                _fallTimeoutDelta = FallTimeout;
-
                 Runner.AddCallbacks(this);
                 Debug.Log($"[ThirdPersonController] Setup camera for local player {Object.InputAuthority.PlayerId}");
             }

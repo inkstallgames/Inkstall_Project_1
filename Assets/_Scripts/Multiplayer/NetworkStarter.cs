@@ -494,7 +494,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         if (NetworkGameManager.Instance != null)
         {
             UnityEngine.Debug.Log("[NetworkStarter] Calling NetworkGameManager.InitializeGame after scene load");
-            NetworkGameManager.Instance.StartCoroutine(NetworkGameManager.Instance.InitializeGame());
+            NetworkGameManager.Instance.InitializeGame();
         }
         else
         {

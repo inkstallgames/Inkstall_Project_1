@@ -38,16 +38,6 @@ public class NetworkPlayerSpawner : NetworkBehaviour
 
 
 
-    public override void Spawned()
-    {
-        base.Spawned();
-        if (NetworkGameManager.Instance != null)
-        {
-            NetworkGameManager.Instance.SetPlayerSpawner(this);
-            Debug.Log("[NetworkPlayerSpawner] Spawned and registered with NetworkGameManager.");
-        }
-    }
-
     private void Awake()
 
     {

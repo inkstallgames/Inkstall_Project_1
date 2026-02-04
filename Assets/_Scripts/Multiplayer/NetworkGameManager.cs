@@ -83,18 +83,6 @@ public class NetworkGameManager : NetworkBehaviour
         RefreshPlayerSpawner();
     }
 
-    public void SetPlayerSpawner(NetworkPlayerSpawner spawner)
-    {
-        playerSpawner = spawner;
-        Debug.Log("[NetworkGameManager] NetworkPlayerSpawner has been set.");
-
-        // If the game is in the starting phase, it's now safe to spawn players.
-        if (CurrentGameState == GameState.Starting)
-        {
-            SpawnAllPlayers();
-        }
-    }
-
     private void RefreshPlayerSpawner()
     {
         // This method can still be used as a fallback or for re-syncing.
@@ -194,10 +182,15 @@ public class NetworkGameManager : NetworkBehaviour
         if (!Runner.IsServer) return;
 
         Debug.Log("[NetworkGameManager] Initializing game state...");
-        CurrentGameState = GameState.InProgress; // Set state, but don't spawn yet
+        
+        // Refresh spawner reference in case scene changed
+        RefreshPlayerSpawner();
+        
+        // Spawn all players immediately
+        SpawnAllPlayers();
+        
+        CurrentGameState = GameState.InProgress;
         RoundStartTime = Time.time;
-
-        // Spawning will be triggered by SetPlayerSpawner once it's ready.
     }
 
     private void SpawnAllPlayers()

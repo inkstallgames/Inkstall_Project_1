@@ -12,6 +12,7 @@ namespace StarterAssets
     public struct NetworkInputData : INetworkInput
     {
         public Vector2 move;
+        public Vector2 look;
         public bool jump;
         public bool sprint;
     }
@@ -108,6 +109,7 @@ namespace StarterAssets
         private GameObject _mainCamera;
         private bool _hasAnimator;
         private const float _threshold = 0.01f;
+        private NetworkInputData _latestInput;
 
         private bool IsCurrentDeviceMouse
         {
@@ -123,10 +125,6 @@ namespace StarterAssets
 
         private void Awake()
         {
-            if (_mainCamera == null)
-            {
-                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-            }
             _nativeInput = GetComponent<StarterAssetsInputs>();
             Debug.Log($"Awake: _nativeInput is {(_nativeInput == null ? "null" : "assigned")}");
         }
@@ -175,7 +173,6 @@ namespace StarterAssets
                 _fallTimeoutDelta = FallTimeout;
 
                 Runner.AddCallbacks(this);
-                SetupCameraAndInput();
                 Debug.Log($"[ThirdPersonController] Setup camera for local player {Object.InputAuthority.PlayerId}");
             }
         }
@@ -195,21 +192,22 @@ namespace StarterAssets
 
         public override void FixedUpdateNetwork()
         {
-            // Only allow input if this is the local player
-            if (!Object.HasInputAuthority)
-            {
-                return;
-            }
-
-            // Check if input is available
-            if (_nativeInput == null)
-            {
-                Debug.LogError("[ThirdPersonController] _nativeInput is null in FixedUpdateNetwork()!");
-                return;
-            }
-
             if (GetInput(out NetworkInputData data))
             {
+                _latestInput = data;
+
+                // Player and camera movement should only be handled by the client with authority.
+                if (Object.HasInputAuthority)
+                {
+                    // Check if input is available before using it
+                    if (_nativeInput == null)
+                    {
+                        Debug.LogError("[ThirdPersonController] _nativeInput is null in FixedUpdateNetwork()!");
+                        return;
+                    }
+                }
+
+                // Movement, jumping, and gravity should be simulated for all clients to see.
                 JumpAndGravity(data);
                 GroundedCheck();
                 Move(data);
@@ -224,7 +222,6 @@ namespace StarterAssets
                 // Debug.Log($"[ThirdPersonController] LateUpdate blocked for Player {Object.InputAuthority.PlayerId} - not local player");
                 return;
             }
-
         }
 
         private void AssignAnimationIDs()
@@ -247,24 +244,13 @@ namespace StarterAssets
             }
         }
 
-        private void CameraRotation()
-        {
-            if (CinemachineCameraTarget == null) return;
-
-            if (_nativeInput.look.sqrMagnitude >= _threshold && !LockCameraPosition)
-            {
-                float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Runner.DeltaTime;
-                _cinemachineTargetYaw += _nativeInput.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _nativeInput.look.y * deltaTimeMultiplier;
-            }
-
-            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
-            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride, _cinemachineTargetYaw, 0.0f);
-        }
-
         private void Move(NetworkInputData input)
         {
+            if (_mainCamera == null && Object.HasInputAuthority)
+            {
+                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+            }
+
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = input.sprint ? SprintSpeed : MoveSpeed;
             if (input.move == Vector2.zero) targetSpeed = 0.0f;
@@ -405,6 +391,7 @@ namespace StarterAssets
             if (_nativeInput != null)
             {
                 data.move = _nativeInput.move;
+                data.look = _nativeInput.look;
                 data.jump = _nativeInput.jump;
                 data.sprint = _nativeInput.sprint;
                 _nativeInput.jump = false;
@@ -436,8 +423,24 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-            if (!Object.HasInputAuthority) return;
-            CameraRotation();
+            if (!Object.HasInputAuthority || CinemachineCameraTarget == null) return;
+
+            if (_mainCamera == null)
+            {
+                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+                if (_mainCamera == null) return; // Still no camera, exit
+            }
+
+            if (_latestInput.look.sqrMagnitude >= _threshold && !LockCameraPosition)
+            {
+                float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+                _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
+                _cinemachineTargetPitch += _latestInput.look.y * deltaTimeMultiplier;
+            }
+
+            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
+            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride, _cinemachineTargetYaw, 0.0f);
         }
     }
 }

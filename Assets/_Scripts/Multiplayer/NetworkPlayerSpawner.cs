@@ -10,7 +10,7 @@ using System.Linq;
 
 
 
-public class NetworkPlayerSpawner : MonoBehaviour
+public class NetworkPlayerSpawner : NetworkBehaviour
 
 {
 
@@ -29,6 +29,7 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
 
     private List<PlayerSpawnPoint> spawnPoints = new List<PlayerSpawnPoint>();
+    [Networked, Capacity(16)] private NetworkLinkedList<int> occupiedSpawnIndices { get; }
 
     private NetworkLobbyManager lobbyManager;
 
@@ -202,11 +203,14 @@ public class NetworkPlayerSpawner : MonoBehaviour
             var freeForAllSpawns = spawnPoints.Where(p => p.teamId == -1).ToList();
             if (freeForAllSpawns.Count > 0)
             {
-                var availableSpawns = freeForAllSpawns.Where(p => !p.isOccupied).ToList();
+                var availableSpawns = freeForAllSpawns.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
                 if (availableSpawns.Count == 0) availableSpawns = freeForAllSpawns; // Use any if all are occupied
-                
+
                 var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
-                spawnPoint.isOccupied = true;
+                if (Runner.IsServer)
+                {
+                    occupiedSpawnIndices.Add(spawnPoints.IndexOf(spawnPoint));
+                }
                 Debug.Log($"[NetworkPlayerSpawner] Selected FreeForAll spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
                 return spawnPoint.transform.position;
             }
@@ -216,11 +220,14 @@ public class NetworkPlayerSpawner : MonoBehaviour
         var teamSpawnPoints = spawnPoints.Where(p => p.teamId == teamId).ToList();
         if (teamSpawnPoints.Count > 0)
         {
-            var availableSpawns = teamSpawnPoints.Where(p => !p.isOccupied).ToList();
+            var availableSpawns = teamSpawnPoints.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
             if (availableSpawns.Count == 0) availableSpawns = teamSpawnPoints;
 
             var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
-            spawnPoint.isOccupied = true;
+            if (Runner.IsServer)
+            {
+                occupiedSpawnIndices.Add(spawnPoints.IndexOf(spawnPoint));
+            }
             Debug.Log($"[NetworkPlayerSpawner] Selected team spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
             return spawnPoint.transform.position;
         }
@@ -229,11 +236,14 @@ public class NetworkPlayerSpawner : MonoBehaviour
         if (spawnPoints.Count > 0)
         {
             Debug.LogWarning($"[NetworkPlayerSpawner] No spawn points found for team {teamId}. Using any available spawn point.");
-            var availableSpawns = spawnPoints.Where(p => !p.isOccupied).ToList();
+            var availableSpawns = spawnPoints.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
             if (availableSpawns.Count == 0) availableSpawns = spawnPoints;
 
             var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
-            spawnPoint.isOccupied = true;
+            if (Runner.IsServer)
+            {
+                occupiedSpawnIndices.Add(spawnPoints.IndexOf(spawnPoint));
+            }
             Debug.Log($"[NetworkPlayerSpawner] Selected fallback spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
             return spawnPoint.transform.position;
         }

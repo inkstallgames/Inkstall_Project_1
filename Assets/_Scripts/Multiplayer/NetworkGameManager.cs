@@ -83,11 +83,24 @@ public class NetworkGameManager : NetworkBehaviour
         RefreshPlayerSpawner();
     }
 
+    public void SetPlayerSpawner(NetworkPlayerSpawner spawner)
+    {
+        playerSpawner = spawner;
+        Debug.Log("[NetworkGameManager] NetworkPlayerSpawner has been set.");
+
+        // If the game is in the starting phase, it's now safe to spawn players.
+        if (CurrentGameState == GameState.Starting)
+        {
+            SpawnAllPlayers();
+        }
+    }
+
     private void RefreshPlayerSpawner()
     {
+        // This method can still be used as a fallback or for re-syncing.
         playerSpawner = FindObjectOfType<NetworkPlayerSpawner>();
         if (playerSpawner != null)
-        {
+        { 
             Debug.Log("[NetworkGameManager] NetworkPlayerSpawner found and assigned");
             if (Runner != null)
             {
@@ -176,25 +189,23 @@ public class NetworkGameManager : NetworkBehaviour
         }
     }
 
-    public System.Collections.IEnumerator InitializeGame()
+    public void InitializeGame()
     {
-        if (!Runner.IsServer) yield break;
+        if (!Runner.IsServer) return;
 
-        Debug.Log("[NetworkGameManager] Initializing game...");
+        Debug.Log("[NetworkGameManager] Initializing game state...");
+        CurrentGameState = GameState.InProgress; // Set state, but don't spawn yet
+        RoundStartTime = Time.time;
 
-        // Refresh spawner reference in case scene changed
-        RefreshPlayerSpawner();
+        // Spawning will be triggered by SetPlayerSpawner once it's ready.
+    }
 
-        // Wait until the NetworkPlayerSpawner is ready
-        while (!NetworkPlayerSpawner.IsReady)
-        {
-            Debug.Log("[NetworkGameManager] Waiting for NetworkPlayerSpawner to be ready...");
-            yield return null;
-        }
+    private void SpawnAllPlayers()
+    {
+        if (!Runner.IsServer) return;
 
-        Debug.Log("[NetworkGameManager] NetworkPlayerSpawner is ready. Spawning players.");
+        Debug.Log("[NetworkGameManager] Spawner is ready, spawning all active players.");
 
-        // Spawn all players
         foreach (var player in Runner.ActivePlayers)
         {
             if (playerSpawner != null)
@@ -204,15 +215,12 @@ public class NetworkGameManager : NetworkBehaviour
             }
             else
             {
-                Debug.LogError("[NetworkGameManager] NetworkPlayerSpawner not found, cannot spawn players!");
+                Debug.LogError("[NetworkGameManager] NetworkPlayerSpawner is null, cannot spawn players!");
             }
             AlivePlayers.Add(player);
         }
 
         PlayersAlive = AlivePlayers.Count;
-        RoundStartTime = Time.time;
-        CurrentGameState = GameState.InProgress;
-
         Debug.Log($"[NetworkGameManager] Game started with {PlayersAlive} players");
         OnGameStarted?.Invoke();
     }

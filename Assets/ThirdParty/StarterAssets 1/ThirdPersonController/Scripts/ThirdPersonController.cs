@@ -224,21 +224,16 @@ namespace StarterAssets
             {
                 _latestInput = data;
 
-                // Player and camera movement should only be handled by the client with authority.
-                if (Object.HasInputAuthority)
-                {
-                    // Check if input is available before using it
-                    if (_nativeInput == null)
-                    {
-                        Debug.LogError("[ThirdPersonController] _nativeInput is null in FixedUpdateNetwork()!");
-                        return;
-                    }
-                }
-
                 // Movement, jumping, and gravity should be simulated for all clients to see.
                 JumpAndGravity(data);
                 GroundedCheck();
                 Move(data);
+            }
+            else
+            {
+                // If no input, still apply gravity and check grounded state
+                JumpAndGravity(default);
+                GroundedCheck();
             }
         }
 

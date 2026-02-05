@@ -283,13 +283,27 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_ShowHeroSelectionUI()
     {
+        Debug.Log($"[NetworkLobbyManager] RPC_ShowHeroSelectionUI called on {(Runner.IsServer ? "Server" : "Client")}");
+        
+        // Ensure UI manager is available
+        if (uiManager == null)
+        {
+            uiManager = LobbyUIManager.Instance;
+            Debug.LogWarning("[NetworkLobbyManager] UI Manager was null in RPC, attempting to find it again");
+        }
+        
         if (uiManager != null)
         {
+            Debug.Log("[NetworkLobbyManager] Showing hero selection panel via RPC");
             // Show the hero selection panel
             uiManager.ShowHeroSelectionPanel(true);
             
             // Hide the lobby panel
             uiManager.ShowLobby(false);
+        }
+        else
+        {
+            Debug.LogError("[NetworkLobbyManager] UI Manager still null in RPC_ShowHeroSelectionUI!");
         }
     }
 

@@ -106,7 +106,17 @@ public class NetworkGameManager : NetworkBehaviour
     public void RPC_NotifyGameStarting()
     {
         Debug.Log("[NetworkGameManager] Game is starting, preparing to load scene...");
-        // You can add any client-side preparation here
+        
+        // Show loading screen on all clients
+        if (LobbyUIManager.Instance != null)
+        {
+            Debug.Log("[NetworkGameManager] Showing loading screen for all clients");
+            LobbyUIManager.Instance.ShowLoadingScreen(true);
+        }
+        else
+        {
+            Debug.LogWarning("[NetworkGameManager] LobbyUIManager.Instance is null, cannot show loading screen");
+        }
     }
 
     public void StartGame(GameMode mode = GameMode.FreeForAll, int time = 300, string sceneName = null)

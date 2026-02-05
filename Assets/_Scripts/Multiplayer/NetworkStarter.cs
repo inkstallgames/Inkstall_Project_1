@@ -112,10 +112,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             UnityEngine.Debug.Log($"[NetworkStarter] Generated join code: {CurrentJoinCode}");
             UnityEngine.Debug.Log($"[NetworkStarter] Attempting to connect to Photon Cloud...");
             
-            // Note: Tick rate should be configured in the NetworkProjectConfig asset in Unity Editor
-            // Default Fusion tick rate is 60Hz. For smoother CharacterController movement,
-            // you can increase it to 120Hz or higher in the NetworkProjectConfig asset.
-            
             // Basic network settings - using only standard Fusion properties
             var startGameArgs = new StartGameArgs()
             {
@@ -453,11 +449,18 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         // This is called on all clients when a new scene is loaded
         UnityEngine.Debug.Log($"[NetworkStarter] OnSceneLoadDone called. IsServer: {runner.IsServer}");
         
+        var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        UnityEngine.Debug.Log($"[NetworkStarter] Scene loaded: {currentScene.name}");
+        
+        // Hide loading screen for all clients
+        if (LobbyUIManager.Instance != null)
+        {
+            UnityEngine.Debug.Log("[NetworkStarter] Hiding loading screen after scene load");
+            LobbyUIManager.Instance.ShowLoadingScreen(false);
+        }
+        
         if (runner.IsServer)
         {
-            var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-            UnityEngine.Debug.Log($"[NetworkStarter] Scene loaded: {currentScene.name}");
-            
             // Check if NetworkGameManager is handling the game initialization
             if (NetworkGameManager.Instance != null)
             {
@@ -488,6 +491,11 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                     UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} already has a player object");
                 }
             }
+        }
+        else
+        {
+            // Client-side: Wait for server to spawn players
+            UnityEngine.Debug.Log("[NetworkStarter] Client waiting for server to spawn players");
         }
     }
     

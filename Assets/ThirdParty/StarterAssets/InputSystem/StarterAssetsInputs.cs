@@ -85,15 +85,12 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
 			if (!enabled) return;
 			
-			// Read input directly from actions
+			// Read input directly from actions - this runs every frame but Fusion samples it at fixed rate
 			Vector2 newMove = moveAction.ReadValue<Vector2>();
-			if (newMove != move)
+			MoveInput(newMove);
+			if (newMove.sqrMagnitude > 0.01f && newMove != move)
 			{
-				MoveInput(newMove);
-				if (newMove.sqrMagnitude > 0.01f)
-				{
-					Debug.Log($"[StarterAssetsInputs] Direct input - move: {move} on GameObject: {gameObject.name}");
-				}
+				Debug.Log($"[StarterAssetsInputs] Direct input - move: {move} on GameObject: {gameObject.name}");
 			}
 			
 			if (cursorInputForLook)
@@ -103,16 +100,10 @@ namespace StarterAssets
 			}
 			
 			bool newJump = jumpAction.IsPressed();
-			if (newJump != jump)
-			{
-				JumpInput(newJump);
-			}
+			JumpInput(newJump);
 			
 			bool newSprint = sprintAction.IsPressed();
-			if (newSprint != sprint)
-			{
-				SprintInput(newSprint);
-			}
+			SprintInput(newSprint);
 #endif
 		}
 

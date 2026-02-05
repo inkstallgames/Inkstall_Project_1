@@ -126,7 +126,14 @@ namespace StarterAssets
         private void Awake()
         {
             _nativeInput = GetComponent<StarterAssetsInputs>();
-            Debug.Log($"Awake: _nativeInput is {(_nativeInput == null ? "null" : "assigned")}");
+            if (_nativeInput != null)
+            {
+                Debug.Log($"[Awake] StarterAssetsInputs found on GameObject: {_nativeInput.gameObject.name}, enabled: {_nativeInput.enabled}");
+            }
+            else
+            {
+                Debug.LogError("[Awake] StarterAssetsInputs component NOT found on this GameObject!");
+            }
         }
 
         private void Start()

@@ -24,7 +24,7 @@ namespace StarterAssets
 		public void OnMove(InputValue value)
 		{
 			MoveInput(value.Get<Vector2>());
-			Debug.Log($"[StarterAssetsInputs] OnMove: {move}");
+			Debug.Log($"[StarterAssetsInputs] OnMove: {move} on GameObject: {gameObject.name}, enabled: {enabled}");
 		}
 
 		public void OnLook(InputValue value)

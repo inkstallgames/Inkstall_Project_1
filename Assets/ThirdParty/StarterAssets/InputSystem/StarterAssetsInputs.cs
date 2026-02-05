@@ -23,12 +23,18 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
 		public void OnMove(InputValue value)
 		{
+			// Only process input if this component is enabled
+			if (!enabled) return;
+			
 			MoveInput(value.Get<Vector2>());
 			Debug.Log($"[StarterAssetsInputs] OnMove: {move} on GameObject: {gameObject.name}, enabled: {enabled}");
 		}
 
 		public void OnLook(InputValue value)
 		{
+			// Only process input if this component is enabled
+			if (!enabled) return;
+			
 			if(cursorInputForLook)
 			{
 				LookInput(value.Get<Vector2>());
@@ -37,12 +43,18 @@ namespace StarterAssets
 
 		public void OnJump(InputValue value)
 		{
+			// Only process input if this component is enabled
+			if (!enabled) return;
+			
 			JumpInput(value.isPressed);
 			Debug.Log($"[StarterAssetsInputs] OnJump: {jump}");
 		}
 
 		public void OnSprint(InputValue value)
 		{
+			// Only process input if this component is enabled
+			if (!enabled) return;
+			
 			SprintInput(value.isPressed);
 			Debug.Log($"[StarterAssetsInputs] OnSprint: {sprint}");
 		}

@@ -221,7 +221,6 @@ namespace StarterAssets
         {
             if (GetInput(out NetworkInputData data))
             {
-                Debug.Log($"[FixedUpdateNetwork] GetInput returned true for Player {Object.InputAuthority.PlayerId}, move: {data.move}");
                 _latestInput = data;
 
                 // Movement, jumping, and gravity should be simulated for all clients to see.
@@ -231,7 +230,6 @@ namespace StarterAssets
             }
             else
             {
-                Debug.Log($"[FixedUpdateNetwork] GetInput returned false for Player {Object.InputAuthority.PlayerId}");
                 // If no input, still apply gravity and check grounded state
                 JumpAndGravity(default);
                 GroundedCheck();
@@ -240,12 +238,9 @@ namespace StarterAssets
 
         public override void Render()
         {
-            if (!Object.HasInputAuthority)
-            {
-                // Uncomment to see which players are being blocked
-                // Debug.Log($"[ThirdPersonController] LateUpdate blocked for Player {Object.InputAuthority.PlayerId} - not local player");
-                return;
-            }
+            // Render is called every frame for smooth visuals
+            // For local player, we can apply additional smoothing here if needed
+            // Remote players are already interpolated by Fusion
         }
 
         private void AssignAnimationIDs()
@@ -275,12 +270,6 @@ namespace StarterAssets
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
 
-            // Debug movement input
-            if (Object.HasInputAuthority && input.move.sqrMagnitude > 0.01f)
-            {
-                Debug.Log($"[Move] input.move: {input.move}, targetSpeed will be: {(input.sprint ? SprintSpeed : MoveSpeed)}");
-            }
-
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = input.sprint ? SprintSpeed : MoveSpeed;
             if (input.move == Vector2.zero) targetSpeed = 0.0f;
@@ -289,9 +278,12 @@ namespace StarterAssets
             float speedOffset = 0.1f;
             float inputMagnitude = input.move.magnitude;
 
+            // Use appropriate delta time - Runner.DeltaTime for network sync
+            float deltaTime = Runner.DeltaTime;
+
             if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
             {
-                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Runner.DeltaTime * SpeedChangeRate);
+                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, deltaTime * SpeedChangeRate);
                 _speed = Mathf.Round(_speed * 1000f) / 1000f;
             }
             else
@@ -299,7 +291,7 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Runner.DeltaTime * SpeedChangeRate);
+            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             Vector3 inputDirection = new Vector3(input.move.x, 0.0f, input.move.y).normalized;
@@ -316,7 +308,7 @@ namespace StarterAssets
             }
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-            _controller.Move(targetDirection.normalized * (_speed * Runner.DeltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime);
+            _controller.Move(targetDirection.normalized * (_speed * deltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * deltaTime);
 
             if (_hasAnimator)
             {
@@ -417,27 +409,21 @@ namespace StarterAssets
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
-            Debug.Log($"[OnInput] Called for Player {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}");
-            
             var data = new NetworkInputData();
+            
+#if ENABLE_INPUT_SYSTEM
+            // Read input directly from Input Actions at network tick rate for proper sync
             if (_nativeInput != null)
             {
-                data.move = _nativeInput.move;
-                data.look = _nativeInput.look;
-                data.jump = _nativeInput.jump;
-                data.sprint = _nativeInput.sprint;
-                _nativeInput.jump = false;
-
-                // Debug ALL input values, not just when they're non-zero
-                Debug.Log($"[OnInput] RAW VALUES - move: {data.move}, look: {data.look}, jump: {data.jump}, sprint: {data.sprint}");
+                // Sample input at the exact moment Fusion needs it
+                data.move = _nativeInput.moveAction?.ReadValue<Vector2>() ?? Vector2.zero;
+                data.look = _nativeInput.lookAction?.ReadValue<Vector2>() ?? Vector2.zero;
+                data.jump = _nativeInput.jumpAction?.IsPressed() ?? false;
+                data.sprint = _nativeInput.sprintAction?.IsPressed() ?? false;
             }
-            else
-            {
-                Debug.LogError($"[OnInput] _nativeInput is NULL for Player {Object.InputAuthority.PlayerId}");
-            }
+#endif
             
             input.Set(data);
-            Debug.Log($"[OnInput] Input set for Player {Object.InputAuthority.PlayerId}");
         }
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }

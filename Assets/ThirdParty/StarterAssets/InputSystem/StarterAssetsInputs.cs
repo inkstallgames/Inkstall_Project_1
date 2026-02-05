@@ -21,10 +21,10 @@ namespace StarterAssets
 		public bool cursorInputForLook = true;
 
 #if ENABLE_INPUT_SYSTEM
-		private InputAction moveAction;
-		private InputAction lookAction;
-		private InputAction jumpAction;
-		private InputAction sprintAction;
+		public InputAction moveAction;
+		public InputAction lookAction;
+		public InputAction jumpAction;
+		public InputAction sprintAction;
 #endif
 
 		private void OnEnable()
@@ -79,33 +79,9 @@ namespace StarterAssets
 			Debug.Log($"[StarterAssetsInputs] Input actions disabled for {gameObject.name}");
 #endif
 		}
-		
-		private void Update()
-		{
-#if ENABLE_INPUT_SYSTEM
-			if (!enabled) return;
-			
-			// Read input directly from actions - this runs every frame but Fusion samples it at fixed rate
-			Vector2 newMove = moveAction.ReadValue<Vector2>();
-			MoveInput(newMove);
-			if (newMove.sqrMagnitude > 0.01f && newMove != move)
-			{
-				Debug.Log($"[StarterAssetsInputs] Direct input - move: {move} on GameObject: {gameObject.name}");
-			}
-			
-			if (cursorInputForLook)
-			{
-				Vector2 newLook = lookAction.ReadValue<Vector2>();
-				LookInput(newLook);
-			}
-			
-			bool newJump = jumpAction.IsPressed();
-			JumpInput(newJump);
-			
-			bool newSprint = sprintAction.IsPressed();
-			SprintInput(newSprint);
-#endif
-		}
+
+		// Input is now read directly in ThirdPersonController.OnInput() callback
+		// This ensures input is sampled at the same rate as network ticks for proper sync
 
 #if ENABLE_INPUT_SYSTEM
 		// Keep these for backward compatibility with PlayerInput if it exists

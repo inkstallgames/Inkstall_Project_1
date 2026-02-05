@@ -112,6 +112,10 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             UnityEngine.Debug.Log($"[NetworkStarter] Generated join code: {CurrentJoinCode}");
             UnityEngine.Debug.Log($"[NetworkStarter] Attempting to connect to Photon Cloud...");
             
+            // Note: Tick rate should be configured in the NetworkProjectConfig asset in Unity Editor
+            // Default Fusion tick rate is 60Hz. For smoother CharacterController movement,
+            // you can increase it to 120Hz or higher in the NetworkProjectConfig asset.
+            
             // Basic network settings - using only standard Fusion properties
             var startGameArgs = new StartGameArgs()
             {

@@ -125,15 +125,8 @@ namespace StarterAssets
 
         private void Awake()
         {
-            _nativeInput = GetComponent<StarterAssetsInputs>();
-            if (_nativeInput != null)
-            {
-                Debug.Log($"[Awake] StarterAssetsInputs found on GameObject: {_nativeInput.gameObject.name}, enabled: {_nativeInput.enabled}");
-            }
-            else
-            {
-                Debug.LogError("[Awake] StarterAssetsInputs component NOT found on this GameObject!");
-            }
+            // Don't get StarterAssetsInputs here - it will be retrieved in Spawned()
+            // to ensure we get the correct component for this specific player instance
         }
 
         private void Start()
@@ -158,6 +151,17 @@ namespace StarterAssets
             // Initialize components for ALL players (needed for FixedUpdateNetwork)
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
+            
+            // Get StarterAssetsInputs component for THIS specific player instance
+            _nativeInput = GetComponent<StarterAssetsInputs>();
+            if (_nativeInput != null)
+            {
+                Debug.Log($"[Spawned] StarterAssetsInputs found on GameObject: {gameObject.name}, enabled: {_nativeInput.enabled}");
+            }
+            else
+            {
+                Debug.LogError($"[Spawned] StarterAssetsInputs component NOT found on GameObject: {gameObject.name}");
+            }
             
             // Disable CharacterController temporarily to allow position to be set correctly
             if (_controller != null)
@@ -185,7 +189,7 @@ namespace StarterAssets
             if (_nativeInput != null)
             {
                 _nativeInput.enabled = Object.HasInputAuthority;
-                Debug.Log($"[ThirdPersonController] StarterAssetsInputs enabled: {_nativeInput.enabled} for Player {Object.InputAuthority.PlayerId}");
+                Debug.Log($"[ThirdPersonController] StarterAssetsInputs enabled: {_nativeInput.enabled} for Player {Object.InputAuthority.PlayerId} on GameObject: {gameObject.name}");
             }
             else
             {

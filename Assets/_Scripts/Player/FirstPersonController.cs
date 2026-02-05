@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Fusion;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -11,7 +10,7 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
 	[RequireComponent(typeof(PlayerInput))]
 #endif
-	public class FirstPersonController : NetworkBehaviour
+	public class FirstPersonController : MonoBehaviour
 	{
 		[Header("Player")]
 		[Tooltip("Move speed of the character in m/s")]
@@ -185,11 +184,8 @@ namespace StarterAssets
 			// Removed debug log error
 #endif
 
-			// Only setup camera and input if this is the local player
-			if (Object.HasInputAuthority)
-			{
-				SetupCameraAndInput();
-			}
+			// Setup camera and input for offline mode
+			SetupCameraAndInput();
 			
 			// Load sensitivity from PlayerPrefs
 			float savedSensitivity = PlayerPrefs.GetFloat(SENSITIVITY_KEY, DEFAULT_SENSITIVITY);
@@ -274,9 +270,7 @@ namespace StarterAssets
 
 		private void Update()
 		{
-			// Only allow input if this is the local player
-			if (!Object.HasInputAuthority)
-				return;
+			// Process input for offline mode
 			
 			JumpAndGravity();
 			GroundedCheck();
@@ -292,9 +286,7 @@ namespace StarterAssets
 
 		private void LateUpdate()
 		{
-			// Only allow camera rotation if this is the local player
-			if (!Object.HasInputAuthority)
-				return;
+			// Process camera rotation for offline mode
 			
 			CameraRotation();
 		}

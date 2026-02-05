@@ -354,7 +354,7 @@ namespace StarterAssets
                     _jumpTimeoutDelta -= Runner.DeltaTime;
                 }
             }
-            else
+            else  
             {
                 _jumpTimeoutDelta = JumpTimeout;
                 if (_fallTimeoutDelta >= 0.0f)

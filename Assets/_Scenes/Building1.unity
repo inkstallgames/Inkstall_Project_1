@@ -8199,9 +8199,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 5569252183795664649}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -93.246, y: -116}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 400.8385, y: -77}
   m_SizeDelta: {x: 801.677, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1156719569
@@ -16893,7 +16893,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2029419306885955393
 Transform:
   m_ObjectHideFlags: 0
@@ -17381,9 +17381,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 5569252183795664649}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -396, y: 47}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 100, y: 53}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2853037462141588133
@@ -20961,9 +20961,9 @@ RectTransform:
   - {fileID: 1156719568}
   m_Father: {fileID: 758386994974643637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -389.91528, y: 100}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 574, y: 75}
   m_SizeDelta: {x: 988.16895, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5572007775625171291
@@ -21454,6 +21454,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SettingsPanel: {fileID: 0}
   MainCanvas: {fileID: 0}
+  DeletePopUp: {fileID: 0}
   sensitivitySlider: {fileID: 92696928827994684}
   volumeSlider: {fileID: 4456333751790609007}
   musicSlider: {fileID: 8061108536400063242}
@@ -22213,6 +22214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SettingsPanel: {fileID: 711267595341819094}
   MainCanvas: {fileID: 2121465414623763718}
+  DeletePopUp: {fileID: 0}
   sensitivitySlider: {fileID: 92696928827994684}
   volumeSlider: {fileID: 4456333751790609007}
   musicSlider: {fileID: 8061108536400063242}
@@ -23493,9 +23495,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 5569252183795664649}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000030517578, y: -22}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 494.0845, y: 0}
   m_SizeDelta: {x: 988.169, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9153304873800952405

@@ -306,6 +306,15 @@ public class LobbyUIManager : MonoBehaviour
         {
             heroSelectionPanel.SetActive(show);
             Debug.Log($"[LobbyUIManager] Set heroSelectionPanel active to {show}, actual state: {heroSelectionPanel.activeSelf}");
+            Debug.Log($"[LobbyUIManager] heroSelectionPanel activeInHierarchy: {heroSelectionPanel.activeInHierarchy}");
+            
+            // Check parent hierarchy
+            Transform parent = heroSelectionPanel.transform.parent;
+            while (parent != null)
+            {
+                Debug.Log($"[LobbyUIManager] Parent '{parent.name}' active: {parent.gameObject.activeSelf}");
+                parent = parent.parent;
+            }
         }
         else
         {

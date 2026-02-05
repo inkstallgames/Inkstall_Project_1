@@ -299,11 +299,14 @@ public class LobbyUIManager : MonoBehaviour
         if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
     }
 
-    public void ShowLoadingScreen()
+    public void ShowLoadingScreen(bool show = true)
     {
-        if (loadingScreenPanel != null) loadingScreenPanel.SetActive(true);
-        if (lobbyPanel != null) lobbyPanel.SetActive(false);
-        if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
-        if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
+        if (loadingScreenPanel != null) loadingScreenPanel.SetActive(show);
+        if (show)
+        {
+            if (lobbyPanel != null) lobbyPanel.SetActive(false);
+            if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
+            if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
+        }
     }
 }

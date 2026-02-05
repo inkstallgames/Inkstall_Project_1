@@ -429,11 +429,8 @@ namespace StarterAssets
                 data.sprint = _nativeInput.sprint;
                 _nativeInput.jump = false;
 
-                // Debug input values
-                if (data.move.sqrMagnitude > 0.01f || data.look.sqrMagnitude > 0.01f)
-                {
-                    Debug.Log($"[OnInput] move: {data.move}, look: {data.look}");
-                }
+                // Debug ALL input values, not just when they're non-zero
+                Debug.Log($"[OnInput] RAW VALUES - move: {data.move}, look: {data.look}, jump: {data.jump}, sprint: {data.sprint}");
             }
             else
             {

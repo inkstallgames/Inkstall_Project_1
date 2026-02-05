@@ -293,8 +293,25 @@ public class LobbyUIManager : MonoBehaviour
 
     public void ShowHeroSelectionPanel(bool show)
     {
-        if (lobbyPanel != null) lobbyPanel.SetActive(!show);
-        if (heroSelectionPanel != null) heroSelectionPanel.SetActive(show);
+        Debug.Log($"[LobbyUIManager] ShowHeroSelectionPanel called with show={show}");
+        Debug.Log($"[LobbyUIManager] heroSelectionPanel is {(heroSelectionPanel == null ? "NULL" : "assigned")}");
+        
+        if (lobbyPanel != null) 
+        {
+            lobbyPanel.SetActive(!show);
+            Debug.Log($"[LobbyUIManager] Set lobbyPanel active to {!show}");
+        }
+        
+        if (heroSelectionPanel != null) 
+        {
+            heroSelectionPanel.SetActive(show);
+            Debug.Log($"[LobbyUIManager] Set heroSelectionPanel active to {show}, actual state: {heroSelectionPanel.activeSelf}");
+        }
+        else
+        {
+            Debug.LogError("[LobbyUIManager] heroSelectionPanel is NULL! Cannot show hero selection.");
+        }
+        
         if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
         if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
     }

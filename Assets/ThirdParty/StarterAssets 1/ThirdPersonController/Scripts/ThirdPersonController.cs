@@ -222,6 +222,7 @@ namespace StarterAssets
         {
             if (GetInput(out NetworkInputData data))
             {
+                Debug.Log($"[FixedUpdateNetwork] GetInput returned true for Player {Object.InputAuthority.PlayerId}, move: {data.move}");
                 _latestInput = data;
 
                 // Movement, jumping, and gravity should be simulated for all clients to see.
@@ -231,6 +232,7 @@ namespace StarterAssets
             }
             else
             {
+                Debug.Log($"[FixedUpdateNetwork] GetInput returned false for Player {Object.InputAuthority.PlayerId}");
                 // If no input, still apply gravity and check grounded state
                 JumpAndGravity(default);
                 GroundedCheck();
@@ -416,6 +418,8 @@ namespace StarterAssets
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
+            Debug.Log($"[OnInput] Called for Player {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}");
+            
             var data = new NetworkInputData();
             if (_nativeInput != null)
             {
@@ -431,7 +435,13 @@ namespace StarterAssets
                     Debug.Log($"[OnInput] move: {data.move}, look: {data.look}");
                 }
             }
+            else
+            {
+                Debug.LogError($"[OnInput] _nativeInput is NULL for Player {Object.InputAuthority.PlayerId}");
+            }
+            
             input.Set(data);
+            Debug.Log($"[OnInput] Input set for Player {Object.InputAuthority.PlayerId}");
         }
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }

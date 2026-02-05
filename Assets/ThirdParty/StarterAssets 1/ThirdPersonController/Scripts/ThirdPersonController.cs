@@ -18,9 +18,6 @@ namespace StarterAssets
     }
 
     [RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM
-    [RequireComponent(typeof(PlayerInput))]
-#endif
     public class ThirdPersonController : NetworkBehaviour, INetworkRunnerCallbacks
     {
         [Header("Player")]
@@ -100,9 +97,6 @@ namespace StarterAssets
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
 
-#if ENABLE_INPUT_SYSTEM
-        private PlayerInput _playerInput;
-#endif
         private Animator _animator;
         private CharacterController _controller;
         private StarterAssetsInputs _nativeInput;
@@ -115,11 +109,8 @@ namespace StarterAssets
         {
             get
             {
-#if ENABLE_INPUT_SYSTEM
-                return _playerInput.currentControlScheme == "KeyboardMouse";
-#else
-				return false;
-#endif
+                // Always return true for keyboard/mouse in multiplayer
+                return true;
             }
         }
 
@@ -169,20 +160,7 @@ namespace StarterAssets
                 _controller.enabled = false;
             }
             
-#if ENABLE_INPUT_SYSTEM
-            _playerInput = GetComponent<PlayerInput>();
-            if (_playerInput != null)
-            {
-                Debug.Log($"[Spawned] PlayerInput found on GameObject: {gameObject.name}, enabled: {_playerInput.enabled}");
-            }
-            else
-            {
-                Debug.LogError($"[Spawned] PlayerInput component NOT found on GameObject: {gameObject.name}");
-            }
-#else
-            Debug.LogWarning("[Spawned] ENABLE_INPUT_SYSTEM is not defined!");
-#endif
-            Debug.Log($"Spawned: _controller is {(_controller == null ? "null" : "assigned")}, _animator is {(_animator == null ? "null" : "assigned")}, _playerInput is {(_playerInput == null ? "null" : "assigned")}");
+            Debug.Log($"Spawned: _controller is {(_controller == null ? "null" : "assigned")}, _animator is {(_animator == null ? "null" : "assigned")}");
 
             AssignAnimationIDs();
             _jumpTimeoutDelta = JumpTimeout;
@@ -204,13 +182,6 @@ namespace StarterAssets
             else
             {
                 Debug.LogError($"[ThirdPersonController] StarterAssetsInputs component is NULL for Player {Object.InputAuthority.PlayerId}");
-            }
-            
-            // Also enable/disable PlayerInput component
-            if (_playerInput != null)
-            {
-                _playerInput.enabled = Object.HasInputAuthority;
-                Debug.Log($"[ThirdPersonController] PlayerInput enabled: {_playerInput.enabled} for Player {Object.InputAuthority.PlayerId}");
             }
 
             if (Object.HasInputAuthority)

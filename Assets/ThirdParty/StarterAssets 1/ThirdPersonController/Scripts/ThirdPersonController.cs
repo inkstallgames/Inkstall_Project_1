@@ -303,6 +303,7 @@ namespace StarterAssets
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             Vector3 inputDirection = new Vector3(input.move.x, 0.0f, input.move.y).normalized;
+            Vector3 targetDirection = Vector3.zero;
 
             if (input.move != Vector2.zero)
             {
@@ -313,10 +314,14 @@ namespace StarterAssets
                 }
                 float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity, RotationSmoothTime);
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+                
+                targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
             }
 
-            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-            _controller.Move(targetDirection.normalized * (_speed * Runner.DeltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime);
+            // Only apply horizontal movement if there's actual speed
+            Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
+            Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
+            _controller.Move(horizontalMovement + verticalMovement);
 
             if (_hasAnimator)
             {

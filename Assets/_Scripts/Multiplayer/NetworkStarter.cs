@@ -300,27 +300,11 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         UnityEngine.Debug.Log($"[NetworkStarter] Current scene: {currentScene.name}");
 
-        if (runner.IsServer)
-        {
-            UnityEngine.Debug.Log("[NetworkStarter] Server is processing player join...");
-            // Only spawn players in the game scene
-            if (currentScene.name != "Lobby")
-            {
-                UnityEngine.Debug.Log("[NetworkStarter] Not in Lobby, attempting to spawn player...");
-                SpawnPlayer(runner, player);
-            }
-            else
-            {
-                UnityEngine.Debug.Log("[NetworkStarter] In Lobby, player spawning is handled by lobby manager");
-            }
-        }
-        else
-        {
-            UnityEngine.Debug.Log("[NetworkStarter] This is a client, not spawning player");
-        }
-
         // Use a coroutine to wait for the lobby manager to be ready, especially on clients
         StartCoroutine(NotifyLobbyManagerOfPlayerJoin(player));
+
+        // Respawn the player if necessary (e.g., joining a game in progress)
+        RespawnPlayerIfNecessary(runner, player);
     }
 
     private void SpawnPlayer(NetworkRunner runner, PlayerRef player)
@@ -448,54 +432,21 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     {
         // This is called on all clients when a new scene is loaded
         UnityEngine.Debug.Log($"[NetworkStarter] OnSceneLoadDone called. IsServer: {runner.IsServer}");
-        
+
         var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         UnityEngine.Debug.Log($"[NetworkStarter] Scene loaded: {currentScene.name}");
-        
+
         // Hide loading screen for all clients
         if (LobbyUIManager.Instance != null)
         {
             UnityEngine.Debug.Log("[NetworkStarter] Hiding loading screen after scene load");
             LobbyUIManager.Instance.ShowLoadingScreen(false);
         }
-        
-        if (runner.IsServer)
+
+        // Respawn all players if necessary. This handles late-joiners.
+        foreach (var player in runner.ActivePlayers)
         {
-            // Check if NetworkGameManager is handling the game initialization
-            if (NetworkGameManager.Instance != null)
-            {
-                var gameState = NetworkGameManager.Instance.CurrentGameState;
-                UnityEngine.Debug.Log($"[NetworkStarter] Current game state: {gameState}");
-                
-                // If game is starting, trigger NetworkGameManager to initialize and spawn players
-                if (gameState == GameState.Starting)
-                {
-                    UnityEngine.Debug.Log("[NetworkStarter] Game is starting, calling NetworkGameManager.InitializeGame");
-                    StartCoroutine(InitializeGameAfterDelay(0.5f));
-                    return;
-                }
-            }
-            
-            // For other cases (like players joining mid-game), spawn them here
-            UnityEngine.Debug.Log("[NetworkStarter] Spawning players after scene load");
-            foreach (var player in runner.ActivePlayers)
-            {
-                var playerObject = runner.GetPlayerObject(player);
-                if (playerObject == null)
-                {
-                    UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} needs to be spawned");
-                    SpawnPlayer(runner, player);
-                }
-                else
-                {
-                    UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} already has a player object");
-                }
-            }
-        }
-        else
-        {
-            // Client-side: Wait for server to spawn players
-            UnityEngine.Debug.Log("[NetworkStarter] Client waiting for server to spawn players");
+            RespawnPlayerIfNecessary(runner, player);
         }
     }
     
@@ -519,6 +470,20 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) {}
     public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) {}
     public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) {}
+
+    private void RespawnPlayerIfNecessary(NetworkRunner runner, PlayerRef player)
+    {
+        if (runner.IsServer)
+        {
+            var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (currentScene.name != "Lobby")
+            {
+                UnityEngine.Debug.Log($"[NetworkStarter] Checking if player {player.PlayerId} needs to be spawned in scene {currentScene.name}");
+                SpawnPlayer(runner, player);
+            }
+        }
+    }
+
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) {}
     
     private void OnDestroy()

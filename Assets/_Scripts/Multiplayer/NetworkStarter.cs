@@ -404,6 +404,10 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                     }
                 }
             }
+            
+            // Actively disconnect the player from the server to ensure they receive the disconnect signal
+            UnityEngine.Debug.Log($"[NetworkStarter] Disconnecting player {player.PlayerId} from server");
+            runner.Disconnect(player);
         }
         
         NetworkLobbyManager.Instance?.OnPlayerLeft(player);

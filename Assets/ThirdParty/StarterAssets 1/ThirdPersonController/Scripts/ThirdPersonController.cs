@@ -221,7 +221,7 @@ namespace StarterAssets
         {
             if (GetInput(out NetworkInputData data))
             {
-                Debug.Log($"[FixedUpdateNetwork] GetInput returned true for Player {Object.InputAuthority.PlayerId}, move: {data.move}");
+                Debug.Log($"[FixedUpdateNetwork] Player {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}, IsServer: {Runner.IsServer}, move: {data.move}, Runner.DeltaTime: {Runner.DeltaTime}");
                 _latestInput = data;
 
                 // Movement, jumping, and gravity should be simulated for all clients to see.
@@ -235,6 +235,7 @@ namespace StarterAssets
                 // If no input, still apply gravity and check grounded state
                 JumpAndGravity(default);
                 GroundedCheck();
+                Move(default);
             }
         }
 
@@ -278,7 +279,7 @@ namespace StarterAssets
             // Debug movement input
             if (Object.HasInputAuthority && input.move.sqrMagnitude > 0.01f)
             {
-                Debug.Log($"[Move] input.move: {input.move}, targetSpeed will be: {(input.sprint ? SprintSpeed : MoveSpeed)}");
+                Debug.Log($"[Move] input.move: {input.move}, targetSpeed will be: {(input.sprint ? SprintSpeed : MoveSpeed)}, Runner.DeltaTime: {Runner.DeltaTime}, IsServer: {Runner.IsServer}");
             }
 
             // set target speed based on move speed, sprint speed and if sprint is pressed

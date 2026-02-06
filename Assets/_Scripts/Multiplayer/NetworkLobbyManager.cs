@@ -283,28 +283,8 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_ShowHeroSelectionUI()
     {
-        Debug.Log($"[NetworkLobbyManager] RPC_ShowHeroSelectionUI called on {(Runner.IsServer ? "Server" : "Client")}");
-        
-        // Ensure UI manager is available
-        if (uiManager == null)
-        {
-            uiManager = LobbyUIManager.Instance;
-            Debug.LogWarning("[NetworkLobbyManager] UI Manager was null in RPC, attempting to find it again");
-        }
-        
-        if (uiManager != null)
-        {
-            Debug.Log("[NetworkLobbyManager] Showing hero selection panel via RPC");
-            // Show the hero selection panel
-            uiManager.ShowHeroSelectionPanel(true);
-            
-            // Hide the lobby panel
-            uiManager.ShowLobby(false);
-        }
-        else
-        {
-            Debug.LogError("[NetworkLobbyManager] UI Manager still null in RPC_ShowHeroSelectionUI!");
-        }
+        Debug.Log($"[NetworkLobbyManager] RPC_ShowHeroSelectionUI called on {(Runner.IsServer ? "Server" : "Client")}. IsHeroSelectionActive will be handled by Render.");
+        // The Render method will now handle the UI changes based on IsHeroSelectionActive state.
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -326,25 +306,25 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         base.Render();
 
-        if (_previousHeroSelectionState != IsHeroSelectionActive)
+        // Centralized UI state management
+        if (uiManager != null)
         {
-            if (LobbyUIManager.Instance != null)
+            if (_previousHeroSelectionState != IsHeroSelectionActive)
             {
-                LobbyUIManager.Instance.ShowHeroSelectionPanel(IsHeroSelectionActive);
+                uiManager.ShowHeroSelectionPanel(IsHeroSelectionActive);
+                _previousHeroSelectionState = IsHeroSelectionActive;
             }
-
-            if (IsHeroSelectionActive)
-            {
-                UpdateHeroSelectionUI();
-            }
-            _previousHeroSelectionState = IsHeroSelectionActive;
+        }
+        else if (uiManager == null)
+        {
+            uiManager = LobbyUIManager.Instance; // Attempt to re-acquire the UI manager
         }
 
+        // Update UI content based on the current state
         if (IsHeroSelectionActive)
         {
-            // Update the timer UI on all clients
+            UpdateHeroSelectionUI();
             float remainingTime = HeroSelectionTimer.RemainingTime(Runner) ?? 0;
-            // Assuming you have a reference to the HeroSelection script or its UI elements
             var heroSelectionUI = FindObjectOfType<HeroSelection>();
             if (heroSelectionUI != null)
             {

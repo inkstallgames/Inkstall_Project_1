@@ -18,6 +18,7 @@ namespace StarterAssets
     }
 
     [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(NetworkCharacterController))]
     public class ThirdPersonController : NetworkBehaviour, INetworkRunnerCallbacks
     {
         [Header("Player")]
@@ -100,6 +101,7 @@ namespace StarterAssets
         private Animator _animator;
         private CharacterController _controller;
         private StarterAssetsInputs _nativeInput;
+        private NetworkCharacterController _ncc;
         private GameObject _mainCamera;
         private bool _hasAnimator;
         private const float _threshold = 0.01f;
@@ -142,6 +144,7 @@ namespace StarterAssets
             // Initialize components for ALL players (needed for FixedUpdateNetwork)
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
+            _ncc = GetComponent<NetworkCharacterController>();
             
             // Get StarterAssetsInputs component for THIS specific player instance
             _nativeInput = GetComponent<StarterAssetsInputs>();
@@ -316,7 +319,8 @@ namespace StarterAssets
             }
 
             Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-            _controller.Move(targetDirection.normalized * (_speed * Runner.DeltaTime) + new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime);
+            var moveDirection = targetDirection.normalized * _speed + new Vector3(0.0f, _verticalVelocity, 0.0f);
+            _ncc.Move(moveDirection);
 
             if (_hasAnimator)
             {

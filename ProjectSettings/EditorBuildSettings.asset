@@ -8,25 +8,25 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/_Scenes/TestMultiplayer.unity
     guid: 7846e674e92102047b2a6ac3737ac4c1
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/MainScene.unity
     guid: 282ac9cba7dff70438ac50f69e30f292
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/Building1.unity
     guid: 78145bc028f87134ca892954ddc36bb1
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/Building2.unity
     guid: ee719c1e1518b7447a62850ca1f1b3f0
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/Building3.unity
     guid: 489b241c74f54dd438fe75c737201fd6
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/Building4.unity
     guid: d9473688d594eb648b6528497a491c4c
-  - enabled: 0
+  - enabled: 1
     path: Assets/_Scenes/Lobby.unity
     guid: 7dc0cd1b16d40554f858da77a8c56083
-  - enabled: 0
+  - enabled: 1
     path: Assets/_Scenes/MallMap.unity
     guid: e92906ce056f8c44bbb8c9b6f23f8e04
   m_configObjects: {}

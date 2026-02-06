@@ -371,16 +371,38 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        UnityEngine.Debug.Log($"[Network] Player {player.PlayerId} left");
+        UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} left. IsServer: {runner.IsServer}");
         
         // Despawn the player's character if they have one
         if (runner.IsServer)
         {
+            UnityEngine.Debug.Log($"[NetworkStarter] Attempting to find and despawn character for player {player.PlayerId}");
+            
             var playerObject = runner.GetPlayerObject(player);
             if (playerObject != null)
             {
+                UnityEngine.Debug.Log($"[NetworkStarter] Found player object via GetPlayerObject: {playerObject.name}");
                 UnityEngine.Debug.Log($"[NetworkStarter] Despawning player {player.PlayerId}'s character");
                 runner.Despawn(playerObject);
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning($"[NetworkStarter] GetPlayerObject returned null for player {player.PlayerId}");
+                
+                // Fallback: Search for the player's character manually
+                var allNetworkObjects = FindObjectsOfType<NetworkObject>();
+                UnityEngine.Debug.Log($"[NetworkStarter] Searching through {allNetworkObjects.Length} NetworkObjects");
+                
+                foreach (var netObj in allNetworkObjects)
+                {
+                    if (netObj.InputAuthority == player)
+                    {
+                        UnityEngine.Debug.Log($"[NetworkStarter] Found character via InputAuthority: {netObj.name}");
+                        UnityEngine.Debug.Log($"[NetworkStarter] Despawning {netObj.name} for player {player.PlayerId}");
+                        runner.Despawn(netObj);
+                        break;
+                    }
+                }
             }
         }
         
@@ -449,7 +471,56 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     }
     
     public void OnConnectedToServer(NetworkRunner runner) => UnityEngine.Debug.Log("[Network] Connected to server");
-    public void OnDisconnectedFromServer(NetworkRunner runner) => UnityEngine.Debug.Log("[Network] Disconnected from server");
+    
+    public void OnDisconnectedFromServer(NetworkRunner runner)
+    {
+        UnityEngine.Debug.Log("[NetworkStarter] Disconnected from server");
+        
+        // If we're a client and got disconnected, handle it
+        if (!runner.IsServer)
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+                
+                // If we're not in the Lobby scene, we need to load it first
+                if (currentScene.name != "Lobby")
+                {
+                    UnityEngine.Debug.Log($"[NetworkStarter] Client disconnected from {currentScene.name}, loading Lobby scene");
+                    SceneManager.LoadScene("Lobby");
+                    
+                    // After loading lobby, show the error message
+                    StartCoroutine(ShowDisconnectErrorAfterSceneLoad());
+                }
+                else
+                {
+                    // We're already in the Lobby scene, just show the error
+                    ShowDisconnectError();
+                }
+            });
+        }
+    }
+    
+    private System.Collections.IEnumerator ShowDisconnectErrorAfterSceneLoad()
+    {
+        // Wait for the scene to load
+        yield return new WaitForSeconds(0.5f);
+        
+        ShowDisconnectError();
+    }
+    
+    private void ShowDisconnectError()
+    {
+        var mainMenu = FindObjectOfType<MainMenu>();
+        if (mainMenu == null)
+        {
+            UnityEngine.Debug.LogWarning("MainMenu not found after scene load.");
+            return;
+        }
+        
+        mainMenu.ShowErrorAndReturnToMenu("Server request timed out.");
+    }
+    
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
     {

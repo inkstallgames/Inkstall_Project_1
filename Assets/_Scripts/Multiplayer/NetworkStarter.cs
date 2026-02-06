@@ -549,6 +549,31 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         UnityEngine.Debug.Log($"[NetworkStarter] Scene loaded: {currentScene.name}");
 
+        // Client-side check: if we're not in the active players list, we were kicked/timed out
+        if (!runner.IsServer && currentScene.name != "Lobby")
+        {
+            bool isInActivePlayersList = false;
+            foreach (var player in runner.ActivePlayers)
+            {
+                if (player == runner.LocalPlayer)
+                {
+                    isInActivePlayersList = true;
+                    break;
+                }
+            }
+            
+            if (!isInActivePlayersList)
+            {
+                UnityEngine.Debug.LogWarning($"[NetworkStarter] Client is not in active players list after scene load. Returning to lobby.");
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    SceneManager.LoadScene("Lobby");
+                    StartCoroutine(ShowDisconnectErrorAfterSceneLoad());
+                });
+                return;
+            }
+        }
+
         // Hide loading screen for all clients
         if (LobbyUIManager.Instance != null)
         {

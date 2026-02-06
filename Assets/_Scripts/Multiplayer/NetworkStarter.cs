@@ -129,7 +129,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
             // Start with timeout
             var startTask = _runner.StartGame(startGameArgs);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30)); // 30 second timeout for cloud connection
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(60)); // 60 second timeout for cloud connection
             var completedTask = await Task.WhenAny(startTask, timeoutTask);
 
             if (completedTask == timeoutTask)
@@ -183,23 +183,23 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    public async void JoinSession(string sessionCode, Action<bool> onComplete = null)
+    public async void JoinSession(string sessionCode, Action<bool, string> onComplete = null)
     {
         if (_isShuttingDown || string.IsNullOrEmpty(sessionCode))
         {
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                onComplete?.Invoke(false);
+                onComplete?.Invoke(false, "Invalid session code.");
             });
             return;
         }
-        
+
         InitializeRunner();
-        
+
         if (_runner == null)
         {
             UnityEngine.Debug.LogError("Failed to initialize NetworkRunner!");
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                onComplete?.Invoke(false);
+                onComplete?.Invoke(false, "Network initialization failed.");
             });
             return;
         }
@@ -208,16 +208,14 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         {
             UnityEngine.Debug.LogWarning("NetworkRunner is already running!");
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                onComplete?.Invoke(false);
+                onComplete?.Invoke(false, "Network is already active.");
             });
             return;
         }
 
         try
         {
-            // Normalize the session code to match host format (uppercase, trimmed)
             string normalizedCode = sessionCode.Trim().ToUpper();
-            
             var startGameArgs = new StartGameArgs()
             {
                 GameMode = Fusion.GameMode.Client,
@@ -227,10 +225,10 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             };
 
             UnityEngine.Debug.Log($"[NetworkStarter] Attempting to join session: {normalizedCode}");
-            
-            // Add timeout for join attempt
+
             var startTask = _runner.StartGame(startGameArgs);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(30)); // 30 second timeout for joining
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(60));
+
             var completedTask = await Task.WhenAny(startTask, timeoutTask);
 
             if (completedTask == timeoutTask)
@@ -238,7 +236,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 UnityEngine.Debug.LogError("[NetworkStarter] Join attempt timed out!");
                 await ShutdownRunner();
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    onComplete?.Invoke(false);
+                    onComplete?.Invoke(false, "Server request timed out.");
                 });
                 return;
             }
@@ -249,17 +247,15 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             {
                 UnityEngine.Debug.Log($"[NetworkStarter] Successfully joined session: {normalizedCode}");
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    onComplete?.Invoke(true);
+                    onComplete?.Invoke(true, null);
                 });
             }
             else
             {
-                string error = $"Failed to Join Session '{normalizedCode}': {result.ShutdownReason}";
+                string error = $"Failed to Join: {result.ShutdownReason}";
                 UnityEngine.Debug.LogError(error);
-                
-                // Ensure callback is on main thread
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    onComplete?.Invoke(false);
+                    onComplete?.Invoke(false, error);
                 });
             }
         }
@@ -267,7 +263,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         {
             UnityEngine.Debug.LogError($"[NetworkStarter] Error joining session: {e.Message}\n{e.StackTrace}");
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                onComplete?.Invoke(false);
+                onComplete?.Invoke(false, "An unexpected error occurred.");
             });
         }
     }
@@ -383,27 +379,30 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     {
         UnityEngine.Debug.Log($"[Network] Shutdown: {shutdownReason}");
 
-        // If the shutdown was caused by a failed join attempt, don't reset the whole UI.
-        // The join failure logic in MainMenu will handle the UI updates.
-        if (shutdownReason == ShutdownReason.GameNotFound || shutdownReason == ShutdownReason.InvalidAuthentication)
-        {
-            _runner = null;
-            return;
-        }
-
-        // For all other shutdown reasons (e.g., host leaving), reset to the main menu.
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
             var mainMenu = FindObjectOfType<MainMenu>();
-            if (mainMenu != null)
+            if (mainMenu == null)
             {
-                mainMenu.ShowMainMenuPanel();
-            }
-            else
-            {
-                // Fallback to reloading the scene if MainMenu is not found
                 UnityEngine.Debug.LogWarning("MainMenu not found, reloading scene as a fallback.");
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                return;
+            }
+
+            switch (shutdownReason)
+            {
+                case ShutdownReason.ConnectionTimeout:
+                case ShutdownReason.ConnectionRefused:
+                case ShutdownReason.OperationTimeout:
+                    mainMenu.ShowErrorAndReturnToMenu("Connection to the server was lost.");
+                    break;
+                case ShutdownReason.GameNotFound:
+                case ShutdownReason.InvalidAuthentication:
+                    // These are handled by the JoinSession callback, no extra action needed here.
+                    break;
+                default:
+                    mainMenu.ShowMainMenuPanel();
+                    break;
             }
         });
 

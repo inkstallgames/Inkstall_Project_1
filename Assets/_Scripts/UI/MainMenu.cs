@@ -191,56 +191,47 @@ public class MainMenu : MonoBehaviour
             }
             return;
         }
-        
+
         if (networkStarter != null && joinCodeInputField != null && !string.IsNullOrWhiteSpace(joinCodeInputField.text))
         {
             string joinCode = joinCodeInputField.text.Trim().ToUpper();
-            
-            // Show joining status
+
             if (joinStatusText != null)
             {
                 joinStatusText.text = "Joining game...";
                 joinStatusText.gameObject.SetActive(true);
             }
-            
-            // Disable confirm button while joining
+
             joinConfirmButton.interactable = false;
-            
-            // Create a callback for join result
-            Action<bool> onJoinComplete = (success) => {
-                // Run on main thread since this is a Unity UI update
+
+            Action<bool, string> onJoinComplete = (success, error) => {
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
                     joinConfirmButton.interactable = true;
-                    
+
                     if (success)
                     {
-                        // Clear status text when joined successfully
                         if (joinStatusText != null)
                             joinStatusText.gameObject.SetActive(false);
-                            
-                        // Only switch to lobby if join was successful
+
                         SwitchToLobby();
                         changeUserNameButton.gameObject.SetActive(false);
                     }
                     else
                     {
-                        // Show error message to user
                         if (joinStatusText != null)
                         {
-                            joinStatusText.text = "Game not found. Please check the code.";
+                            joinStatusText.text = error;
                             joinStatusText.gameObject.SetActive(true);
                             StartCoroutine(HideStatusAfterDelay(3f));
                         }
-                        // Keep the join panel open and re-enable input
                         joinCodeInputField.text = "";
                         joinCodeInputField.Select();
                         joinCodeInputField.ActivateInputField();
-                        Debug.LogError("Failed to join room. Please check the join code and try again.");
+                        Debug.LogError($"Failed to join room: {error}");
                     }
                 });
             };
-            
-            // Start the join process
+
             networkStarter.JoinSession(joinCode, onJoinComplete);
         }
         else
@@ -322,5 +313,16 @@ public class MainMenu : MonoBehaviour
 
         if (changeUserNameButton != null)
             changeUserNameButton.gameObject.SetActive(true);
+    }
+
+    public void ShowErrorAndReturnToMenu(string message)
+    {
+        ShowMainMenuPanel();
+        if (joinStatusText != null)
+        {
+            joinStatusText.text = message;
+            joinStatusText.gameObject.SetActive(true);
+            StartCoroutine(HideStatusAfterDelay(5f)); // Hide after 5 seconds
+        }
     }
 }

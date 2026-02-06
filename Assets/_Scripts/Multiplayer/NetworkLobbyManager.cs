@@ -36,6 +36,9 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Networked, Capacity(8)]
     public NetworkLinkedList<int> SelectedHeroIds { get; }
 
+    [Networked, Capacity(8)]
+    public NetworkDictionary<PlayerRef, bool> PlayersReadyToLoad { get; }
+
     private readonly List<string> mapOptions = new List<string> { "MallMap" };
     private readonly List<string> timeOptions = new List<string> { "3:00", "5:00", "10:00" };
     private readonly List<Color> playerColors = new List<Color>
@@ -575,6 +578,34 @@ public class NetworkLobbyManager : NetworkBehaviour
             var playerData = LobbyPlayers[localPlayer];
             Debug.Log($"[NetworkLobbyManager] Player {localPlayer.PlayerId} ({playerData.PlayerName}) received game start notification");
         }
+        
+        // Client confirms they're ready to load the scene
+        if (!Runner.IsServer)
+        {
+            StartCoroutine(ConfirmReadyToLoadAfterDelay());
+        }
+    }
+    
+    private System.Collections.IEnumerator ConfirmReadyToLoadAfterDelay()
+    {
+        // Small delay to ensure UI is ready
+        yield return new WaitForSeconds(0.5f);
+        
+        Debug.Log($"[NetworkLobbyManager] Client {Runner.LocalPlayer.PlayerId} confirming ready to load");
+        RPC_ConfirmReadyToLoad(Runner.LocalPlayer);
+    }
+    
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    private void RPC_ConfirmReadyToLoad(PlayerRef player, RpcInfo info = default)
+    {
+        if (Runner.IsServer)
+        {
+            Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} confirmed ready to load");
+            PlayersReadyToLoad.Set(player, true);
+            
+            // Check if all players are ready
+            CheckIfAllPlayersReadyToLoad();
+        }
     }
 
     // This method will be called when SelectedHeroIds changes
@@ -751,7 +782,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             }
         }
 
-        Debug.Log($"[NetworkLobbyManager] All players have valid hero selections. Loading scene: {sceneName}");
+        Debug.Log($"[NetworkLobbyManager] All players have valid hero selections. Preparing for scene load: {sceneName}");
         
         // Store the current scene name before loading the new one
         string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
@@ -766,8 +797,44 @@ public class NetworkLobbyManager : NetworkBehaviour
                 return;
             }
             
+            // Clear the ready-to-load dictionary
+            PlayersReadyToLoad.Clear();
+            
+            // Server is always ready
+            PlayersReadyToLoad.Set(Runner.LocalPlayer, true);
+            Debug.Log($"[NetworkLobbyManager] Server marked as ready. Notifying clients...");
+            
             // Notify all clients that we're about to load the game scene
             RPC_NotifyGameStarting();
+            
+            // Don't load immediately - wait for all clients to confirm they're ready
+            Debug.Log($"[NetworkLobbyManager] Waiting for all clients to confirm ready to load...");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[NetworkLobbyManager] Error loading scene {sceneName}: {e.Message}");
+            Debug.LogException(e);
+            
+            // Try to return to lobby if scene loading fails
+            Runner.LoadScene(currentScene, UnityEngine.SceneManagement.LoadSceneMode.Single);
+        }
+    }
+
+    private void CheckIfAllPlayersReadyToLoad()
+    {
+        if (!Runner.IsServer) return;
+        
+        // Check if all players are ready to load
+        bool allPlayersReady = LobbyPlayers.Count == PlayersReadyToLoad.Count;
+        
+        if (allPlayersReady)
+        {
+            Debug.Log("[NetworkLobbyManager] All players are ready to load. Proceeding with scene load...");
+            
+            // Load the scene
+            string sceneName = mapOptions[SelectedMapIndex];
+            string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+            Debug.Log($"[NetworkLobbyManager] Loading scene: {sceneName} (Current scene: {currentScene})");
             
             // Initialize the game with the selected scene
             if (NetworkGameManager.Instance != null)
@@ -808,13 +875,9 @@ public class NetworkLobbyManager : NetworkBehaviour
                 Debug.LogError("[NetworkLobbyManager] NetworkGameManager instance not found!");
             }
         }
-        catch (Exception e)
+        else
         {
-            Debug.LogError($"[NetworkLobbyManager] Error loading scene {sceneName}: {e.Message}");
-            Debug.LogException(e);
-            
-            // Try to return to lobby if scene loading fails
-            Runner.LoadScene(currentScene, UnityEngine.SceneManagement.LoadSceneMode.Single);
+            Debug.Log($"[NetworkLobbyManager] Not all players are ready to load. {PlayersReadyToLoad.Count}/{LobbyPlayers.Count} players ready. Waiting...");
         }
     }
 }

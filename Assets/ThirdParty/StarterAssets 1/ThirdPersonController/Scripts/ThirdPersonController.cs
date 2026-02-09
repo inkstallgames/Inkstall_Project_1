@@ -486,7 +486,7 @@ namespace StarterAssets
             {
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
                 _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _latestInput.look.y * deltaTimeMultiplier;
+                _cinemachineTargetPitch -= _latestInput.look.y * deltaTimeMultiplier; // Negate Y for non-inverted mouse
                 Debug.Log($"[LateUpdate] Rotating camera - look: {_latestInput.look}, yaw: {_cinemachineTargetYaw}, pitch: {_cinemachineTargetPitch}");
             }
 

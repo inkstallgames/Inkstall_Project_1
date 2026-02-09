@@ -279,24 +279,16 @@ namespace StarterAssets
             float targetSpeed = input.sprint ? SprintSpeed : MoveSpeed;
             if (input.move == Vector2.zero) targetSpeed = 0.0f;
 
-            float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
-            float speedOffset = 0.1f;
             float inputMagnitude = input.move.magnitude;
 
-            if (currentHorizontalSpeed < targetSpeed - speedOffset || currentHorizontalSpeed > targetSpeed + speedOffset)
-            {
-                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude, Runner.DeltaTime * SpeedChangeRate);
-                _speed = Mathf.Round(_speed * 1000f) / 1000f;
-            }
-            else
-            {
-                _speed = targetSpeed; 
-            }
+            // accelerate or decelerate to target speed
+            _speed = Mathf.Lerp(_speed, targetSpeed, Runner.DeltaTime * SpeedChangeRate);
+
+            // round speed to 3 decimal places
+            _speed = Mathf.Round(_speed * 1000f) / 1000f;
 
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Runner.DeltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
-
-            // Host uses original mapping, client uses swapped mapping to fix rotation issue
             Vector3 inputDirection = Object.HasStateAuthority 
                 ? new Vector3(input.move.x, 0.0f, input.move.y).normalized  // Host
                 : new Vector3(input.move.y, 0.0f, input.move.x).normalized; // Client

@@ -296,7 +296,7 @@ namespace StarterAssets
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Runner.DeltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-            Vector3 inputDirection = new Vector3(input.move.x, 0.0f, input.move.y).normalized;
+            Vector3 inputDirection = new Vector3(input.move.y, 0.0f, input.move.x).normalized;
             Vector3 targetDirection = Vector3.zero;
 
             if (input.move != Vector2.zero)
@@ -486,7 +486,7 @@ namespace StarterAssets
             {
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
                 _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch -= _latestInput.look.y * deltaTimeMultiplier; // Negate Y for non-inverted mouse
+                _cinemachineTargetPitch += _latestInput.look.y * deltaTimeMultiplier;
                 Debug.Log($"[LateUpdate] Rotating camera - look: {_latestInput.look}, yaw: {_cinemachineTargetYaw}, pitch: {_cinemachineTargetPitch}");
             }
 

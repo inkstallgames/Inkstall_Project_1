@@ -289,9 +289,8 @@ namespace StarterAssets
 
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Runner.DeltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
-            Vector3 inputDirection = Object.HasStateAuthority 
-                ? new Vector3(input.move.x, 0.0f, input.move.y).normalized  // Host
-                : new Vector3(input.move.y, 0.0f, input.move.x).normalized; // Client
+
+            Vector3 inputDirection = new Vector3(input.move.x, 0.0f, input.move.y).normalized;
             Vector3 targetDirection = Vector3.zero;
 
             if (input.move != Vector2.zero)

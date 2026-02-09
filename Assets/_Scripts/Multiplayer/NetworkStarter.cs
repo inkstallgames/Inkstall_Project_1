@@ -129,7 +129,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
             // Start with timeout
             var startTask = _runner.StartGame(startGameArgs);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(60)); // 60 second timeout for cloud connection
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(120)); // 120 second timeout for cloud connection
             var completedTask = await Task.WhenAny(startTask, timeoutTask);
 
             if (completedTask == timeoutTask)
@@ -227,7 +227,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             UnityEngine.Debug.Log($"[NetworkStarter] Attempting to join session: {normalizedCode}");
 
             var startTask = _runner.StartGame(startGameArgs);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(60));
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(120));
 
             var completedTask = await Task.WhenAny(startTask, timeoutTask);
 

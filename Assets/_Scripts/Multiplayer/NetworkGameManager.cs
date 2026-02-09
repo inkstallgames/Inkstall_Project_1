@@ -160,23 +160,25 @@ public class NetworkGameManager : NetworkBehaviour
         // Notify all clients that the game is starting
         RPC_NotifyGameStarting();
         
-        // Load the selected map scene for all players
-        try 
-        {
-            Debug.Log($"[NetworkGameManager] Loading scene: {sceneName}");
-            Runner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
-            // Note: InitializeGame will be called from NetworkStarter.OnSceneLoadDone
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"[NetworkGameManager] Error loading scene {sceneName}: {e.Message}");
-            Debug.LogException(e);
-            // Fall back to current scene if loading fails
-            Runner.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-        }
+        // Load the scene asynchronously to prevent the main thread from blocking
+        StartCoroutine(LoadSceneAsync(sceneName));
     }
     
     
+    private System.Collections.IEnumerator LoadSceneAsync(string sceneName)
+    {
+        Debug.Log($"[NetworkGameManager] Starting asynchronous scene load for: {sceneName}");
+
+        // Runner.LoadScene is already async in its operation with the server,
+        // but we run it in a coroutine to ensure the local client's frame doesn't freeze
+        // if scene activation is slow.
+        Runner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
+
+        yield return null; // Yield for one frame to let the load process begin.
+        
+        Debug.Log($"[NetworkGameManager] Asynchronous scene load for {sceneName} has been initiated.");
+    }
+
     private System.Collections.IEnumerator InitializeGameAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);

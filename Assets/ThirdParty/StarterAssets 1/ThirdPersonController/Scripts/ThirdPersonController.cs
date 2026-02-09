@@ -143,6 +143,14 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             
+            // Disable NetworkTransform for local player to prevent it from overriding local movement
+            var networkTransform = GetComponent<NetworkTransform>();
+            if (networkTransform != null && Object.HasInputAuthority)
+            {
+                networkTransform.enabled = false;
+                Debug.Log("[ThirdPersonController] Disabled NetworkTransform for local player");
+            }
+            
             // Get StarterAssetsInputs component for THIS specific player instance
             _nativeInput = GetComponent<StarterAssetsInputs>();
             if (_nativeInput != null)
@@ -219,13 +227,6 @@ namespace StarterAssets
 
         public override void FixedUpdateNetwork()
         {
-            // Skip resimulation to prevent double movement on client
-            // CharacterController.Move() is not state-based, so we only want to apply it once per tick
-            if (Object.HasInputAuthority && Runner.IsResimulation)
-            {
-                return;
-            }
-
             if (GetInput(out NetworkInputData data))
             {
                 Debug.Log($"[FixedUpdateNetwork] Player {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}, IsServer: {Runner.IsServer}, IsResimulation: {Runner.IsResimulation}, move: {data.move}, Runner.DeltaTime: {Runner.DeltaTime}");

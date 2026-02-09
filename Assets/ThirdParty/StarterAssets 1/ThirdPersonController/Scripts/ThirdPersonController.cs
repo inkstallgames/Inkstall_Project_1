@@ -219,9 +219,16 @@ namespace StarterAssets
 
         public override void FixedUpdateNetwork()
         {
+            // Skip resimulation to prevent double movement on client
+            // CharacterController.Move() is not state-based, so we only want to apply it once per tick
+            if (Object.HasInputAuthority && Runner.IsResimulation)
+            {
+                return;
+            }
+
             if (GetInput(out NetworkInputData data))
             {
-                Debug.Log($"[FixedUpdateNetwork] Player {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}, IsServer: {Runner.IsServer}, move: {data.move}, Runner.DeltaTime: {Runner.DeltaTime}");
+                Debug.Log($"[FixedUpdateNetwork] Player {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}, IsServer: {Runner.IsServer}, IsResimulation: {Runner.IsResimulation}, move: {data.move}, Runner.DeltaTime: {Runner.DeltaTime}");
                 _latestInput = data;
 
                 // Movement, jumping, and gravity should be simulated for all clients to see.
@@ -297,7 +304,7 @@ namespace StarterAssets
             }
             else
             {
-                _speed = targetSpeed;
+                _speed = targetSpeed; 
             }
 
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Runner.DeltaTime * SpeedChangeRate);
@@ -320,9 +327,13 @@ namespace StarterAssets
             }
 
             // Only apply horizontal movement if there's actual speed
-            Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
-            Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
-            _controller.Move(horizontalMovement + verticalMovement);
+            // move the player
+            if (Object.HasStateAuthority || Object.HasInputAuthority)
+            {
+                Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
+                Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
+                _controller.Move(horizontalMovement + verticalMovement);
+            }
 
             if (_hasAnimator)
             {

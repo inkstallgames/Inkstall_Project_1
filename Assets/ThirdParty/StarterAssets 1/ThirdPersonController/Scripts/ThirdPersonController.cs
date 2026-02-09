@@ -143,14 +143,6 @@ namespace StarterAssets
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             
-            // Disable NetworkTransform for local player to prevent it from overriding local movement
-            var networkTransform = GetComponent<NetworkTransform>();
-            if (networkTransform != null && Object.HasInputAuthority)
-            {
-                networkTransform.enabled = false;
-                Debug.Log("[ThirdPersonController] Disabled NetworkTransform for local player");
-            }
-            
             // Get StarterAssetsInputs component for THIS specific player instance
             _nativeInput = GetComponent<StarterAssetsInputs>();
             if (_nativeInput != null)
@@ -284,13 +276,6 @@ namespace StarterAssets
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
 
-            // Debug movement input
-            if (Object.HasInputAuthority && input.move.sqrMagnitude > 0.01f)
-            {
-                Debug.Log($"[Move] input.move: {input.move}, targetSpeed will be: {(input.sprint ? SprintSpeed : MoveSpeed)}, Runner.DeltaTime: {Runner.DeltaTime}, IsServer: {Runner.IsServer}");
-            }
-
-            // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = input.sprint ? SprintSpeed : MoveSpeed;
             if (input.move == Vector2.zero) targetSpeed = 0.0f;
 
@@ -327,8 +312,6 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
             }
 
-            // Only apply horizontal movement if there's actual speed
-            // move the player
             if (Object.HasStateAuthority || Object.HasInputAuthority)
             {
                 Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);

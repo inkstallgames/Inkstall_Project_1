@@ -312,7 +312,9 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
             }
 
-            if (Object.HasStateAuthority || Object.HasInputAuthority)
+            // Only server/host applies CharacterController.Move()
+            // Clients (including local) get position from NetworkTransform
+            if (Object.HasStateAuthority)
             {
                 Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
                 Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;

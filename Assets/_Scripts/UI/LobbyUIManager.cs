@@ -238,10 +238,16 @@ public class LobbyUIManager : MonoBehaviour
             joinCodeText.text = $"Join Code: {joinCode}";
         }
 
-        // Once the join code is set, the room is ready, so we can clear the status text.
+        // Clear the status text immediately when join code is shown
         if (lobbyStatusText != null)
         {
             lobbyStatusText.text = "";
+        }
+        
+        // Enable host controls immediately for better UX
+        if (isHost && startGameButton != null)
+        {
+            startGameButton.interactable = true;
         }
     }
 

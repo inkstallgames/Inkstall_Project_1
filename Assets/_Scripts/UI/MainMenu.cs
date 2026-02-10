@@ -109,40 +109,25 @@ public class MainMenu : MonoBehaviour
             // Disable button to prevent multiple clicks
             hostButton.interactable = false;
             
-            // Show creating message
-            if (hostStatusText != null)
-            {
-                hostStatusText.gameObject.SetActive(true);
-                // Stop any existing animation
-                if (hostAnimationCoroutine != null)
-                    StopCoroutine(hostAnimationCoroutine);
-                hostAnimationCoroutine = AnimateLoadingText(hostStatusText, "Creating Room");
-                StartCoroutine(hostAnimationCoroutine);
-            }
+            // IMMEDIATELY switch to lobby (NetworkStarter will show join code instantly)
+            SwitchToLobby();
             
-            // Start hosting and wait for room to be ready
+            // Start hosting in background
             networkStarter.StartHost((success) => {
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    if (success)
+                    if (!success)
                     {
-                        // Clear status text when room is created
-                        if (hostStatusText != null)
-                            hostStatusText.gameObject.SetActive(false);
-                            
-                        // Only switch to lobby after room is created
-                        SwitchToLobby();
-                    }
-                    else
-                    {
-                        // Re-enable button and update status if failed
-                        hostButton.interactable = true;
+                        // If host failed, go back to main menu
+                        SwitchToMainMenu();
+                        
                         if (hostStatusText != null)
                         {
                             hostStatusText.text = "Failed to create room. Try again.";
-                            // Hide the error message after 3 seconds
+                            hostStatusText.gameObject.SetActive(true);
                             StartCoroutine(HideStatusAfterDelay(3f));
                         }
                     }
+                    // If success, we're already in the lobby - nothing else needed
                 });
             });
         }
@@ -196,9 +181,10 @@ public class MainMenu : MonoBehaviour
         {
             string joinCode = joinCodeInputField.text.Trim().ToUpper();
 
+            // Show "Validating room..." message
             if (joinStatusText != null)
             {
-                joinStatusText.text = "Joining game...";
+                joinStatusText.text = "Validating room...";
                 joinStatusText.gameObject.SetActive(true);
             }
 
@@ -210,20 +196,30 @@ public class MainMenu : MonoBehaviour
 
                     if (success)
                     {
+                        // Room exists and connection successful - switch to lobby
                         if (joinStatusText != null)
                             joinStatusText.gameObject.SetActive(false);
 
+                        HideJoinCodeInput();
                         SwitchToLobby();
                         changeUserNameButton.gameObject.SetActive(false);
+
+                        // Show the join code in the lobby
+                        if (LobbyUIManager.Instance != null)
+                        {
+                            LobbyUIManager.Instance.SetJoinCode(joinCode);
+                        }
                     }
                     else
                     {
+                        // Room doesn't exist or join failed
                         if (joinStatusText != null)
                         {
-                            joinStatusText.text = error;
+                            joinStatusText.text = error ?? "Room not found or is full";
                             joinStatusText.gameObject.SetActive(true);
                             StartCoroutine(HideStatusAfterDelay(3f));
                         }
+                        
                         joinCodeInputField.text = "";
                         joinCodeInputField.Select();
                         joinCodeInputField.ActivateInputField();
@@ -232,6 +228,7 @@ public class MainMenu : MonoBehaviour
                 });
             };
 
+            // Start joining - this will validate if room exists
             networkStarter.JoinSession(joinCode, onJoinComplete);
         }
         else
@@ -261,6 +258,28 @@ public class MainMenu : MonoBehaviour
         if (changeUserNameButton != null)
         {
             changeUserNameButton.gameObject.SetActive(false);
+        }
+    }
+
+    private void SwitchToMainMenu()
+    {
+        lobbyPanel.SetActive(false);
+        mainMenuPanel.SetActive(true);
+        
+        // Re-enable host button
+        if (hostButton != null)
+        {
+            hostButton.interactable = true;
+        }
+        
+        // Clear any status messages
+        if (hostStatusText != null)
+        {
+            hostStatusText.gameObject.SetActive(false);
+        }
+        if (joinStatusText != null)
+        {
+            joinStatusText.gameObject.SetActive(false);
         }
     }
 

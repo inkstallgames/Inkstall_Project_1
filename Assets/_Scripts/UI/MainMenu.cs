@@ -109,16 +109,38 @@ public class MainMenu : MonoBehaviour
             // Disable button to prevent multiple clicks
             hostButton.interactable = false;
             
-            // IMMEDIATELY switch to lobby (NetworkStarter will show join code instantly)
-            SwitchToLobby();
+            // Show "Creating room..." status immediately
+            if (hostStatusText != null)
+            {
+                hostStatusText.text = "Creating room...";
+                hostStatusText.gameObject.SetActive(true);
+                StartCoroutine(AnimateLoadingText(hostStatusText, "Creating room"));
+            }
             
-            // Start hosting in background
-            networkStarter.StartHost((success) => {
+            // Start hosting first, then show lobby with complete data
+            networkStarter.StartHost((success, joinCode) => {
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    if (!success)
+                    if (success)
                     {
-                        // If host failed, go back to main menu
-                        SwitchToMainMenu();
+                        // Hide status text when successful
+                        if (hostStatusText != null)
+                        {
+                            hostStatusText.gameObject.SetActive(false);
+                        }
+                        
+                        // Set join code immediately before showing lobby
+                        if (LobbyUIManager.Instance != null && !string.IsNullOrEmpty(joinCode))
+                        {
+                            LobbyUIManager.Instance.SetJoinCode(joinCode);
+                        }
+                        
+                        // Only show lobby when host is ready and data is loaded
+                        SwitchToLobby();
+                    }
+                    else
+                    {
+                        // If host failed, re-enable button and show error
+                        hostButton.interactable = true;
                         
                         if (hostStatusText != null)
                         {
@@ -127,7 +149,6 @@ public class MainMenu : MonoBehaviour
                             StartCoroutine(HideStatusAfterDelay(3f));
                         }
                     }
-                    // If success, we're already in the lobby - nothing else needed
                 });
             });
         }
@@ -245,8 +266,12 @@ public class MainMenu : MonoBehaviour
 
     private void SwitchToLobby()
     {
-        mainMenuPanel.SetActive(false);
-        lobbyPanel.SetActive(true);
+        // Prepare all data before showing panel
+        if (LobbyUIManager.Instance != null)
+        {
+            // Ensure player list is ready before showing panel
+            LobbyUIManager.Instance.PrepareLobbyData();
+        }
         
         // Hide the join code input panel when successfully joining a lobby
         if (joinCodeInputPanel != null)
@@ -258,6 +283,16 @@ public class MainMenu : MonoBehaviour
         if (changeUserNameButton != null)
         {
             changeUserNameButton.gameObject.SetActive(false);
+        }
+        
+        // Now show the lobby panel with all data ready
+        mainMenuPanel.SetActive(false);
+        lobbyPanel.SetActive(true);
+        
+        // Final UI update to ensure everything is displayed
+        if (LobbyUIManager.Instance != null)
+        {
+            LobbyUIManager.Instance.ShowLobby(true);
         }
     }
 

@@ -25,7 +25,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     private NetworkSceneManagerDefault _sceneManager;
     private bool _isShuttingDown = false;
 
-    private void Awake()
+    private async void Awake()
     {
         if (_instance != null && _instance != this)
         {
@@ -36,17 +36,21 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         _instance = this;
         DontDestroyOnLoad(gameObject);
         
-        // Initialize runner only - don't block with async operations
+        // Initialize runner and prewarm network resources
         InitializeRunner();
+        await PrewarmNetworkResources();
     }
     
     private async Task PrewarmNetworkResources()
     {
         if (_runner != null)
         {
-            // Minimal warm up - just let Fusion initialize
-            await Task.Delay(50); // Reduced delay
-            UnityEngine.Debug.Log("[NetworkStarter] Network resources ready");
+            // Preload network prefabs
+            var prefabs = Resources.LoadAll<NetworkObject>("");
+            UnityEngine.Debug.Log($"[NetworkStarter] Prewarming {prefabs.Length} network prefabs");
+            
+            // Warm up the network transport layer
+            await Task.Delay(100); // Small delay to allow Unity to initialize
         }
     }
 
@@ -83,40 +87,32 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             .Select(s => s[UnityEngine.Random.Range(0, s.Length)]).ToArray());
     }
 
-    public async void StartHost(Action<bool, string> onRoomReady = null)
+    public async void StartHost(Action<bool> onRoomReady = null)
     {
         if (_isShuttingDown) return;
         
-        // Quick validation first
-        if (_runner == null)
-        {
-            UnityEngine.Debug.LogError("Failed to initialize NetworkRunner!");
-            onRoomReady?.Invoke(false, null);
-            return;
-        }
-
-        if (_runner.IsRunning)
-        {
-            UnityEngine.Debug.LogWarning("NetworkRunner is already running!");
-            onRoomReady?.Invoke(false, null);
-            return;
-        }
-
         try
         {
-            // Generate join code quickly
+            InitializeRunner();
+            
+            if (_runner == null)
+            {
+                UnityEngine.Debug.LogError("Failed to initialize NetworkRunner!");
+                return;
+            }
+
+            if (_runner.IsRunning)
+            {
+                UnityEngine.Debug.LogWarning("NetworkRunner is already running!");
+                return;
+            }
+
+            // Generate and store the join code
             CurrentJoinCode = GenerateJoinCode();
             UnityEngine.Debug.Log($"[NetworkStarter] Generated join code: {CurrentJoinCode}");
+            UnityEngine.Debug.Log($"[NetworkStarter] Attempting to connect to Photon Cloud...");
             
-            // IMMEDIATELY show the join code in UI (before network connection)
-            UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                if (LobbyUIManager.Instance != null)
-                {
-                    LobbyUIManager.Instance.SetJoinCode(CurrentJoinCode);
-                }
-            });
-            
-            // Optimized network settings
+            // Basic network settings - using only standard Fusion properties
             var startGameArgs = new StartGameArgs()
             {
                 GameMode = Fusion.GameMode.Host,
@@ -124,19 +120,22 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 PlayerCount = _maxPlayers,
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager,
+                // Standard Fusion properties
                 ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>()
             };
+            
+            // Apply any Photon settings from the NetworkRunner prefab
+            // These are configured in the Unity Editor on the NetworkRunner prefab
 
-            // Start with fast timeout
+            // Start with timeout
             var startTask = _runner.StartGame(startGameArgs);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(10)); // Further reduced to 10 seconds
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(120)); // 120 second timeout for cloud connection
             var completedTask = await Task.WhenAny(startTask, timeoutTask);
 
             if (completedTask == timeoutTask)
             {
-                UnityEngine.Debug.LogError("Host start timed out after 10 seconds!");
+                UnityEngine.Debug.LogError("Host start timed out!");
                 await ShutdownRunner();
-                onRoomReady?.Invoke(false, null);
                 return;
             }
 
@@ -146,28 +145,41 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             {
                 UnityEngine.Debug.Log("[NetworkStarter] Host started successfully");
                 
-                // Quick lobby spawn
                 if (_runner.IsServer && _lobbyManagerPrefab != null)
                 {
+                    UnityEngine.Debug.Log("[NetworkStarter] Spawning LobbyManager...");
                     _runner.Spawn(_lobbyManagerPrefab);
                 }
 
-                // Room is ready - notify success with join code
+                // Notify that the room is ready
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    onRoomReady?.Invoke(true, CurrentJoinCode);
+                    onRoomReady?.Invoke(true);
+                    if (LobbyUIManager.Instance != null)
+                    {
+                        LobbyUIManager.Instance.SetJoinCode(CurrentJoinCode);
+                    }
                 });
             }
             else
             {
                 string error = $"Failed to Start Host: {result.ShutdownReason}";
                 UnityEngine.Debug.LogError(error);
-                UnityMainThreadDispatcher.Instance().Enqueue(() => onRoomReady?.Invoke(false, null));
+                // Show error to user and notify room creation failed
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    onRoomReady?.Invoke(false);
+                    UnityEngine.Debug.LogError(error);
+                });
             }
         }
         catch (Exception e)
         {
-            UnityEngine.Debug.LogError($"Error starting host: {e.Message}");
-            UnityMainThreadDispatcher.Instance().Enqueue(() => onRoomReady?.Invoke(false, null));
+            string error = $"Error starting host: {e.Message}";
+            UnityEngine.Debug.LogError(error);
+            // Show error to user and notify room creation failed
+            UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                onRoomReady?.Invoke(false);
+                UnityEngine.Debug.LogError(error);
+            });
         }
     }
 
@@ -204,16 +216,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         try
         {
             string normalizedCode = sessionCode.Trim().ToUpper();
-            
-            // Validate join code format
-            if (normalizedCode.Length != 6)
-            {
-                UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    onComplete?.Invoke(false, "Invalid join code format. Code must be 6 characters.");
-                });
-                return;
-            }
-            
             var startGameArgs = new StartGameArgs()
             {
                 GameMode = Fusion.GameMode.Client,
@@ -225,16 +227,16 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             UnityEngine.Debug.Log($"[NetworkStarter] Attempting to join session: {normalizedCode}");
 
             var startTask = _runner.StartGame(startGameArgs);
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(15)); // Increased timeout for better reliability
+            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(120));
 
             var completedTask = await Task.WhenAny(startTask, timeoutTask);
 
             if (completedTask == timeoutTask)
             {
-                UnityEngine.Debug.LogError("[NetworkStarter] Join attempt timed out after 15 seconds!");
+                UnityEngine.Debug.LogError("[NetworkStarter] Join attempt timed out!");
                 await ShutdownRunner();
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    onComplete?.Invoke(false, "Room not found or connection failed. Please check the join code and try again.");
+                    onComplete?.Invoke(false, "Server request timed out.");
                 });
                 return;
             }
@@ -458,25 +460,16 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         switch (shutdownReason)
         {
             case ShutdownReason.ConnectionTimeout:
-                mainMenu.ShowErrorAndReturnToMenu("Connection timed out. Room may not exist or network is slow.");
-                break;
             case ShutdownReason.ConnectionRefused:
-                mainMenu.ShowErrorAndReturnToMenu("Connection refused. Room may be full or not accepting players.");
-                break;
             case ShutdownReason.OperationTimeout:
-                mainMenu.ShowErrorAndReturnToMenu("Operation timed out. Please try again.");
+                mainMenu.ShowErrorAndReturnToMenu("Server request timed out.");
                 break;
             case ShutdownReason.GameNotFound:
-                mainMenu.ShowErrorAndReturnToMenu("Room not found. Please check the join code and try again.");
-                break;
             case ShutdownReason.InvalidAuthentication:
-                mainMenu.ShowErrorAndReturnToMenu("Authentication failed. Please restart the game.");
-                break;
-            case ShutdownReason.IncompatibleConfiguration:
-                mainMenu.ShowErrorAndReturnToMenu("Incompatible game version. Please ensure all players have the same version.");
+                // These are handled by the JoinSession callback, no extra action needed here.
                 break;
             default:
-                mainMenu.ShowErrorAndReturnToMenu($"Connection lost: {shutdownReason}. Please try again.");
+                mainMenu.ShowMainMenuPanel();
                 break;
         }
     }

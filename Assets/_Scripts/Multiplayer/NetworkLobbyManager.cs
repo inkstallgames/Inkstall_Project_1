@@ -85,8 +85,11 @@ public class NetworkLobbyManager : NetworkBehaviour
         {
             Debug.Log("[NetworkLobbyManager] This is the server (host)");
             
-            // Don't show lobby UI here - MainMenu controls when to show it
-            // This ensures data is ready before panel appears
+            // Immediately show the lobby UI for host
+            if (uiManager != null)
+            {
+                uiManager.ShowLobby(true);
+            }
             
             // Get the join code from NetworkStarter instead of generating a new one
             var networkStarter = FindObjectOfType<NetworkStarter>();
@@ -120,7 +123,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         // Initialize UI only after room is fully created
         if (uiManager != null)
         {
-            // Hide lobby panel initially - MainMenu controls when to show it
+            // Hide lobby panel initially
             uiManager.ShowLobby(false);
             
             // Set up UI callbacks
@@ -130,29 +133,18 @@ public class NetworkLobbyManager : NetworkBehaviour
             // Initialize UI with host/client specific settings
             uiManager.InitializeLobbyUI(mapOptions, modeOptions, timeOptions, isHost);
             
-            // If this is the host, prepare data but don't show panel (MainMenu controls this)
+            // If this is the host, 
             if (isHost && LobbyPlayers.ContainsKey(Runner.LocalPlayer))
             {
                 var hostData = LobbyPlayers[Runner.LocalPlayer];
                 hostData.IsReady = true;
                 LobbyPlayers.Set(Runner.LocalPlayer, hostData);
                 
-                // Prepare player list data immediately
-                var players = new Dictionary<int, PlayerLobbyData>();
-                foreach (var kvp in LobbyPlayers)
-                {
-                    if (kvp.Key != default(PlayerRef))
-                    {
-                        players[kvp.Key.PlayerId] = kvp.Value;
-                    }
-                }
-                uiManager.UpdatePlayerList(players);
-                
-                // Don't show lobby panel here - MainMenu will show it when ready
-                // Just prepare the data for instant display
-                
-                // Then update the UI for all clients via RPC
+                // Update the UI for all clients
                 RPC_UpdateLobbyUI();
+                
+                // Show lobby panel for host after setup
+                uiManager.ShowLobby(true);
             }
             
             // Update UI with join code if we have one
@@ -248,21 +240,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             }
         }
         
-        // Update UI immediately with the player data
-        if (uiManager != null)
-        {
-            var players = new Dictionary<int, PlayerLobbyData>();
-            foreach (var kvp in LobbyPlayers)
-            {
-                if (kvp.Key != default(PlayerRef))
-                {
-                    players[kvp.Key.PlayerId] = kvp.Value;
-                }
-            }
-            uiManager.UpdatePlayerList(players);
-        }
-        
-        // The UI will also be updated when the client sends their name via RPC_SetLobbyPlayerName
+        // The UI will be updated when the client sends its name via RPC_SetLobbyPlayerName
     }
 
     public void OnMapSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedMapIndex), index);

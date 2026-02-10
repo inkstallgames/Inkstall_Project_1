@@ -238,16 +238,10 @@ public class LobbyUIManager : MonoBehaviour
             joinCodeText.text = $"Join Code: {joinCode}";
         }
 
-        // Clear the status text immediately when join code is shown
+        // Once the join code is set, the room is ready, so we can clear the status text.
         if (lobbyStatusText != null)
         {
             lobbyStatusText.text = "";
-        }
-        
-        // Enable host controls immediately for better UX
-        if (isHost && startGameButton != null)
-        {
-            startGameButton.interactable = true;
         }
     }
 
@@ -289,41 +283,10 @@ public class LobbyUIManager : MonoBehaviour
         }
     }
 
-    public void PrepareLobbyData()
-    {
-        // Prepare all lobby data before showing panel
-        if (NetworkLobbyManager.Instance != null)
-        {
-            var players = new Dictionary<int, PlayerLobbyData>();
-            foreach (var kvp in NetworkLobbyManager.Instance.LobbyPlayers)
-            {
-                if (kvp.Key != default(PlayerRef))
-                {
-                    players[kvp.Key.PlayerId] = kvp.Value;
-                }
-            }
-            UpdatePlayerList(players);
-        }
-    }
-
     public void ShowLobby(bool show)
     {
         if(lobbyPanel != null) lobbyPanel.SetActive(show);
         if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
-        
-        // When showing lobby, ensure player list is populated immediately
-        if (show && NetworkLobbyManager.Instance != null)
-        {
-            var players = new Dictionary<int, PlayerLobbyData>();
-            foreach (var kvp in NetworkLobbyManager.Instance.LobbyPlayers)
-            {
-                if (kvp.Key != default(PlayerRef))
-                {
-                    players[kvp.Key.PlayerId] = kvp.Value;
-                }
-            }
-            UpdatePlayerList(players);
-        }
         if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
         if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
     }

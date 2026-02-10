@@ -109,43 +109,37 @@ public class MainMenu : MonoBehaviour
             // Disable button to prevent multiple clicks
             hostButton.interactable = false;
             
-            // Show "Creating room..." status immediately
+            // Show creating message
             if (hostStatusText != null)
             {
-                hostStatusText.text = "Creating room...";
                 hostStatusText.gameObject.SetActive(true);
-                StartCoroutine(AnimateLoadingText(hostStatusText, "Creating room"));
+                // Stop any existing animation
+                if (hostAnimationCoroutine != null)
+                    StopCoroutine(hostAnimationCoroutine);
+                hostAnimationCoroutine = AnimateLoadingText(hostStatusText, "Creating Room");
+                StartCoroutine(hostAnimationCoroutine);
             }
             
-            // Start hosting first, then show lobby with complete data
-            networkStarter.StartHost((success, joinCode) => {
+            // Start hosting and wait for room to be ready
+            networkStarter.StartHost((success) => {
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
                     if (success)
                     {
-                        // Hide status text when successful
+                        // Clear status text when room is created
                         if (hostStatusText != null)
-                        {
                             hostStatusText.gameObject.SetActive(false);
-                        }
-                        
-                        // Set join code immediately before showing lobby
-                        if (LobbyUIManager.Instance != null && !string.IsNullOrEmpty(joinCode))
-                        {
-                            LobbyUIManager.Instance.SetJoinCode(joinCode);
-                        }
-                        
-                        // Only show lobby when host is ready and data is loaded
+                            
+                        // Only switch to lobby after room is created
                         SwitchToLobby();
                     }
                     else
                     {
-                        // If host failed, re-enable button and show error
+                        // Re-enable button and update status if failed
                         hostButton.interactable = true;
-                        
                         if (hostStatusText != null)
                         {
                             hostStatusText.text = "Failed to create room. Try again.";
-                            hostStatusText.gameObject.SetActive(true);
+                            // Hide the error message after 3 seconds
                             StartCoroutine(HideStatusAfterDelay(3f));
                         }
                     }
@@ -202,10 +196,9 @@ public class MainMenu : MonoBehaviour
         {
             string joinCode = joinCodeInputField.text.Trim().ToUpper();
 
-            // Show "Joining room..." message
             if (joinStatusText != null)
             {
-                joinStatusText.text = "Joining room...";
+                joinStatusText.text = "Joining game...";
                 joinStatusText.gameObject.SetActive(true);
             }
 
@@ -217,30 +210,20 @@ public class MainMenu : MonoBehaviour
 
                     if (success)
                     {
-                        // Room exists and connection successful - switch to lobby
                         if (joinStatusText != null)
                             joinStatusText.gameObject.SetActive(false);
 
-                        HideJoinCodeInput();
                         SwitchToLobby();
                         changeUserNameButton.gameObject.SetActive(false);
-
-                        // Show the join code in the lobby
-                        if (LobbyUIManager.Instance != null)
-                        {
-                            LobbyUIManager.Instance.SetJoinCode(joinCode);
-                        }
                     }
                     else
                     {
-                        // Room doesn't exist or join failed
                         if (joinStatusText != null)
                         {
-                            joinStatusText.text = error ?? "Room not found or is full";
+                            joinStatusText.text = error;
                             joinStatusText.gameObject.SetActive(true);
                             StartCoroutine(HideStatusAfterDelay(3f));
                         }
-                        
                         joinCodeInputField.text = "";
                         joinCodeInputField.Select();
                         joinCodeInputField.ActivateInputField();
@@ -249,7 +232,6 @@ public class MainMenu : MonoBehaviour
                 });
             };
 
-            // Start joining - this will validate if room exists
             networkStarter.JoinSession(joinCode, onJoinComplete);
         }
         else
@@ -266,12 +248,8 @@ public class MainMenu : MonoBehaviour
 
     private void SwitchToLobby()
     {
-        // Prepare all data before showing panel
-        if (LobbyUIManager.Instance != null)
-        {
-            // Ensure player list is ready before showing panel
-            LobbyUIManager.Instance.PrepareLobbyData();
-        }
+        mainMenuPanel.SetActive(false);
+        lobbyPanel.SetActive(true);
         
         // Hide the join code input panel when successfully joining a lobby
         if (joinCodeInputPanel != null)
@@ -283,38 +261,6 @@ public class MainMenu : MonoBehaviour
         if (changeUserNameButton != null)
         {
             changeUserNameButton.gameObject.SetActive(false);
-        }
-        
-        // Now show the lobby panel with all data ready
-        mainMenuPanel.SetActive(false);
-        lobbyPanel.SetActive(true);
-        
-        // Final UI update to ensure everything is displayed
-        if (LobbyUIManager.Instance != null)
-        {
-            LobbyUIManager.Instance.ShowLobby(true);
-        }
-    }
-
-    private void SwitchToMainMenu()
-    {
-        lobbyPanel.SetActive(false);
-        mainMenuPanel.SetActive(true);
-        
-        // Re-enable host button
-        if (hostButton != null)
-        {
-            hostButton.interactable = true;
-        }
-        
-        // Clear any status messages
-        if (hostStatusText != null)
-        {
-            hostStatusText.gameObject.SetActive(false);
-        }
-        if (joinStatusText != null)
-        {
-            joinStatusText.gameObject.SetActive(false);
         }
     }
 

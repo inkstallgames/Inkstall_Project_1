@@ -167,7 +167,7 @@ public class NetworkPlayerSpawner : MonoBehaviour
         }
 
         Vector3 spawnPosition = GetSpawnPosition(teamId);
-        Quaternion spawnRotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
+        Quaternion spawnRotation = Quaternion.Euler(0f, 0f, 0f); // Fixed rotation so all players face the same direction
 
         Debug.Log($"[NetworkPlayerSpawner] About to spawn player {player.PlayerId} (Team {teamId}) at position: {spawnPosition}");
 

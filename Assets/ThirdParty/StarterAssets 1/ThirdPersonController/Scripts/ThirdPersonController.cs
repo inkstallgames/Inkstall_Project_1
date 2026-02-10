@@ -229,7 +229,6 @@ namespace StarterAssets
         {
             if (GetInput(out NetworkInputData data))
             {
-                Debug.Log($"[FixedUpdateNetwork] Player {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}, IsServer: {Runner.IsServer}, IsResimulation: {Runner.IsResimulation}, move: {data.move}, Runner.DeltaTime: {Runner.DeltaTime}");
                 _latestInput = data;
 
                 // Movement, jumping, and gravity should be simulated for all clients to see.
@@ -239,7 +238,6 @@ namespace StarterAssets
             }
             else
             {
-                Debug.Log($"[FixedUpdateNetwork] GetInput returned false for Player {Object.InputAuthority.PlayerId}");
                 // If no input, still apply gravity and check grounded state
                 JumpAndGravity(default);
                 GroundedCheck();
@@ -426,8 +424,6 @@ namespace StarterAssets
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
-            Debug.Log($"[OnInput] Called for Player {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}");
-            
             var data = new NetworkInputData();
             if (_nativeInput != null)
             {
@@ -436,9 +432,6 @@ namespace StarterAssets
                 data.jump = _nativeInput.jump;
                 data.sprint = _nativeInput.sprint;
                 _nativeInput.jump = false;
-
-                // Debug ALL input values, not just when they're non-zero
-                Debug.Log($"[OnInput] RAW VALUES - move: {data.move}, look: {data.look}, jump: {data.jump}, sprint: {data.sprint}");
             }
             else
             {
@@ -446,7 +439,6 @@ namespace StarterAssets
             }
             
             input.Set(data);
-            Debug.Log($"[OnInput] Input set for Player {Object.InputAuthority.PlayerId}");
         }
 
         public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
@@ -498,7 +490,6 @@ namespace StarterAssets
                     verticalLook *= -1;
                 }
                 _cinemachineTargetPitch += verticalLook * deltaTimeMultiplier;
-                Debug.Log($"[LateUpdate] Rotating camera - look: {_latestInput.look}, yaw: {_cinemachineTargetYaw}, pitch: {_cinemachineTargetPitch}");
             }
 
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);

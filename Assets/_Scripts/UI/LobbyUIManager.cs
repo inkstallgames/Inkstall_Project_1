@@ -293,6 +293,20 @@ public class LobbyUIManager : MonoBehaviour
     {
         if(lobbyPanel != null) lobbyPanel.SetActive(show);
         if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
+        
+        // When showing lobby, ensure player list is populated immediately
+        if (show && NetworkLobbyManager.Instance != null)
+        {
+            var players = new Dictionary<int, PlayerLobbyData>();
+            foreach (var kvp in NetworkLobbyManager.Instance.LobbyPlayers)
+            {
+                if (kvp.Key != default(PlayerRef))
+                {
+                    players[kvp.Key.PlayerId] = kvp.Value;
+                }
+            }
+            UpdatePlayerList(players);
+        }
         if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
         if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
     }

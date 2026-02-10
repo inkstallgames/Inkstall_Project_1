@@ -140,11 +140,22 @@ public class NetworkLobbyManager : NetworkBehaviour
                 hostData.IsReady = true;
                 LobbyPlayers.Set(Runner.LocalPlayer, hostData);
                 
-                // Update the UI for all clients
-                RPC_UpdateLobbyUI();
+                // Update player list immediately before showing panel
+                var players = new Dictionary<int, PlayerLobbyData>();
+                foreach (var kvp in LobbyPlayers)
+                {
+                    if (kvp.Key != default(PlayerRef))
+                    {
+                        players[kvp.Key.PlayerId] = kvp.Value;
+                    }
+                }
+                uiManager.UpdatePlayerList(players);
                 
-                // Show lobby panel for host after setup
+                // Show lobby panel for host with player info already loaded
                 uiManager.ShowLobby(true);
+                
+                // Then update the UI for all clients via RPC
+                RPC_UpdateLobbyUI();
             }
             
             // Update UI with join code if we have one
@@ -240,7 +251,21 @@ public class NetworkLobbyManager : NetworkBehaviour
             }
         }
         
-        // The UI will be updated when the client sends its name via RPC_SetLobbyPlayerName
+        // Update UI immediately with the player data
+        if (uiManager != null)
+        {
+            var players = new Dictionary<int, PlayerLobbyData>();
+            foreach (var kvp in LobbyPlayers)
+            {
+                if (kvp.Key != default(PlayerRef))
+                {
+                    players[kvp.Key.PlayerId] = kvp.Value;
+                }
+            }
+            uiManager.UpdatePlayerList(players);
+        }
+        
+        // The UI will also be updated when the client sends their name via RPC_SetLobbyPlayerName
     }
 
     public void OnMapSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedMapIndex), index);

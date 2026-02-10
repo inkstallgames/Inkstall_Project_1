@@ -122,12 +122,10 @@ namespace StarterAssets
 
         private void Start()
         {
-            // Initialize camera target rotation if available
-            if (CinemachineCameraTarget != null)
-            {
-                _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
-                _cinemachineTargetPitch = CinemachineCameraTarget.transform.rotation.eulerAngles.x;
-            }
+            // Initialize camera to forward-facing (0 degrees yaw, 0 degrees pitch)
+            // This ensures both host and client start with the same camera orientation
+            _cinemachineTargetYaw = 0f;
+            _cinemachineTargetPitch = 0f;
 
             if (Cursor.lockState != CursorLockMode.Locked && Object.HasInputAuthority)
             {
@@ -198,6 +196,16 @@ namespace StarterAssets
                         CinemachineCameraTarget = cameraTarget.gameObject;
                         Debug.Log($"[ThirdPersonController] CinemachineCameraTarget assigned: {CinemachineCameraTarget.name}");
                     }
+                }
+
+                // Log initial spawn rotation and camera setup
+                Debug.Log($"[ThirdPersonController] SPAWN DEBUG - Player {Object.InputAuthority.PlayerId}:");
+                Debug.Log($"  Character rotation: {transform.eulerAngles}");
+                Debug.Log($"  Camera yaw (_cinemachineTargetYaw): {_cinemachineTargetYaw}");
+                Debug.Log($"  Camera pitch (_cinemachineTargetPitch): {_cinemachineTargetPitch}");
+                if (_mainCamera != null)
+                {
+                    Debug.Log($"  MainCamera rotation: {_mainCamera.transform.eulerAngles}");
                 }
 
                 Debug.Log($"[ThirdPersonController] Setup camera for local player {Object.InputAuthority.PlayerId}");

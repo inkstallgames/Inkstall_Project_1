@@ -310,10 +310,7 @@ namespace StarterAssets
             if (input.move != Vector2.zero)
             {
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
-                if (_mainCamera != null)
-                {
-                    _targetRotation += _mainCamera.transform.eulerAngles.y;
-                }
+                _targetRotation += _cinemachineTargetYaw;
                 float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity, RotationSmoothTime);
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
                 
@@ -495,7 +492,12 @@ namespace StarterAssets
             {
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
                 _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _latestInput.look.y * deltaTimeMultiplier;
+                float verticalLook = _latestInput.look.y;
+                if (!Object.HasStateAuthority) // If this is a client, invert the vertical input
+                {
+                    verticalLook *= -1;
+                }
+                _cinemachineTargetPitch += verticalLook * deltaTimeMultiplier;
                 Debug.Log($"[LateUpdate] Rotating camera - look: {_latestInput.look}, yaw: {_cinemachineTargetYaw}, pitch: {_cinemachineTargetPitch}");
             }
 

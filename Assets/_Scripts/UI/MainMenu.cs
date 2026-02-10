@@ -181,10 +181,10 @@ public class MainMenu : MonoBehaviour
         {
             string joinCode = joinCodeInputField.text.Trim().ToUpper();
 
-            // Show "Validating room..." message
+            // Show "Joining room..." message
             if (joinStatusText != null)
             {
-                joinStatusText.text = "Validating room...";
+                joinStatusText.text = "Joining room...";
                 joinStatusText.gameObject.SetActive(true);
             }
 

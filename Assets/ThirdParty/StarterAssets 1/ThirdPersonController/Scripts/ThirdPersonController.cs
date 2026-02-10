@@ -293,6 +293,12 @@ namespace StarterAssets
             Vector3 inputDirection = new Vector3(input.move.x, 0.0f, input.move.y).normalized;
             Vector3 targetDirection = Vector3.zero;
 
+            // Debug input mapping
+            if (input.move != Vector2.zero)
+            {
+                Debug.Log($"[Move] Player {Object.InputAuthority.PlayerId}, HasStateAuthority: {Object.HasStateAuthority}, input.move: {input.move}, inputDirection: {inputDirection}");
+            }
+
             if (input.move != Vector2.zero)
             {
                 _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
@@ -304,6 +310,7 @@ namespace StarterAssets
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
                 
                 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+                Debug.Log($"[Move] Player {Object.InputAuthority.PlayerId}, _targetRotation: {_targetRotation}, rotation: {rotation}, targetDirection: {targetDirection}, cameraYaw: {(_mainCamera != null ? _mainCamera.transform.eulerAngles.y : 0f)}");
             }
 
             // Only server/host applies CharacterController.Move()

@@ -122,11 +122,6 @@ namespace StarterAssets
 
         private void Start()
         {
-            // Initialize camera to forward-facing (0 degrees yaw, 0 degrees pitch)
-            // This ensures both host and client start with the same camera orientation
-            _cinemachineTargetYaw = 0f;
-            _cinemachineTargetPitch = 0f;
-
             if (Cursor.lockState != CursorLockMode.Locked && Object.HasInputAuthority)
             {
                 Cursor.lockState = CursorLockMode.Locked;
@@ -197,6 +192,11 @@ namespace StarterAssets
                         Debug.Log($"[ThirdPersonController] CinemachineCameraTarget assigned: {CinemachineCameraTarget.name}");
                     }
                 }
+
+                // Initialize camera to match character's forward direction
+                // This ensures camera yaw matches the character's spawn rotation
+                _cinemachineTargetYaw = transform.eulerAngles.y;
+                _cinemachineTargetPitch = 0f;
 
                 // Log initial spawn rotation and camera setup
                 Debug.Log($"[ThirdPersonController] SPAWN DEBUG - Player {Object.InputAuthority.PlayerId}:");
@@ -483,6 +483,7 @@ namespace StarterAssets
             if (_latestInput.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+                float oldYaw = _cinemachineTargetYaw;
                 _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
                 float verticalLook = _latestInput.look.y;
                 if (!Object.HasStateAuthority) // If this is a client, invert the vertical input
@@ -490,6 +491,7 @@ namespace StarterAssets
                     verticalLook *= -1;
                 }
                 _cinemachineTargetPitch += verticalLook * deltaTimeMultiplier;
+                Debug.Log($"[LateUpdate] Camera rotation - oldYaw: {oldYaw}, newYaw: {_cinemachineTargetYaw}, lookInput: {_latestInput.look}");
             }
 
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);

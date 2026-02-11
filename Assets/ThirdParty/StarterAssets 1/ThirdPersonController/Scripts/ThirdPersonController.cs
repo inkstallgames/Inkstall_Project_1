@@ -250,6 +250,16 @@ namespace StarterAssets
                 JumpAndGravity(data);
                 GroundedCheck();
                 Move(data);
+                
+                // Update animations on server (authoritative)
+                if (Object.HasStateAuthority && _hasAnimator)
+                {
+                    _animator.SetFloat(_animIDSpeed, _animationBlend);
+                    _animator.SetFloat(_animIDMotionSpeed, data.move.magnitude);
+                    _animator.SetBool(_animIDGrounded, Grounded);
+                    _animator.SetBool(_animIDJump, _verticalVelocity > 0f && !Grounded);
+                    _animator.SetBool(_animIDFreeFall, _verticalVelocity < 0f && !Grounded);
+                }
             }
             else
             {
@@ -257,21 +267,22 @@ namespace StarterAssets
                 JumpAndGravity(default);
                 GroundedCheck();
                 Move(default);
+                
+                // Update animations on server even with no input
+                if (Object.HasStateAuthority && _hasAnimator)
+                {
+                    _animator.SetFloat(_animIDSpeed, _animationBlend);
+                    _animator.SetFloat(_animIDMotionSpeed, 0f);
+                    _animator.SetBool(_animIDGrounded, Grounded);
+                    _animator.SetBool(_animIDJump, _verticalVelocity > 0f && !Grounded);
+                    _animator.SetBool(_animIDFreeFall, _verticalVelocity < 0f && !Grounded);
+                }
             }
         }
 
         public override void Render()
         {
-            // Update animations for ALL players (not just local player)
-            // This ensures host animations are visible to clients
-            if (_hasAnimator)
-            {
-                _animator.SetFloat(_animIDSpeed, _animationBlend);
-                _animator.SetFloat(_animIDMotionSpeed, _latestInput.move.magnitude);
-                _animator.SetBool(_animIDGrounded, Grounded);
-                _animator.SetBool(_animIDJump, _verticalVelocity > 0f && !Grounded);
-                _animator.SetBool(_animIDFreeFall, _verticalVelocity < 0f && !Grounded);
-            }
+            // Render() is for visual updates only - animations are handled by server
         }
 
         private void AssignAnimationIDs()

@@ -81,8 +81,8 @@ namespace StarterAssets
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
-        private float _cinemachineTargetYaw;
-        private float _cinemachineTargetPitch;
+        [Networked] private float _cinemachineTargetYaw { get; set; }
+        [Networked] private float _cinemachineTargetPitch { get; set; }
         private float _speed;
         private float _animationBlend;
         private float _targetRotation = 0.0f;

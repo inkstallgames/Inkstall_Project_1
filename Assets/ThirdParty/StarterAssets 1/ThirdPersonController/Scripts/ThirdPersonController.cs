@@ -54,11 +54,9 @@ namespace StarterAssets
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         public float FallTimeout = 0.15f;
 
+        [Header("Player Grounded")]
         [Tooltip("If the character is grounded or not. Not part of the CharacterController built in grounded check")]
-        [Networked] private bool _grounded { get; set; }
-
-        // Public property for external access
-        public bool Grounded => _grounded;
+        public bool Grounded = true;
 
         [Tooltip("Useful for rough ground")]
         public float GroundedOffset = -0.14f;
@@ -88,10 +86,10 @@ namespace StarterAssets
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
         private float _speed;
-        [Networked] private float _animationBlend { get; set; }
+        private float _animationBlend;
         private float _targetRotation = 0.0f;
         private float _rotationVelocity;
-        [Networked] private float _verticalVelocity { get; set; }
+        private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
         private float _jumpTimeoutDelta;
         private float _fallTimeoutDelta;
@@ -108,6 +106,12 @@ namespace StarterAssets
         private bool _hasAnimator;
         private const float _threshold = 0.01f;
         private NetworkInputData _latestInput;
+
+        // Networked animation state - synced from state authority to all clients
+        [Networked] public float NetworkedAnimationBlend { get; set; }
+        [Networked] public float NetworkedMotionSpeed { get; set; }
+        [Networked] public NetworkBool NetworkedGrounded { get; set; }
+        [Networked] public float NetworkedVerticalVelocity { get; set; }
 
         private bool IsCurrentDeviceMouse
         {
@@ -250,16 +254,12 @@ namespace StarterAssets
                 JumpAndGravity(data);
                 GroundedCheck();
                 Move(data);
-                
-                // Update animations on server (authoritative)
-                if (Object.HasStateAuthority && _hasAnimator)
-                {
-                    _animator.SetFloat(_animIDSpeed, _animationBlend);
-                    _animator.SetFloat(_animIDMotionSpeed, data.move.magnitude);
-                    _animator.SetBool(_animIDGrounded, Grounded);
-                    _animator.SetBool(_animIDJump, _verticalVelocity > 0f && !Grounded);
-                    _animator.SetBool(_animIDFreeFall, _verticalVelocity < 0f && !Grounded);
-                }
+
+                // Sync animation state to all clients via networked properties
+                NetworkedAnimationBlend = _animationBlend;
+                NetworkedMotionSpeed = data.move.magnitude;
+                NetworkedGrounded = Grounded;
+                NetworkedVerticalVelocity = _verticalVelocity;
             }
             else
             {
@@ -267,22 +267,21 @@ namespace StarterAssets
                 JumpAndGravity(default);
                 GroundedCheck();
                 Move(default);
-                
-                // Update animations on server even with no input
-                if (Object.HasStateAuthority && _hasAnimator)
-                {
-                    _animator.SetFloat(_animIDSpeed, _animationBlend);
-                    _animator.SetFloat(_animIDMotionSpeed, 0f);
-                    _animator.SetBool(_animIDGrounded, Grounded);
-                    _animator.SetBool(_animIDJump, _verticalVelocity > 0f && !Grounded);
-                    _animator.SetBool(_animIDFreeFall, _verticalVelocity < 0f && !Grounded);
-                }
             }
         }
 
         public override void Render()
         {
-            // Render() is for visual updates only - animations are handled by server
+            // Read animation state from [Networked] properties so all clients
+            // (including clients viewing the host character) see correct animations.
+            if (_hasAnimator)
+            {
+                _animator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
+                _animator.SetFloat(_animIDMotionSpeed, NetworkedMotionSpeed);
+                _animator.SetBool(_animIDGrounded, NetworkedGrounded);
+                _animator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
+                _animator.SetBool(_animIDFreeFall, NetworkedVerticalVelocity < 0f && !NetworkedGrounded);
+            }
         }
 
         private void AssignAnimationIDs()
@@ -297,7 +296,7 @@ namespace StarterAssets
         private void GroundedCheck()
         {
             Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
-            _grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
+            Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
         }
 
         private void Move(NetworkInputData input)

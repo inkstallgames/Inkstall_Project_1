@@ -15,6 +15,8 @@ namespace StarterAssets
         public Vector2 look;
         public bool jump;
         public bool sprint;
+        public float cameraYaw;
+        public float cameraPitch;
     }
 
     [RequireComponent(typeof(CharacterController))]
@@ -81,8 +83,8 @@ namespace StarterAssets
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
-        [Networked] private float _cinemachineTargetYaw { get; set; }
-        [Networked] private float _cinemachineTargetPitch { get; set; }
+        private float _cinemachineTargetYaw;
+        private float _cinemachineTargetPitch;
         private float _speed;
         private float _animationBlend;
         private float _targetRotation = 0.0f;
@@ -177,10 +179,10 @@ namespace StarterAssets
                 Debug.LogError($"[ThirdPersonController] StarterAssetsInputs component is NULL for Player {Object.InputAuthority.PlayerId}");
             }
 
-            // Initialize camera yaw for ALL players based on spawn rotation
-            // This is critical for correct movement direction regardless of spawn rotation
+            // Initialize camera yaw based on spawn rotation for all players
             _cinemachineTargetYaw = transform.eulerAngles.y;
             _cinemachineTargetPitch = 0f;
+            Debug.Log($"[ThirdPersonController] Initialized camera yaw to spawn rotation: {_cinemachineTargetYaw}");
 
             if (Object.HasInputAuthority)
             {
@@ -234,6 +236,13 @@ namespace StarterAssets
             if (GetInput(out NetworkInputData data))
             {
                 _latestInput = data;
+
+                // Apply camera rotation from input (server authoritative)
+                if (Object.HasStateAuthority)
+                {
+                    _cinemachineTargetYaw = data.cameraYaw;
+                    _cinemachineTargetPitch = data.cameraPitch;
+                }
 
                 // Movement, jumping, and gravity should be simulated for all clients to see.
                 JumpAndGravity(data);
@@ -427,6 +436,8 @@ namespace StarterAssets
                 data.look = _nativeInput.look;
                 data.jump = _nativeInput.jump;
                 data.sprint = _nativeInput.sprint;
+                data.cameraYaw = _cinemachineTargetYaw;
+                data.cameraPitch = _cinemachineTargetPitch;
                 _nativeInput.jump = false;
             }
             else
@@ -482,7 +493,7 @@ namespace StarterAssets
                 float oldYaw = _cinemachineTargetYaw;
                 _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
                 float verticalLook = _latestInput.look.y;
-                if (!Object.HasStateAuthority) // If this is a client, invert the vertical input
+                if (!Object.HasStateAuthority)
                 {
                     verticalLook *= -1;
                 }

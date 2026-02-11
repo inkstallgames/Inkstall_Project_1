@@ -296,24 +296,16 @@ namespace StarterAssets
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Runner.DeltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-            Vector3 inputDirection = new Vector3(input.move.x, 0.0f, -input.move.y).normalized;
+            Vector3 inputDirection = new Vector3(input.move.x, 0.0f, input.move.y).normalized;
             Vector3 targetDirection = Vector3.zero;
 
-            // Debug input mapping
             if (input.move != Vector2.zero)
             {
-                Debug.Log($"[Move] Player {Object.InputAuthority.PlayerId}, HasStateAuthority: {Object.HasStateAuthority}, input.move: {input.move}, inputDirection: {inputDirection}");
-            }
-
-            if (input.move != Vector2.zero)
-            {
-                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
-                _targetRotation += _cinemachineTargetYaw;
+                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + _cinemachineTargetYaw;
                 float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity, RotationSmoothTime);
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
                 
                 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
-                Debug.Log($"[Move] Player {Object.InputAuthority.PlayerId}, _targetRotation: {_targetRotation}, rotation: {rotation}, targetDirection: {targetDirection}, cameraYaw: {(_mainCamera != null ? _mainCamera.transform.eulerAngles.y : 0f)}");
             }
 
             // Only server/host applies CharacterController.Move()

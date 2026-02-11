@@ -177,6 +177,11 @@ namespace StarterAssets
                 Debug.LogError($"[ThirdPersonController] StarterAssetsInputs component is NULL for Player {Object.InputAuthority.PlayerId}");
             }
 
+            // Initialize camera yaw for ALL players based on spawn rotation
+            // This is critical for correct movement direction regardless of spawn rotation
+            _cinemachineTargetYaw = transform.eulerAngles.y;
+            _cinemachineTargetPitch = 0f;
+
             if (Object.HasInputAuthority)
             {
                 Runner.AddCallbacks(this);
@@ -193,11 +198,6 @@ namespace StarterAssets
                     }
                 }
 
-                // Initialize camera to match character's forward direction
-                // This ensures camera yaw matches the character's spawn rotation
-                _cinemachineTargetYaw = transform.eulerAngles.y;
-                _cinemachineTargetPitch = 0f;
-
                 // Log initial spawn rotation and camera setup
                 Debug.Log($"[ThirdPersonController] SPAWN DEBUG - Player {Object.InputAuthority.PlayerId}:");
                 Debug.Log($"  Character rotation: {transform.eulerAngles}");
@@ -209,6 +209,10 @@ namespace StarterAssets
                 }
 
                 Debug.Log($"[ThirdPersonController] Setup camera for local player {Object.InputAuthority.PlayerId}");
+            }
+            else
+            {
+                Debug.Log($"[ThirdPersonController] Remote player spawned - Player {Object.InputAuthority.PlayerId}, spawn rotation: {transform.eulerAngles.y}, _cinemachineTargetYaw: {_cinemachineTargetYaw}");
             }
         }
 

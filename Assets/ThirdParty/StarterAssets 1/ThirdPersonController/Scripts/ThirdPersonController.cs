@@ -260,11 +260,15 @@ namespace StarterAssets
 
         public override void Render()
         {
-            if (!Object.HasInputAuthority)
+            // Update animations for ALL players (not just local player)
+            // This ensures host animations are visible to clients
+            if (_hasAnimator)
             {
-                // Uncomment to see which players are being blocked
-                // Debug.Log($"[ThirdPersonController] LateUpdate blocked for Player {Object.InputAuthority.PlayerId} - not local player");
-                return;
+                _animator.SetFloat(_animIDSpeed, _animationBlend);
+                _animator.SetFloat(_animIDMotionSpeed, _latestInput.move.magnitude);
+                _animator.SetBool(_animIDGrounded, Grounded);
+                _animator.SetBool(_animIDJump, _verticalVelocity > 0f && !Grounded);
+                _animator.SetBool(_animIDFreeFall, _verticalVelocity < 0f && !Grounded);
             }
         }
 
@@ -281,11 +285,6 @@ namespace StarterAssets
         {
             Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset, transform.position.z);
             Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers, QueryTriggerInteraction.Ignore);
-
-            if (_hasAnimator)
-            {
-                _animator.SetBool(_animIDGrounded, Grounded);
-            }
         }
 
         private void Move(NetworkInputData input)
@@ -329,12 +328,6 @@ namespace StarterAssets
                 Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
                 _controller.Move(horizontalMovement + verticalMovement);
             }
-
-            if (_hasAnimator)
-            {
-                _animator.SetFloat(_animIDSpeed, _animationBlend);
-                _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
-            }
         }
 
         private void JumpAndGravity(NetworkInputData input)
@@ -342,11 +335,6 @@ namespace StarterAssets
             if (Grounded)
             {
                 _fallTimeoutDelta = FallTimeout;
-                if (_hasAnimator)
-                {
-                    _animator.SetBool(_animIDJump, false);
-                    _animator.SetBool(_animIDFreeFall, false);
-                }
 
                 if (_verticalVelocity < 0.0f)
                 {
@@ -356,10 +344,6 @@ namespace StarterAssets
                 if (input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
                     _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-                    if (_hasAnimator)
-                    {
-                        _animator.SetBool(_animIDJump, true);
-                    }
                 }
 
                 if (_jumpTimeoutDelta >= 0.0f)
@@ -376,10 +360,6 @@ namespace StarterAssets
                 }
                 else
                 {
-                    if (_hasAnimator)
-                    {
-                        _animator.SetBool(_animIDFreeFall, true);
-                    }
                 }
             }
 

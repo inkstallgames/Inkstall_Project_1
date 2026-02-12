@@ -85,7 +85,7 @@ public class PlayerCameraController : NetworkBehaviour
                 thirdPersonFollow = virtualCamera.AddCinemachineComponent<Cinemachine3rdPersonFollow>();
                 if (thirdPersonFollow != null)
                 {
-                    thirdPersonFollow.CameraDistance = 5f;
+                    thirdPersonFollow.CameraDistance = 0f;
                     thirdPersonFollow.ShoulderOffset = new Vector3(0, 1f, 0);
                 }
             }

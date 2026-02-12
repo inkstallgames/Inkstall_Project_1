@@ -86,7 +86,7 @@ public class PlayerCameraController : NetworkBehaviour
                 if (thirdPersonFollow != null)
                 {
                     thirdPersonFollow.CameraDistance = 5f;
-                    thirdPersonFollow.ShoulderOffset = new Vector3(0, 2f, 0);
+                    thirdPersonFollow.ShoulderOffset = new Vector3(0, 1f, 0);
                 }
             }
             

@@ -49,6 +49,22 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             var prefabs = Resources.LoadAll<NetworkObject>("");
             UnityEngine.Debug.Log($"[NetworkStarter] Prewarming {prefabs.Length} network prefabs");
             
+            // Log all available prefabs for debugging
+            foreach (var prefab in prefabs)
+            {
+                UnityEngine.Debug.Log($"[NetworkStarter] Found network prefab: {prefab.name}");
+            }
+            
+            // Check if LobbyManager prefab is available
+            if (_lobbyManagerPrefab != null)
+            {
+                UnityEngine.Debug.Log($"[NetworkStarter] LobbyManager prefab assigned: {_lobbyManagerPrefab.name}");
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("[NetworkStarter] LobbyManager prefab is NOT assigned!");
+            }
+            
             // Warm up the network transport layer
             await Task.Delay(100); // Small delay to allow Unity to initialize
         }
@@ -120,8 +136,10 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 PlayerCount = _maxPlayers,
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager,
-                // Standard Fusion properties
-                ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>()
+                // Ensure proper prefab loading
+                ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>(),
+                // Added new property
+                // Removed the extra line here
             };
             
             // Apply any Photon settings from the NetworkRunner prefab
@@ -231,7 +249,9 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 GameMode = Fusion.GameMode.Client,
                 SessionName = normalizedCode,
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
-                SceneManager = _sceneManager
+                SceneManager = _sceneManager,
+                // Ensure proper prefab loading for clients
+                ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>()
             };
 
             UnityEngine.Debug.Log($"[NetworkStarter] Attempting to join session: {normalizedCode}");

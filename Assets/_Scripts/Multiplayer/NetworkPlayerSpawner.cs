@@ -180,8 +180,9 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
         if (playerObject != null)
         {
-            Debug.Log($"[NetworkPlayerSpawner] Successfully spawned NetworkObject for player {player.PlayerId}. Object ID: {playerObject.Id}, IsValid: {playerObject.IsValid}");
-            Debug.Log($"[NetworkPlayerSpawner] Spawned object position: {playerObject.transform.position}, Active: {playerObject.gameObject.activeSelf}");
+            // Register this as the player's object so GetPlayerObject() works
+            _runner.SetPlayerObject(player, playerObject);
+            Debug.Log($"[NetworkPlayerSpawner] Successfully spawned and registered player {player.PlayerId}. Object ID: {playerObject.Id}");
         }
         else
         {

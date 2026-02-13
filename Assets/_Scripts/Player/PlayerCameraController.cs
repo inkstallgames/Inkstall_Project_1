@@ -17,18 +17,18 @@ public class PlayerCameraController : NetworkBehaviour
         // Check if this is the local player
         isLocalPlayer = Object.HasInputAuthority;
         
-        Debug.Log($"[PlayerCameraController] Spawned() - PlayerID: {Object.InputAuthority.PlayerId}, IsLocalPlayer: {isLocalPlayer}");
+
         
         if (isLocalPlayer)
         {
             // This is the local player, set up the camera
             SetupLocalPlayerCamera();
-            Debug.Log($"[PlayerCameraController] Set up camera for local player {Object.InputAuthority.PlayerId}");
+
         }
         else
         {
             // This is another player, disable any camera-related components
-            Debug.Log($"[PlayerCameraController] Disabled camera for remote player {Object.InputAuthority.PlayerId}");
+
         }
     }
     
@@ -49,7 +49,7 @@ public class PlayerCameraController : NetworkBehaviour
                 if (cam.Follow == null || cam.Follow == cameraTarget.transform)
                 {
                     virtualCamera = cam;
-                    Debug.Log($"[PlayerCameraController] Found available virtual camera: {cam.name}");
+
                     break;
                 }
             }
@@ -57,14 +57,14 @@ public class PlayerCameraController : NetworkBehaviour
             if (virtualCamera == null)
             {
                 // Create a new virtual camera if none exists
-                Debug.Log("[PlayerCameraController] No available camera found, creating new one");
+
                 GameObject cameraObject = new GameObject("PlayerVirtualCamera");
                 virtualCamera = cameraObject.AddComponent<CinemachineVirtualCamera>();
                 
                 // Set priority higher than any existing cameras
                 virtualCamera.Priority = 100;
                 
-                Debug.Log("[PlayerCameraController] Created new virtual camera");
+
             }
         }
         
@@ -93,11 +93,11 @@ public class PlayerCameraController : NetworkBehaviour
                 }
             }
             
-            Debug.Log($"[PlayerCameraController] Camera configured to follow local player. Camera: {virtualCamera.name}, Target: {cameraTarget.name}");
+
         }
         else
         {
-            Debug.LogError("[PlayerCameraController] Failed to set up camera - missing virtual camera or target");
+
         }
     }
     
@@ -118,7 +118,7 @@ public class PlayerCameraController : NetworkBehaviour
             cameraTarget = new GameObject(cameraTargetName);
             cameraTarget.transform.SetParent(transform);
             cameraTarget.transform.localPosition = Vector3.up * 1.5f; // Position at head height
-            Debug.Log("[PlayerCameraController] Created new camera target");
+
         }
         
         return cameraTarget;

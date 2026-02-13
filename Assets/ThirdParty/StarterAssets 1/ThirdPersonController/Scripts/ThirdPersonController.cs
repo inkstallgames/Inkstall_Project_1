@@ -135,30 +135,18 @@ namespace StarterAssets
 
         public override void Spawned()
         {
-            Debug.Log($"[ThirdPersonController] Spawned() called. PlayerID: {Object.InputAuthority.PlayerId}, HasInputAuthority: {Object.HasInputAuthority}, Position: {transform.position}");
-
             // Initialize components for ALL players (needed for FixedUpdateNetwork)
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
             
             // Get StarterAssetsInputs component for THIS specific player instance
             _nativeInput = GetComponent<StarterAssetsInputs>();
-            if (_nativeInput != null)
-            {
-                Debug.Log($"[Spawned] StarterAssetsInputs found on GameObject: {gameObject.name}, enabled: {_nativeInput.enabled}");
-            }
-            else
-            {
-                Debug.LogError($"[Spawned] StarterAssetsInputs component NOT found on GameObject: {gameObject.name}");
-            }
             
             // Disable CharacterController temporarily to allow position to be set correctly
             if (_controller != null)
             {
                 _controller.enabled = false;
             }
-            
-            Debug.Log($"Spawned: _controller is {(_controller == null ? "null" : "assigned")}, _animator is {(_animator == null ? "null" : "assigned")}");
 
             AssignAnimationIDs();
             _jumpTimeoutDelta = JumpTimeout;
@@ -168,24 +156,17 @@ namespace StarterAssets
             if (_controller != null)
             {
                 _controller.enabled = true;
-                Debug.Log($"[ThirdPersonController] CharacterController re-enabled at position: {transform.position}");
             }
 
             // Enable/disable input components based on authority
             if (_nativeInput != null)
             {
                 _nativeInput.enabled = Object.HasInputAuthority;
-                Debug.Log($"[ThirdPersonController] StarterAssetsInputs enabled: {_nativeInput.enabled} for Player {Object.InputAuthority.PlayerId} on GameObject: {gameObject.name}");
-            }
-            else
-            {
-                Debug.LogError($"[ThirdPersonController] StarterAssetsInputs component is NULL for Player {Object.InputAuthority.PlayerId}");
             }
 
             // Initialize camera yaw based on spawn rotation for all players
             _cinemachineTargetYaw = transform.eulerAngles.y;
             _cinemachineTargetPitch = 0f;
-            Debug.Log($"[ThirdPersonController] Initialized camera yaw to spawn rotation: {_cinemachineTargetYaw}");
 
             if (Object.HasInputAuthority)
             {
@@ -199,25 +180,8 @@ namespace StarterAssets
                     if (cameraTarget != null)
                     {
                         CinemachineCameraTarget = cameraTarget.gameObject;
-                        Debug.Log($"[ThirdPersonController] CinemachineCameraTarget assigned: {CinemachineCameraTarget.name}");
                     }
                 }
-
-                // Log initial spawn rotation and camera setup
-                Debug.Log($"[ThirdPersonController] SPAWN DEBUG - Player {Object.InputAuthority.PlayerId}:");
-                Debug.Log($"  Character rotation: {transform.eulerAngles}");
-                Debug.Log($"  Camera yaw (_cinemachineTargetYaw): {_cinemachineTargetYaw}");
-                Debug.Log($"  Camera pitch (_cinemachineTargetPitch): {_cinemachineTargetPitch}");
-                if (_mainCamera != null)
-                {
-                    Debug.Log($"  MainCamera rotation: {_mainCamera.transform.eulerAngles}");
-                }
-
-                Debug.Log($"[ThirdPersonController] Setup camera for local player {Object.InputAuthority.PlayerId}");
-            }
-            else
-            {
-                Debug.Log($"[ThirdPersonController] Remote player spawned - Player {Object.InputAuthority.PlayerId}, spawn rotation: {transform.eulerAngles.y}, _cinemachineTargetYaw: {_cinemachineTargetYaw}");
             }
         }
 
@@ -463,10 +427,6 @@ namespace StarterAssets
         {
             if (!Object.HasInputAuthority || CinemachineCameraTarget == null)
             {
-                if (Object.HasInputAuthority && CinemachineCameraTarget == null)
-                {
-                    Debug.LogWarning("[LateUpdate] CinemachineCameraTarget is NULL!");
-                }
                 return;
             }
 
@@ -487,7 +447,6 @@ namespace StarterAssets
                     verticalLook *= -1;
                 }
                 _cinemachineTargetPitch += verticalLook * deltaTimeMultiplier;
-                Debug.Log($"[LateUpdate] Camera rotation - oldYaw: {oldYaw}, newYaw: {_cinemachineTargetYaw}, lookInput: {_latestInput.look}");
             }
 
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);

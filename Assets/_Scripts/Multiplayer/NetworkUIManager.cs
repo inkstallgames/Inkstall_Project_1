@@ -62,6 +62,10 @@ public class NetworkUIManager : MonoBehaviour
         if (runner == null)
         {
             runner = FindObjectOfType<NetworkRunner>();
+            if (runner != null)
+            {
+                Debug.Log("[NetworkUIManager] NetworkRunner found.");
+            }
         }
 
         if (runner != null && localPlayerObject == null)
@@ -78,7 +82,16 @@ public class NetworkUIManager : MonoBehaviour
             // Keyboard shortcut: press T to throw
             if (Input.GetKeyDown(KeyCode.T))
             {
+                Debug.Log("[NetworkUIManager] T key pressed — calling OnThrowButtonPressed()");
                 OnThrowButtonPressed();
+            }
+        }
+        else
+        {
+            // Log periodically to show we're still looking (every 2 seconds)
+            if (Time.frameCount % 120 == 0)
+            {
+                Debug.LogWarning($"[NetworkUIManager] Local player NOT found yet. Runner: {(runner != null ? "exists" : "null")}, Runner.IsRunning: {(runner != null ? runner.IsRunning.ToString() : "N/A")}");
             }
         }
 
@@ -95,12 +108,29 @@ public class NetworkUIManager : MonoBehaviour
 
         localPlayerObject = runner.GetPlayerObject(runner.LocalPlayer);
 
+        // Fallback: if SetPlayerObject was never called, find the local player manually
+        if (localPlayerObject == null)
+        {
+            var allBombs = FindObjectsOfType<NetworkBombBehaviour>();
+            foreach (var bomb in allBombs)
+            {
+                if (bomb.Object != null && bomb.Object.HasInputAuthority)
+                {
+                    localPlayerObject = bomb.Object;
+                    Debug.Log($"[NetworkUIManager] Found local player via fallback scan: {localPlayerObject.name}");
+                    break;
+                }
+            }
+        }
+
         if (localPlayerObject != null)
         {
             localBombBehaviour = localPlayerObject.GetComponent<NetworkBombBehaviour>();
             localPlayerData = localPlayerObject.GetComponent<PlayerNetworkData>();
 
-            Debug.Log("[NetworkUIManager] Local player found and cached.");
+            Debug.Log($"[NetworkUIManager] Local player found! Object: {localPlayerObject.name}");
+            Debug.Log($"[NetworkUIManager]   - NetworkBombBehaviour: {(localBombBehaviour != null ? "FOUND" : "MISSING — add it to your player prefab!")}");
+            Debug.Log($"[NetworkUIManager]   - PlayerNetworkData: {(localPlayerData != null ? "FOUND" : "MISSING")}");
         }
     }
 

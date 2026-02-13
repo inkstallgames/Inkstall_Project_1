@@ -216,6 +216,16 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         try
         {
             string normalizedCode = sessionCode.Trim().ToUpper();
+            
+            // Validate join code format
+            if (normalizedCode.Length != 6)
+            {
+                UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    onComplete?.Invoke(false, "Invalid join code format. Code must be 6 characters.");
+                });
+                return;
+            }
+            
             var startGameArgs = new StartGameArgs()
             {
                 GameMode = Fusion.GameMode.Client,
@@ -252,8 +262,8 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             }
             else
             {
-                string error = $"Failed to Join: {result.ShutdownReason}";
-                UnityEngine.Debug.LogError(error);
+                string error = GetFriendlyErrorMessage(result.ShutdownReason);
+                UnityEngine.Debug.LogError($"[NetworkStarter] Failed to Join: {result.ShutdownReason}");
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
                     onComplete?.Invoke(false, error);
                 });
@@ -265,6 +275,27 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             UnityMainThreadDispatcher.Instance().Enqueue(() => {
                 onComplete?.Invoke(false, "An unexpected error occurred.");
             });
+        }
+    }
+
+    private string GetFriendlyErrorMessage(ShutdownReason reason)
+    {
+        switch (reason)
+        {
+            case ShutdownReason.GameNotFound:
+                return "Room not found. Please check the join code and try again.";
+            case ShutdownReason.ConnectionTimeout:
+                return "Connection timed out. The room may not exist or your network is slow.";
+            case ShutdownReason.ConnectionRefused:
+                return "Connection refused. The room may be full or not accepting players.";
+            case ShutdownReason.OperationTimeout:
+                return "Operation timed out. Please try again.";
+            case ShutdownReason.InvalidAuthentication:
+                return "Authentication failed. Please restart the game.";
+            case ShutdownReason.IncompatibleConfiguration:
+                return "Incompatible game version. Please ensure all players have the same version.";
+            default:
+                return $"Connection lost: {reason}. Please try again.";
         }
     }
 

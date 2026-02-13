@@ -78,6 +78,9 @@ public class PlayerCameraController : NetworkBehaviour
             // Set high priority to ensure this camera is active for the local player
             virtualCamera.Priority = 100;
             
+            // Set near clip plane
+            virtualCamera.m_Lens.NearClipPlane = 1f;
+            
             // Configure third-person follow if not already present
             var thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
             if (thirdPersonFollow == null)

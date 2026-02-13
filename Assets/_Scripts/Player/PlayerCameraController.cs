@@ -87,7 +87,7 @@ public class PlayerCameraController : NetworkBehaviour
             var composer = virtualCamera.AddCinemachineComponent<CinemachineComposer>();
             if (composer != null)
             {
-                composer.m_TrackerOffset = new Vector3(0, 0.5f, 0);
+                composer.m_TrackedObjectOffset = new Vector3(0, 0.5f, 0);
                 composer.m_LookaheadTime = 0.1f; // Small lookahead for smooth following
                 composer.m_LookaheadSmoothing = 5f; // Smooth lookahead transitions
                 composer.m_LookaheadIgnoreY = false; // Consider Y axis for smoothness
@@ -113,17 +113,15 @@ public class PlayerCameraController : NetworkBehaviour
                     
                     // Anti-jitter settings
                     thirdPersonFollow.Damping = new Vector3(0.5f, 0.5f, 0.3f); // Higher damping for smoothness
-                    thirdPersonFollow.ShoulderDamping = new Vector3(0.5f, 0.5f, 0.3f); // Shoulder movement smoothing
                     thirdPersonFollow.VerticalArmLength = 0.2f; // Reduce vertical arm movement
                     thirdPersonFollow.CameraSide = 0.5f; // Consistent side positioning
                     
                     // Camera collision and smoothing
                     thirdPersonFollow.CameraCollisionFilter = -1; // Ignore all collisions initially
                     thirdPersonFollow.CameraRadius = 0.2f; // Small collision radius
-                    thirdPersonFollow.GroundProximityMaxDistance = 0.1f; // Reduce ground proximity effects
                     
                     // Additional smoothing
-                    virtualCamera.AddCinemachineComponent<CinemachineComposer>().m_TrackerOffset = new Vector3(0, 0.5f, 0);
+                    virtualCamera.AddCinemachineComponent<CinemachineComposer>().m_TrackedObjectOffset = new Vector3(0, 0.5f, 0);
                 }
             }
             else
@@ -132,11 +130,9 @@ public class PlayerCameraController : NetworkBehaviour
                 thirdPersonFollow.CameraDistance = 2.5f;
                 thirdPersonFollow.ShoulderOffset = new Vector3(0.5f, 1f, 0f);
                 thirdPersonFollow.Damping = new Vector3(0.5f, 0.5f, 0.3f); // Increased damping
-                thirdPersonFollow.ShoulderDamping = new Vector3(0.5f, 0.5f, 0.3f); // Shoulder smoothing
                 thirdPersonFollow.VerticalArmLength = 0.2f;
                 thirdPersonFollow.CameraSide = 0.5f;
                 thirdPersonFollow.CameraRadius = 0.2f;
-                thirdPersonFollow.GroundProximityMaxDistance = 0.1f;
             }
             
             Debug.Log($"[PlayerCameraController] Camera configured to follow local player. Camera: {virtualCamera.name}, Target: {cameraTarget.name}");

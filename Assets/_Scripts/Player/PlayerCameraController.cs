@@ -78,6 +78,14 @@ public class PlayerCameraController : NetworkBehaviour
             // Set high priority to ensure this camera is active for the local player
             virtualCamera.Priority = 100;
             
+            // Prevent camera from seeing local player's own mesh
+            var localPlayerRenderers = GetComponentsInChildren<Renderer>();
+            foreach (var renderer in localPlayerRenderers)
+            {
+                // Disable rendering for local player's own mesh
+                renderer.enabled = false;
+            }
+            
             // Configure third-person follow if not already present
             var thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
             if (thirdPersonFollow == null)
@@ -85,9 +93,22 @@ public class PlayerCameraController : NetworkBehaviour
                 thirdPersonFollow = virtualCamera.AddCinemachineComponent<Cinemachine3rdPersonFollow>();
                 if (thirdPersonFollow != null)
                 {
-                    thirdPersonFollow.CameraDistance = 0f;
-                    thirdPersonFollow.ShoulderOffset = new Vector3(0, 0, 0.1f);
+                    thirdPersonFollow.CameraDistance = 2.5f; // Proper third-person distance
+                    thirdPersonFollow.ShoulderOffset = new Vector3(0.5f, 1f, 0f); // Right shoulder offset
+                    
+                    // Prevent camera clipping through player
+                    thirdPersonFollow.CameraCollisionFilter = -1; // Ignore all collisions initially
+                    thirdPersonFollow.CameraRadius = 0.2f; // Small collision radius
+                    thirdPersonFollow.Damping = new Vector3(0.1f, 0.1f, 0.1f); // Smooth movement
                 }
+            }
+            else
+            {
+                // Update existing third-person follow component
+                thirdPersonFollow.CameraDistance = 2.5f;
+                thirdPersonFollow.ShoulderOffset = new Vector3(0.5f, 1f, 0f);
+                thirdPersonFollow.CameraRadius = 0.2f;
+                thirdPersonFollow.Damping = new Vector3(0.1f, 0.1f, 0.1f);
             }
             
             Debug.Log($"[PlayerCameraController] Camera configured to follow local player. Camera: {virtualCamera.name}, Target: {cameraTarget.name}");
@@ -123,11 +144,21 @@ public class PlayerCameraController : NetworkBehaviour
     
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
-        if (isLocalPlayer && virtualCamera != null)
+        if (isLocalPlayer)
         {
+            // Restore player renderers when despawning
+            var localPlayerRenderers = GetComponentsInChildren<Renderer>();
+            foreach (var renderer in localPlayerRenderers)
+            {
+                renderer.enabled = true;
+            }
+            
             // Clean up camera when player despawns
-            virtualCamera.Follow = null;
-            virtualCamera.LookAt = null;
+            if (virtualCamera != null)
+            {
+                virtualCamera.Follow = null;
+                virtualCamera.LookAt = null;
+            }
         }
     }
     

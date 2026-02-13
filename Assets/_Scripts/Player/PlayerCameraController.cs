@@ -78,29 +78,6 @@ public class PlayerCameraController : NetworkBehaviour
             // Set high priority to ensure this camera is active for the local player
             virtualCamera.Priority = 100;
             
-            // Additional camera smoothing settings
-            virtualCamera.m_Lens.FieldOfView = 60f; // Standard FOV
-            virtualCamera.m_Lens.NearClipPlane = 0.1f;
-            virtualCamera.m_Lens.FarClipPlane = 1000f;
-            
-            // Enable smooth follow
-            var composer = virtualCamera.AddCinemachineComponent<CinemachineComposer>();
-            if (composer != null)
-            {
-                composer.m_TrackedObjectOffset = new Vector3(0, 0.5f, 0);
-                composer.m_LookaheadTime = 0.1f; // Small lookahead for smooth following
-                composer.m_LookaheadSmoothing = 5f; // Smooth lookahead transitions
-                composer.m_LookaheadIgnoreY = false; // Consider Y axis for smoothness
-            }
-            
-            // Prevent camera from seeing local player's own mesh
-            var localPlayerRenderers = GetComponentsInChildren<Renderer>();
-            foreach (var renderer in localPlayerRenderers)
-            {
-                // Disable rendering for local player's own mesh
-                renderer.enabled = false;
-            }
-            
             // Configure third-person follow if not already present
             var thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
             if (thirdPersonFollow == null)
@@ -108,31 +85,9 @@ public class PlayerCameraController : NetworkBehaviour
                 thirdPersonFollow = virtualCamera.AddCinemachineComponent<Cinemachine3rdPersonFollow>();
                 if (thirdPersonFollow != null)
                 {
-                    thirdPersonFollow.CameraDistance = 2.5f; // Proper third-person distance
-                    thirdPersonFollow.ShoulderOffset = new Vector3(0.5f, 1f, 0f); // Right shoulder offset
-                    
-                    // Anti-jitter settings
-                    thirdPersonFollow.Damping = new Vector3(0.5f, 0.5f, 0.3f); // Higher damping for smoothness
-                    thirdPersonFollow.VerticalArmLength = 0.2f; // Reduce vertical arm movement
-                    thirdPersonFollow.CameraSide = 0.5f; // Consistent side positioning
-                    
-                    // Camera collision and smoothing
-                    thirdPersonFollow.CameraCollisionFilter = -1; // Ignore all collisions initially
-                    thirdPersonFollow.CameraRadius = 0.2f; // Small collision radius
-                    
-                    // Additional smoothing
-                    virtualCamera.AddCinemachineComponent<CinemachineComposer>().m_TrackedObjectOffset = new Vector3(0, 0.5f, 0);
+                    thirdPersonFollow.CameraDistance = 0f;
+                    thirdPersonFollow.ShoulderOffset = new Vector3(0, f, 0.1f);
                 }
-            }
-            else
-            {
-                // Update existing third-person follow component with anti-jitter settings
-                thirdPersonFollow.CameraDistance = 2.5f;
-                thirdPersonFollow.ShoulderOffset = new Vector3(0.5f, 1f, 0f);
-                thirdPersonFollow.Damping = new Vector3(0.5f, 0.5f, 0.3f); // Increased damping
-                thirdPersonFollow.VerticalArmLength = 0.2f;
-                thirdPersonFollow.CameraSide = 0.5f;
-                thirdPersonFollow.CameraRadius = 0.2f;
             }
             
             Debug.Log($"[PlayerCameraController] Camera configured to follow local player. Camera: {virtualCamera.name}, Target: {cameraTarget.name}");
@@ -166,34 +121,13 @@ public class PlayerCameraController : NetworkBehaviour
         return cameraTarget;
     }
     
-    private void FixedUpdate()
-    {
-        if (isLocalPlayer && cameraTarget != null)
-        {
-            // Smooth camera target position updates in FixedUpdate
-            // This reduces jitter from player movement
-            Vector3 targetPosition = transform.position + Vector3.up * 1.5f;
-            cameraTarget.transform.position = Vector3.Lerp(cameraTarget.transform.position, targetPosition, Time.fixedDeltaTime * 10f);
-        }
-    }
-    
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
-        if (isLocalPlayer)
+        if (isLocalPlayer && virtualCamera != null)
         {
-            // Restore player renderers when despawning
-            var localPlayerRenderers = GetComponentsInChildren<Renderer>();
-            foreach (var renderer in localPlayerRenderers)
-            {
-                renderer.enabled = true;
-            }
-            
             // Clean up camera when player despawns
-            if (virtualCamera != null)
-            {
-                virtualCamera.Follow = null;
-                virtualCamera.LookAt = null;
-            }
+            virtualCamera.Follow = null;
+            virtualCamera.LookAt = null;
         }
     }
     

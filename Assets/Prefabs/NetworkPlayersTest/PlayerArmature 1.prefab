@@ -1054,6 +1054,7 @@ GameObject:
   - component: {fileID: 918964218175342091}
   - component: {fileID: 7507724042949624427}
   - component: {fileID: 7582882577927671954}
+  - component: {fileID: 6394523291383630547}
   m_Layer: 8
   m_Name: PlayerArmature 1
   m_TagString: Player
@@ -1077,6 +1078,7 @@ Transform:
   - {fileID: 5801880005060367422}
   - {fileID: 2296920327939070584}
   - {fileID: 8349091304447222469}
+  - {fileID: 949513533777741403}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 177.334, z: 0}
 --- !u!95 &8519351529200233868
@@ -1170,6 +1172,11 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
+  _NetworkedAnimationBlend: 0
+  _NetworkedMotionSpeed: 0
+  _NetworkedGrounded:
+    _value: 0
+  _NetworkedVerticalVelocity: 0
 --- !u!114 &5841311861055146809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1326,6 +1333,7 @@ MonoBehaviour:
   - {fileID: 918964218175342091}
   - {fileID: 7507724042949624427}
   - {fileID: 7582882577927671954}
+  - {fileID: 6394523291383630547}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
 MonoBehaviour:
@@ -1379,6 +1387,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   autoFindCamera: 1
   cameraTargetName: CameraTarget
+--- !u!114 &6394523291383630547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3928277030421997894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3e54eac44131b245bb0abcbbffb0124, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  throwPoint: {fileID: 949513533777741403}
+  chemicalBallPrefab: {fileID: 1332249776000000458, guid: 28cff26a6803ee14185b4c638f8fc575,
+    type: 3}
+  throwForce: 15
+  throwCooldown: 1
+  maxThrowDistance: 50
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  startingBombs: 6
+  ballScale: 1
+  ballColor: {r: 0, g: 1, b: 0, a: 1}
+  throwEffect: {fileID: 0}
+  throwSound: {fileID: 0}
+  throwSoundVolume: 1
+  bombDamage: 25
+  _CurrentBombs: 0
+  _MaxBombs: 0
 --- !u!1 &4483834934949140703
 GameObject:
   m_ObjectHideFlags: 0
@@ -2779,6 +2817,37 @@ Transform:
   m_Children:
   - {fileID: 2693377704993509159}
   m_Father: {fileID: 4762746631732487757}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8885513537512212094
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 949513533777741403}
+  m_Layer: 8
+  m_Name: ThrowPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &949513533777741403
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8885513537512212094}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.19, y: 1.137, z: 0.175}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1058427065309672220}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8965921239358550782
 GameObject:

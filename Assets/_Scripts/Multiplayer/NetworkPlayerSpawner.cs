@@ -265,6 +265,19 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
     input.Set(data);
 
+    // Bomb throw input
+    var localPlayer = runner.GetPlayerObject(runner.LocalPlayer);
+    if (localPlayer != null)
+    {
+        var bombBehaviour = localPlayer.GetComponent<NetworkBombBehaviour>();
+        if (bombBehaviour != null)
+        {
+            var bombInput = new NetworkBombInput();
+            bombBehaviour.CollectInput(ref bombInput);
+            input.Set(bombInput);
+        }
+    }
+
 }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}

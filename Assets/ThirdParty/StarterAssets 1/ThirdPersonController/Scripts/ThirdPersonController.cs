@@ -130,10 +130,7 @@ namespace StarterAssets
 
         private void Start()
         {
-            if (Cursor.lockState != CursorLockMode.Locked && Object.HasInputAuthority)
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-            }
+            // Cursor is left unlocked so players can interact with UI (throw button, etc.)
         }
 
         public override void Spawned()

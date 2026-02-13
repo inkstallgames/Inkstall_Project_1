@@ -74,6 +74,12 @@ public class NetworkUIManager : MonoBehaviour
         {
             UpdateBombUI();
             UpdatePlayerStatsUI();
+
+            // Keyboard shortcut: press T to throw
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                OnThrowButtonPressed();
+            }
         }
 
         UpdateGameInfoUI();

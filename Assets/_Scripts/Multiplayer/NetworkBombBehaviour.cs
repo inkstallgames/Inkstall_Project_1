@@ -73,6 +73,7 @@ public class NetworkBombBehaviour : NetworkBehaviour
     public void RequestThrow()
     {
         wantsToThrow = true;
+        Debug.Log("[NetworkBombBehaviour] RequestThrow() called — throw queued.");
     }
 
     private void Update()
@@ -117,6 +118,10 @@ public class NetworkBombBehaviour : NetworkBehaviour
     {
         bombInput.isThrowingBomb = wantsToThrow;
         bombInput.throwDirection = (targetPoint - (throwPoint != null ? throwPoint.position : transform.position)).normalized;
+        if (wantsToThrow)
+        {
+            Debug.Log($"[NetworkBombBehaviour] CollectInput — sending throw input. Direction: {bombInput.throwDirection}");
+        }
         wantsToThrow = false; // consumed
     }
 
@@ -130,6 +135,7 @@ public class NetworkBombBehaviour : NetworkBehaviour
 
         if (input.isThrowingBomb)
         {
+            Debug.Log($"[NetworkBombBehaviour] FixedUpdateNetwork — throw input received on {(Object.HasStateAuthority ? "SERVER" : "CLIENT")}. Bombs: {CurrentBombs}");
             TryThrow(input.throwDirection);
         }
     }
@@ -137,21 +143,30 @@ public class NetworkBombBehaviour : NetworkBehaviour
     private void TryThrow(Vector3 direction)
     {
         // Only the server actually spawns
-        if (!Object.HasStateAuthority) return;
+        if (!Object.HasStateAuthority)
+        {
+            Debug.Log("[NetworkBombBehaviour] TryThrow — skipped, not state authority.");
+            return;
+        }
 
         // Cooldown check
-        if (!ThrowCooldownTimer.ExpiredOrNotRunning(Runner)) return;
+        if (!ThrowCooldownTimer.ExpiredOrNotRunning(Runner))
+        {
+            Debug.Log("[NetworkBombBehaviour] TryThrow — skipped, cooldown active.");
+            return;
+        }
 
         // Ammo check
         if (CurrentBombs <= 0)
         {
-            Debug.Log($"[NetworkBombBehaviour] Player {Object.InputAuthority} has no bombs left.");
+            Debug.Log($"[NetworkBombBehaviour] TryThrow — FAILED, player {Object.InputAuthority} has no bombs left.");
             return;
         }
 
         // Consume ammo & start cooldown
         CurrentBombs--;
         ThrowCooldownTimer = TickTimer.CreateFromSeconds(Runner, throwCooldown);
+        Debug.Log($"[NetworkBombBehaviour] TryThrow — ammo consumed. Bombs remaining: {CurrentBombs}/{MaxBombs}");
 
         // Determine spawn position
         Vector3 spawnPos = throwPoint != null ? throwPoint.position : transform.position + Vector3.up;
@@ -166,6 +181,8 @@ public class NetworkBombBehaviour : NetworkBehaviour
 
         if (bomb != null)
         {
+            Debug.Log($"[NetworkBombBehaviour] BOMB SPAWNED successfully at {spawnPos}. Direction: {direction}, Force: {throwForce}");
+
             // Scale
             bomb.transform.localScale *= ballScale;
 
@@ -182,10 +199,19 @@ public class NetworkBombBehaviour : NetworkBehaviour
             {
                 Vector3 velocity = CalculateThrowVelocity(spawnPos, direction);
                 rb.AddForce(velocity, ForceMode.Impulse);
+                Debug.Log($"[NetworkBombBehaviour] Force applied to bomb: {velocity}");
+            }
+            else
+            {
+                Debug.LogError("[NetworkBombBehaviour] BOMB MISSING RIGIDBODY — no force applied!");
             }
 
             // Notify all clients about the throw for effects
             RPC_OnBombThrown(spawnPos);
+        }
+        else
+        {
+            Debug.LogError($"[NetworkBombBehaviour] BOMB SPAWN FAILED — Runner.Spawn returned null! Prefab: {chemicalBallPrefab}");
         }
     }
 

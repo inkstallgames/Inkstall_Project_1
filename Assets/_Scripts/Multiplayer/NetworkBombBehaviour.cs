@@ -205,6 +205,17 @@ public class NetworkBombBehaviour : NetworkBehaviour
                 projectile.Initialize(Object.InputAuthority, bombDamage);
             }
 
+            // Ignore collisions between bomb and the throwing player
+            var bombColliders = bomb.GetComponentsInChildren<Collider>();
+            var playerColliders = GetComponentsInChildren<Collider>();
+            foreach (var bc in bombColliders)
+            {
+                foreach (var pc in playerColliders)
+                {
+                    Physics.IgnoreCollision(bc, pc);
+                }
+            }
+
             // Apply physics velocity directly (more reliable than AddForce with NetworkTransform)
             var rb = bomb.GetComponent<Rigidbody>();
             if (rb != null)

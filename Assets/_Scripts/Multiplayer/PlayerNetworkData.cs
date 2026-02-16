@@ -149,37 +149,23 @@ public class PlayerNetworkData : NetworkBehaviour
             }
 
         }
-
     }
 
-
-
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-
     public void RPC_TakeDamage(int damage, PlayerRef sourcePlayer)
-
     {
-
         if (Health <= 0) return; // Already dead
 
-
-
         Health = Mathf.Max(0, Health - damage);
-
+        Debug.Log($"[PlayerNetworkData] Player {PlayerName} (ID:{Object.InputAuthority}) took {damage} damage. Health: {Health}/100. Source: {sourcePlayer}");
         
-
         if (Health <= 0)
-
         {
-
+            Debug.Log($"[PlayerNetworkData] *** HEALTH DEPLETED *** Player {PlayerName} (ID:{Object.InputAuthority}) was eliminated by Player {sourcePlayer}!");
             // Player died
-
             Deaths++;
-
             
-
             // Award kill to the source player if it's not a suicide
-
             if (sourcePlayer != Object.InputAuthority && sourcePlayer != default)
 
             {

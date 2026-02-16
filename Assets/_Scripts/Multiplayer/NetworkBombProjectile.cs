@@ -60,7 +60,7 @@ public class NetworkBombProjectile : NetworkBehaviour
     }
 
     // ---------------------------------------------------------------
-    // Collision (runs on server due to NetworkRigidbody / state authority)
+    // Collision (runs on server due to state authority)
     // ---------------------------------------------------------------
 
     private void OnCollisionEnter(Collision collision)
@@ -85,30 +85,43 @@ public class NetworkBombProjectile : NetworkBehaviour
             }
         }
 
-        // Play effects on all clients
-        RPC_OnHit(collision.contacts[0].point);
+        // Play effects locally on the server immediately
+        Vector3 hitPos = collision.contacts[0].point;
+        PlayHitEffects(hitPos);
 
-        // Despawn the bomb
+        // Despawn the bomb — clients will play effects in Despawned()
         Runner.Despawn(Object);
     }
 
     // ---------------------------------------------------------------
-    // RPCs for visual/audio effects
+    // Despawned — runs on ALL clients when the object is removed
     // ---------------------------------------------------------------
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_OnHit(Vector3 hitPosition)
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        // Play effects at the bomb's last known position on clients
+        // (server already played them in OnCollisionEnter)
+        if (runner.IsServer) return; // Server already played in OnCollisionEnter
+
+        PlayHitEffects(transform.position);
+    }
+
+    // ---------------------------------------------------------------
+    // Effects helper
+    // ---------------------------------------------------------------
+
+    private void PlayHitEffects(Vector3 position)
     {
         // Spawn hit particle effect
         if (hitEffect != null)
         {
-            Instantiate(hitEffect, hitPosition, Quaternion.identity);
+            Instantiate(hitEffect, position, Quaternion.identity);
         }
 
         // Play hit sound
         if (hitSound != null)
         {
-            AudioSource.PlayClipAtPoint(hitSound, hitPosition, hitSoundVolume);
+            AudioSource.PlayClipAtPoint(hitSound, position, hitSoundVolume);
         }
     }
 }

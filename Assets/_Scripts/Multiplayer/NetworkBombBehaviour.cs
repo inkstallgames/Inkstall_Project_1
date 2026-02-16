@@ -205,17 +205,18 @@ public class NetworkBombBehaviour : NetworkBehaviour
                 projectile.Initialize(Object.InputAuthority, bombDamage);
             }
 
-            // Apply physics force
+            // Apply physics velocity directly (more reliable than AddForce with NetworkTransform)
             var rb = bomb.GetComponent<Rigidbody>();
             if (rb != null)
             {
+                rb.isKinematic = false;
                 Vector3 velocity = CalculateThrowVelocity(spawnPos, direction);
-                rb.AddForce(velocity, ForceMode.Impulse);
-                Debug.Log($"[NetworkBombBehaviour] Force applied to bomb: {velocity}");
+                rb.velocity = velocity;
+                Debug.Log($"[NetworkBombBehaviour] Velocity set on bomb: {velocity} (magnitude: {velocity.magnitude})");
             }
             else
             {
-                Debug.LogError("[NetworkBombBehaviour] BOMB MISSING RIGIDBODY — no force applied!");
+                Debug.LogError("[NetworkBombBehaviour] BOMB MISSING RIGIDBODY — no velocity applied!");
             }
 
             // Notify all clients about the throw for effects
@@ -229,10 +230,9 @@ public class NetworkBombBehaviour : NetworkBehaviour
 
     private Vector3 CalculateThrowVelocity(Vector3 startPoint, Vector3 direction)
     {
-        // Add a slight upward arc to account for gravity
-        float distance = direction.magnitude;
+        // Add an upward arc to create a projectile trajectory
         Vector3 dir = direction.normalized;
-        dir.y += distance * 0.01f;
+        dir.y += 0.3f;  // upward arc for visible projectile motion
         dir.Normalize();
         return dir * throwForce;
     }

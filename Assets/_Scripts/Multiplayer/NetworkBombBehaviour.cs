@@ -125,7 +125,17 @@ public class NetworkBombBehaviour : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (!GetInput<PlayerInputData>(out var input)) return;
+        if (!GetInput<PlayerInputData>(out var input))
+        {
+            // Log occasionally to avoid spam — only every 300 ticks
+            if (Runner.Tick % 300 == 0)
+            {
+                Debug.LogWarning($"[NetworkBombBehaviour] FixedUpdateNetwork — GetInput<PlayerInputData> returned FALSE. " +
+                    $"HasInputAuth: {Object.HasInputAuthority}, HasStateAuth: {Object.HasStateAuthority}, " +
+                    $"Runner.IsServer: {Runner.IsServer}");
+            }
+            return;
+        }
 
         if (input.isThrowingBomb)
         {

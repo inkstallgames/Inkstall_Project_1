@@ -17,6 +17,10 @@ namespace StarterAssets
         public bool sprint;
         public float cameraYaw;
         public float cameraPitch;
+        
+        // Bomb throw
+        public bool isThrowingBomb;
+        public Vector3 throwDirection;
     }
 
     [RequireComponent(typeof(CharacterController))]
@@ -380,6 +384,9 @@ namespace StarterAssets
 
         #region INetworkRunnerCallbacks
 
+        // Cached reference for bomb input
+        private NetworkBombBehaviour _cachedBombBehaviour;
+
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
             var data = new NetworkInputData();
@@ -398,6 +405,16 @@ namespace StarterAssets
                 Debug.LogError($"[OnInput] _nativeInput is NULL for Player {Object.InputAuthority.PlayerId}");
             }
             
+            // Collect bomb throw input
+            if (_cachedBombBehaviour == null)
+            {
+                _cachedBombBehaviour = GetComponent<NetworkBombBehaviour>();
+            }
+            if (_cachedBombBehaviour != null)
+            {
+                _cachedBombBehaviour.CollectNetworkInput(ref data);
+            }
+
             input.Set(data);
         }
 

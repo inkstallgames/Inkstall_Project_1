@@ -119,21 +119,29 @@ public class NetworkBombBehaviour : NetworkBehaviour
         wantsToThrow = false; // consumed
     }
 
+    /// <summary>
+    /// Call this from ThirdPersonController.OnInput to pack bomb-throw data
+    /// into the NetworkInputData struct (used by the actual Fusion input pipeline).
+    /// </summary>
+    public void CollectNetworkInput(ref StarterAssets.NetworkInputData inputData)
+    {
+        inputData.isThrowingBomb = wantsToThrow;
+        inputData.throwDirection = (targetPoint - (throwPoint != null ? throwPoint.position : transform.position)).normalized;
+        if (wantsToThrow)
+        {
+            Debug.Log($"[NetworkBombBehaviour] CollectNetworkInput — sending throw input. Direction: {inputData.throwDirection}");
+        }
+        wantsToThrow = false; // consumed
+    }
+
     // ---------------------------------------------------------------
     // Networked simulation (runs on server / state authority)
     // ---------------------------------------------------------------
 
     public override void FixedUpdateNetwork()
     {
-        if (!GetInput<PlayerInputData>(out var input))
+        if (!GetInput<StarterAssets.NetworkInputData>(out var input))
         {
-            // Log occasionally to avoid spam — only every 300 ticks
-            if (Runner.Tick % 300 == 0)
-            {
-                Debug.LogWarning($"[NetworkBombBehaviour] FixedUpdateNetwork — GetInput<PlayerInputData> returned FALSE. " +
-                    $"HasInputAuth: {Object.HasInputAuthority}, HasStateAuth: {Object.HasStateAuthority}, " +
-                    $"Runner.IsServer: {Runner.IsServer}");
-            }
             return;
         }
 

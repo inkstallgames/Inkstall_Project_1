@@ -106,21 +106,15 @@ public class NetworkBombBehaviour : NetworkBehaviour
 
     /// <summary>
     /// Call this from your OnInput callback to pack bomb-throw data
-    /// into a NetworkBombInput struct. Example usage in your input provider:
-    /// <code>
-    ///   var bombBehaviour = localPlayer.GetComponent&lt;NetworkBombBehaviour&gt;();
-    ///   if (bombBehaviour != null)
-    ///       bombBehaviour.CollectInput(ref bombInput);
-    ///   input.Set(bombInput);
-    /// </code>
+    /// into the PlayerInputData struct.
     /// </summary>
-    public void CollectInput(ref NetworkBombInput bombInput)
+    public void CollectInput(ref PlayerInputData inputData)
     {
-        bombInput.isThrowingBomb = wantsToThrow;
-        bombInput.throwDirection = (targetPoint - (throwPoint != null ? throwPoint.position : transform.position)).normalized;
+        inputData.isThrowingBomb = wantsToThrow;
+        inputData.throwDirection = (targetPoint - (throwPoint != null ? throwPoint.position : transform.position)).normalized;
         if (wantsToThrow)
         {
-            Debug.Log($"[NetworkBombBehaviour] CollectInput — sending throw input. Direction: {bombInput.throwDirection}");
+            Debug.Log($"[NetworkBombBehaviour] CollectInput — sending throw input. Direction: {inputData.throwDirection}");
         }
         wantsToThrow = false; // consumed
     }
@@ -131,7 +125,7 @@ public class NetworkBombBehaviour : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (!GetInput<NetworkBombInput>(out var input)) return;
+        if (!GetInput<PlayerInputData>(out var input)) return;
 
         if (input.isThrowingBomb)
         {
@@ -260,12 +254,3 @@ public class NetworkBombBehaviour : NetworkBehaviour
     }
 }
 
-/// <summary>
-/// Lightweight input struct for bomb throwing.
-/// Register this alongside your existing PlayerInputData in your OnInput callback.
-/// </summary>
-public struct NetworkBombInput : INetworkInput
-{
-    public bool isThrowingBomb;
-    public Vector3 throwDirection;
-}

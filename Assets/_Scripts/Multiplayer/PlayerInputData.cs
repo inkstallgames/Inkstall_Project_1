@@ -14,6 +14,10 @@ public struct PlayerInputData : INetworkInput
     public bool isReloading;
     public bool isAiming;  // For ADS (Aim Down Sights)
     
+    // Bomb throw
+    public bool isThrowingBomb;
+    public Vector3 throwDirection;
+    
     // Weapon switching
     public int weaponSlot; // 0 = primary, 1 = secondary, etc.
     
@@ -28,6 +32,8 @@ public struct PlayerInputData : INetworkInput
         isShooting = false;
         isReloading = false;
         isAiming = false;
+        isThrowingBomb = false;
+        throwDirection = Vector3.zero;
         weaponSlot = 0;
         isUsingAbility = false;
     }

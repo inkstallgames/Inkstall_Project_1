@@ -250,36 +250,57 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) {}
 
+    // Cached reference for bomb input collection
+    private NetworkBombBehaviour _cachedLocalBombBehaviour;
+
     public void OnInput(NetworkRunner runner, NetworkInput input)
-
-{
-
-    PlayerInputData data = new PlayerInputData();
-
-    data.movement = new Vector2(
-
-        Input.GetAxis("Horizontal"),
-
-        Input.GetAxis("Vertical")
-
-    );
-
-    input.Set(data);
-
-    // Bomb throw input
-    var localPlayer = runner.GetPlayerObject(runner.LocalPlayer);
-    if (localPlayer != null)
     {
-        var bombBehaviour = localPlayer.GetComponent<NetworkBombBehaviour>();
-        if (bombBehaviour != null)
-        {
-            var bombInput = new NetworkBombInput();
-            bombBehaviour.CollectInput(ref bombInput);
-            input.Set(bombInput);
-        }
-    }
+        PlayerInputData data = new PlayerInputData();
 
-}
+        data.movement = new Vector2(
+            Input.GetAxis("Horizontal"),
+            Input.GetAxis("Vertical")
+        );
+
+        // Bomb throw input — try cached reference first, then GetPlayerObject, then fallback scan
+        if (_cachedLocalBombBehaviour == null || _cachedLocalBombBehaviour.Object == null)
+        {
+            _cachedLocalBombBehaviour = null;
+
+            var localPlayer = runner.GetPlayerObject(runner.LocalPlayer);
+            if (localPlayer != null)
+            {
+                _cachedLocalBombBehaviour = localPlayer.GetComponent<NetworkBombBehaviour>();
+            }
+            else
+            {
+                // Fallback: scan all NetworkBombBehaviours for the one with input authority
+                var allBombs = FindObjectsOfType<NetworkBombBehaviour>();
+                foreach (var bomb in allBombs)
+                {
+                    if (bomb.Object != null && bomb.Object.HasInputAuthority)
+                    {
+                        _cachedLocalBombBehaviour = bomb;
+                        Debug.Log($"[NetworkPlayerSpawner] OnInput — found local bomb behaviour via fallback scan: {bomb.gameObject.name}");
+                        break;
+                    }
+                }
+
+                if (_cachedLocalBombBehaviour == null && Time.frameCount % 120 == 0)
+                {
+                    Debug.LogWarning("[NetworkPlayerSpawner] OnInput — local player object is NULL. Bomb input will NOT be sent.");
+                }
+            }
+        }
+
+        if (_cachedLocalBombBehaviour != null)
+        {
+            _cachedLocalBombBehaviour.CollectInput(ref data);
+        }
+
+        // Single input.Set call with all data combined
+        input.Set(data);
+    }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) {}
 

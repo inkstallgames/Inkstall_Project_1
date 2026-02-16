@@ -79,7 +79,7 @@ public class PlayerCameraController : NetworkBehaviour
             virtualCamera.Priority = 100;
             
             // Set near clip plane
-            virtualCamera.m_Lens.NearClipPlane = 1f;
+            virtualCamera.m_Lens.NearClipPlane = 0.2f;
             
             // Configure third-person follow if not already present
             var thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();

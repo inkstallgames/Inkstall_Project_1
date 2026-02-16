@@ -7,13 +7,10 @@ public class PlayerCameraController : NetworkBehaviour
     [Header("Camera Settings")]
     [SerializeField] private bool autoFindCamera = true;
     [SerializeField] private string cameraTargetName = "CameraTarget";
-    [SerializeField] private float rotationSpeed = 10f;
     
     private CinemachineVirtualCamera virtualCamera;
     private GameObject cameraTarget;
     private bool isLocalPlayer;
-    private CharacterController characterController;
-    private Transform playerModel;
     
     public override void Spawned()
     {
@@ -26,10 +23,6 @@ public class PlayerCameraController : NetworkBehaviour
         {
             // This is the local player, set up the camera
             SetupLocalPlayerCamera();
-            
-            // Get character controller and player model for rotation
-            characterController = GetComponent<CharacterController>();
-            playerModel = transform.Find("PlayerModel") ?? transform; // Find player model or use root
         }
         else
         {
@@ -37,35 +30,7 @@ public class PlayerCameraController : NetworkBehaviour
         }
     }
     
-    private void Update()
-    {
-        if (isLocalPlayer && virtualCamera != null && playerModel != null)
-        {
-            RotatePlayerWithCamera();
-        }
-    }
-    
-    private void RotatePlayerWithCamera()
-    {
-        // Get camera's forward direction (ignoring vertical component)
-        Vector3 cameraForward = virtualCamera.transform.forward;
-        cameraForward.y = 0; // Keep only horizontal direction
-        cameraForward.Normalize();
         
-        if (cameraForward.magnitude > 0.1f) // Only rotate if there's a meaningful direction
-        {
-            // Calculate target rotation
-            Quaternion targetRotation = Quaternion.LookRotation(cameraForward);
-            
-            // Smoothly rotate player to match camera direction
-            playerModel.rotation = Quaternion.Slerp(
-                playerModel.rotation, 
-                targetRotation, 
-                rotationSpeed * Time.deltaTime
-            );
-        }
-    }
-    
     private void SetupLocalPlayerCamera()
     {
         // Find or create the camera target

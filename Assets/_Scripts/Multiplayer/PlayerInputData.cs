@@ -7,7 +7,7 @@ public struct PlayerInputData : INetworkInput
     public Vector2 movement;
     
     // Aim direction (Mouse/Right Stick)
-    public Vector2 aimDirection;
+    public Vector3 aimDirection;
     
     // Action inputs
     public bool isShooting;
@@ -28,7 +28,7 @@ public struct PlayerInputData : INetworkInput
     public void Reset()
     {
         movement = Vector2.zero;
-        aimDirection = Vector2.zero;
+        aimDirection = Vector3.zero;
         isShooting = false;
         isReloading = false;
         isAiming = false;

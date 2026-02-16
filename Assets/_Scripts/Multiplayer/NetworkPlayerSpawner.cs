@@ -262,12 +262,22 @@ public class NetworkPlayerSpawner : MonoBehaviour
             Input.GetAxis("Vertical")
         );
 
+        // Get aim direction from local player's camera
+        var localPlayer = runner.GetPlayerObject(runner.LocalPlayer);
+        if (localPlayer != null)
+        {
+            var cameraController = localPlayer.GetComponent<PlayerCameraController>();
+            if (cameraController != null)
+            {
+                data.aimDirection = cameraController.GetCameraForward();
+            }
+        }
+
         // Bomb throw input — try cached reference first, then GetPlayerObject, then fallback scan
         if (_cachedLocalBombBehaviour == null || _cachedLocalBombBehaviour.Object == null)
         {
             _cachedLocalBombBehaviour = null;
 
-            var localPlayer = runner.GetPlayerObject(runner.LocalPlayer);
             if (localPlayer != null)
             {
                 _cachedLocalBombBehaviour = localPlayer.GetComponent<NetworkBombBehaviour>();

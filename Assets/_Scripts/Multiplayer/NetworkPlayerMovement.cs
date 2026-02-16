@@ -9,31 +9,26 @@ public class NetworkPlayerMovement : NetworkBehaviour
     public float maxHealth = 100f;
     
     [Networked] public float CurrentHealth { get; set; }
-    [Networked] public Vector2 AimDirection { get; set; }
+    [Networked] public Vector3 AimDirection { get; set; }
     [Networked] public bool IsDead { get; set; }
     
-    private Rigidbody2D rb;
-    private Vector2 movement;
-    private Vector2 mousePosition;
-    private Camera mainCamera;
-    private PlayerNetworkData networkData;
+    private CharacterController characterController;
+    private PlayerCameraController cameraController;
+    private Vector3 movement;
 
     public override void Spawned()
     {
         if (Object.HasInputAuthority)
         {
-            mainCamera = Camera.main;
-            networkData = GetComponent<PlayerNetworkData>();
+            cameraController = GetComponent<PlayerCameraController>();
             CurrentHealth = maxHealth;
             IsDead = false;
         }
         
-        rb = GetComponent<Rigidbody2D>();
-        if (rb == null)
+        characterController = GetComponent<CharacterController>();
+        if (characterController == null)
         {
-            rb = gameObject.AddComponent<Rigidbody2D>();
-            rb.gravityScale = 0;
-            rb.freezeRotation = true;
+            characterController = gameObject.AddComponent<CharacterController>();
         }
     }
 
@@ -41,18 +36,31 @@ public class NetworkPlayerMovement : NetworkBehaviour
     {
         if (GetInput<PlayerInputData>(out var input) && !IsDead)
         {
-            // Movement
-            movement = input.movement.normalized;
-            rb.velocity = movement * moveSpeed;
+            // Movement - move relative to where player is looking
+            if (input.movement.sqrMagnitude > 0.01f)
+            {
+                // Get movement direction based on player's current forward/right
+                Vector3 forward = transform.forward;
+                Vector3 right = transform.right;
+                
+                movement = (forward * input.movement.y + right * input.movement.x).normalized;
+                characterController.Move(movement * moveSpeed * Runner.DeltaTime);
+            }
             
-            // Rotation (aiming)
-            if (input.aimDirection != Vector2.zero)
+            // Rotation - face where camera is looking
+            if (input.aimDirection != Vector3.zero)
             {
                 AimDirection = input.aimDirection;
-                float angle = Mathf.Atan2(AimDirection.y, AimDirection.x) * Mathf.Rad2Deg - 90f;
-                transform.rotation = Quaternion.Lerp(transform.rotation, 
-                    Quaternion.Euler(0, 0, angle), 
-                    rotationSpeed * Runner.DeltaTime);
+                Vector3 lookDirection = AimDirection;
+                lookDirection.y = 0; // Keep only horizontal rotation
+                
+                if (lookDirection.sqrMagnitude > 0.01f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, 
+                        targetRotation, 
+                        rotationSpeed * Runner.DeltaTime);
+                }
             }
         }
     }
@@ -72,7 +80,10 @@ public class NetworkPlayerMovement : NetworkBehaviour
     private void Die()
     {
         IsDead = true;
-        rb.velocity = Vector2.zero;
+        if (characterController != null)
+        {
+            characterController.Move(Vector3.zero);
+        }
         // Handle player death (respawn, score, etc.)
         // This should be handled by the GameManager
     }

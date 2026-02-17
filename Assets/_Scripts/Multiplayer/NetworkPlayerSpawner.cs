@@ -257,10 +257,18 @@ public class NetworkPlayerSpawner : MonoBehaviour
     {
         PlayerInputData data = new PlayerInputData();
 
-        data.movement = new Vector2(
-            Input.GetAxis("Horizontal"),
-            Input.GetAxis("Vertical")
-        );
+        // Use joystick input if available (Android), fall back to keyboard (Editor)
+        if (NetworkJoystickControl.Instance != null)
+        {
+            data.movement = NetworkJoystickControl.Instance.MovementInput;
+        }
+        else
+        {
+            data.movement = new Vector2(
+                Input.GetAxis("Horizontal"),
+                Input.GetAxis("Vertical")
+            );
+        }
 
         // Get aim direction from local player's camera
         var localPlayer = runner.GetPlayerObject(runner.LocalPlayer);

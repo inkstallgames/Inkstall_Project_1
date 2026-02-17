@@ -91,8 +91,6 @@ public class PlayerCameraController : NetworkBehaviour
                     thirdPersonFollow.ShoulderOffset = new Vector3(0, 0, 0.1f);
                 }
             }
-            
-
         }
         else
         {

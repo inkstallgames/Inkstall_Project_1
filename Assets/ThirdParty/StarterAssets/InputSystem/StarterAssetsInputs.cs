@@ -85,8 +85,19 @@ namespace StarterAssets
 #if ENABLE_INPUT_SYSTEM
 			if (!enabled) return;
 			
-			// Read input directly from actions - this runs every frame but Fusion samples it at fixed rate
-			Vector2 newMove = moveAction.ReadValue<Vector2>();
+			// Check for joystick input first (mobile/touch), then fall back to keyboard
+			Vector2 newMove;
+			if (NetworkJoystickControl.Instance != null && NetworkJoystickControl.Instance.MovementInput.sqrMagnitude > 0.01f)
+			{
+				// Use joystick input when available and active
+				newMove = NetworkJoystickControl.Instance.MovementInput;
+			}
+			else
+			{
+				// Fall back to keyboard input
+				newMove = moveAction.ReadValue<Vector2>();
+			}
+			
 			MoveInput(newMove);
 			if (newMove.sqrMagnitude > 0.01f && newMove != move)
 			{

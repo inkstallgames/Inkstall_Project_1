@@ -28,12 +28,21 @@ public class NetworkJoystickControl : MonoBehaviour, IPointerDownHandler, IDragH
     [Tooltip("Multiplier applied to the raw output value.")]
     [SerializeField] private float magnitudeMultiplier = 1f;
 
+    [Header("Sprint Settings")]
+    [Tooltip("Joystick magnitude threshold to trigger sprint (0-1). Recommended: 0.7-0.85")]
+    [SerializeField] private float sprintThreshold = 0.75f;
+
     /// <summary>
     /// The current joystick direction as a normalized Vector2.
     /// X = horizontal (left/right), Y = vertical (forward/back).
     /// Magnitude is 0–1 (clamped).
     /// </summary>
     public Vector2 MovementInput { get; private set; }
+
+    /// <summary>
+    /// True if the joystick magnitude exceeds the sprint threshold.
+    /// </summary>
+    public bool IsSprinting { get; private set; }
 
     // ───────────────────────────────────────────────
     // Lifecycle
@@ -112,10 +121,13 @@ public class NetworkJoystickControl : MonoBehaviour, IPointerDownHandler, IDragH
         if (clamped.magnitude < deadZone)
         {
             MovementInput = Vector2.zero;
+            IsSprinting = false;
         }
         else
         {
             MovementInput = clamped * magnitudeMultiplier;
+            // Check if magnitude exceeds sprint threshold
+            IsSprinting = clamped.magnitude >= sprintThreshold;
         }
 
         // Move the visual handle knob
@@ -129,6 +141,7 @@ public class NetworkJoystickControl : MonoBehaviour, IPointerDownHandler, IDragH
     {
         // Reset everything when the finger lifts
         MovementInput = Vector2.zero;
+        IsSprinting = false;
 
         if (handleRect != null)
         {

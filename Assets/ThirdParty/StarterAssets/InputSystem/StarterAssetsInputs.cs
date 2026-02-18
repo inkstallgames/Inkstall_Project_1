@@ -87,10 +87,12 @@ namespace StarterAssets
 			
 			// Check for joystick input first (mobile/touch), then fall back to keyboard
 			Vector2 newMove;
+			bool usingJoystick = false;
 			if (NetworkJoystickControl.Instance != null && NetworkJoystickControl.Instance.MovementInput.sqrMagnitude > 0.01f)
 			{
 				// Use joystick input when available and active
 				newMove = NetworkJoystickControl.Instance.MovementInput;
+				usingJoystick = true;
 			}
 			else
 			{
@@ -113,7 +115,16 @@ namespace StarterAssets
 			bool newJump = jumpAction.IsPressed();
 			JumpInput(newJump);
 			
-			bool newSprint = sprintAction.IsPressed();
+			// Sprint: use joystick sprint state if joystick is active, otherwise use keyboard
+			bool newSprint;
+			if (usingJoystick)
+			{
+				newSprint = NetworkJoystickControl.Instance.IsSprinting;
+			}
+			else
+			{
+				newSprint = sprintAction.IsPressed();
+			}
 			SprintInput(newSprint);
 #endif
 		}

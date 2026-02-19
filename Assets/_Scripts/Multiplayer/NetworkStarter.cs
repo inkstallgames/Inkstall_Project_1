@@ -362,22 +362,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         if (playerObject != null)
         {
             Debug.Log($"[NetworkStarter] Player {player.PlayerId} already has a player object, skipping spawn.");
-            return; // Player already spawned
-        }
-
-        if (NetworkLobbyManager.Instance == null || !NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(player))
-        {
-            Debug.LogError($"[NetworkStarter] Lobby data not found for player {player.PlayerId}. Cannot spawn.");
-            return;
-        }
-
-        var lobbyData = NetworkLobbyManager.Instance.LobbyPlayers[player];
-        int heroId = lobbyData.SelectedHeroId;
-        NetworkObject heroPrefab = HeroManager.Instance.GetHeroPrefab(heroId);
-
-        if (heroPrefab == null)
-        {
-            UnityEngine.Debug.LogError($"[NetworkStarter] Hero prefab with ID {heroId} not found for player {player.PlayerId}!");
             return;
         }
 
@@ -386,15 +370,13 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
         if (playerSpawner != null)
         {
-            Debug.Log("[NetworkStarter] SUCCESS: Found NetworkPlayerSpawner!");
-            Debug.Log($"[NetworkStarter] Initializing NetworkPlayerSpawner with the current runner.");
+            Debug.Log($"[NetworkStarter] Found NetworkPlayerSpawner. Spawning player {player.PlayerId}.");
             playerSpawner.Init(runner);
-            Debug.Log($"[NetworkStarter] Spawning player {player.PlayerId} with hero {heroId} using NetworkPlayerSpawner");
             playerSpawner.SpawnPlayer(player);
         }
         else
         {
-            Debug.LogError("[NetworkStarter] FAILED: NetworkPlayerSpawner not found in the current scene! Player will not be spawned. Please ensure the component is added to a GameObject in the 'MallMap' scene.");
+            Debug.LogError("[NetworkStarter] NetworkPlayerSpawner not found in the scene! Player will not be spawned.");
         }
     }
 

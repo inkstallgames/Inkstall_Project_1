@@ -272,15 +272,36 @@ public class NetworkLobbyManager : NetworkBehaviour
             return;
         }
 
-        // Start hero selection phase
-        Debug.Log("[NetworkLobbyManager] Starting hero selection phase...");
-        IsHeroSelectionActive = true;
-        HeroSelectionTimer = TickTimer.CreateFromSeconds(Runner, 30f); // 30 seconds for hero selection
-        
-        // Show hero selection UI on all clients
-        RPC_ShowHeroSelectionUI();
-        
-        Debug.Log($"[NetworkLobbyManager] Hero selection timer set. Remaining: {HeroSelectionTimer.RemainingTime(Runner) ?? 0f} seconds");
+        // Hero selection is disabled — spawn players directly with playerPrefab
+        Debug.Log("[NetworkLobbyManager] Skipping hero selection. Loading map immediately...");
+        IsHeroSelectionActive = false;
+
+        // Validate map selection
+        if (SelectedMapIndex < 0 || SelectedMapIndex >= mapOptions.Count)
+        {
+            Debug.LogError($"[NetworkLobbyManager] Invalid map index: {SelectedMapIndex}. Defaulting to index 0.");
+            SelectedMapIndex = 0;
+        }
+
+        string sceneName = mapOptions[SelectedMapIndex];
+        Debug.Log($"[NetworkLobbyManager] Loading map: {sceneName}");
+
+        // Notify all clients the game is starting (shows loading screen etc.)
+        RPC_NotifyGameStarting();
+
+        // Notify NetworkGameManager to start the game (loads the scene)
+        if (NetworkGameManager.Instance != null)
+        {
+            NetworkGameManager.Instance.StartGame(
+                (GameMode)SelectedModeIndex,
+                new int[] { 180, 300, 600 }[SelectedTimeIndex],
+                sceneName
+            );
+        }
+        else
+        {
+            Debug.LogError("[NetworkLobbyManager] NetworkGameManager.Instance is null! Cannot start game.");
+        }
     }
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

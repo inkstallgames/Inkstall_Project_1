@@ -132,47 +132,36 @@ public class NetworkPlayerSpawner : MonoBehaviour
             return;
         }
 
-        GameObject heroPrefab = null;
-        int teamId = -1; // Default to FreeForAll
-
-        if (lobbyManager != null && lobbyManager.LobbyPlayers.ContainsKey(player))
+        // Always use the playerPrefab directly — hero selection is no longer used
+        if (playerPrefab == null)
         {
-            var lobbyData = lobbyManager.LobbyPlayers[player];
-            int heroId = lobbyData.SelectedHeroId;
-            teamId = lobbyData.TeamID; // Get teamId from lobby
-            var heroNetworkObject = HeroManager.Instance?.GetHeroPrefab(heroId);
-            heroPrefab = heroNetworkObject?.gameObject;
-            Debug.Log($"[NetworkPlayerSpawner] Using hero prefab {heroId} for player {player.PlayerId}: {(heroPrefab != null ? heroPrefab.name : "Not Found")}");
-            Debug.Log($"[NetworkPlayerSpawner] Got TeamId {teamId} from lobby data for player {player.PlayerId}");
-        }
-        else
-        {
-            // Fallback to generic player prefab if no lobby data
-            heroPrefab = playerPrefab;
-            Debug.LogWarning($"[NetworkPlayerSpawner] Lobby data not found for player {player.PlayerId}. Using generic player prefab and default team.");
-        }
-
-        if (heroPrefab == null)
-        {
-            Debug.LogError("[NetworkPlayerSpawner] No hero prefab available for spawning!");
+            Debug.LogError("[NetworkPlayerSpawner] playerPrefab is not assigned! Cannot spawn player.");
             return;
         }
 
         // Verify the prefab has NetworkObject component
-        var networkObject = heroPrefab.GetComponent<NetworkObject>();
+        var networkObject = playerPrefab.GetComponent<NetworkObject>();
         if (networkObject == null)
         {
-            Debug.LogError($"[NetworkPlayerSpawner] Hero prefab {heroPrefab.name} does not have a NetworkObject component!");
+            Debug.LogError($"[NetworkPlayerSpawner] playerPrefab '{playerPrefab.name}' does not have a NetworkObject component!");
             return;
         }
 
-        Vector3 spawnPosition = GetSpawnPosition(teamId);
-        Quaternion spawnRotation = Quaternion.Euler(0f, 0f, 0f); // Fixed rotation so all players face the same direction
+        // Get team from lobby data if available, otherwise default to FreeForAll (-1)
+        int teamId = -1;
+        if (lobbyManager != null && lobbyManager.LobbyPlayers.ContainsKey(player))
+        {
+            teamId = lobbyManager.LobbyPlayers[player].TeamID;
+            Debug.Log($"[NetworkPlayerSpawner] Got TeamId {teamId} from lobby data for player {player.PlayerId}");
+        }
 
-        Debug.Log($"[NetworkPlayerSpawner] About to spawn player {player.PlayerId} (Team {teamId}) at position: {spawnPosition}");
+        Vector3 spawnPosition = GetSpawnPosition(teamId);
+        Quaternion spawnRotation = Quaternion.Euler(0f, 0f, 0f);
+
+        Debug.Log($"[NetworkPlayerSpawner] Spawning player {player.PlayerId} with prefab '{playerPrefab.name}' at {spawnPosition}");
 
         var playerObject = _runner.Spawn(
-            heroPrefab,
+            playerPrefab,
             spawnPosition,
             spawnRotation,
             player
@@ -180,7 +169,6 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
         if (playerObject != null)
         {
-            // Register this as the player's object so GetPlayerObject() works
             _runner.SetPlayerObject(player, playerObject);
             Debug.Log($"[NetworkPlayerSpawner] Successfully spawned and registered player {player.PlayerId}. Object ID: {playerObject.Id}");
         }

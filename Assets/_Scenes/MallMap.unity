@@ -300,7 +300,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f661b2b742215d54b9c216acc3e2d616, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: {fileID: 0}
+  playerPrefab: {fileID: 3928277030421997894, guid: e66c963a5a575d54db6095df25833aaa,
+    type: 3}
   groundLayer:
     serializedVersion: 2
     m_Bits: 0
@@ -1474,6 +1475,7 @@ MonoBehaviour:
   joystickRange: 50
   deadZone: 0.1
   magnitudeMultiplier: 1
+  sprintThreshold: 0.75
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

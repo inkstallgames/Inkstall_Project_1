@@ -170,9 +170,18 @@ namespace StarterAssets
 			// Only process input if this component is enabled
 			if (!enabled) return;
 			
-			if(cursorInputForLook)
+			if (cursorInputForLook)
 			{
-				LookInput(value.Get<Vector2>());
+				// Only rotate camera while right mouse button is held (same guard as Update path)
+				var mouse = Mouse.current;
+				if (mouse != null && mouse.rightButton.isPressed)
+				{
+					LookInput(value.Get<Vector2>());
+				}
+				else
+				{
+					LookInput(Vector2.zero);
+				}
 			}
 		}
 

@@ -100,7 +100,7 @@ namespace StarterAssets
         private int _animIDSpeed;
         private int _animIDGrounded;
         private int _animIDJump;
-        private int _animIDFreeFall;
+        private int _animIDFreeFall;  
         private int _animIDMotionSpeed;
 
         private Animator _animator;

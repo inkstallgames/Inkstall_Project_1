@@ -20,10 +20,6 @@ namespace StarterAssets
 		public bool cursorLocked = false;
 		public bool cursorInputForLook = true;
 
-		[Header("Camera Drag Settings")]
-		public bool requireMouseButtonForCamera = true;
-		private bool isMouseButtonHeld = false;
-
 #if ENABLE_INPUT_SYSTEM
 		private InputAction moveAction;
 		private InputAction lookAction;
@@ -112,24 +108,7 @@ namespace StarterAssets
 			
 			if (cursorInputForLook)
 			{
-				// Check if right mouse button is held for camera drag
-				isMouseButtonHeld = Mouse.current.rightButton.isPressed;
-				
-				Vector2 newLook = Vector2.zero;
-				if (requireMouseButtonForCamera)
-				{
-					// Only read mouse delta when right mouse button is held
-					if (isMouseButtonHeld)
-					{
-						newLook = lookAction.ReadValue<Vector2>();
-					}
-				}
-				else
-				{
-					// Original behavior - always read mouse delta
-					newLook = lookAction.ReadValue<Vector2>();
-				}
-				
+				Vector2 newLook = lookAction.ReadValue<Vector2>();
 				LookInput(newLook);
 			}
 			

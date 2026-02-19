@@ -108,7 +108,32 @@ namespace StarterAssets
 			
 			if (cursorInputForLook)
 			{
-				Vector2 newLook = lookAction.ReadValue<Vector2>();
+				Vector2 newLook = Vector2.zero;
+
+				// PC: Only rotate camera while right mouse button is held (drag to look)
+				var mouse = Mouse.current;
+				if (mouse != null && mouse.rightButton.isPressed)
+				{
+					newLook = mouse.delta.ReadValue();
+				}
+
+				// Android / Mobile: touch drag on the RIGHT half of screen controls camera.
+				// Left half is reserved for the movement joystick.
+				var touchscreen = Touchscreen.current;
+				if (touchscreen != null)
+				{
+					for (int i = 0; i < touchscreen.touches.Count; i++)
+					{
+						var touch = touchscreen.touches[i];
+						if (touch.isInProgress &&
+							touch.startPosition.ReadValue().x > Screen.width * 0.5f)
+						{
+							newLook = touch.delta.ReadValue();
+							break;
+						}
+					}
+				}
+
 				LookInput(newLook);
 			}
 			

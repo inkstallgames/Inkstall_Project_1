@@ -23,7 +23,8 @@ public class LobbyUIManager : MonoBehaviour
     public TMP_Dropdown timeDropdown;
 
     [Header("Player List")]
-    public GameObject playerListContent;
+    public GameObject teamAListContent;   // TeamAPanel ScrollView > Viewport > Content
+    public GameObject teamBListContent;   // TeamBPanel ScrollView > Viewport > Content
     public GameObject playerListItemPrefab;
 
     [Header("Join Info")]
@@ -35,6 +36,7 @@ public class LobbyUIManager : MonoBehaviour
     public Button readyButton;
     public Button startGameButton;
     public Button leaveButton;
+    public Button switchTeamButton;
     public TextMeshProUGUI readyButtonText;
 
     [Header("Chat")]
@@ -79,6 +81,9 @@ public class LobbyUIManager : MonoBehaviour
         // Player controls
         if (readyButton != null)
             readyButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.ToggleReadyStatus());
+
+        if (switchTeamButton != null)
+            switchTeamButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.SwitchTeam());
             
         if (leaveButton != null)
         {
@@ -129,11 +134,10 @@ public class LobbyUIManager : MonoBehaviour
 
     public void UpdateChat(NetworkLinkedList<ChatMessage> messages)
     {
-        if (chatContent != null)
-        {
-            chatContent.richText = true;
-            chatContent.color = Color.white;
-        }
+        if (chatContent == null) return; // Chat UI removed — skip update
+        
+        chatContent.richText = true;
+        chatContent.color = Color.white;
         
         string chatLog = "";
         foreach (var msg in messages)
@@ -207,27 +211,28 @@ public class LobbyUIManager : MonoBehaviour
 
     public void UpdatePlayerList(Dictionary<int, PlayerLobbyData> players)
     {
-        // Clear existing player list
-        foreach (Transform child in playerListContent.transform)
-        {
-            Destroy(child.gameObject);
-        }
+        // Clear both team columns
+        if (teamAListContent != null)
+            foreach (Transform t in teamAListContent.transform) Destroy(t.gameObject);
+        if (teamBListContent != null)
+            foreach (Transform t in teamBListContent.transform) Destroy(t.gameObject);
 
-        // Convert dictionary to list and sort: host first, then others by join order
+        // Sort: host first, then by player ID
         var sortedPlayers = players
-            .OrderByDescending(p => p.Value.IsHost)  // Host comes first
-            .ThenBy(p => p.Key)                     // Then order by player ID (join order)
+            .OrderByDescending(p => p.Value.IsHost)
+            .ThenBy(p => p.Key)
             .Select(p => p.Value);
 
-        // Populate with sorted player data
         foreach (var player in sortedPlayers)
         {
-            GameObject item = Instantiate(playerListItemPrefab, playerListContent.transform);
+            // Route to the correct team column
+            GameObject parent = player.TeamID == 1 ? teamBListContent : teamAListContent;
+            if (parent == null) continue;
+
+            GameObject item = Instantiate(playerListItemPrefab, parent.transform);
             PlayerListItemUI listItem = item.GetComponent<PlayerListItemUI>();
             if (listItem != null)
-            {
-                listItem.SetPlayerInfo(player.PlayerName.ToString(), player.IsReady, player.IsHost, player.PlayerColor);
-            }
+                listItem.SetPlayerInfo(player.PlayerName.ToString(), player.IsReady, player.IsHost, player.PlayerColor, player.TeamID);
         }
     }
 

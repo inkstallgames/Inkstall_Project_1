@@ -203,12 +203,24 @@ public class NetworkLobbyManager : NetworkBehaviour
              initialName = PlayerPrefs.GetString("PlayerName", initialName);
         }
 
+        // --- Auto-assign team based on which team has fewer members ---
+        int teamACount = 0;
+        int teamBCount = 0;
+        foreach (var kvp in LobbyPlayers)
+        {
+            if (kvp.Value.TeamID == 0) teamACount++;
+            else if (kvp.Value.TeamID == 1) teamBCount++;
+        }
+        int assignedTeam = (teamBCount < teamACount) ? 1 : 0; // tie or A fewer → Team A
+        Debug.Log($"[NetworkLobbyManager] Auto-assigning player {player.PlayerId} to Team {assignedTeam} (A:{teamACount} B:{teamBCount})");
+
         var playerData = new PlayerLobbyData
         {
             PlayerName = initialName,
             IsHost = isHost,
             IsReady = isHost, // Host is always ready
-            SelectedHeroId = -1 // Initialize with no hero selected
+            SelectedHeroId = -1,
+            TeamID = assignedTeam
         };
         
         LobbyPlayers.Add(player, playerData);
@@ -225,7 +237,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         
         // Verify the color was set
         var verifyData = LobbyPlayers[player];
-        Debug.Log($"[NetworkLobbyManager] Added player {player.PlayerId} to lobby. IsHost: {isHost}, Assigned Color: {assignedColor}, Stored Color: {verifyData.PlayerColor}");
+        Debug.Log($"[NetworkLobbyManager] Added player {player.PlayerId} to lobby. IsHost: {isHost}, Team: {assignedTeam}, Assigned Color: {assignedColor}, Stored Color: {verifyData.PlayerColor}");
         
         // If this is the host, update their ready status in the UI immediately
         if (isHost && uiManager != null)
@@ -241,6 +253,19 @@ public class NetworkLobbyManager : NetworkBehaviour
         }
         
         // The UI will be updated when the client sends its name via RPC_SetLobbyPlayerName
+    }
+
+    /// <summary>
+    /// Called by the Switch Team button in the lobby UI.
+    /// Flips the local player to the opposite team and notifies the server.
+    /// </summary>
+    public void SwitchTeam()
+    {
+        if (!LobbyPlayers.ContainsKey(Runner.LocalPlayer)) return;
+        int currentTeam = LobbyPlayers[Runner.LocalPlayer].TeamID;
+        int newTeam = (currentTeam == 0) ? 1 : 0;
+        Debug.Log($"[NetworkLobbyManager] Local player switching from Team {currentTeam} to Team {newTeam}");
+        RPC_SetPlayerTeam(newTeam);
     }
 
     public void OnMapSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedMapIndex), index);
@@ -520,11 +545,18 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SetPlayerTeam(int teamId, RpcInfo info = default)
     {
-        if (LobbyPlayers.ContainsKey(info.Source))
+        PlayerRef source = info.Source;
+        // When the host calls this on themselves, info.Source may be default
+        if (source == default) source = Runner.LocalPlayer;
+
+        if (LobbyPlayers.ContainsKey(source))
         {
-            var data = LobbyPlayers[info.Source];
+            var data = LobbyPlayers[source];
             data.TeamID = teamId;
-            LobbyPlayers.Set(info.Source, data);
+            LobbyPlayers.Set(source, data);
+            Debug.Log($"[NetworkLobbyManager] Player {source.PlayerId} team set to {teamId}");
+            // Broadcast updated player list to all clients
+            RPC_UpdateLobbyUI();
         }
     }
 

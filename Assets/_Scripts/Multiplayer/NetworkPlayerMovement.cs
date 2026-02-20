@@ -39,12 +39,14 @@ public class NetworkPlayerMovement : NetworkBehaviour
             // Movement - move relative to where player is looking
             if (input.movement.sqrMagnitude > 0.01f)
             {
-                // Get movement direction based on player's current forward/right
-                Vector3 forward = transform.forward;
-                Vector3 right = transform.right;
-                
-                movement = (forward * input.movement.y + right * input.movement.x).normalized;
+                movement = (transform.forward * input.movement.y + transform.right * input.movement.x).normalized;
                 characterController.Move(movement * moveSpeed * Runner.DeltaTime);
+            }
+            
+            // Handle Shooting
+            if (input.isShooting)
+            {
+                Shoot();
             }
             
             // Rotation - face where camera is looking
@@ -77,6 +79,38 @@ public class NetworkPlayerMovement : NetworkBehaviour
         }
     }
     
+    private void Shoot()
+    {
+        // Simple raycast shooting
+        if (Runner.IsServer)
+        {
+            RaycastHit hit;
+            Vector3 shootDirection = cameraController.GetCameraForward();
+            
+            if (Physics.Raycast(transform.position + Vector3.up, shootDirection, out hit, 100f))
+            {
+                Debug.Log($"Hit: {hit.collider.name}");
+                
+                // Check if we hit another player
+                var hitPlayer = hit.collider.GetComponent<NetworkPlayerMovement>();
+                if (hitPlayer != null && hitPlayer != this)
+                {
+                    hitPlayer.TakeDamage(25f); // 25 damage per shot
+                    
+                    // Notify GameManager of kill
+                    if (hitPlayer.CurrentHealth <= 0)
+                    {
+                        var gameManager = FindObjectOfType<NetworkGameManager>();
+                        if (gameManager != null)
+                        {
+                            gameManager.OnPlayerKilled(hitPlayer.Object.InputAuthority, Object.InputAuthority);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     private void Die()
     {
         IsDead = true;
@@ -84,7 +118,33 @@ public class NetworkPlayerMovement : NetworkBehaviour
         {
             characterController.Move(Vector3.zero);
         }
-        // Handle player death (respawn, score, etc.)
-        // This should be handled by the GameManager
+        
+        // Start respawn timer
+        StartCoroutine(RespawnAfterDelay(5f));
+    }
+    
+    private System.Collections.IEnumerator RespawnAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        if (Runner.IsServer)
+        {
+            // Respawn player
+            IsDead = false;
+            CurrentHealth = maxHealth;
+            
+            // Move to spawn point
+            var gameManager = FindObjectOfType<NetworkGameManager>();
+            if (gameManager != null)
+            {
+                var spawnPoint = gameManager.GetSpawnPoint(0); // Team 0 for now
+                if (spawnPoint != null)
+                {
+                    characterController.enabled = false;
+                    transform.position = spawnPoint.position;
+                    characterController.enabled = true;
+                }
+            }
+        }
     }
 }

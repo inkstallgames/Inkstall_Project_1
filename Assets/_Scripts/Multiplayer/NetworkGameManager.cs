@@ -328,6 +328,23 @@ public class NetworkGameManager : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         
+        // Update individual player stats
+        if (PlayerKills.ContainsKey(killer))
+        {
+            PlayerKills.Set(killer, PlayerKills[killer] + 1);
+        }
+        
+        if (PlayerDeaths.ContainsKey(victim))
+        {
+            PlayerDeaths.Set(victim, PlayerDeaths[victim] + 1);
+        }
+        
+        // Remove from alive players
+        AlivePlayers.Remove(victim);
+        PlayersAlive = AlivePlayers.Count;
+        
+        Debug.Log($"Player {killer.PlayerId} killed Player {victim.PlayerId}");
+        
         // Update scores based on game mode
         if (CurrentGameMode == GameMode.TeamDeathmatch)
         {
@@ -340,8 +357,21 @@ public class NetworkGameManager : NetworkBehaviour
                 if (killerData.TeamId == 0) BlueTeamScore++;
                 else RedTeamScore++;
                 
+                Debug.Log($"Team Score - Blue: {BlueTeamScore}, Red: {RedTeamScore}");
+                
                 // Check for round/game end
                 CheckGameEndConditions();
+            }
+        }
+        else if (CurrentGameMode == GameMode.FreeForAll)
+        {
+            // Check if someone reached kill limit
+            var killerKills = PlayerKills[killer];
+            if (killerKills >= 20) // First to 20 kills wins
+            {
+                Debug.Log($"Player {killer.PlayerId} wins with {killerKills} kills!");
+                var killerData = Runner.GetPlayerObject(killer)?.GetComponent<PlayerNetworkData>();
+                EndGame(killerData?.TeamId ?? -1);
             }
         }
     }

@@ -299,9 +299,10 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f) * inputDirection;
             }
 
-            // Only server/host applies CharacterController.Move()
-            // Clients (including local) get position from NetworkTransform
-            if (Object.HasStateAuthority)
+            // Apply CharacterController movement for server/host AND local client
+            // Server is authoritative, but client predicts locally for smooth 60 FPS
+            // Remote players get position from NetworkTransform (no CharacterController.Move)
+            if (Object.HasStateAuthority || Object.HasInputAuthority)
             {
                 Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
                 Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
@@ -336,9 +337,6 @@ namespace StarterAssets
                 if (_fallTimeoutDelta >= 0.0f)
                 {
                     _fallTimeoutDelta -= Runner.DeltaTime;
-                }
-                else
-                {
                 }
             }
 

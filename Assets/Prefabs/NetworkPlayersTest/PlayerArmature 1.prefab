@@ -1437,6 +1437,7 @@ MonoBehaviour:
   rotationLerpSpeed: 15
   snapDistanceThreshold: 5
   snapAngleThreshold: 45
+  showDebugInfo: 1
 --- !u!1 &4483834934949140703
 GameObject:
   m_ObjectHideFlags: 0

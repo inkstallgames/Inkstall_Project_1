@@ -186,6 +186,15 @@ namespace StarterAssets
                         CinemachineCameraTarget = cameraTarget.gameObject;
                     }
                 }
+                
+                // CRITICAL: Disable NetworkTransform position sync for local player
+                // Local player uses client-side prediction, server position would cause rubber-banding
+                var networkTransform = GetComponent<NetworkTransform>();
+                if (networkTransform != null)
+                {
+                    networkTransform.InterpolationDataSource = InterpolationDataSources.NoInterpolation;
+                    Debug.Log($"[ThirdPersonController] Disabled NetworkTransform interpolation for local player");
+                }
             }
         }
 

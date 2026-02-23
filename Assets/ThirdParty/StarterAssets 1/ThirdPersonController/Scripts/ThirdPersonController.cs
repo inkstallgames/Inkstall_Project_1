@@ -311,10 +311,10 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f) * inputDirection;
             }
 
-            // Only server/host applies CharacterController.Move()
-            // Clients receive position updates from NetworkTransform
-            // NetworkTransformInterpolation handles smooth rendering on clients
-            if (Object.HasStateAuthority)
+            // Server/host AND local client apply CharacterController.Move()
+            // Server is authoritative, client predicts locally for responsive movement
+            // NetworkTransform will reconcile any differences
+            if (Object.HasStateAuthority || Object.HasInputAuthority)
             {
                 Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
                 Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;

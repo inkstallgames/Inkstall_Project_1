@@ -5,7 +5,7 @@ using Fusion;
 /// Provides smooth visual interpolation for networked objects on clients.
 /// Fusion's NetworkTransform handles the network sync, but this adds
 /// additional smoothing for 60 FPS rendering between network ticks.
-/// ONLY WORKS ON REMOTE PLAYERS - Local player is controlled directly.
+/// Works for ALL players - local and remote - to smooth server position updates.
 /// </summary>
 [RequireComponent(typeof(NetworkObject))]
 public class NetworkTransformInterpolation : NetworkBehaviour
@@ -47,23 +47,14 @@ public class NetworkTransformInterpolation : NetworkBehaviour
         if (showDebugInfo)
         {
             Debug.Log($"[NetworkTransformInterpolation] Spawned on {gameObject.name}. IsLocalPlayer: {_isLocalPlayer}");
-        }
-        
-        // Disable this component entirely for local player to avoid any conflicts
-        if (_isLocalPlayer)
-        {
-            enabled = false;
-            if (showDebugInfo)
-            {
-                Debug.Log($"[NetworkTransformInterpolation] Disabled for local player {gameObject.name}");
-            }
+            Debug.Log($"[NetworkTransformInterpolation] Interpolation ENABLED for {(_isLocalPlayer ? "LOCAL" : "REMOTE")} player");
         }
     }
     
     public override void Render()
     {
-        // Safety check - should never run for local player due to enabled = false
-        if (!_initialized || _isLocalPlayer) return;
+        // Safety check
+        if (!_initialized) return;
         
         // Store the current network position before we modify it
         Vector3 networkPosition = transform.position;

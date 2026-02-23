@@ -186,15 +186,6 @@ namespace StarterAssets
                         CinemachineCameraTarget = cameraTarget.gameObject;
                     }
                 }
-                
-                // CRITICAL: Disable NetworkTransform for local player
-                // Local player uses client-side prediction, NetworkTransform would cause rubber-banding
-                var networkTransform = GetComponent<NetworkTransform>();
-                if (networkTransform != null)
-                {
-                    networkTransform.enabled = false;
-                    Debug.Log($"[ThirdPersonController] Disabled NetworkTransform for local player to prevent position conflicts");
-                }
             }
         }
 
@@ -320,20 +311,14 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f) * inputDirection;
             }
 
-            // Server/host AND local client apply CharacterController.Move()
-            // Server is authoritative, client predicts locally for smooth movement
-            // Remote players receive position from NetworkTransform + interpolation
-            if (Object.HasStateAuthority || Object.HasInputAuthority)
+            // Only server/host applies CharacterController.Move()
+            // Clients receive position updates from NetworkTransform
+            // NetworkTransformInterpolation handles smooth rendering on clients
+            if (Object.HasStateAuthority)
             {
                 Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
                 Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
                 _controller.Move(horizontalMovement + verticalMovement);
-                
-                // Debug: Log movement for local client
-                if (Object.HasInputAuthority && !Object.HasStateAuthority && Time.frameCount % 60 == 0)
-                {
-                    Debug.Log($"[Move] CLIENT prediction - Position: {transform.position}, Speed: {_speed:F2}");
-                }
             }
         }
 

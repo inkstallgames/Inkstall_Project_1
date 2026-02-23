@@ -1055,6 +1055,7 @@ GameObject:
   - component: {fileID: 7507724042949624427}
   - component: {fileID: 7582882577927671954}
   - component: {fileID: 6394523291383630547}
+  - component: {fileID: 2196458093287243295}
   m_Layer: 8
   m_Name: PlayerArmature 1
   m_TagString: Player
@@ -1334,6 +1335,7 @@ MonoBehaviour:
   - {fileID: 7507724042949624427}
   - {fileID: 7582882577927671954}
   - {fileID: 6394523291383630547}
+  - {fileID: 2196458093287243295}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
 MonoBehaviour:
@@ -1417,6 +1419,24 @@ MonoBehaviour:
   bombDamage: 25
   _CurrentBombs: 0
   _MaxBombs: 0
+--- !u!114 &2196458093287243295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3928277030421997894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b586f9a7fa0f8434fb40af82a2866ada, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interpolatePosition: 1
+  interpolateRotation: 1
+  positionLerpSpeed: 15
+  rotationLerpSpeed: 15
+  snapDistanceThreshold: 5
+  snapAngleThreshold: 45
 --- !u!1 &4483834934949140703
 GameObject:
   m_ObjectHideFlags: 0

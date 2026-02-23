@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 1332249776000000458}
   - component: {fileID: 8341049113974036516}
   - component: {fileID: 5555555555555555555}
+  - component: {fileID: 3386161905837456048}
   m_Layer: 0
   m_Name: NetworkBomb
   m_TagString: Untagged
@@ -234,6 +235,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 8341049113974036516}
   - {fileID: 5555555555555555555}
+  - {fileID: 3386161905837456048}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &8341049113974036516
 MonoBehaviour:
@@ -270,6 +272,21 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &3386161905837456048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4001697182811736323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41bff1e3d52190740ae3da947bd9f7b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  positionLerpSpeed: 20
+  rotationLerpSpeed: 20
+  snapDistanceThreshold: 10
 --- !u!1 &4894376839943411890
 GameObject:
   m_ObjectHideFlags: 0

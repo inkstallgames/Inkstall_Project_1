@@ -47,7 +47,14 @@ public class NetworkTransformInterpolation : NetworkBehaviour
         if (showDebugInfo)
         {
             Debug.Log($"[NetworkTransformInterpolation] Spawned on {gameObject.name}. IsLocalPlayer: {_isLocalPlayer}");
-            Debug.Log($"[NetworkTransformInterpolation] Interpolation ENABLED for {(_isLocalPlayer ? "LOCAL" : "REMOTE")} player");
+            if (_isLocalPlayer)
+            {
+                Debug.Log($"[NetworkTransformInterpolation] LOCAL player - Position: Direct, Rotation: Interpolated");
+            }
+            else
+            {
+                Debug.Log($"[NetworkTransformInterpolation] REMOTE player - Position: Interpolated, Rotation: Interpolated");
+            }
         }
     }
     
@@ -70,7 +77,9 @@ public class NetworkTransformInterpolation : NetworkBehaviour
             _lastNetworkRotation = networkRotation;
         }
         
-        if (interpolatePosition)
+        // For local player: Skip position interpolation to avoid input lag
+        // Only interpolate position for remote players
+        if (interpolatePosition && !_isLocalPlayer)
         {
             float distance = Vector3.Distance(_renderPosition, networkPosition);
             
@@ -89,6 +98,7 @@ public class NetworkTransformInterpolation : NetworkBehaviour
             transform.position = _renderPosition;
         }
         
+        // Interpolate rotation for all players (doesn't cause lag)
         if (interpolateRotation)
         {
             float angle = Quaternion.Angle(_renderRotation, networkRotation);

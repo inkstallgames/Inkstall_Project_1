@@ -208,6 +208,12 @@ namespace StarterAssets
             {
                 _latestInput = data;
 
+                // Debug: Log input received on server
+                if (Object.HasStateAuthority && data.move.sqrMagnitude > 0.01f && Time.frameCount % 60 == 0)
+                {
+                    Debug.Log($"[FixedUpdateNetwork] SERVER received input - Move: {data.move}, Player: {Object.InputAuthority.PlayerId}, Position: {transform.position}");
+                }
+
                 // Apply camera rotation from input (server authoritative)
                 if (Object.HasStateAuthority)
                 {
@@ -228,6 +234,12 @@ namespace StarterAssets
             }
             else
             {
+                // Debug: Log when no input received
+                if (Object.HasStateAuthority && Time.frameCount % 120 == 0)
+                {
+                    Debug.LogWarning($"[FixedUpdateNetwork] SERVER - No input received for Player {Object.InputAuthority.PlayerId}");
+                }
+                
                 // If no input, still apply gravity and check grounded state
                 JumpAndGravity(default);
                 GroundedCheck();
@@ -299,10 +311,10 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f) * inputDirection;
             }
 
-            // Apply CharacterController movement for server/host AND local client
-            // Server is authoritative, but client predicts locally for smooth 60 FPS
-            // Remote players get position from NetworkTransform (no CharacterController.Move)
-            if (Object.HasStateAuthority || Object.HasInputAuthority)
+            // Only server/host applies CharacterController.Move()
+            // Clients receive position updates from NetworkTransform
+            // NetworkTransformInterpolation handles smooth rendering on clients
+            if (Object.HasStateAuthority)
             {
                 Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
                 Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
@@ -399,6 +411,12 @@ namespace StarterAssets
                 data.cameraYaw = _cinemachineTargetYaw;
                 data.cameraPitch = _cinemachineTargetPitch;
                 _nativeInput.jump = false;
+                
+                // Debug: Log input when movement detected
+                if (data.move.sqrMagnitude > 0.01f && Time.frameCount % 60 == 0)
+                {
+                    Debug.Log($"[OnInput] Sending input to server - Move: {data.move}, Sprint: {data.sprint}, Yaw: {data.cameraYaw:F1}");
+                }
             }
             else
             {

@@ -36,9 +36,22 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         _instance = this;
         DontDestroyOnLoad(gameObject);
         
+        // Initialize FPS manager for consistent performance
+        InitializeFPSManager();
+        
         // Initialize runner and prewarm network resources
         InitializeRunner();
         await PrewarmNetworkResources();
+    }
+    
+    private void InitializeFPSManager()
+    {
+        // Add FPS manager if not already present
+        if (GetComponent<NetworkFPSManager>() == null)
+        {
+            gameObject.AddComponent<NetworkFPSManager>();
+            UnityEngine.Debug.Log("[NetworkStarter] NetworkFPSManager initialized for consistent 60 FPS");
+        }
     }
     
     private async Task PrewarmNetworkResources()

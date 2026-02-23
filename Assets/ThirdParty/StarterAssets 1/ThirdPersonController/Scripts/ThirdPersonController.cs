@@ -187,13 +187,13 @@ namespace StarterAssets
                     }
                 }
                 
-                // CRITICAL: Disable NetworkTransform position sync for local player
-                // Local player uses client-side prediction, server position would cause rubber-banding
+                // CRITICAL: Disable NetworkTransform for local player
+                // Local player uses client-side prediction, NetworkTransform would cause rubber-banding
                 var networkTransform = GetComponent<NetworkTransform>();
                 if (networkTransform != null)
                 {
-                    networkTransform.InterpolationDataSource = InterpolationDataSources.NoInterpolation;
-                    Debug.Log($"[ThirdPersonController] Disabled NetworkTransform interpolation for local player");
+                    networkTransform.enabled = false;
+                    Debug.Log($"[ThirdPersonController] Disabled NetworkTransform for local player to prevent position conflicts");
                 }
             }
         }

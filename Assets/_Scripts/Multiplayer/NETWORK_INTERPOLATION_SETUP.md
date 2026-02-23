@@ -113,10 +113,12 @@ For the bomb prefab:
 - Interpolation happens in `Render()` for smooth 60 FPS visuals
 
 ### Why Only Clients?
-The scripts check `Object.HasInputAuthority`:
-- **Your own character**: No interpolation (direct control)
+The scripts check `Object.HasInputAuthority` and disable themselves:
+- **Your own character**: Component disabled entirely (direct control, no interference)
 - **Other players**: Interpolation enabled (smooth remote players)
 - **Server**: No interpolation needed (authoritative simulation)
+
+**IMPORTANT**: The interpolation component calls `enabled = false` for the local player to completely prevent any transform conflicts with CharacterController movement.
 
 ### Snap Thresholds
 Prevents interpolation when objects teleport:
@@ -149,5 +151,12 @@ A: Normal for high latency. Increase snap thresholds if too sensitive
 **Q: Bombs don't interpolate**
 A: Ensure NetworkRigidbodyInterpolation is on the bomb prefab root
 
-**Q: My own character feels weird**
-A: Interpolation should be disabled for local player automatically. Check HasInputAuthority logic.
+**Q: My own character feels weird/jittery**
+A: The interpolation component should auto-disable for local player. Check:
+   1. Enable "Show Debug Info" on NetworkTransformInterpolation
+   2. Look for "Disabled for local player" in console
+   3. If not appearing, the component may not be detecting InputAuthority correctly
+   4. Make sure you added the component AFTER the NetworkObject component
+
+**Q: Local player was smooth before, jittery after adding interpolation**
+A: This was fixed - the component now calls `enabled = false` for local player to avoid transform conflicts with CharacterController.

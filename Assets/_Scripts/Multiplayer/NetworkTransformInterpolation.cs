@@ -5,6 +5,7 @@ using Fusion;
 /// Provides smooth visual interpolation for networked objects on clients.
 /// Fusion's NetworkTransform handles the network sync, but this adds
 /// additional smoothing for 60 FPS rendering between network ticks.
+/// ONLY WORKS ON REMOTE PLAYERS - Local player is controlled directly.
 /// </summary>
 [RequireComponent(typeof(NetworkObject))]
 public class NetworkTransformInterpolation : NetworkBehaviour
@@ -21,29 +22,62 @@ public class NetworkTransformInterpolation : NetworkBehaviour
     [Tooltip("If rotation difference exceeds this, snap instead of lerp")]
     [SerializeField] private float snapAngleThreshold = 45f;
     
+    [Header("Debug")]
+    [SerializeField] private bool showDebugInfo = false;
+    
     private Vector3 _renderPosition;
     private Quaternion _renderRotation;
+    private Vector3 _lastNetworkPosition;
+    private Quaternion _lastNetworkRotation;
     private bool _initialized = false;
+    private bool _isLocalPlayer = false;
     
     public override void Spawned()
     {
+        // Determine if this is the local player
+        _isLocalPlayer = Object.HasInputAuthority;
+        
         // Initialize render position/rotation to current transform values
         _renderPosition = transform.position;
         _renderRotation = transform.rotation;
+        _lastNetworkPosition = transform.position;
+        _lastNetworkRotation = transform.rotation;
         _initialized = true;
+        
+        if (showDebugInfo)
+        {
+            Debug.Log($"[NetworkTransformInterpolation] Spawned on {gameObject.name}. IsLocalPlayer: {_isLocalPlayer}");
+        }
+        
+        // Disable this component entirely for local player to avoid any conflicts
+        if (_isLocalPlayer)
+        {
+            enabled = false;
+            if (showDebugInfo)
+            {
+                Debug.Log($"[NetworkTransformInterpolation] Disabled for local player {gameObject.name}");
+            }
+        }
     }
     
     public override void Render()
     {
-        if (!_initialized) return;
+        // Safety check - should never run for local player due to enabled = false
+        if (!_initialized || _isLocalPlayer) return;
         
-        // Only interpolate for objects we don't have input authority over
-        // (i.e., other players' characters, not our own)
-        if (Object.HasInputAuthority) return;
-        
-        // Get the networked position (updated in FixedUpdateNetwork)
+        // Store the current network position before we modify it
         Vector3 networkPosition = transform.position;
         Quaternion networkRotation = transform.rotation;
+        
+        // Check if we received a new network update
+        bool positionChanged = Vector3.Distance(networkPosition, _lastNetworkPosition) > 0.001f;
+        bool rotationChanged = Quaternion.Angle(networkRotation, _lastNetworkRotation) > 0.1f;
+        
+        if (positionChanged || rotationChanged)
+        {
+            _lastNetworkPosition = networkPosition;
+            _lastNetworkRotation = networkRotation;
+        }
         
         if (interpolatePosition)
         {

@@ -1441,7 +1441,7 @@ MonoBehaviour:
   hitLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  startingBombs: 6
+  startingBombs: 50
   ballScale: 1
   ballColor: {r: 0, g: 1, b: 0, a: 1}
   throwEffect: {fileID: 0}

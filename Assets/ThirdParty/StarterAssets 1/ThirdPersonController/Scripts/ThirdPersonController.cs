@@ -311,13 +311,21 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f) * inputDirection;
             }
 
-            // Only server/host applies CharacterController.Move()
-            // Clients receive position updates from NetworkTransform
-            // NetworkTransformInterpolation handles smooth rendering on clients
-            if (Object.HasStateAuthority)
+            // Server is authoritative, but local client predicts movement for smooth feel
+            // Server will correct position via NetworkTransform if prediction drifts
+            // Remote players only receive position from NetworkTransform (no local movement)
+            if (Object.HasStateAuthority || Object.HasInputAuthority)
             {
                 Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
                 Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
+                
+                // Debug: Log movement details every 60 frames when moving
+                if (input.move.sqrMagnitude > 0.01f && Time.frameCount % 60 == 0)
+                {
+                    string authority = Object.HasStateAuthority ? "SERVER" : "CLIENT";
+                    Debug.Log($"[Move] {authority} - Speed: {_speed:F2}, DeltaTime: {Runner.DeltaTime:F4}, Position: {transform.position}");
+                }
+                
                 _controller.Move(horizontalMovement + verticalMovement);
             }
         }

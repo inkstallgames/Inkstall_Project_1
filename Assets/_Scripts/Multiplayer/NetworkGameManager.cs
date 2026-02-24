@@ -527,6 +527,14 @@ public class NetworkGameManager : NetworkBehaviour
                 playerData.UpdateVisuals();
                 Debug.Log($"[NetworkGameManager] Successfully respawned player {playerName} with full health");
             }
+            
+            // Reset bombs to full capacity
+            var bombBehaviour = playerObject.GetComponent<NetworkBombBehaviour>();
+            if (bombBehaviour != null)
+            {
+                bombBehaviour.CurrentBombs = bombBehaviour.MaxBombs;
+                Debug.Log($"[NetworkGameManager] Reset bombs to {bombBehaviour.MaxBombs} for player {playerName}");
+            }
         }
         else
         {

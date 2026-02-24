@@ -17,7 +17,7 @@ public class NetworkBombBehaviour : NetworkBehaviour
     [SerializeField] private LayerMask hitLayers = -1;           // Layers the aiming ray can hit
 
     [Header("Ammo")]
-    [SerializeField] private int startingBombs = 6;             // Bombs each player starts with
+    [SerializeField] private int startingBombs = 50;            // Bombs each player starts with
 
     [Header("Visibility")]
     [SerializeField] private float ballScale = 1.0f;

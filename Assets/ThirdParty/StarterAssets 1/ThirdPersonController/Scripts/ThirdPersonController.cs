@@ -474,7 +474,15 @@ namespace StarterAssets
             {
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
                 _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _latestInput.look.y * deltaTimeMultiplier;
+                
+                // Invert Y-axis for client players (non-host)
+                // Host is always Player 1, clients are Player 2+
+                float verticalLook = _latestInput.look.y;
+                if (Object.InputAuthority.PlayerId > 1)
+                {
+                    verticalLook *= -1;
+                }
+                _cinemachineTargetPitch += verticalLook * deltaTimeMultiplier;
             }
 
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);

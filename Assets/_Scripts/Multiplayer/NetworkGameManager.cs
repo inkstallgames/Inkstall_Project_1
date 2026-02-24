@@ -494,5 +494,45 @@ public class NetworkGameManager : NetworkBehaviour
         return selectedSpawn.transform;
     }
 
+    public void RespawnPlayer(PlayerRef playerRef, int teamId, string playerName)
+    {
+        if (!Object.HasStateAuthority)
+        {
+            Debug.LogError("[NetworkGameManager] Only the server can respawn players!");
+            return;
+        }
+
+        if (playerSpawner == null)
+        {
+            Debug.LogError("[NetworkGameManager] PlayerSpawner is null, cannot respawn player!");
+            RefreshPlayerSpawner();
+            if (playerSpawner == null) return;
+        }
+
+        Debug.Log($"[NetworkGameManager] Respawning player {playerRef.PlayerId} with team {teamId} and name {playerName}");
+
+        // Spawn the player using the spawner
+        playerSpawner.SpawnPlayer(playerRef);
+
+        // Set the player's data after spawning
+        var playerObject = Runner.GetPlayerObject(playerRef);
+        if (playerObject != null)
+        {
+            var playerData = playerObject.GetComponent<PlayerNetworkData>();
+            if (playerData != null)
+            {
+                playerData.TeamId = teamId;
+                playerData.PlayerName = playerName;
+                playerData.Health = 100;
+                playerData.UpdateVisuals();
+                Debug.Log($"[NetworkGameManager] Successfully respawned player {playerName} with full health");
+            }
+        }
+        else
+        {
+            Debug.LogError($"[NetworkGameManager] Failed to get player object after spawning for player {playerRef.PlayerId}");
+        }
+    }
+
 }
 

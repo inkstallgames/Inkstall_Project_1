@@ -6,11 +6,8 @@ public class NetworkPlayerMovement : NetworkBehaviour
     [Header("Movement")]
     public float moveSpeed = 5f;
     public float rotationSpeed = 10f;
-    public float maxHealth = 100f;
     
-    [Networked] public float CurrentHealth { get; set; }
     [Networked] public Vector3 AimDirection { get; set; }
-    [Networked] public bool IsDead { get; set; }
     
     private CharacterController characterController;
     private PlayerCameraController cameraController;
@@ -18,11 +15,14 @@ public class NetworkPlayerMovement : NetworkBehaviour
 
     public override void Spawned()
     {
+        // Always get camera controller reference for input authority
         if (Object.HasInputAuthority)
         {
             cameraController = GetComponent<PlayerCameraController>();
-            CurrentHealth = maxHealth;
-            IsDead = false;
+            if (cameraController == null)
+            {
+                Debug.LogWarning("[NetworkPlayerMovement] PlayerCameraController not found on spawned player!");
+            }
         }
         
         characterController = GetComponent<CharacterController>();
@@ -34,7 +34,7 @@ public class NetworkPlayerMovement : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (GetInput<PlayerInputData>(out var input) && !IsDead)
+        if (GetInput<PlayerInputData>(out var input))
         {
             // Movement - move relative to where player is looking
             if (input.movement.sqrMagnitude > 0.01f)
@@ -67,82 +67,24 @@ public class NetworkPlayerMovement : NetworkBehaviour
         }
     }
     
-    public void TakeDamage(float damage)
-    {
-        if (IsDead) return;
-        
-        CurrentHealth -= damage;
-        
-        if (CurrentHealth <= 0)
-        {
-            Die();
-        }
-    }
-    
     private void Shoot()
     {
         // Simple raycast shooting
         if (Runner.IsServer)
         {
             RaycastHit hit;
-            Vector3 shootDirection = cameraController.GetCameraForward();
+            Vector3 shootDirection = cameraController != null ? cameraController.GetCameraForward() : transform.forward;
             
             if (Physics.Raycast(transform.position + Vector3.up, shootDirection, out hit, 100f))
             {
                 Debug.Log($"Hit: {hit.collider.name}");
                 
                 // Check if we hit another player
-                var hitPlayer = hit.collider.GetComponent<NetworkPlayerMovement>();
-                if (hitPlayer != null && hitPlayer != this)
+                var hitPlayerData = hit.collider.GetComponent<PlayerNetworkData>();
+                if (hitPlayerData != null && hitPlayerData.Object.InputAuthority != Object.InputAuthority)
                 {
-                    hitPlayer.TakeDamage(25f); // 25 damage per shot
-                    
-                    // Notify GameManager of kill
-                    if (hitPlayer.CurrentHealth <= 0)
-                    {
-                        var gameManager = FindObjectOfType<NetworkGameManager>();
-                        if (gameManager != null)
-                        {
-                            gameManager.OnPlayerKilled(hitPlayer.Object.InputAuthority, Object.InputAuthority);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    private void Die()
-    {
-        IsDead = true;
-        if (characterController != null)
-        {
-            characterController.Move(Vector3.zero);
-        }
-        
-        // Start respawn timer
-        StartCoroutine(RespawnAfterDelay(5f));
-    }
-    
-    private System.Collections.IEnumerator RespawnAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        
-        if (Runner.IsServer)
-        {
-            // Respawn player
-            IsDead = false;
-            CurrentHealth = maxHealth;
-            
-            // Move to spawn point
-            var gameManager = FindObjectOfType<NetworkGameManager>();
-            if (gameManager != null)
-            {
-                var spawnPoint = gameManager.GetSpawnPoint(0); // Team 0 for now
-                if (spawnPoint != null)
-                {
-                    characterController.enabled = false;
-                    transform.position = spawnPoint.position;
-                    characterController.enabled = true;
+                    // Use the proper damage system via PlayerNetworkData
+                    hitPlayerData.RPC_TakeDamage(25, Object.InputAuthority);
                 }
             }
         }

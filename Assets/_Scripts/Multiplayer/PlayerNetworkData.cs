@@ -242,17 +242,13 @@ public class PlayerNetworkData : NetworkBehaviour
 
     {
 
-        // Disable player control and hide the player
+        // Store player info before destroying
 
-        var controller = GetComponent<NetworkPlayerMovement>();
+        PlayerRef playerRef = Object.InputAuthority;
 
-        if (controller != null) controller.enabled = false;
+        int teamId = TeamId;
 
-        
-
-        var renderers = GetComponentsInChildren<Renderer>();
-
-        foreach (var r in renderers) r.enabled = false;
+        string playerName = PlayerName;
 
         
 
@@ -262,35 +258,29 @@ public class PlayerNetworkData : NetworkBehaviour
 
         
 
-        // Respawn the player
+        // Destroy the current player object
 
-        if (NetworkGameManager.Instance != null && Runner != null)
+        if (Runner != null && Object != null)
 
         {
 
-            // Reset health
+            Debug.Log($"[PlayerNetworkData] Despawning player {playerName} for respawn");
 
-            Health = 100;
-
-            RPC_UpdateHealth(Health);
+            Runner.Despawn(Object);
 
             
 
-            // Find a spawn point based on team
+            // Request respawn from NetworkGameManager
 
-            var spawnPoint = NetworkGameManager.Instance.GetSpawnPoint(TeamId);
+            if (NetworkGameManager.Instance != null)
 
-            transform.position = spawnPoint.position;
+            {
 
-            transform.rotation = spawnPoint.rotation;
+                Debug.Log($"[PlayerNetworkData] Requesting respawn for player {playerRef.PlayerId}");
 
-            
+                NetworkGameManager.Instance.RespawnPlayer(playerRef, teamId, playerName);
 
-            // Re-enable control and visibility
-
-            if (controller != null) controller.enabled = true;
-
-            foreach (var r in renderers) r.enabled = true;
+            }
 
         }
 

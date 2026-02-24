@@ -128,6 +128,14 @@ public class PlayerCameraController : NetworkBehaviour
             // Clean up camera when player despawns
             virtualCamera.Follow = null;
             virtualCamera.LookAt = null;
+            virtualCamera.Priority = 0; // Lower priority so new player camera takes over
+            
+            // Clean up camera target
+            if (cameraTarget != null)
+            {
+                Destroy(cameraTarget);
+                cameraTarget = null;
+            }
         }
     }
     

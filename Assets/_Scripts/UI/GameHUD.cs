@@ -39,16 +39,11 @@ public class GameHUD : MonoBehaviour
         
         if (playerObject != null)
         {
-            var movement = playerObject.GetComponent<NetworkPlayerMovement>();
             var networkData = playerObject.GetComponent<PlayerNetworkData>();
-            
-            if (movement != null)
-            {
-                healthText.text = $"Health: {movement.CurrentHealth:F0}";
-            }
             
             if (networkData != null)
             {
+                healthText.text = $"Health: {networkData.Health}";
                 killsText.text = $"Kills: {networkData.Kills}";
                 deathsText.text = $"Deaths: {networkData.Deaths}";
             }

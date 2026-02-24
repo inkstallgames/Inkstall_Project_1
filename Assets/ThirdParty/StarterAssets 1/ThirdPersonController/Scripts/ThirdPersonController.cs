@@ -116,9 +116,6 @@ namespace StarterAssets
         [Networked] public float NetworkedMotionSpeed { get; set; }
         [Networked] public NetworkBool NetworkedGrounded { get; set; }
         [Networked] public float NetworkedVerticalVelocity { get; set; }
-        
-        // Networked position for client-side prediction reconciliation
-        [Networked] public Vector3 NetworkedPosition { get; set; }
 
         private bool IsCurrentDeviceMouse
         {
@@ -229,23 +226,6 @@ namespace StarterAssets
                 GroundedCheck();
                 Move(data);
 
-                // Server stores authoritative position
-                if (Object.HasStateAuthority)
-                {
-                    NetworkedPosition = transform.position;
-                }
-                
-                // Client reconciles with server position if drift is too large
-                if (Object.HasInputAuthority && !Object.HasStateAuthority)
-                {
-                    float drift = Vector3.Distance(transform.position, NetworkedPosition);
-                    if (drift > 0.5f) // Reconciliation threshold
-                    {
-                        transform.position = NetworkedPosition;
-                        Debug.LogWarning($"[Reconciliation] Client position corrected. Drift: {drift:F2}");
-                    }
-                }
-
                 // Sync animation state to all clients via networked properties
                 NetworkedAnimationBlend = _animationBlend;
                 NetworkedMotionSpeed = data.move.magnitude;
@@ -331,21 +311,12 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f) * inputDirection;
             }
 
-            // Server is authoritative, but local client predicts movement for smooth feel
-            // Server will correct position via NetworkTransform if prediction drifts
-            // Remote players only receive position from NetworkTransform (no local movement)
-            if (Object.HasStateAuthority || Object.HasInputAuthority)
+            // Only server moves the CharacterController (authoritative)
+            // Clients receive position updates via NetworkTransform and interpolate visually
+            if (Object.HasStateAuthority)
             {
                 Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
                 Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
-                
-                // Debug: Log movement details every 60 frames when moving
-                if (input.move.sqrMagnitude > 0.01f && Time.frameCount % 60 == 0)
-                {
-                    string authority = Object.HasStateAuthority ? "SERVER" : "CLIENT";
-                    Debug.Log($"[Move] {authority} - Speed: {_speed:F2}, DeltaTime: {Runner.DeltaTime:F4}, Position: {transform.position}");
-                }
-                
                 _controller.Move(horizontalMovement + verticalMovement);
             }
         }

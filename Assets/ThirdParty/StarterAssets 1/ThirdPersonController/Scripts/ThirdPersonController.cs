@@ -116,6 +116,9 @@ namespace StarterAssets
         [Networked] public float NetworkedMotionSpeed { get; set; }
         [Networked] public NetworkBool NetworkedGrounded { get; set; }
         [Networked] public float NetworkedVerticalVelocity { get; set; }
+        
+        // Networked position for client-side prediction reconciliation
+        [Networked] public Vector3 NetworkedPosition { get; set; }
 
         private bool IsCurrentDeviceMouse
         {
@@ -225,6 +228,23 @@ namespace StarterAssets
                 JumpAndGravity(data);
                 GroundedCheck();
                 Move(data);
+
+                // Server stores authoritative position
+                if (Object.HasStateAuthority)
+                {
+                    NetworkedPosition = transform.position;
+                }
+                
+                // Client reconciles with server position if drift is too large
+                if (Object.HasInputAuthority && !Object.HasStateAuthority)
+                {
+                    float drift = Vector3.Distance(transform.position, NetworkedPosition);
+                    if (drift > 0.5f) // Reconciliation threshold
+                    {
+                        transform.position = NetworkedPosition;
+                        Debug.LogWarning($"[Reconciliation] Client position corrected. Drift: {drift:F2}");
+                    }
+                }
 
                 // Sync animation state to all clients via networked properties
                 NetworkedAnimationBlend = _animationBlend;

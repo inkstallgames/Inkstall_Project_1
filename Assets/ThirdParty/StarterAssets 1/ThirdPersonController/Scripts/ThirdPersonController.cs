@@ -473,14 +473,8 @@ namespace StarterAssets
             if (_latestInput.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-                float oldYaw = _cinemachineTargetYaw;
                 _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
-                float verticalLook = _latestInput.look.y;
-                if (!Object.HasStateAuthority)
-                {
-                    verticalLook *= -1;
-                }
-                _cinemachineTargetPitch += verticalLook * deltaTimeMultiplier;
+                _cinemachineTargetPitch += _latestInput.look.y * deltaTimeMultiplier;
             }
 
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);

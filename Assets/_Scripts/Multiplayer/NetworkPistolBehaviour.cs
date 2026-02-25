@@ -121,6 +121,8 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         CurrentAmmo--;
         FireCooldownTimer = TickTimer.CreateFromSeconds(Runner, fireRate);
+        
+        Debug.Log($"[NetworkPistolBehaviour] SHOT FIRED! Player {Object.InputAuthority.PlayerId} | Ammo: {CurrentAmmo}/{maxAmmo} | Direction: {direction}");
 
         Vector3 shootOrigin = firePoint != null ? firePoint.position : origin;
         
@@ -131,10 +133,16 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             var playerData = hit.collider.GetComponentInParent<PlayerNetworkData>();
             if (playerData != null)
             {
+                Debug.Log($"[NetworkPistolBehaviour] *** RAYCAST HIT PLAYER *** Target: {playerData.PlayerName} (ID:{playerData.Object.InputAuthority.PlayerId}) | Shooter: Player {Object.InputAuthority.PlayerId}");
+                
                 if (playerData.Object.InputAuthority != Object.InputAuthority)
                 {
                     playerData.RPC_TakeDamage(damage, Object.InputAuthority);
                     Debug.Log($"[NetworkPistolBehaviour] Dealt {damage} damage to {playerData.PlayerName}");
+                }
+                else
+                {
+                    Debug.Log($"[NetworkPistolBehaviour] Cannot shoot yourself! Ignoring hit.");
                 }
             }
 

@@ -21,6 +21,12 @@ namespace StarterAssets
         // Bomb throw
         public bool isThrowingBomb;
         public Vector3 throwDirection;
+        
+        // Pistol shooting
+        public bool isShooting;
+        public bool isReloading;
+        public Vector3 aimDirection;
+        public Vector3 aimOrigin;
     }
 
     [RequireComponent(typeof(CharacterController))]
@@ -388,15 +394,15 @@ namespace StarterAssets
         private void OnLand(AnimationEvent animationEvent)
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
-            {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-            }
         }
 
         #region INetworkRunnerCallbacks
 
         // Cached reference for bomb input
         private NetworkBombBehaviour _cachedBombBehaviour;
+        // Cached reference for pistol input
+        private NetworkPistolBehaviour _cachedPistolBehaviour;
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
@@ -430,6 +436,16 @@ namespace StarterAssets
             if (_cachedBombBehaviour != null)
             {
                 _cachedBombBehaviour.CollectNetworkInput(ref data);
+            }
+
+            // Collect pistol shooting input
+            if (_cachedPistolBehaviour == null)
+            {
+                _cachedPistolBehaviour = GetComponent<NetworkPistolBehaviour>();
+            }
+            if (_cachedPistolBehaviour != null)
+            {
+                _cachedPistolBehaviour.CollectNetworkInput(ref data);
             }
 
             input.Set(data);

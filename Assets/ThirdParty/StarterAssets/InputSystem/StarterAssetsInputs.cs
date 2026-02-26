@@ -129,8 +129,6 @@ namespace StarterAssets
 							touch.startPosition.ReadValue().x > Screen.width * 0.5f)
 						{
 							newLook = touch.delta.ReadValue();
-							// Invert Y-axis for touch to match mouse input polarity
-							newLook.y *= -1;
 							break;
 						}
 					}

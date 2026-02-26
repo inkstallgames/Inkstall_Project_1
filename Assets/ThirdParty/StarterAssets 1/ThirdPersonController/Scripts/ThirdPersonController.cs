@@ -490,7 +490,25 @@ namespace StarterAssets
             {
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
                 _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += _latestInput.look.y * deltaTimeMultiplier;
+                
+                // Y-axis inversion logic:
+                // - Client players (PlayerId > 1): Always inverted (works on all platforms)
+                // - Host on Android: Needs inversion due to touch input polarity difference
+                float verticalLook = _latestInput.look.y;
+                bool shouldInvert = Object.InputAuthority.PlayerId > 1; // Clients always inverted
+                
+                #if UNITY_ANDROID && !UNITY_EDITOR
+                if (Object.InputAuthority.PlayerId == 1) // Host on Android also needs inversion
+                {
+                    shouldInvert = true;
+                }
+                #endif
+                
+                if (shouldInvert)
+                {
+                    verticalLook *= -1;
+                }
+                _cinemachineTargetPitch += verticalLook * deltaTimeMultiplier;
             }
 
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);

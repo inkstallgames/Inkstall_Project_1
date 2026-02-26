@@ -38514,7 +38514,8 @@ PrefabInstance:
       value: Rust
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 600229841604976491, guid: 95300bd7f08559e48ae26703c144e380, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -684199348287927565, guid: 95300bd7f08559e48ae26703c144e380,

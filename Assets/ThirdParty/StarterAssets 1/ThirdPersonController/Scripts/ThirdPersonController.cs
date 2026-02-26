@@ -491,11 +491,13 @@ namespace StarterAssets
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
                 _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
                 
-                // Invert Y-axis on Android platform only
+                // Invert Y-axis for client players (non-host)
+                // Host is always Player 1, clients are Player 2+
                 float verticalLook = _latestInput.look.y;
-                #if UNITY_ANDROID && !UNITY_EDITOR
-                verticalLook *= -1;
-                #endif
+                if (Object.InputAuthority.PlayerId > 1)
+                {
+                    verticalLook *= -1;
+                }
                 _cinemachineTargetPitch += verticalLook * deltaTimeMultiplier;
             }
 

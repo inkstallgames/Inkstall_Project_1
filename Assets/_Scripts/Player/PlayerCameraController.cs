@@ -7,22 +7,29 @@ public class PlayerCameraController : NetworkBehaviour
     [Header("Camera Settings")]
     [SerializeField] private bool autoFindCamera = true;
     [SerializeField] private string cameraTargetName = "CameraTarget";
+    [SerializeField] private float cameraSmoothing = 10f;
     
     private CinemachineVirtualCamera virtualCamera;
     private GameObject cameraTarget;
     private bool isLocalPlayer;
+    private Vector3 smoothTargetPosition;
+    private Quaternion smoothTargetRotation;
     
     public override void Spawned()
     {
         // Check if this is the local player
         isLocalPlayer = Object.HasInputAuthority;
         
-
-        
         if (isLocalPlayer)
         {
             // This is the local player, set up the camera
             SetupLocalPlayerCamera();
+            
+            // Initialize smooth camera position
+            if (cameraTarget != null)
+            {
+                smoothTargetPosition = cameraTarget.transform.position;
+            }
         }
         else
         {
@@ -171,5 +178,18 @@ public class PlayerCameraController : NetworkBehaviour
             return right.normalized;
         }
         return Vector3.right;
+    }
+    
+    private void LateUpdate()
+    {
+        // Smooth camera following for local player
+        if (isLocalPlayer && cameraTarget != null)
+        {
+            // Use local Time.deltaTime for smooth client-side camera movement
+            Vector3 targetPosition = transform.position + Vector3.up * 1.5f;
+            smoothTargetPosition = Vector3.Lerp(smoothTargetPosition, targetPosition, 
+                cameraSmoothing * Time.deltaTime);
+            cameraTarget.transform.position = smoothTargetPosition;
+        }
     }
 }

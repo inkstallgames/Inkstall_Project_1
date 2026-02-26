@@ -8,10 +8,18 @@ public class NetworkPlayerMovement : NetworkBehaviour
     public float rotationSpeed = 10f;
     
     [Networked] public Vector3 AimDirection { get; set; }
+    [Networked] public Vector3 NetworkedPosition { get; set; }
+    [Networked] public Quaternion NetworkedRotation { get; set; }
     
     private CharacterController characterController;
     private PlayerCameraController cameraController;
     private Vector3 movement;
+    
+    // Client-side smoothing
+    private Vector3 smoothPosition;
+    private Quaternion smoothRotation;
+    private float positionLerpSpeed = 15f;
+    private float rotationLerpSpeed = 20f;
 
     public override void Spawned()
     {
@@ -30,6 +38,12 @@ public class NetworkPlayerMovement : NetworkBehaviour
         {
             characterController = gameObject.AddComponent<CharacterController>();
         }
+        
+        // Initialize networked properties
+        NetworkedPosition = transform.position;
+        NetworkedRotation = transform.rotation;
+        smoothPosition = transform.position;
+        smoothRotation = transform.rotation;
     }
 
     public override void FixedUpdateNetwork()
@@ -65,6 +79,13 @@ public class NetworkPlayerMovement : NetworkBehaviour
                 }
             }
         }
+        
+        // Update networked properties for all players
+        if (Runner.IsServer)
+        {
+            NetworkedPosition = transform.position;
+            NetworkedRotation = transform.rotation;
+        }
     }
     
     private void Shoot()
@@ -78,15 +99,24 @@ public class NetworkPlayerMovement : NetworkBehaviour
             if (Physics.Raycast(transform.position + Vector3.up, shootDirection, out hit, 100f))
             {
                 Debug.Log($"Hit: {hit.collider.name}");
-                
-                // Check if we hit another player
-                var hitPlayerData = hit.collider.GetComponent<PlayerNetworkData>();
-                if (hitPlayerData != null && hitPlayerData.Object.InputAuthority != Object.InputAuthority)
-                {
-                    // Use the proper damage system via PlayerNetworkData
-                    hitPlayerData.RPC_TakeDamage(25, Object.InputAuthority);
-                }
             }
+        }
+    }
+    
+    public override void Render()
+    {
+        // Client-side smoothing for other players
+        if (!Object.HasInputAuthority)
+        {
+            // Smooth position interpolation
+            smoothPosition = Vector3.Lerp(smoothPosition, NetworkedPosition, 
+                positionLerpSpeed * Time.deltaTime);
+            transform.position = smoothPosition;
+            
+            // Smooth rotation interpolation
+            smoothRotation = Quaternion.Slerp(smoothRotation, NetworkedRotation, 
+                rotationLerpSpeed * Time.deltaTime);
+            transform.rotation = smoothRotation;
         }
     }
 }

@@ -39,7 +39,7 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Networked, Capacity(8)]
     public NetworkDictionary<PlayerRef, bool> PlayersReadyToLoad { get; }
 
-    private readonly List<string> mapOptions = new List<string> { "MallMap" };
+    private readonly List<string> mapOptions = new List<string> { "Rust" };
     private readonly List<string> timeOptions = new List<string> { "3:00", "5:00", "10:00" };
     private readonly List<Color> playerColors = new List<Color>
     {

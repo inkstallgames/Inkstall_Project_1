@@ -304,8 +304,8 @@ namespace StarterAssets
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             // Character always faces camera direction (rotates when camera rotates, not when moving)
-            float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _cinemachineTargetYaw, ref _rotationVelocity, RotationSmoothTime);
-            transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
+            // Instant rotation - no smoothing for zero delay
+            transform.rotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
 
             // Calculate movement direction relative to camera facing
             Vector3 inputDirection = new Vector3(input.move.x, 0.0f, input.move.y).normalized;

@@ -2,14 +2,13 @@ using UnityEngine;
 using Fusion;
 
 /// <summary>
-/// Manages frame rate settings for multiplayer to use device native FPS
-/// for optimal performance on both host and client devices.
+/// Manages frame rate settings for multiplayer to ensure consistent 60 FPS
+/// for both host and client players locally.
 /// </summary>
 public class NetworkFPSManager : MonoBehaviour
 {
     [Header("Frame Rate Settings")]
-    [SerializeField] private bool useDeviceNativeFPS = true;
-    [SerializeField] private int customFrameRate = 60; // Fallback if not using native
+    [SerializeField] private int targetFrameRate = 60;
     [SerializeField] private bool disableVSync = true;
     
     [Header("Debug")]
@@ -43,26 +42,15 @@ public class NetworkFPSManager : MonoBehaviour
             Debug.Log($"[NetworkFPSManager] VSync disabled");
         }
         
-        // Set frame rate based on settings
-        if (useDeviceNativeFPS)
-        {
-            // Use device native refresh rate (uncapped)
-            Application.targetFrameRate = -1; // -1 = device native
-            Debug.Log($"[NetworkFPSManager] Using device native FPS (uncapped)");
-        }
-        else
-        {
-            // Use custom frame rate
-            Application.targetFrameRate = customFrameRate;
-            Debug.Log($"[NetworkFPSManager] Target frame rate set to {customFrameRate} FPS");
-        }
+        // Set target frame rate
+        Application.targetFrameRate = targetFrameRate;
+        Debug.Log($"[NetworkFPSManager] Target frame rate set to {targetFrameRate} FPS");
         
         // Ensure the game runs in background (important for multiplayer)
         Application.runInBackground = true;
         
-        // Log current quality settings and device refresh rate
+        // Log current quality settings
         Debug.Log($"[NetworkFPSManager] Current Quality Level: {QualitySettings.names[QualitySettings.GetQualityLevel()]}");
-        Debug.Log($"[NetworkFPSManager] Device Refresh Rate: {Screen.currentResolution.refreshRate} Hz");
     }
     
     private void InitializeGUIStyle()
@@ -81,13 +69,6 @@ public class NetworkFPSManager : MonoBehaviour
             showFPS = !showFPS;
         }
         
-        // Toggle between native and custom FPS (Ctrl + F3)
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.F3))
-        {
-            useDeviceNativeFPS = !useDeviceNativeFPS;
-            InitializeFrameRate();
-        }
-        
         // Calculate FPS
         if (showFPS)
         {
@@ -100,24 +81,17 @@ public class NetworkFPSManager : MonoBehaviour
         if (!showFPS || style == null) return;
         
         float fps = 1.0f / deltaTime;
-        string fpsMode = useDeviceNativeFPS ? "Native" : $"{customFrameRate}FPS";
-        string text = $"FPS: {Mathf.Ceil(fps)} ({fpsMode})";
+        string text = $"FPS: {Mathf.Ceil(fps)}";
         
-        // Change color based on performance (adjusted for higher FPS)
-        if (fps >= 120f)
-            style.normal.textColor = Color.cyan; // Excellent performance
-        else if (fps >= 60f)
-            style.normal.textColor = Color.green; // Good performance
-        else if (fps >= 30f)
-            style.normal.textColor = Color.yellow; // Acceptable performance
+        // Change color based on performance
+        if (fps >= 55f)
+            style.normal.textColor = Color.green;
+        else if (fps >= 40f)
+            style.normal.textColor = Color.yellow;
         else
-            style.normal.textColor = Color.red; // Poor performance
+            style.normal.textColor = Color.red;
         
-        GUI.Label(new Rect(10, 10, 250, 50), text, style);
-        
-        // Show device refresh rate info
-        string refreshInfo = $"Device: {Screen.currentResolution.refreshRate}Hz";
-        GUI.Label(new Rect(10, 40, 200, 30), refreshInfo, style);
+        GUI.Label(new Rect(10, 10, 200, 50), text, style);
     }
     
     private void OnValidate()

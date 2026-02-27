@@ -4,6 +4,8 @@ public class GunLagFix : MonoBehaviour
 {
     private Transform gunTransform;
     private Transform cameraTransform;
+    private Vector3 localOffset;
+    private Quaternion localRotationOffset;
 
     void Start()
     {
@@ -14,6 +16,10 @@ public class GunLagFix : MonoBehaviour
         if (Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
+            
+            // Store the initial local offset and rotation relative to camera
+            localOffset = cameraTransform.InverseTransformPoint(gunTransform.position);
+            localRotationOffset = Quaternion.Inverse(cameraTransform.rotation) * gunTransform.rotation;
         }
         else
         {
@@ -25,9 +31,9 @@ public class GunLagFix : MonoBehaviour
     {
         if (gunTransform != null && cameraTransform != null)
         {
-            // Sync the gun's position and rotation with the camera
-            gunTransform.position = cameraTransform.position;
-            gunTransform.rotation = cameraTransform.rotation;
+            // Apply the gun's position and rotation relative to camera, maintaining the offset
+            gunTransform.position = cameraTransform.TransformPoint(localOffset);
+            gunTransform.rotation = cameraTransform.rotation * localRotationOffset;
         }
     }
 }

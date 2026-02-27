@@ -3192,7 +3192,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 672564825ba9568469a0ef1bb62428ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interpolationSpeed: 20
+  interpolationSpeed: 6
 --- !u!4 &5235708810378517320 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,

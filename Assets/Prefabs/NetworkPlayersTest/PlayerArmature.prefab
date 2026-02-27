@@ -1371,7 +1371,6 @@ MonoBehaviour:
   - {fileID: 2896081923170901391}
   - {fileID: 3537175789903063825}
   - {fileID: 2792046304724239895}
-  - {fileID: 3230800615601634288}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
 MonoBehaviour:
@@ -2136,6 +2135,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9192771698616047728}
+  - component: {fileID: 1121685636508111327}
   m_Layer: 0
   m_Name: Gunpoint
   m_TagString: Untagged
@@ -2160,6 +2160,21 @@ Transform:
   - {fileID: 7565443263615335434}
   m_Father: {fileID: 1058427065309672220}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1121685636508111327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5890609981780738057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955688b3a6e7f08458642c443229029c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTarget: {fileID: 0}
+  positionOffset: {x: 0.3, y: -0.2, z: 0.5}
+  followCameraRotation: 1
 --- !u!1 &6097077996864217931
 GameObject:
   m_ObjectHideFlags: 0
@@ -3148,11 +3163,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7173815278906741782, guid: e7461e3cb4dfd384ea54841be167ca84,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3230800615601634288}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7461e3cb4dfd384ea54841be167ca84, type: 3}
 --- !u!4 &208537310591186137 stripped
 Transform:
@@ -3160,22 +3171,3 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 7647549515423169141}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &697793204124364387 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7173815278906741782, guid: e7461e3cb4dfd384ea54841be167ca84,
-    type: 3}
-  m_PrefabInstance: {fileID: 7647549515423169141}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &3230800615601634288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 697793204124364387}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 672564825ba9568469a0ef1bb62428ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interpolationSpeed: 6

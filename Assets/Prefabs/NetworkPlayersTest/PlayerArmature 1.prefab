@@ -1340,7 +1340,6 @@ MonoBehaviour:
   - {fileID: 6394523291383630547}
   - {fileID: 2196458093287243295}
   - {fileID: 2502548338122199917}
-  - {fileID: 8541415153574074154}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
 MonoBehaviour:
@@ -2201,6 +2200,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7440985871065440983}
+  - component: {fileID: 5932315387000732274}
   m_Layer: 0
   m_Name: Gunpoint
   m_TagString: Untagged
@@ -2225,6 +2225,21 @@ Transform:
   - {fileID: 5235708810378517320}
   m_Father: {fileID: 1058427065309672220}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5932315387000732274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6336239723326270418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955688b3a6e7f08458642c443229029c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTarget: {fileID: 0}
+  positionOffset: {x: 0.3, y: -0.2, z: 0.5}
+  followCameraRotation: 1
 --- !u!1 &6342278118773223700
 GameObject:
   m_ObjectHideFlags: 0
@@ -3168,31 +3183,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d6e21688f526218458359db205e49cbe,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8541415153574074154}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6e21688f526218458359db205e49cbe, type: 3}
---- !u!1 &4891799528477213170 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d6e21688f526218458359db205e49cbe,
-    type: 3}
-  m_PrefabInstance: {fileID: 5702190520823184547}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8541415153574074154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4891799528477213170}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 672564825ba9568469a0ef1bb62428ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interpolationSpeed: 6
 --- !u!4 &5235708810378517320 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,

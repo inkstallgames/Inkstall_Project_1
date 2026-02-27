@@ -53,11 +53,16 @@ public class PistolInputHandler : MonoBehaviour
             return;
         }
 
-        if (Input.GetKey(shootKey) || Input.GetMouseButton(0))
+#if UNITY_EDITOR || UNITY_STANDALONE
+        // For PC/Editor, allow shooting with a mouse click, but not if clicking on a UI element.
+        // Using GetMouseButtonDown for a single shot per click.
+        if (Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
             pistolBehaviour.RequestShoot();
         }
+#endif
 
+        // Reload input works on all platforms
         if (Input.GetKeyDown(reloadKey))
         {
             pistolBehaviour.RequestReload();

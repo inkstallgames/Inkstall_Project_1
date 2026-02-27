@@ -44,15 +44,24 @@ public class GunCameraSync : MonoBehaviour
 
     private void LateUpdate()
     {
-        // Only apply to local player to avoid affecting remote players
-        if (!isLocalPlayer || cameraTarget == null || !followCameraRotation)
+        if (cameraTarget == null || !followCameraRotation)
         {
             return;
         }
 
-        // Update gun rotation to match camera target's Y rotation
-        // This happens in LateUpdate AFTER camera movement, eliminating jitter
-        Vector3 cameraEuler = cameraTarget.eulerAngles;
-        transform.rotation = Quaternion.Euler(0f, cameraEuler.y, 0f);
+        if (isLocalPlayer)
+        {
+            // Local player: Update gun rotation to match camera target's Y rotation
+            // This happens in LateUpdate AFTER camera movement, eliminating jitter
+            Vector3 cameraEuler = cameraTarget.eulerAngles;
+            transform.rotation = Quaternion.Euler(0f, cameraEuler.y, 0f);
+        }
+        else
+        {
+            // Remote player: Force gun to match camera target rotation directly
+            // This bypasses parent's interpolated rotation to reduce jitter
+            Vector3 cameraEuler = cameraTarget.eulerAngles;
+            transform.rotation = Quaternion.Euler(0f, cameraEuler.y, 0f);
+        }
     }
 }

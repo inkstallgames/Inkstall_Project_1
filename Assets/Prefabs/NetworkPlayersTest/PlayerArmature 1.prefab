@@ -2200,6 +2200,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7440985871065440983}
+  - component: {fileID: 3201809422245522600}
   m_Layer: 0
   m_Name: Gunpoint
   m_TagString: Untagged
@@ -2220,10 +2221,24 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 53562794543202764}
   - {fileID: 5062628232913776304}
+  - {fileID: 8853160876411149462}
   m_Father: {fileID: 1058427065309672220}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3201809422245522600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6336239723326270418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 800c34c2d4a2ffa49923e1b83ceb5209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gunTransform: {fileID: 7440985871065440983}
+  cameraTransform: {fileID: 0}
 --- !u!1 &6342278118773223700
 GameObject:
   m_ObjectHideFlags: 0
@@ -3081,7 +3096,7 @@ Transform:
   - {fileID: 2301088177220424669}
   m_Father: {fileID: 7321056554108090667}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &7528638980332261216
+--- !u!1001 &9031414436172282749
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -3089,69 +3104,89 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7440985871065440983}
     m_Modifications:
-    - target: {fileID: 7173815278906741782, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
-      propertyPath: m_Name
-      value: Pistol_B
+      propertyPath: m_LocalScale.x
+      value: 0.07
       objectReference: {fileID: 0}
-    - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d6e21688f526218458359db205e49cbe,
+        type: 3}
+      propertyPath: m_Name
+      value: Sci-Fi Gun
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e7461e3cb4dfd384ea54841be167ca84, type: 3}
---- !u!4 &53562794543202764 stripped
+  m_SourcePrefab: {fileID: 100100000, guid: d6e21688f526218458359db205e49cbe, type: 3}
+--- !u!4 &8853160876411149462 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 7549530855202475692, guid: e7461e3cb4dfd384ea54841be167ca84,
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,
     type: 3}
-  m_PrefabInstance: {fileID: 7528638980332261216}
+  m_PrefabInstance: {fileID: 9031414436172282749}
   m_PrefabAsset: {fileID: 0}

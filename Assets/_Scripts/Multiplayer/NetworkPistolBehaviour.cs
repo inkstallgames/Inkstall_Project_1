@@ -39,6 +39,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     private bool wantsToShoot;
     private bool wantsToReload;
     private NetworkWeaponEquipSystem equipSystem;
+    private PlayerNetworkData playerData;
 
     public override void Spawned()
     {
@@ -55,6 +56,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         }
 
         equipSystem = GetComponent<NetworkWeaponEquipSystem>();
+        playerData = GetComponent<PlayerNetworkData>();
 
         // Ensure muzzle flash placeholder is disabled on start
         if (muzzleFlashPlaceholder != null)
@@ -124,6 +126,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             return;
         }
 
+        
         if (!FireCooldownTimer.ExpiredOrNotRunning(Runner))
         {
             return;

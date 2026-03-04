@@ -29,7 +29,7 @@ namespace StarterAssets
         public Vector3 aimOrigin;
         
         // Weapon equipping
-        public bool equipPistol;
+        public bool equipPrimary; // Equips pistol for Team A, laser for Team B
         public bool equipBomb;
     }
 
@@ -407,6 +407,8 @@ namespace StarterAssets
         private NetworkBombBehaviour _cachedBombBehaviour;
         // Cached reference for pistol input
         private NetworkPistolBehaviour _cachedPistolBehaviour;
+        // Cached reference for laser input
+        private NetworkLaserBehaviour _cachedLaserBehaviour;
         // Cached reference for weapon equip system
         private NetworkWeaponEquipSystem _cachedEquipSystem;
 
@@ -464,10 +466,19 @@ namespace StarterAssets
                 _cachedPistolBehaviour.CollectNetworkInput(ref data);
             }
 
+            // Collect laser shooting input
+            if (_cachedLaserBehaviour == null)
+            {
+                _cachedLaserBehaviour = GetComponent<NetworkLaserBehaviour>();
+            }
+            if (_cachedLaserBehaviour != null)
+            {
+                _cachedLaserBehaviour.CollectNetworkInput(ref data);
+            }
+
             input.Set(data);
         }
 
-        public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
         public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
         public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
         public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
@@ -475,6 +486,7 @@ namespace StarterAssets
         public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
         public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
         public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
+        public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
         public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
         public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
         public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }

@@ -183,6 +183,19 @@ public class NetworkPlayerSpawner : MonoBehaviour
         if (playerObject != null)
         {
             _runner.SetPlayerObject(player, playerObject);
+            
+            // Set the team data on the spawned player
+            var playerNetworkData = playerObject.GetComponent<PlayerNetworkData>();
+            if (playerNetworkData != null)
+            {
+                playerNetworkData.TeamId = teamId;
+                Debug.Log($"[NetworkPlayerSpawner] Set TeamId {teamId} on PlayerNetworkData for player {player.PlayerId}");
+            }
+            else
+            {
+                Debug.LogError($"[NetworkPlayerSpawner] PlayerNetworkData component not found on spawned player {player.PlayerId}!");
+            }
+            
             Debug.Log($"[NetworkPlayerSpawner] Successfully spawned and registered player {player.PlayerId}. Object ID: {playerObject.Id}");
         }
         else

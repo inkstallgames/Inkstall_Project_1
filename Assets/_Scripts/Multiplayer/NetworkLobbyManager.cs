@@ -435,8 +435,16 @@ public class NetworkLobbyManager : NetworkBehaviour
                             // Update start button state for host
                             if (isHost)
                             {
-                                bool allReady = LobbyPlayers.Count >= minPlayersToStart && 
+                                // Check if testing mode is enabled
+                                var networkStarter = NetworkStarter.Instance;
+                                bool isTestingMode = networkStarter != null && networkStarter.IsHostOnlyTestingEnabled;
+                                
+                                // In testing mode, allow starting with 1 player. Otherwise require minPlayersToStart
+                                int requiredPlayers = isTestingMode ? 1 : minPlayersToStart;
+                                bool allReady = LobbyPlayers.Count >= requiredPlayers && 
                                              LobbyPlayers.All(p => p.Value.IsReady);
+                                
+                                Debug.Log($"[NetworkLobbyManager] Start button check - Testing Mode: {isTestingMode}, Players: {LobbyPlayers.Count}, Required: {requiredPlayers}, All Ready: {allReady}");
                                 uiManager.startGameButton.interactable = allReady;
                             }
                         }

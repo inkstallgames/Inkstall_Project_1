@@ -10,6 +10,16 @@ using System.Linq;
 
 public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 {
+    // ========== TESTING MODE ==========
+    // Set this to TRUE to enable host-only testing (no client needed)
+    // Set this to FALSE to revert to normal multiplayer mode
+    [Header("TESTING MODE - Set to false for normal multiplayer")]
+    [SerializeField] private bool enableHostOnlyTesting = false;
+    // ==================================
+    
+    // Public property to check if testing mode is enabled
+    public bool IsHostOnlyTestingEnabled => enableHostOnlyTesting;
+
     private static NetworkStarter _instance;
     public static NetworkStarter Instance => _instance;
 
@@ -139,12 +149,23 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             // Generate and store the join code
             CurrentJoinCode = GenerateJoinCode();
             UnityEngine.Debug.Log($"[NetworkStarter] Generated join code: {CurrentJoinCode}");
-            UnityEngine.Debug.Log($"[NetworkStarter] Attempting to connect to Photon Cloud...");
+            
+            // TESTING MODE: Host mode works for solo testing in Fusion
+            Fusion.GameMode gameMode = Fusion.GameMode.Host;
+            
+            if (enableHostOnlyTesting)
+            {
+                UnityEngine.Debug.Log($"[NetworkStarter] *** TESTING MODE ENABLED *** Starting as Host (can play solo without client)");
+            }
+            else
+            {
+                UnityEngine.Debug.Log($"[NetworkStarter] Attempting to connect to Photon Cloud...");
+            }
             
             // Basic network settings - using only standard Fusion properties
             var startGameArgs = new StartGameArgs()
             {
-                GameMode = Fusion.GameMode.Host,
+                GameMode = gameMode,
                 SessionName = CurrentJoinCode,
                 PlayerCount = _maxPlayers,
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),

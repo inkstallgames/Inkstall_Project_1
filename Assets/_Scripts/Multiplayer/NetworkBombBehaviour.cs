@@ -40,6 +40,7 @@ public class NetworkBombBehaviour : NetworkBehaviour
     private Camera playerCamera;
     private Vector3 targetPoint;
     private bool wantsToThrow;
+    private NetworkWeaponEquipSystem equipSystem;
 
     // --- Public accessors ---
     public int BombDamage => bombDamage;
@@ -60,6 +61,8 @@ public class NetworkBombBehaviour : NetworkBehaviour
         {
             playerCamera = Camera.main;
         }
+
+        equipSystem = GetComponent<NetworkWeaponEquipSystem>();
     }
 
     // ---------------------------------------------------------------
@@ -158,6 +161,13 @@ public class NetworkBombBehaviour : NetworkBehaviour
         if (!Object.HasStateAuthority)
         {
             Debug.Log("[NetworkBombBehaviour] TryThrow — skipped, not state authority.");
+            return;
+        }
+
+        // Check if bomb is equipped
+        if (equipSystem != null && !equipSystem.IsBombEquipped())
+        {
+            Debug.Log("[NetworkBombBehaviour] TryThrow — skipped, bomb not equipped.");
             return;
         }
 

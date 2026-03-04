@@ -17,6 +17,8 @@ TagManager:
   - BuildingPortal
   - CollectPointsTextTag
   - SpawnPoint
+  - PistolButton
+  - BombButton
   layers:
   - Default
   - TransparentFX

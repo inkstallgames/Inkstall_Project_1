@@ -27,6 +27,10 @@ namespace StarterAssets
         public bool isReloading;
         public Vector3 aimDirection;
         public Vector3 aimOrigin;
+        
+        // Weapon equipping
+        public bool equipPistol;
+        public bool equipBomb;
     }
 
     [RequireComponent(typeof(CharacterController))]
@@ -403,6 +407,8 @@ namespace StarterAssets
         private NetworkBombBehaviour _cachedBombBehaviour;
         // Cached reference for pistol input
         private NetworkPistolBehaviour _cachedPistolBehaviour;
+        // Cached reference for weapon equip system
+        private NetworkWeaponEquipSystem _cachedEquipSystem;
 
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
@@ -426,6 +432,16 @@ namespace StarterAssets
             else
             {
                 Debug.LogError($"[OnInput] _nativeInput is NULL for Player {Object.InputAuthority.PlayerId}");
+            }
+            
+            // Collect weapon equip input
+            if (_cachedEquipSystem == null)
+            {
+                _cachedEquipSystem = GetComponent<NetworkWeaponEquipSystem>();
+            }
+            if (_cachedEquipSystem != null)
+            {
+                _cachedEquipSystem.CollectNetworkInput(ref data);
             }
             
             // Collect bomb throw input

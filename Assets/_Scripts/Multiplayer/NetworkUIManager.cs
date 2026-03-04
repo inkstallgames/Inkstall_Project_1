@@ -32,6 +32,8 @@ public class NetworkUIManager : MonoBehaviour
     private NetworkRunner runner;
     private NetworkObject localPlayerObject;
     private NetworkBombBehaviour localBombBehaviour;
+    private NetworkPistolBehaviour localPistolBehaviour;
+    private NetworkWeaponEquipSystem localEquipSystem;
     private PlayerNetworkData localPlayerData;
 
     private void Awake()
@@ -126,10 +128,14 @@ public class NetworkUIManager : MonoBehaviour
         if (localPlayerObject != null)
         {
             localBombBehaviour = localPlayerObject.GetComponent<NetworkBombBehaviour>();
+            localPistolBehaviour = localPlayerObject.GetComponent<NetworkPistolBehaviour>();
+            localEquipSystem = localPlayerObject.GetComponent<NetworkWeaponEquipSystem>();
             localPlayerData = localPlayerObject.GetComponent<PlayerNetworkData>();
 
             Debug.Log($"[NetworkUIManager] Local player found! Object: {localPlayerObject.name}");
-            Debug.Log($"[NetworkUIManager]   - NetworkBombBehaviour: {(localBombBehaviour != null ? "FOUND" : "MISSING — add it to your player prefab!")}");
+            Debug.Log($"[NetworkUIManager]   - NetworkBombBehaviour: {(localBombBehaviour != null ? "FOUND" : "MISSING")}");
+            Debug.Log($"[NetworkUIManager]   - NetworkPistolBehaviour: {(localPistolBehaviour != null ? "FOUND" : "MISSING")}");
+            Debug.Log($"[NetworkUIManager]   - NetworkWeaponEquipSystem: {(localEquipSystem != null ? "FOUND" : "MISSING")}");
             Debug.Log($"[NetworkUIManager]   - PlayerNetworkData: {(localPlayerData != null ? "FOUND" : "MISSING")}");
         }
     }
@@ -140,19 +146,40 @@ public class NetworkUIManager : MonoBehaviour
 
     /// <summary>
     /// Called when the throw button is pressed.
-    /// Assign this to your UI Button's OnClick in the Inspector,
-    /// or it will be auto-wired if throwButton is assigned.
+    /// Fires the currently equipped weapon (bomb or pistol).
     /// </summary>
     public void OnThrowButtonPressed()
     {
-        if (localBombBehaviour != null)
+        // Check which weapon is equipped
+        if (localEquipSystem != null)
         {
-            localBombBehaviour.RequestThrow();
+            if (localEquipSystem.IsBombEquipped() && localBombBehaviour != null)
+            {
+                Debug.Log("[NetworkUIManager] Throw button pressed - Bomb is equipped, throwing bomb");
+                localBombBehaviour.RequestThrow();
+            }
+            else if (localEquipSystem.IsPistolEquipped() && localPistolBehaviour != null)
+            {
+                Debug.Log("[NetworkUIManager] Throw button pressed - Pistol is equipped, shooting pistol");
+                localPistolBehaviour.RequestShoot();
+            }
+            else
+            {
+                Debug.LogWarning("[NetworkUIManager] Throw button pressed but no weapon equipped or behaviour missing");
+            }
         }
         else
         {
-            Debug.LogWarning("[NetworkUIManager] Cannot throw — local player's NetworkBombBehaviour not found.");
-            TryFindLocalPlayer(); // Try to re-find
+            // Fallback to old behavior if equip system not found
+            if (localBombBehaviour != null)
+            {
+                localBombBehaviour.RequestThrow();
+            }
+            else
+            {
+                Debug.LogWarning("[NetworkUIManager] Cannot throw — local player components not found.");
+                TryFindLocalPlayer(); // Try to re-find
+            }
         }
     }
 

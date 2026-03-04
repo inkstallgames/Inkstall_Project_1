@@ -21,6 +21,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [SerializeField] private float reloadTime = 1.5f;
 
     [Header("Effects")]
+    [SerializeField] private GameObject muzzleFlashPlaceholder;
     [SerializeField] private ParticleSystem muzzleFlash;
     [SerializeField] private GameObject bulletTrailPrefab;
     [SerializeField] private GameObject hitEffectPrefab;
@@ -37,6 +38,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     private Camera playerCamera;
     private bool wantsToShoot;
     private bool wantsToReload;
+    private NetworkWeaponEquipSystem equipSystem;
 
     public override void Spawned()
     {
@@ -50,6 +52,14 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         if (Object.HasInputAuthority)
         {
             playerCamera = Camera.main;
+        }
+
+        equipSystem = GetComponent<NetworkWeaponEquipSystem>();
+
+        // Ensure muzzle flash placeholder is disabled on start
+        if (muzzleFlashPlaceholder != null)
+        {
+            muzzleFlashPlaceholder.SetActive(false);
         }
     }
 
@@ -105,6 +115,12 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     {
         if (!Object.HasStateAuthority)
         {
+            return;
+        }
+
+        if (equipSystem != null && !equipSystem.IsPistolEquipped())
+        {
+            Debug.Log("[NetworkPistolBehaviour] TryShoot — skipped, pistol not equipped.");
             return;
         }
 
@@ -205,6 +221,19 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnShot(Vector3 origin, Vector3 endPoint, bool didHit, Vector3 hitPoint, Vector3 hitNormal)
     {
+        Debug.Log($"[NetworkPistolBehaviour] RPC_OnShot called! MuzzleFlashPlaceholder is {(muzzleFlashPlaceholder != null ? "ASSIGNED" : "NULL")}");
+        
+        // Show muzzle flash placeholder
+        if (muzzleFlashPlaceholder != null)
+        {
+            Debug.Log($"[NetworkPistolBehaviour] Starting muzzle flash coroutine");
+            StartCoroutine(ShowMuzzleFlash());
+        }
+        else
+        {
+            Debug.LogWarning($"[NetworkPistolBehaviour] MuzzleFlashPlaceholder is NULL! Assign it in the Inspector.");
+        }
+        
         if (muzzleFlash != null)
         {
             muzzleFlash.Play();
@@ -247,5 +276,20 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         ReserveAmmo += amount;
+    }
+
+    private System.Collections.IEnumerator ShowMuzzleFlash()
+    {
+        Debug.Log($"[NetworkPistolBehaviour] ShowMuzzleFlash coroutine started");
+        Debug.Log($"[NetworkPistolBehaviour] Placeholder active in hierarchy: {muzzleFlashPlaceholder.activeInHierarchy}");
+        Debug.Log($"[NetworkPistolBehaviour] Placeholder self active: {muzzleFlashPlaceholder.activeSelf}");
+        
+        muzzleFlashPlaceholder.SetActive(true);
+        Debug.Log($"[NetworkPistolBehaviour] Muzzle flash ENABLED - activeSelf: {muzzleFlashPlaceholder.activeSelf}, activeInHierarchy: {muzzleFlashPlaceholder.activeInHierarchy}");
+        
+        yield return new WaitForSeconds(0.05f);
+        
+        muzzleFlashPlaceholder.SetActive(false);
+        Debug.Log($"[NetworkPistolBehaviour] Muzzle flash DISABLED");
     }
 }

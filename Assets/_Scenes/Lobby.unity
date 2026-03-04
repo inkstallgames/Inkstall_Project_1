@@ -5542,6 +5542,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b175981758061d5459f3aa3f774129bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableHostOnlyTesting: 1
   _runnerPrefab: {fileID: 1549702101226116790, guid: 0e2d4a987f6bd0a49b3b20a3870d3064,
     type: 3}
   _maxPlayers: 10

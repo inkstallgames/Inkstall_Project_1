@@ -27,15 +27,6 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Networked] public int SelectedModeIndex { get; set; }
     [Networked] public int SelectedTimeIndex { get; set; }
 
-    [Networked] public bool IsHeroSelectionActive { get; set; }
-
-    // Hero Selection Timer
-    private const float HeroSelectionDuration = 30.0f;
-    [Networked] private TickTimer HeroSelectionTimer { get; set; }
-
-    [Networked, Capacity(8)]
-    public NetworkLinkedList<int> SelectedHeroIds { get; }
-
     [Networked, Capacity(8)]
     public NetworkDictionary<PlayerRef, bool> PlayersReadyToLoad { get; }
 
@@ -55,7 +46,6 @@ public class NetworkLobbyManager : NetworkBehaviour
     private readonly int[] timeInSeconds = { 180, 300, 600 };
 
     private LobbyUIManager uiManager;
-    private bool _previousHeroSelectionState;
 
     public override void Spawned()
     {
@@ -219,7 +209,6 @@ public class NetworkLobbyManager : NetworkBehaviour
             PlayerName = initialName,
             IsHost = isHost,
             IsReady = isHost, // Host is always ready
-            SelectedHeroId = -1,
             TeamID = assignedTeam
         };
         
@@ -299,8 +288,7 @@ public class NetworkLobbyManager : NetworkBehaviour
 
         // Hero selection is disabled — spawn players directly with playerPrefab
         Debug.Log("[NetworkLobbyManager] Skipping hero selection. Loading map immediately...");
-        IsHeroSelectionActive = false;
-
+        
         // Validate map selection
         if (SelectedMapIndex < 0 || SelectedMapIndex >= mapOptions.Count)
         {
@@ -328,23 +316,6 @@ public class NetworkLobbyManager : NetworkBehaviour
             Debug.LogError("[NetworkLobbyManager] NetworkGameManager.Instance is null! Cannot start game.");
         }
     }
-    
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_ShowHeroSelectionUI()
-    {
-        Debug.Log($"[NetworkLobbyManager] RPC_ShowHeroSelectionUI called on {(Runner.IsServer ? "Server" : "Client")}. IsHeroSelectionActive will be handled by Render.");
-        // The Render method will now handle the UI changes based on IsHeroSelectionActive state.
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_NotifyHeroSelectionRequired(PlayerRef targetPlayer, RpcInfo info = default)
-    {
-        // Only show the message to the intended player
-        if (Runner.LocalPlayer == targetPlayer && uiManager != null)
-        {
-            uiManager.ShowMessage("Please select a hero to start the game!");
-        }
-    }
 
     private void OnGameStarted()
     {
@@ -355,36 +326,15 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         base.Render();
 
-        // Centralized UI state management
-        if (uiManager != null)
+        // Re-acquire UI manager if needed
+        if (uiManager == null)
         {
-            if (_previousHeroSelectionState != IsHeroSelectionActive)
-            {
-                uiManager.ShowHeroSelectionPanel(IsHeroSelectionActive);
-                _previousHeroSelectionState = IsHeroSelectionActive;
-            }
-        }
-        else if (uiManager == null)
-        {
-            uiManager = LobbyUIManager.Instance; // Attempt to re-acquire the UI manager
+            uiManager = LobbyUIManager.Instance;
         }
 
-        // Update UI content based on the current state
-        if (IsHeroSelectionActive)
-        {
-            UpdateHeroSelectionUI();
-            float remainingTime = HeroSelectionTimer.RemainingTime(Runner) ?? 0;
-            var heroSelectionUI = FindObjectOfType<HeroSelection>();
-            if (heroSelectionUI != null)
-            {
-                heroSelectionUI.UpdateTimer(remainingTime);
-            }
-        }
-        else
-        {
-            UpdateLobbyUI();
-            UpdateGameSettingsUI();
-        }
+        // Update lobby UI
+        UpdateLobbyUI();
+        UpdateGameSettingsUI();
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -568,59 +518,6 @@ public class NetworkLobbyManager : NetworkBehaviour
         }
     }
 
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_SetSelectedHero(int heroId, RpcInfo info = default)
-    {
-        PlayerRef player = info.Source;
-        
-        // If the source is invalid (e.g., host calling on themselves), use the local player
-        if (player == default(PlayerRef))
-        {
-            player = Runner.LocalPlayer;
-            Debug.Log($"[RPC_SetSelectedHero] Source was invalid, using LocalPlayer: {player.PlayerId}");
-        }
-        
-        Debug.Log($"[RPC_SetSelectedHero] Player {player.PlayerId} attempting to select hero {heroId}");
-        
-        if (LobbyPlayers.ContainsKey(player))
-        {
-            var data = LobbyPlayers[player];
-            
-            Debug.Log($"[RPC_SetSelectedHero] Previous hero ID for {data.PlayerName}: {data.SelectedHeroId}");
-            
-            // Update the player's selected hero (allowing duplicates)
-            data.SelectedHeroId = heroId;
-            LobbyPlayers.Set(player, data);
-            
-            // Add the hero selection to the list (duplicates allowed)
-            if (heroId != -1)
-            {
-                SelectedHeroIds.Add(heroId);
-            }
-
-            Debug.Log($"[RPC_SetSelectedHero] Player {data.PlayerName} (ID: {player.PlayerId}) selected hero ID: {heroId}");
-            
-            // Update the UI for all clients
-            OnHeroSelectionModified();
-            
-            // Check if all players have locked in their heroes
-            if (Runner.IsServer)
-            {
-                CheckIfAllPlayersLockedIn();
-            }
-        }
-        else
-        {
-            Debug.LogError($"[RPC_SetSelectedHero] Player {player.PlayerId} not found in LobbyPlayers!");
-        }
-    }
-    
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_UpdateHeroSelectionUI(RpcInfo info = default)
-    {
-        UpdateHeroSelectionUI();
-    }
-    
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RPC_NotifyGameStarting()
     {
@@ -669,24 +566,6 @@ public class NetworkLobbyManager : NetworkBehaviour
         }
     }
 
-    // This method will be called when SelectedHeroIds changes
-    private void UpdateHeroSelection()
-    {
-        if (Runner.IsServer)
-        {
-            RPC_UpdateHeroSelectionUI();
-        }
-    }
-    
-    // Call this method whenever you modify SelectedHeroIds
-    private void OnHeroSelectionModified()
-    {
-        if (Runner.IsServer)
-        {
-            RPC_UpdateHeroSelectionUI();
-        }
-    }
-
     // Player Connection Handling
     public void OnPlayerJoined(PlayerRef player)
     {
@@ -716,168 +595,6 @@ public class NetworkLobbyManager : NetworkBehaviour
                 LobbyPlayers.Remove(player);
                 UpdateLobbyUI();
             }
-        }
-    }
-
-
-    public void UpdateHeroSelectionUI()
-    {
-        var heroSelection = FindObjectOfType<HeroSelection>();
-        if (heroSelection != null)
-        {
-            heroSelection.UpdateAvailableHeroes(SelectedHeroIds);
-        }
-    }
-
-    // Check if all players have locked in their hero selections
-    private void CheckIfAllPlayersLockedIn()
-    {
-        if (!Runner.IsServer || !IsHeroSelectionActive) return;
-        
-        // Check if all players have selected a hero (not -1)
-        bool allPlayersLockedIn = true;
-        int playersWithSelection = 0;
-        
-        foreach (var kvp in LobbyPlayers)
-        {
-            var playerData = kvp.Value;
-            if (playerData.SelectedHeroId == -1)
-            {
-                allPlayersLockedIn = false;
-                Debug.Log($"[CheckIfAllPlayersLockedIn] Player {kvp.Key.PlayerId} ({playerData.PlayerName}) has not locked in yet");
-            }
-            else
-            {
-                playersWithSelection++;
-                Debug.Log($"[CheckIfAllPlayersLockedIn] Player {kvp.Key.PlayerId} ({playerData.PlayerName}) locked in with hero {playerData.SelectedHeroId}");
-            }
-        }
-        
-        Debug.Log($"[CheckIfAllPlayersLockedIn] {playersWithSelection}/{LobbyPlayers.Count} players have locked in");
-        
-        if (allPlayersLockedIn && LobbyPlayers.Count > 0)
-        {
-            Debug.Log("[CheckIfAllPlayersLockedIn] All players have locked in! Starting game early...");
-            IsHeroSelectionActive = false; // Stop the hero selection phase
-            AllPlayersLockedIn();
-        }
-    }
-
-    public override void FixedUpdateNetwork()
-    {
-        base.FixedUpdateNetwork();
-
-        // Only the server should check the timer
-        if (Runner.IsServer && IsHeroSelectionActive && HeroSelectionTimer.Expired(Runner))
-        {
-            Debug.Log("[NetworkLobbyManager] Hero selection timer expired. Processing selections...");
-            IsHeroSelectionActive = false; // Stop the hero selection phase
-
-            // Automatically lock in heroes for players who haven't chosen
-            foreach (var kvp in LobbyPlayers)
-            {
-                var player = kvp.Key;
-                var playerData = kvp.Value;
-                Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} - Selected Hero: {playerData.SelectedHeroId}");
-                
-                if (playerData.SelectedHeroId == -1) // Assuming -1 means no hero selected
-                {
-                    Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} didn't select a hero. Assigning default hero (ID: 0)");
-                    playerData.SelectedHeroId = 0; // Default to the first hero
-                    LobbyPlayers.Set(player, playerData);
-                }
-            }
-
-            Debug.Log("[NetworkLobbyManager] All players have locked in. Starting game...");
-            // All players are locked in, proceed to start the game
-            AllPlayersLockedIn();
-        }
-    }
-
-    private System.Collections.IEnumerator InitializeGameAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        
-        if (NetworkGameManager.Instance != null)
-        {
-            Debug.Log("[NetworkLobbyManager] Starting game...");
-            NetworkGameManager.Instance.StartGame();
-        }
-        else
-        {
-            Debug.LogError("[NetworkLobbyManager] Failed to start game - NetworkGameManager not found after scene load!");
-        }
-    }
-    
-    // This method will be called when all players have locked in their hero choices
-    private void AllPlayersLockedIn()
-    {
-        if (!Runner.IsServer)
-        {
-            Debug.LogError("[NetworkLobbyManager] Only the server can execute AllPlayersLockedIn!");
-            return;
-        }
-
-        // Validate map selection
-        if (SelectedMapIndex < 0 || SelectedMapIndex >= mapOptions.Count)
-        {
-            Debug.LogError($"[NetworkLobbyManager] Invalid map index: {SelectedMapIndex}");
-            return;
-        }
-
-        string sceneName = mapOptions[SelectedMapIndex];
-        Debug.Log($"[NetworkLobbyManager] AllPlayersLockedIn - Preparing to load map: {sceneName}");
-        
-        // Log all players and their selected heroes
-        foreach (var kvp in LobbyPlayers)
-        {
-            var player = kvp.Key;
-            var playerData = kvp.Value;
-            Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} - {playerData.PlayerName} - Hero ID: {playerData.SelectedHeroId}");
-            
-            // Ensure all players have a valid hero selected
-            if (playerData.SelectedHeroId == -1)
-            {
-                Debug.LogError($"[NetworkLobbyManager] Player {player.PlayerId} has no hero selected!");
-                return;
-            }
-        }
-
-        Debug.Log($"[NetworkLobbyManager] All players have valid hero selections. Preparing for scene load: {sceneName}");
-        
-        // Store the current scene name before loading the new one
-        string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        Debug.Log($"[NetworkLobbyManager] Current scene: {currentScene}");
-        
-        try
-        {
-            // First, make sure the NetworkGameManager is ready
-            if (NetworkGameManager.Instance == null)
-            {
-                Debug.LogError("[NetworkLobbyManager] NetworkGameManager instance not found!");
-                return;
-            }
-            
-            // Clear the ready-to-load dictionary
-            PlayersReadyToLoad.Clear();
-            
-            // Server is always ready
-            PlayersReadyToLoad.Set(Runner.LocalPlayer, true);
-            Debug.Log($"[NetworkLobbyManager] Server marked as ready. Notifying clients...");
-            
-            // Notify all clients that we're about to load the game scene
-            RPC_NotifyGameStarting();
-            
-            // Don't load immediately - wait for all clients to confirm they're ready
-            Debug.Log($"[NetworkLobbyManager] Waiting for all clients to confirm ready to load...");
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[NetworkLobbyManager] Error loading scene {sceneName}: {e.Message}");
-            Debug.LogException(e);
-            
-            // Try to return to lobby if scene loading fails
-            Runner.LoadScene(currentScene, UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
     }
 
@@ -949,6 +666,5 @@ public struct PlayerLobbyData : INetworkStruct
     public bool IsReady;
     public bool IsHost;
     public int TeamID;
-    public int SelectedHeroId; // Add this to store the selected hero
     [Networked] public Color PlayerColor { get; set; }
 }

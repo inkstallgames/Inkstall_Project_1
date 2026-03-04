@@ -49,7 +49,7 @@ public class NetworkTransformInterpolation : NetworkBehaviour
             Debug.Log($"[NetworkTransformInterpolation] Spawned on {gameObject.name}. IsLocalPlayer: {_isLocalPlayer}");
             if (_isLocalPlayer)
             {
-                Debug.Log($"[NetworkTransformInterpolation] LOCAL player - Position: NOT interpolated (direct), Rotation: Interpolated");
+                Debug.Log($"[NetworkTransformInterpolation] LOCAL player - Position: Direct, Rotation: Interpolated");
             }
             else
             {
@@ -60,82 +60,62 @@ public class NetworkTransformInterpolation : NetworkBehaviour
     
     public override void Render()
     {
-        // Safety check - skip for local player entirely (they use client-side prediction)
+        // Safety check
         if (!_initialized) return;
         
         // Store the current network position before we modify it
         Vector3 networkPosition = transform.position;
         Quaternion networkRotation = transform.rotation;
         
-        // Detect if network position/rotation changed this tick
-        bool positionChanged = Vector3.Distance(transform.position, _lastNetworkPosition) > 0.001f;
-        bool rotationChanged = Quaternion.Angle(transform.rotation, _lastNetworkRotation) > 0.1f;
-
-        if (positionChanged)
+        // Check if we received a new network update
+        bool positionChanged = Vector3.Distance(networkPosition, _lastNetworkPosition) > 0.001f;
+        bool rotationChanged = Quaternion.Angle(networkRotation, _lastNetworkRotation) > 0.1f;
+        
+        if (positionChanged || rotationChanged)
         {
-            _lastNetworkPosition = transform.position;
-            _renderPosition = transform.position; // Snap render position to new network position
+            _lastNetworkPosition = networkPosition;
+            _lastNetworkRotation = networkRotation;
         }
-
-        if (rotationChanged)
+        
+        // For local player: Skip position interpolation to avoid input lag
+        // Only interpolate position for remote players
+        if (interpolatePosition && !_isLocalPlayer)
         {
-            _lastNetworkRotation = transform.rotation;
-            _renderRotation = transform.rotation; // Snap render rotation to new network rotation
-        }
-
-        // Local player: Direct position (no lag), interpolated rotation (smooth camera)
-        // Remote players: Interpolate both for smoothness
-        if (_isLocalPlayer)
-        {
-            // Position: Direct from server (no interpolation to avoid input lag)
-            _renderPosition = transform.position;
+            float distance = Vector3.Distance(_renderPosition, networkPosition);
             
-            // Rotation: Interpolate for smooth camera movement
-            if (interpolateRotation)
+            // Snap if too far away (teleport/respawn)
+            if (distance > snapDistanceThreshold)
             {
-                _renderRotation = Quaternion.Slerp(_renderRotation, transform.rotation, rotationLerpSpeed * Time.deltaTime);
-                if (Quaternion.Angle(_renderRotation, transform.rotation) < 0.5f)
-                {
-                    _renderRotation = transform.rotation;
-                }
+                _renderPosition = networkPosition;
             }
             else
             {
-                _renderRotation = transform.rotation;
+                // Smooth interpolation
+                _renderPosition = Vector3.Lerp(_renderPosition, networkPosition, 
+                    positionLerpSpeed * Time.deltaTime);
             }
+            
+            transform.position = _renderPosition;
         }
-        else
+        
+        // Interpolate rotation for all players (doesn't cause lag)
+        if (interpolateRotation)
         {
-            // Remote players: Full interpolation for smooth visuals
-            if (interpolatePosition)
+            float angle = Quaternion.Angle(_renderRotation, networkRotation);
+            
+            // Snap if rotation difference is too large
+            if (angle > snapAngleThreshold)
             {
-                _renderPosition = Vector3.Lerp(_renderPosition, transform.position, positionLerpSpeed * Time.deltaTime);
-                if (Vector3.Distance(_renderPosition, transform.position) < 0.01f)
-                {
-                    _renderPosition = transform.position;
-                }
+                _renderRotation = networkRotation;
             }
             else
             {
-                _renderPosition = transform.position;
+                // Smooth interpolation
+                _renderRotation = Quaternion.Slerp(_renderRotation, networkRotation, 
+                    rotationLerpSpeed * Time.deltaTime);
             }
-
-            if (interpolateRotation)
-            {
-                _renderRotation = Quaternion.Slerp(_renderRotation, transform.rotation, rotationLerpSpeed * Time.deltaTime);
-                if (Quaternion.Angle(_renderRotation, transform.rotation) < 0.5f)
-                {
-                    _renderRotation = transform.rotation;
-                }
-            }
-            else
-            {
-                _renderRotation = transform.rotation;
-            }
+            
+            transform.rotation = _renderRotation;
         }
-
-        // Apply the interpolated values to the visual transform
-        transform.position = _renderPosition;
-        transform.rotation = _renderRotation;
     }
 }

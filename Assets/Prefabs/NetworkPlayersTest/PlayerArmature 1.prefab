@@ -1531,7 +1531,7 @@ MonoBehaviour:
   laserColor: {r: 1, g: 0, b: 0, a: 1}
   maxEnergy: 100
   currentEnergy: 100
-  energyPerShot: 10
+  energyPerShot: 2
   energyRegenRate: 20
   regenDelay: 2
   laserBeamPrefab: {fileID: 4792249407261658504, guid: 9a16209519b43ca4b98fe8e6b74ba57b,

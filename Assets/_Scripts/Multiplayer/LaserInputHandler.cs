@@ -17,6 +17,7 @@ public class LaserInputHandler : MonoBehaviour
 
     private NetworkLaserBehaviour laserBehaviour;
     private bool isLocalPlayer = false;
+    private bool isMousePressed = false; // Track mouse state
 
     private void Start()
     {
@@ -62,13 +63,28 @@ public class LaserInputHandler : MonoBehaviour
         }
 
 #if UNITY_EDITOR || UNITY_STANDALONE
-        // For PC/Editor, allow shooting with a mouse click, but not if clicking on a UI element.
-        // Using GetMouseButtonDown for a single shot per click.
-        if (Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        // Track mouse button state for continuous firing
+        bool currentMouseState = Input.GetMouseButton(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+        
+        // Mouse pressed - start shooting
+        if (currentMouseState && !isMousePressed)
         {
-            Debug.Log("[LaserInputHandler] Mouse click detected - requesting laser shoot");
+            Debug.Log("[LaserInputHandler] Mouse pressed - starting continuous laser fire");
             laserBehaviour.RequestShoot();
         }
+        // Mouse held - continue shooting every frame
+        else if (currentMouseState && isMousePressed)
+        {
+            laserBehaviour.RequestShoot();
+        }
+        // Mouse released - stop shooting
+        else if (!currentMouseState && isMousePressed)
+        {
+            Debug.Log("[LaserInputHandler] Mouse released - stopping laser fire");
+            laserBehaviour.StopShooting(); // Explicitly stop shooting
+        }
+        
+        isMousePressed = currentMouseState;
 #endif
 
         // Reload input works on all platforms (for laser, this could be for emergency cooldown reset)

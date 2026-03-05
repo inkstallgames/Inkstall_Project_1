@@ -20,8 +20,8 @@ public class LaserBeamEffect : MonoBehaviour
         
         // Configure line renderer for laser beam
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.startWidth = 0.1f;
-        lineRenderer.endWidth = 0.1f;
+        lineRenderer.startWidth = 0.02f;  // Thinner laser beam
+        lineRenderer.endWidth = 0.02f;    // Thinner laser beam
         lineRenderer.useWorldSpace = true;
         lineRenderer.positionCount = 2;
         

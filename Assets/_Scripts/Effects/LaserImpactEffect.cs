@@ -10,6 +10,35 @@ public class LaserImpactEffect : MonoBehaviour
     private Light impactLight;
     private float lifetime = 1f;
     private float currentAge = 0f;
+    private bool isContinuous = false;
+    
+    public void SetContinuousMode(bool continuous)
+    {
+        isContinuous = continuous;
+        if (continuous)
+        {
+            currentAge = 0f; // Reset age for continuous mode
+            // Configure for continuous emission
+            if (particleSystem != null)
+            {
+                var emission = particleSystem.emission;
+                emission.rateOverTime = 100f; // Higher rate for continuous effect
+                emission.SetBursts(new ParticleSystem.Burst[0]); // Remove bursts for continuous
+            }
+        }
+        else
+        {
+            // Configure for single burst
+            if (particleSystem != null)
+            {
+                var emission = particleSystem.emission;
+                emission.rateOverTime = 0f; // No continuous rate
+                emission.SetBursts(new ParticleSystem.Burst[] {
+                    new ParticleSystem.Burst(0f, 20)
+                });
+            }
+        }
+    }
     
     void Start()
     {
@@ -26,15 +55,20 @@ public class LaserImpactEffect : MonoBehaviour
         main.startSize = 0.1f;
         main.startSpeed = 5f;
         main.startLifetime = 0.5f;
+        
+        // Stop particle system before setting duration to avoid error
+        if (particleSystem.isPlaying)
+        {
+            particleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+        
         main.duration = 0.2f;
         main.loop = false;
         
         var emission = particleSystem.emission;
         emission.enabled = true;
-        emission.rateOverTime = 50f; // Use rateOverTime instead of emissionRate
-        emission.SetBursts(new ParticleSystem.Burst[] {
-            new ParticleSystem.Burst(0f, 20)
-        });
+        emission.rateOverTime = 100f; // Higher rate for continuous effect
+        emission.SetBursts(new ParticleSystem.Burst[0]); // No bursts for continuous
         
         var shape = particleSystem.shape;
         shape.shapeType = ParticleSystemShapeType.Sphere;
@@ -51,6 +85,12 @@ public class LaserImpactEffect : MonoBehaviour
     
     void Update()
     {
+        // Skip auto-destruct for continuous impacts
+        if (isContinuous)
+        {
+            return;
+        }
+        
         currentAge += Time.deltaTime;
         
         // Fade out light

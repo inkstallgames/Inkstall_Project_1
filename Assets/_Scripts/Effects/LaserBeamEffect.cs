@@ -9,6 +9,7 @@ public class LaserBeamEffect : MonoBehaviour
     private LineRenderer lineRenderer;
     private float lifetime = 0.15f;
     private float currentAge = 0f;
+    private bool isContinuousBeam = false; // NEW: Flag for continuous beams
     
     void Start()
     {
@@ -32,8 +33,30 @@ public class LaserBeamEffect : MonoBehaviour
         lineRenderer.material.enableInstancing = true;
     }
     
+    public void SetContinuousMode(bool continuous)
+    {
+        isContinuousBeam = continuous;
+        if (continuous)
+        {
+            currentAge = 0f; // Reset age when switching to continuous
+            // Keep beam fully visible for continuous mode
+            if (lineRenderer != null)
+            {
+                Color color = lineRenderer.material.color;
+                color.a = 1f;
+                lineRenderer.material.color = color;
+            }
+        }
+    }
+    
     void Update()
     {
+        // Skip auto-destruct for continuous beams
+        if (isContinuousBeam)
+        {
+            return;
+        }
+        
         currentAge += Time.deltaTime;
         
         // Fade out effect

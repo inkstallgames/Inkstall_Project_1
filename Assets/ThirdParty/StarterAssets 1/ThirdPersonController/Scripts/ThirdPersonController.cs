@@ -321,9 +321,10 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f) * inputDirection;
             }
 
-            // Only server moves the CharacterController (authoritative)
-            // Clients receive position updates via NetworkTransform and interpolate visually
-            if (Object.HasStateAuthority)
+            // Both server (state authority) and client (input authority) move the CharacterController
+            // This enables client-side prediction for responsive movement
+            // Server position is authoritative and will correct client if needed via NetworkTransform
+            if (Object.HasStateAuthority || Object.HasInputAuthority)
             {
                 Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
                 Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;

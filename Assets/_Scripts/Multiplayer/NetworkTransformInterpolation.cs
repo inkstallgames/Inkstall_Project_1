@@ -13,8 +13,8 @@ public class NetworkTransformInterpolation : NetworkBehaviour
     [Header("Interpolation Settings")]
     [SerializeField] private bool interpolatePosition = true;
     [SerializeField] private bool interpolateRotation = true;
-    [SerializeField] private float positionLerpSpeed = 15f;
-    [SerializeField] private float rotationLerpSpeed = 15f;
+    [SerializeField] private float positionLerpSpeed = 20f; // Increased for 90 tick rate
+    [SerializeField] private float rotationLerpSpeed = 20f; // Increased for 90 tick rate
     
     [Header("Snap Thresholds")]
     [Tooltip("If position difference exceeds this, snap instead of lerp")]

@@ -173,8 +173,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 SceneManager = _sceneManager,
                 // Ensure proper prefab loading
                 ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>(),
-                // Added new property
-                // Removed the extra line here
             };
             
             // Apply any Photon settings from the NetworkRunner prefab
@@ -288,9 +286,9 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager,
                 // Ensure proper prefab loading for clients
-                ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>()
+                ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>(),
             };
-
+            
             UnityEngine.Debug.Log($"[NetworkStarter] Attempting to join session: {normalizedCode}");
 
             var startTask = _runner.StartGame(startGameArgs);

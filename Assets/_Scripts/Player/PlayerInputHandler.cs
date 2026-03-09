@@ -96,4 +96,11 @@ public class PlayerInputHandler : NetworkBehaviour
     {
         isShooting = context.ReadValueAsButton();
     }
+    
+    // Public method for client-side prediction to access current input
+    public Vector2 GetMovementInput()
+    {
+        if (playerInput == null) return Vector2.zero;
+        return playerInput.actions["Move"].ReadValue<Vector2>();
+    }
 }

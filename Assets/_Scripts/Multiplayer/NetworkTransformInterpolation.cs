@@ -77,9 +77,9 @@ public class NetworkTransformInterpolation : NetworkBehaviour
             _lastNetworkRotation = networkRotation;
         }
         
-        // For local player: Skip position interpolation to avoid input lag
-        // Only interpolate position for remote players
-        if (interpolatePosition && !_isLocalPlayer)
+        // Interpolate position for ALL players now that we removed manual prediction
+        // This provides smooth 60 FPS visuals between network ticks without rubber banding
+        if (interpolatePosition)
         {
             float distance = Vector3.Distance(_renderPosition, networkPosition);
             

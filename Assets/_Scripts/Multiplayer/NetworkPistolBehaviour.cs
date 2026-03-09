@@ -21,8 +21,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [SerializeField] private float reloadTime = 1.5f;
 
     [Header("Effects")]
-    [SerializeField] private GameObject muzzleFlashPlaceholder;
-    [SerializeField] private ParticleSystem muzzleFlash;
+    [SerializeField] private GameObject muzzleFlashPrefab; // Particle system muzzle flash
     [SerializeField] private GameObject bulletTrailPrefab;
     [SerializeField] private GameObject hitEffectPrefab;
     [SerializeField] private AudioClip shootSound;
@@ -58,10 +57,10 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         equipSystem = GetComponent<NetworkWeaponEquipSystem>();
         playerData = GetComponent<PlayerNetworkData>();
 
-        // Ensure muzzle flash placeholder is disabled on start
-        if (muzzleFlashPlaceholder != null)
+        // Ensure muzzle flash prefab is disabled on start
+        if (muzzleFlashPrefab != null)
         {
-            muzzleFlashPlaceholder.SetActive(false);
+            muzzleFlashPrefab.SetActive(false);
         }
     }
 
@@ -224,22 +223,37 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnShot(Vector3 origin, Vector3 endPoint, bool didHit, Vector3 hitPoint, Vector3 hitNormal)
     {
-        Debug.Log($"[NetworkPistolBehaviour] RPC_OnShot called! MuzzleFlashPlaceholder is {(muzzleFlashPlaceholder != null ? "ASSIGNED" : "NULL")}");
+        Debug.Log($"[NetworkPistolBehaviour] RPC_OnShot called!");
         
-        // Show muzzle flash placeholder
-        if (muzzleFlashPlaceholder != null)
+        // Try to use new muzzle flash particle system first
+        if (muzzleFlashPrefab != null && firePoint != null)
         {
-            Debug.Log($"[NetworkPistolBehaviour] Starting muzzle flash coroutine");
-            StartCoroutine(ShowMuzzleFlash());
+            GameObject tempMuzzleFlash = Instantiate(muzzleFlashPrefab, firePoint.position, firePoint.rotation);
+            tempMuzzleFlash.transform.SetParent(firePoint);
+            
+            // CRITICAL: Ensure the GameObject is active!
+            tempMuzzleFlash.SetActive(true);
+            Debug.Log($"[NetworkPistolBehaviour] Muzzle flash GameObject activated: {tempMuzzleFlash.activeInHierarchy}");
+            
+            var muzzleEffect = tempMuzzleFlash.GetComponent<MuzzleFlashEffect>();
+            if (muzzleEffect != null)
+            {
+                muzzleEffect.SetContinuousMode(false); // Single burst mode for pistol
+                muzzleEffect.Play();
+                Debug.Log("[NetworkPistolBehaviour] *** PISTOL MUZZLE FLASH PARTICLE EFFECT PLAYED ***");
+                
+                // Auto-destroy after effect
+                Destroy(tempMuzzleFlash, 0.3f);
+            }
+            else
+            {
+                Debug.LogWarning("[NetworkPistolBehaviour] MuzzleFlashEffect component not found on muzzle flash prefab!");
+                Destroy(tempMuzzleFlash, 0.3f);
+            }
         }
         else
         {
-            Debug.LogWarning($"[NetworkPistolBehaviour] MuzzleFlashPlaceholder is NULL! Assign it in the Inspector.");
-        }
-        
-        if (muzzleFlash != null)
-        {
-            muzzleFlash.Play();
+            Debug.LogWarning("[NetworkPistolBehaviour] No muzzle flash prefab assigned!");
         }
 
         if (shootSound != null)
@@ -279,20 +293,5 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         ReserveAmmo += amount;
-    }
-
-    private System.Collections.IEnumerator ShowMuzzleFlash()
-    {
-        Debug.Log($"[NetworkPistolBehaviour] ShowMuzzleFlash coroutine started");
-        Debug.Log($"[NetworkPistolBehaviour] Placeholder active in hierarchy: {muzzleFlashPlaceholder.activeInHierarchy}");
-        Debug.Log($"[NetworkPistolBehaviour] Placeholder self active: {muzzleFlashPlaceholder.activeSelf}");
-        
-        muzzleFlashPlaceholder.SetActive(true);
-        Debug.Log($"[NetworkPistolBehaviour] Muzzle flash ENABLED - activeSelf: {muzzleFlashPlaceholder.activeSelf}, activeInHierarchy: {muzzleFlashPlaceholder.activeInHierarchy}");
-        
-        yield return new WaitForSeconds(0.05f);
-        
-        muzzleFlashPlaceholder.SetActive(false);
-        Debug.Log($"[NetworkPistolBehaviour] Muzzle flash DISABLED");
     }
 }

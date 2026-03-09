@@ -355,14 +355,35 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         
         if (muzzleFlashPrefab != null)
         {
-            muzzleFlashPrefab.SetActive(true);
-        }
-        
-        yield return new WaitForSeconds(0.05f); // Short flash duration
-        
-        if (muzzleFlashPrefab != null)
-        {
-            muzzleFlashPrefab.SetActive(false);
+            // Create temporary muzzle flash for single shot
+            GameObject tempMuzzleFlash = Instantiate(muzzleFlashPrefab, firePoint.position, firePoint.rotation);
+            tempMuzzleFlash.transform.SetParent(firePoint);
+            
+            // CRITICAL: Ensure the GameObject is active!
+            tempMuzzleFlash.SetActive(true);
+            Debug.Log($"[NetworkLaserBehaviour] Muzzle flash GameObject activated: {tempMuzzleFlash.activeInHierarchy}");
+            
+            // Use particle system
+            var muzzleEffect = tempMuzzleFlash.GetComponent<MuzzleFlashEffect>();
+            if (muzzleEffect != null)
+            {
+                muzzleEffect.SetContinuousMode(false); // Single burst mode
+                muzzleEffect.Play();
+                Debug.Log("[NetworkLaserBehaviour] *** SINGLE MUZZLE FLASH PARTICLE EFFECT PLAYED ***");
+            }
+            else
+            {
+                Debug.LogWarning("[NetworkLaserBehaviour] MuzzleFlashEffect component not found on muzzle flash prefab!");
+            }
+            
+            yield return new WaitForSeconds(0.05f); // Short flash duration
+            
+            // Clean up
+            if (muzzleEffect != null)
+            {
+                muzzleEffect.Stop();
+            }
+            Destroy(tempMuzzleFlash);
             Debug.Log($"[NetworkLaserBehaviour] *** LASER MUZZLE FLASH *** Player {Object.InputAuthority.PlayerId} - Muzzle flash hidden");
         }
     }
@@ -451,7 +472,23 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         {
             continuousMuzzleFlash = Instantiate(muzzleFlashPrefab, firePoint.position, firePoint.rotation);
             continuousMuzzleFlash.transform.SetParent(firePoint);
-            continuousMuzzleFlash.SetActive(true);
+            
+            // Set continuous mode for muzzle flash particles
+            var muzzleEffect = continuousMuzzleFlash.GetComponent<MuzzleFlashEffect>();
+            if (muzzleEffect != null)
+            {
+                muzzleEffect.SetContinuousMode(true);
+                muzzleEffect.Play();
+                Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS MUZZLE FLASH MODE SET ***");
+            }
+            else
+            {
+                Debug.Log("[NetworkLaserBehaviour] *** WARNING: MuzzleFlashEffect component not found on muzzle flash prefab ***");
+                
+                // Fallback to old quad behavior
+                continuousMuzzleFlash.SetActive(true);
+            }
+            
             Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS MUZZLE FLASH CREATED ***");
         }
         
@@ -545,6 +582,14 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             if (continuousMuzzleFlash != null)
             {
                 Debug.Log("[NetworkLaserBehaviour] *** DESTROYING CONTINUOUS MUZZLE FLASH ***");
+                
+                // Stop particle system if it has the component
+                var muzzleEffect = continuousMuzzleFlash.GetComponent<MuzzleFlashEffect>();
+                if (muzzleEffect != null)
+                {
+                    muzzleEffect.Stop();
+                }
+                
                 Destroy(continuousMuzzleFlash);
                 continuousMuzzleFlash = null;
             }

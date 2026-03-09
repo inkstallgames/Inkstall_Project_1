@@ -322,7 +322,8 @@ namespace StarterAssets
             }
 
             // Only server moves the CharacterController (authoritative)
-            // Clients receive position updates via NetworkTransform and interpolate visually
+            // Clients receive position updates via NetworkTransform
+            // The slight delay clients experience is normal network latency, not a bug
             if (Object.HasStateAuthority)
             {
                 Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);

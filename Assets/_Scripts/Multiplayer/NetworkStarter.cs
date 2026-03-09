@@ -34,6 +34,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     private NetworkRunner _runner;
     private NetworkSceneManagerDefault _sceneManager;
     private bool _isShuttingDown = false;
+    private Coroutine _pingLoggerCoroutine;
 
     private async void Awake()
     {
@@ -196,6 +197,8 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             if (result.Ok)
             {
                 UnityEngine.Debug.Log("[NetworkStarter] Host started successfully");
+                LogConnectionInfo();
+                StartPingLogging();
                 
                 if (_runner.IsServer && _lobbyManagerPrefab != null)
                 {
@@ -310,6 +313,8 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             if (result.Ok)
             {
                 UnityEngine.Debug.Log($"[NetworkStarter] Successfully joined session: {normalizedCode}");
+                LogConnectionInfo();
+                StartPingLogging();
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
                     onComplete?.Invoke(true, null);
                 });
@@ -361,6 +366,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         try
         {
             UnityEngine.Debug.Log("[NetworkStarter] Shutting down NetworkRunner...");
+            StopPingLogging();
             await _runner.Shutdown();
         }
         catch (Exception e)
@@ -370,6 +376,53 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         finally
         {
             _isShuttingDown = false;
+        }
+    }
+
+    private void LogConnectionInfo()
+    {
+        if (_runner == null) return;
+
+        UnityEngine.Debug.Log("========== NETWORK CONNECTION INFO ==========");
+        UnityEngine.Debug.Log($"[NetworkStarter] Region: India (in)");
+        UnityEngine.Debug.Log($"[NetworkStarter] Session Name: {_runner.SessionInfo.Name}");
+        UnityEngine.Debug.Log($"[NetworkStarter] Is Server: {_runner.IsServer}");
+        UnityEngine.Debug.Log($"[NetworkStarter] Is Client: {_runner.IsClient}");
+        UnityEngine.Debug.Log($"[NetworkStarter] Game Mode: {_runner.GameMode}");
+        UnityEngine.Debug.Log("=============================================");
+    }
+
+    private void StartPingLogging()
+    {
+        if (_pingLoggerCoroutine != null)
+        {
+            StopCoroutine(_pingLoggerCoroutine);
+        }
+        _pingLoggerCoroutine = StartCoroutine(PingLoggerCoroutine());
+        UnityEngine.Debug.Log("[NetworkStarter] Ping logging started");
+    }
+
+    private void StopPingLogging()
+    {
+        if (_pingLoggerCoroutine != null)
+        {
+            StopCoroutine(_pingLoggerCoroutine);
+            _pingLoggerCoroutine = null;
+            UnityEngine.Debug.Log("[NetworkStarter] Ping logging stopped");
+        }
+    }
+
+    private System.Collections.IEnumerator PingLoggerCoroutine()
+    {
+        while (_runner != null && _runner.IsRunning)
+        {
+            if (_runner.IsConnectedToServer || _runner.IsServer)
+            {
+                int ping = Mathf.RoundToInt((float)(_runner.GetPlayerRtt(_runner.LocalPlayer) * 1000));
+                UnityEngine.Debug.Log($"[PING] Current Ping: {ping}ms | Players: {_runner.ActivePlayers.Count()}/{_maxPlayers}");
+            }
+            
+            yield return new WaitForSeconds(5f);
         }
     }
 

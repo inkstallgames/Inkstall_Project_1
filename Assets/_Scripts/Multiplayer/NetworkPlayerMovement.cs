@@ -4,7 +4,7 @@ using UnityEngine;
 public class NetworkPlayerMovement : NetworkBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed = 5f;
+    public float moveSpeed = 15f;
     public float rotationSpeed = 10f;
     
     [Header("Client Prediction")]
@@ -25,7 +25,8 @@ public class NetworkPlayerMovement : NetworkBehaviour
     // Movement speed logging
     private Vector3 _lastPosition;
     private float _logTimer = 0f;
-    private const float LOG_INTERVAL = 2f; // Log every 2 seconds
+    private const float LOG_INTERVAL = 1f; // Log every 1 second
+    private bool _hasLoggedOnce = false;
 
     public override void Spawned()
     {
@@ -68,14 +69,26 @@ public class NetworkPlayerMovement : NetworkBehaviour
                 movement = (transform.forward * input.movement.y + transform.right * input.movement.x).normalized;
                 characterController.Move(movement * moveSpeed * Runner.DeltaTime);
                 
+                // Calculate actual speed
+                float actualSpeed = Vector3.Distance(positionBeforeMove, transform.position) / Runner.DeltaTime;
+                string playerType = Runner.IsServer ? "HOST" : "CLIENT";
+                string authority = _isLocalPlayer ? "LOCAL" : "REMOTE";
+                
+                // Log immediately on first movement
+                if (!_hasLoggedOnce)
+                {
+                    Debug.Log($"[MOVEMENT SPEED - FIRST] {playerType} ({authority}) | " +
+                             $"Speed: {actualSpeed:F2} units/sec | " +
+                             $"Expected: {moveSpeed:F2} | " +
+                             $"DeltaTime: {Runner.DeltaTime:F4}s | " +
+                             $"Tick: {Runner.Tick}");
+                    _hasLoggedOnce = true;
+                }
+                
                 // Log movement speed periodically
                 _logTimer += Runner.DeltaTime;
                 if (_logTimer >= LOG_INTERVAL)
                 {
-                    float actualSpeed = Vector3.Distance(positionBeforeMove, transform.position) / Runner.DeltaTime;
-                    string playerType = Runner.IsServer ? "HOST" : "CLIENT";
-                    string authority = _isLocalPlayer ? "LOCAL" : "REMOTE";
-                    
                     Debug.Log($"[MOVEMENT SPEED] {playerType} ({authority}) | " +
                              $"Speed: {actualSpeed:F2} units/sec | " +
                              $"Expected: {moveSpeed:F2} | " +
@@ -108,10 +121,11 @@ public class NetworkPlayerMovement : NetworkBehaviour
                 }
             }
             
-            // Reset log timer if not moving
+            // Reset log timer and flag if not moving
             if (input.movement.sqrMagnitude <= 0.01f)
             {
                 _logTimer = 0f;
+                _hasLoggedOnce = false;
             }
         }
     }

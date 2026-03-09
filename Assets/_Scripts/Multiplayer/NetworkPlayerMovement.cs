@@ -21,6 +21,11 @@ public class NetworkPlayerMovement : NetworkBehaviour
     private Vector3 _predictedPosition;
     private Quaternion _predictedRotation;
     private bool _isLocalPlayer;
+    
+    // Movement speed logging
+    private Vector3 _lastPosition;
+    private float _logTimer = 0f;
+    private const float LOG_INTERVAL = 2f; // Log every 2 seconds
 
     public override void Spawned()
     {
@@ -45,6 +50,7 @@ public class NetworkPlayerMovement : NetworkBehaviour
         // Initialize predicted values
         _predictedPosition = transform.position;
         _predictedRotation = transform.rotation;
+        _lastPosition = transform.position;
     }
 
     public override void FixedUpdateNetwork()
@@ -54,11 +60,30 @@ public class NetworkPlayerMovement : NetworkBehaviour
             // SERVER-AUTHORITATIVE MOVEMENT
             // Server processes all movement, NetworkTransformInterpolation handles visual smoothing
             
+            Vector3 positionBeforeMove = transform.position;
+            
             // Movement - move relative to where player is looking
             if (input.movement.sqrMagnitude > 0.01f)
             {
                 movement = (transform.forward * input.movement.y + transform.right * input.movement.x).normalized;
                 characterController.Move(movement * moveSpeed * Runner.DeltaTime);
+                
+                // Log movement speed periodically
+                _logTimer += Runner.DeltaTime;
+                if (_logTimer >= LOG_INTERVAL)
+                {
+                    float actualSpeed = Vector3.Distance(positionBeforeMove, transform.position) / Runner.DeltaTime;
+                    string playerType = Runner.IsServer ? "HOST" : "CLIENT";
+                    string authority = _isLocalPlayer ? "LOCAL" : "REMOTE";
+                    
+                    Debug.Log($"[MOVEMENT SPEED] {playerType} ({authority}) | " +
+                             $"Speed: {actualSpeed:F2} units/sec | " +
+                             $"Expected: {moveSpeed:F2} | " +
+                             $"DeltaTime: {Runner.DeltaTime:F4}s | " +
+                             $"Tick: {Runner.Tick}");
+                    
+                    _logTimer = 0f;
+                }
             }
             
             // Handle Shooting
@@ -81,6 +106,12 @@ public class NetworkPlayerMovement : NetworkBehaviour
                         targetRotation, 
                         rotationSpeed * Runner.DeltaTime);
                 }
+            }
+            
+            // Reset log timer if not moving
+            if (input.movement.sqrMagnitude <= 0.01f)
+            {
+                _logTimer = 0f;
             }
         }
     }

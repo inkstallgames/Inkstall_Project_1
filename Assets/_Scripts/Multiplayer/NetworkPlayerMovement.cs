@@ -4,36 +4,19 @@ using UnityEngine;
 public class NetworkPlayerMovement : NetworkBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed = 15f;
+    public float moveSpeed = 5f;
     public float rotationSpeed = 10f;
-    
-    [Header("Client Prediction")]
-    [Tooltip("Enable client-side prediction for instant local movement")]
-    public bool enableClientPrediction = false; // Disabled to prevent rubber banding
     
     [Networked] public Vector3 AimDirection { get; set; }
     
     private CharacterController characterController;
     private PlayerCameraController cameraController;
     private Vector3 movement;
-    
-    // Client prediction variables
-    private Vector3 _predictedPosition;
-    private Quaternion _predictedRotation;
-    private bool _isLocalPlayer;
-    
-    // Movement speed logging
-    private Vector3 _lastPosition;
-    private float _logTimer = 0f;
-    private const float LOG_INTERVAL = 1f; // Log every 1 second
-    private bool _hasLoggedOnce = false;
 
     public override void Spawned()
     {
-        _isLocalPlayer = Object.HasInputAuthority;
-        
         // Always get camera controller reference for input authority
-        if (_isLocalPlayer)
+        if (Object.HasInputAuthority)
         {
             cameraController = GetComponent<PlayerCameraController>();
             if (cameraController == null)
@@ -47,56 +30,17 @@ public class NetworkPlayerMovement : NetworkBehaviour
         {
             characterController = gameObject.AddComponent<CharacterController>();
         }
-        
-        // Initialize predicted values
-        _predictedPosition = transform.position;
-        _predictedRotation = transform.rotation;
-        _lastPosition = transform.position;
     }
 
     public override void FixedUpdateNetwork()
     {
         if (GetInput<PlayerInputData>(out var input))
         {
-            // SERVER-AUTHORITATIVE MOVEMENT
-            // Server processes all movement, NetworkTransformInterpolation handles visual smoothing
-            
-            Vector3 positionBeforeMove = transform.position;
-            
             // Movement - move relative to where player is looking
             if (input.movement.sqrMagnitude > 0.01f)
             {
                 movement = (transform.forward * input.movement.y + transform.right * input.movement.x).normalized;
                 characterController.Move(movement * moveSpeed * Runner.DeltaTime);
-                
-                // Calculate actual speed
-                float actualSpeed = Vector3.Distance(positionBeforeMove, transform.position) / Runner.DeltaTime;
-                string playerType = Runner.IsServer ? "HOST" : "CLIENT";
-                string authority = _isLocalPlayer ? "LOCAL" : "REMOTE";
-                
-                // Log immediately on first movement
-                if (!_hasLoggedOnce)
-                {
-                    Debug.Log($"[MOVEMENT SPEED - FIRST] {playerType} ({authority}) | " +
-                             $"Speed: {actualSpeed:F2} units/sec | " +
-                             $"Expected: {moveSpeed:F2} | " +
-                             $"DeltaTime: {Runner.DeltaTime:F4}s | " +
-                             $"Tick: {Runner.Tick}");
-                    _hasLoggedOnce = true;
-                }
-                
-                // Log movement speed periodically
-                _logTimer += Runner.DeltaTime;
-                if (_logTimer >= LOG_INTERVAL)
-                {
-                    Debug.Log($"[MOVEMENT SPEED] {playerType} ({authority}) | " +
-                             $"Speed: {actualSpeed:F2} units/sec | " +
-                             $"Expected: {moveSpeed:F2} | " +
-                             $"DeltaTime: {Runner.DeltaTime:F4}s | " +
-                             $"Tick: {Runner.Tick}");
-                    
-                    _logTimer = 0f;
-                }
             }
             
             // Handle Shooting
@@ -120,18 +64,8 @@ public class NetworkPlayerMovement : NetworkBehaviour
                         rotationSpeed * Runner.DeltaTime);
                 }
             }
-            
-            // Reset log timer and flag if not moving
-            if (input.movement.sqrMagnitude <= 0.01f)
-            {
-                _logTimer = 0f;
-                _hasLoggedOnce = false;
-            }
         }
     }
-    
-    // Render() removed - NetworkTransformInterpolation handles all visual smoothing
-    // This prevents rubber banding while maintaining smooth 60 FPS visuals
     
     private void Shoot()
     {

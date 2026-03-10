@@ -13,8 +13,8 @@ public class NetworkTransformInterpolation : NetworkBehaviour
     [Header("Interpolation Settings")]
     [SerializeField] private bool interpolatePosition = true;
     [SerializeField] private bool interpolateRotation = true;
-    [SerializeField] private float positionLerpSpeed = 20f; // Increased for 90 tick rate
-    [SerializeField] private float rotationLerpSpeed = 20f; // Increased for 90 tick rate
+    [SerializeField] private float positionLerpSpeed = 15f;
+    [SerializeField] private float rotationLerpSpeed = 15f;
     
     [Header("Snap Thresholds")]
     [Tooltip("If position difference exceeds this, snap instead of lerp")]
@@ -77,9 +77,9 @@ public class NetworkTransformInterpolation : NetworkBehaviour
             _lastNetworkRotation = networkRotation;
         }
         
-        // Interpolate position for ALL players now that we removed manual prediction
-        // This provides smooth 60 FPS visuals between network ticks without rubber banding
-        if (interpolatePosition)
+        // For local player: Skip position interpolation to avoid input lag
+        // Only interpolate position for remote players
+        if (interpolatePosition && !_isLocalPlayer)
         {
             float distance = Vector3.Distance(_renderPosition, networkPosition);
             

@@ -321,14 +321,12 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f) * inputDirection;
             }
 
-            // Only server moves the CharacterController (authoritative)
-            // Clients receive position updates via NetworkTransform and interpolate visually
-            if (Object.HasStateAuthority)
-            {
-                Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
-                Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
-                _controller.Move(horizontalMovement + verticalMovement);
-            }
+            // Move on ALL clients for client-side prediction
+            // Fusion's FixedUpdateNetwork runs prediction ticks on input authority too
+            // Server reconciles if prediction was wrong - this eliminates rubberbanding
+            Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
+            Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
+            _controller.Move(horizontalMovement + verticalMovement);
         }
 
         private void JumpAndGravity(NetworkInputData input)

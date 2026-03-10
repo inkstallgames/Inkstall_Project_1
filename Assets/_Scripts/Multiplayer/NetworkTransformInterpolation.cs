@@ -34,11 +34,13 @@ public class NetworkTransformInterpolation : NetworkBehaviour
     
     public override void Spawned()
     {
-        // If this object has NetworkPlayerMovement, disable this component
-        // NetworkPlayerMovement handles its own Render() now
-        if (GetComponent<NetworkPlayerMovement>() != null)
+        // If this object has a CharacterController, it's a player character.
+        // ThirdPersonController + CharacterController handle movement and client prediction.
+        // This interpolation script must NOT touch transform.position on players
+        // or it will fight with CharacterController causing rubberbanding.
+        if (GetComponent<CharacterController>() != null)
         {
-            Debug.Log($"[NetworkTransformInterpolation] Disabled on {gameObject.name} - NetworkPlayerMovement handles rendering");
+            Debug.Log($"[NetworkTransformInterpolation] Disabled on {gameObject.name} - CharacterController handles movement");
             enabled = false;
             return;
         }

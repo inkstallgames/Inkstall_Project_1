@@ -50,6 +50,7 @@ public class NetworkPlayerMovement : NetworkBehaviour
             }
             
             // Rotation - face where camera is looking
+            // Use direct rotation for local player, server will sync to others
             if (input.aimDirection != Vector3.zero)
             {
                 AimDirection = input.aimDirection;
@@ -59,9 +60,22 @@ public class NetworkPlayerMovement : NetworkBehaviour
                 if (lookDirection.sqrMagnitude > 0.01f)
                 {
                     Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, 
-                        targetRotation, 
-                        rotationSpeed * Runner.DeltaTime);
+                    
+                    // For local player: use faster rotation for responsive feel
+                    // For remote players: server handles the rotation
+                    if (Object.HasInputAuthority)
+                    {
+                        transform.rotation = Quaternion.Slerp(transform.rotation, 
+                            targetRotation, 
+                            rotationSpeed * Runner.DeltaTime);
+                    }
+                    else
+                    {
+                        // Remote players get smoother rotation from server
+                        transform.rotation = Quaternion.Slerp(transform.rotation, 
+                            targetRotation, 
+                            rotationSpeed * 0.5f * Runner.DeltaTime);
+                    }
                 }
             }
         }

@@ -63,6 +63,10 @@ public class NetworkTransformInterpolation : NetworkBehaviour
         // Safety check
         if (!_initialized) return;
         
+        // CRITICAL FIX: Skip ALL interpolation for local player to prevent rubberbanding
+        // Local player movement is already smooth via direct input in FixedUpdateNetwork
+        if (_isLocalPlayer) return;
+        
         // Store the current network position before we modify it
         Vector3 networkPosition = transform.position;
         Quaternion networkRotation = transform.rotation;
@@ -77,9 +81,8 @@ public class NetworkTransformInterpolation : NetworkBehaviour
             _lastNetworkRotation = networkRotation;
         }
         
-        // For local player: Skip position interpolation to avoid input lag
-        // Only interpolate position for remote players
-        if (interpolatePosition && !_isLocalPlayer)
+        // Only interpolate for remote players
+        if (interpolatePosition)
         {
             float distance = Vector3.Distance(_renderPosition, networkPosition);
             
@@ -98,7 +101,7 @@ public class NetworkTransformInterpolation : NetworkBehaviour
             transform.position = _renderPosition;
         }
         
-        // Interpolate rotation for all players (doesn't cause lag)
+        // Interpolate rotation for remote players
         if (interpolateRotation)
         {
             float angle = Quaternion.Angle(_renderRotation, networkRotation);

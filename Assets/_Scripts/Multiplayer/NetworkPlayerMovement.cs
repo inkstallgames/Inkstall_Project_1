@@ -6,12 +6,15 @@ public class NetworkPlayerMovement : NetworkBehaviour
     [Header("Movement")]
     public float moveSpeed = 5f;
     public float rotationSpeed = 10f;
+    public float gravity = -9.81f;
+    public float groundCheckDistance = 0.2f;
     
     [Networked] public Vector3 AimDirection { get; set; }
+    [Networked] public Vector3 Velocity { get; set; }
     
-    private CharacterController characterController;
     private PlayerCameraController cameraController;
     private Vector3 movement;
+    private bool isGrounded;
 
     public override void Spawned()
     {
@@ -25,23 +28,64 @@ public class NetworkPlayerMovement : NetworkBehaviour
             }
         }
         
-        characterController = GetComponent<CharacterController>();
-        if (characterController == null)
+        // Ensure we have a collider for physics interactions
+        var capsuleCollider = GetComponent<CapsuleCollider>();
+        if (capsuleCollider == null)
         {
-            characterController = gameObject.AddComponent<CharacterController>();
+            capsuleCollider = gameObject.AddComponent<CapsuleCollider>();
+            capsuleCollider.height = 2f;
+            capsuleCollider.radius = 0.5f;
+            capsuleCollider.center = new Vector3(0, 1f, 0);
         }
+        
+        // Ensure we have a Rigidbody for physics (kinematic for manual movement control)
+        var rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+        }
+        rb.isKinematic = true; // We control movement manually
+        rb.useGravity = false; // We handle gravity manually
     }
 
     public override void FixedUpdateNetwork()
     {
+        // Ground check
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + 0.1f);
+        
         if (GetInput<PlayerInputData>(out var input))
         {
+            // Calculate velocity
+            Vector3 velocity = Velocity;
+            
             // Movement - move relative to where player is looking
             if (input.movement.sqrMagnitude > 0.01f)
             {
                 movement = (transform.forward * input.movement.y + transform.right * input.movement.x).normalized;
-                characterController.Move(movement * moveSpeed * Runner.DeltaTime);
+                velocity.x = movement.x * moveSpeed;
+                velocity.z = movement.z * moveSpeed;
             }
+            else
+            {
+                velocity.x = 0;
+                velocity.z = 0;
+            }
+            
+            // Apply gravity
+            if (isGrounded && velocity.y < 0)
+            {
+                velocity.y = -2f; // Small downward force to keep grounded
+            }
+            else
+            {
+                velocity.y += gravity * Runner.DeltaTime;
+            }
+            
+            // Store velocity in networked property
+            Velocity = velocity;
+            
+            // Apply movement - this works with client prediction!
+            transform.position += velocity * Runner.DeltaTime;
             
             // Handle Shooting
             if (input.isShooting)
@@ -50,7 +94,6 @@ public class NetworkPlayerMovement : NetworkBehaviour
             }
             
             // Rotation - face where camera is looking
-            // Use direct rotation for local player, server will sync to others
             if (input.aimDirection != Vector3.zero)
             {
                 AimDirection = input.aimDirection;
@@ -60,24 +103,16 @@ public class NetworkPlayerMovement : NetworkBehaviour
                 if (lookDirection.sqrMagnitude > 0.01f)
                 {
                     Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
-                    
-                    // For local player: use faster rotation for responsive feel
-                    // For remote players: server handles the rotation
-                    if (Object.HasInputAuthority)
-                    {
-                        transform.rotation = Quaternion.Slerp(transform.rotation, 
-                            targetRotation, 
-                            rotationSpeed * Runner.DeltaTime);
-                    }
-                    else
-                    {
-                        // Remote players get smoother rotation from server
-                        transform.rotation = Quaternion.Slerp(transform.rotation, 
-                            targetRotation, 
-                            rotationSpeed * 0.5f * Runner.DeltaTime);
-                    }
+                    transform.rotation = Quaternion.Slerp(transform.rotation, 
+                        targetRotation, 
+                        rotationSpeed * Runner.DeltaTime);
                 }
             }
+        }
+        else if (!Object.HasInputAuthority)
+        {
+            // For remote players without input, still apply velocity (from server)
+            transform.position += Velocity * Runner.DeltaTime;
         }
     }
     

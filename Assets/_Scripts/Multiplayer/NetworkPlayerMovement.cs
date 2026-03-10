@@ -11,6 +11,7 @@ public class NetworkPlayerMovement : NetworkBehaviour
     
     [Networked] public Vector3 AimDirection { get; set; }
     [Networked] public Vector3 Velocity { get; set; }
+    [Networked] public Vector3 NetworkedPosition { get; set; }
     
     private PlayerCameraController cameraController;
     private Vector3 movement;
@@ -18,6 +19,9 @@ public class NetworkPlayerMovement : NetworkBehaviour
 
     public override void Spawned()
     {
+        // Initialize networked position to current transform position
+        NetworkedPosition = transform.position;
+        
         // Always get camera controller reference for input authority
         if (Object.HasInputAuthority)
         {
@@ -50,8 +54,8 @@ public class NetworkPlayerMovement : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        // Ground check
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + 0.1f);
+        // Ground check using networked position
+        isGrounded = Physics.Raycast(NetworkedPosition, Vector3.down, groundCheckDistance + 0.1f);
         
         if (GetInput<PlayerInputData>(out var input))
         {
@@ -84,8 +88,8 @@ public class NetworkPlayerMovement : NetworkBehaviour
             // Store velocity in networked property
             Velocity = velocity;
             
-            // Apply movement - this works with client prediction!
-            transform.position += velocity * Runner.DeltaTime;
+            // Update NETWORKED position - Fusion handles prediction/reconciliation
+            NetworkedPosition += velocity * Runner.DeltaTime;
             
             // Handle Shooting
             if (input.isShooting)
@@ -112,8 +116,15 @@ public class NetworkPlayerMovement : NetworkBehaviour
         else if (!Object.HasInputAuthority)
         {
             // For remote players without input, still apply velocity (from server)
-            transform.position += Velocity * Runner.DeltaTime;
+            NetworkedPosition += Velocity * Runner.DeltaTime;
         }
+    }
+    
+    public override void Render()
+    {
+        // Apply the networked position to the actual transform
+        // This happens every frame for smooth 60 FPS rendering
+        transform.position = NetworkedPosition;
     }
     
     private void Shoot()

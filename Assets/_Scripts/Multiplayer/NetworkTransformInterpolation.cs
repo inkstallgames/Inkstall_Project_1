@@ -34,6 +34,15 @@ public class NetworkTransformInterpolation : NetworkBehaviour
     
     public override void Spawned()
     {
+        // If this object has NetworkPlayerMovement, disable this component
+        // NetworkPlayerMovement handles its own Render() now
+        if (GetComponent<NetworkPlayerMovement>() != null)
+        {
+            Debug.Log($"[NetworkTransformInterpolation] Disabled on {gameObject.name} - NetworkPlayerMovement handles rendering");
+            enabled = false;
+            return;
+        }
+        
         // Determine if this is the local player
         _isLocalPlayer = Object.HasInputAuthority;
         

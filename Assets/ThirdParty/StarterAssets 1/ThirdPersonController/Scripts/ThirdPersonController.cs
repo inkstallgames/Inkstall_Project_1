@@ -126,6 +126,14 @@ namespace StarterAssets
         [Networked] public float NetworkedMotionSpeed { get; set; }
         [Networked] public NetworkBool NetworkedGrounded { get; set; }
         [Networked] public float NetworkedVerticalVelocity { get; set; }
+        
+        // Networked movement state - authoritative position from server
+        [Networked] public Vector3 NetworkedPosition { get; set; }
+        [Networked] public float NetworkedSpeed { get; set; }
+        
+        // Client prediction state
+        private Vector3 _clientPredictedPosition;
+        private bool _isClientPredicting = false;
 
         private bool IsCurrentDeviceMouse
         {
@@ -172,6 +180,16 @@ namespace StarterAssets
                 _controller.enabled = true;
             }
 
+            // Initialize networked position
+            if (Object.HasStateAuthority)
+            {
+                NetworkedPosition = transform.position;
+            }
+            
+            // Client prediction setup
+            _isClientPredicting = Object.HasInputAuthority && !Object.HasStateAuthority;
+            _clientPredictedPosition = transform.position;
+
             // Enable/disable input components based on authority
             if (_nativeInput != null)
             {
@@ -214,6 +232,13 @@ namespace StarterAssets
 
         public override void FixedUpdateNetwork()
         {
+            // Reset client prediction base to server's authoritative position each tick
+            // This prevents accumulation during Fusion's resimulation (which re-runs this method)
+            if (_isClientPredicting)
+            {
+                _clientPredictedPosition = NetworkedPosition;
+            }
+            
             if (GetInput(out NetworkInputData data))
             {
                 _latestInput = data;
@@ -269,6 +294,27 @@ namespace StarterAssets
                 _animator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
                 _animator.SetBool(_animIDFreeFall, NetworkedVerticalVelocity < 0f && !NetworkedGrounded);
             }
+
+            // Correct client prediction toward server's authoritative position
+            if (_isClientPredicting)
+            {
+                float errorDistance = Vector3.Distance(_clientPredictedPosition, NetworkedPosition);
+                
+                if (errorDistance > 5f)
+                {
+                    // Large error (teleport/respawn) — snap immediately
+                    _clientPredictedPosition = NetworkedPosition;
+                }
+                else if (errorDistance > 0.02f)
+                {
+                    // Small prediction error — smoothly correct toward server position
+                    // This is invisible at <80ms ping since errors are tiny
+                    _clientPredictedPosition = Vector3.Lerp(_clientPredictedPosition, NetworkedPosition, Time.deltaTime * 15f);
+                }
+                // else: error is negligible, no correction needed
+                
+                transform.position = _clientPredictedPosition;
+            }
         }
 
         private void AssignAnimationIDs()
@@ -321,12 +367,25 @@ namespace StarterAssets
                 targetDirection = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f) * inputDirection;
             }
 
-            // Move on ALL clients for client-side prediction
-            // Fusion's FixedUpdateNetwork runs prediction ticks on input authority too
-            // Server reconciles if prediction was wrong - this eliminates rubberbanding
+            // Calculate the movement delta
             Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
             Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
-            _controller.Move(horizontalMovement + verticalMovement);
+            Vector3 moveDelta = horizontalMovement + verticalMovement;
+            
+            if (Object.HasStateAuthority)
+            {
+                // Server/Host: Use CharacterController for authoritative physics movement
+                _controller.Move(moveDelta);
+                NetworkedPosition = transform.position;
+                NetworkedSpeed = _speed;
+            }
+            else if (_isClientPredicting)
+            {
+                // Client: Predict position using pure math (no CharacterController)
+                // This avoids double-move during Fusion's resimulation ticks
+                _clientPredictedPosition += moveDelta;
+                transform.position = _clientPredictedPosition;
+            }
         }
 
         private void JumpAndGravity(NetworkInputData input)

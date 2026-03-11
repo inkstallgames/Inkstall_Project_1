@@ -269,6 +269,12 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
+        // Do not collect input if the game start countdown is active
+        if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.GameStartTimer.IsRunning)
+        {
+            return;
+        }
+
         PlayerInputData data = new PlayerInputData();
 
         // Use joystick input if available (Android), fall back to keyboard (Editor)

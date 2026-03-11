@@ -36,6 +36,9 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Networked]
     public NetworkBool IsGameReady { get; set; }
 
+    [Networked]
+    public TickTimer GameStartTimer { get; set; }
+
     private readonly List<string> mapOptions = new List<string> { "Rust" };
     private readonly List<string> timeOptions = new List<string> { "3:00", "5:00", "10:00" };
     private readonly List<Color> playerColors = new List<Color>
@@ -311,6 +314,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         // Reset loading state for the new game
         PlayersLoadedCount = 0;
         IsGameReady = false;
+        GameStartTimer = default;
 
         // Notify NetworkGameManager to start the game (loads the scene)
         if (NetworkGameManager.Instance != null)
@@ -616,10 +620,11 @@ public class NetworkLobbyManager : NetworkBehaviour
         PlayersLoadedCount++;
         Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} has loaded the scene. {PlayersLoadedCount}/{LobbyPlayers.Count} players loaded.");
 
-        if (PlayersLoadedCount >= LobbyPlayers.Count)
+        if (PlayersLoadedCount >= LobbyPlayers.Count && !IsGameReady)
         {
-            Debug.Log("[NetworkLobbyManager] All players have loaded the scene. Game is ready!");
+            Debug.Log("[NetworkLobbyManager] All players have loaded the scene. Starting 5-second countdown.");
             IsGameReady = true;
+            GameStartTimer = TickTimer.CreateFromSeconds(Runner, 5.0f);
         }
     }
 

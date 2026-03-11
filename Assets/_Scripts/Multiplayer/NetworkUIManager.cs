@@ -30,6 +30,7 @@ public class NetworkUIManager : MonoBehaviour
 
     [Header("State Panels")]
     [SerializeField] private GameObject waitingForPlayersPanel; // Panel shown while waiting for others
+    [SerializeField] private TextMeshProUGUI waitingStatusText;  // Text inside the waiting panel
 
     // Cached references
     private NetworkRunner runner;
@@ -104,10 +105,29 @@ public class NetworkUIManager : MonoBehaviour
 
         UpdateGameInfoUI();
 
-        // Check if we should hide the waiting screen
-        if (isWaitingScreenActive && NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.IsGameReady)
+        // Handle the waiting screen and countdown
+        if (isWaitingScreenActive)
         {
-            ShowWaitingForPlayersScreen(false);
+            var lobbyManager = NetworkLobbyManager.Instance;
+            if (lobbyManager != null && waitingStatusText != null)
+            {
+                if (lobbyManager.IsGameReady && lobbyManager.GameStartTimer.IsRunning)
+                {
+                    // Countdown is active
+                    float remainingTime = lobbyManager.GameStartTimer.RemainingTime(runner) ?? 0;
+                    waitingStatusText.text = $"Game starting in {Mathf.CeilToInt(remainingTime)}";
+
+                    if (lobbyManager.GameStartTimer.Expired(runner))
+                    {
+                        ShowWaitingForPlayersScreen(false);
+                    }
+                }
+                else
+                {
+                    // Waiting for players, before countdown starts
+                    waitingStatusText.text = "Waiting for other players...";
+                }
+            }
         }
     }
 

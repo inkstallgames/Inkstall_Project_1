@@ -40,7 +40,7 @@ public class NetworkLobbyManager : NetworkBehaviour
     public TickTimer GameStartTimer { get; set; }
 
     private readonly List<string> mapOptions = new List<string> { "Rust" };
-    private readonly List<string> timeOptions = new List<string> { "3:00", "5:00", "10:00" };
+    private readonly List<string> timeOptions = new List<string> { "10:00", "15:00" };
     private readonly List<Color> playerColors = new List<Color>
     {
         Color.blue,
@@ -52,7 +52,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         new Color(0.5f, 0f, 1f),  // Purple
         new Color(0f, 1f, 0.5f)   // Teal
     };
-    private readonly int[] timeInSeconds = { 180, 300, 600 };
+    private readonly int[] timeInSeconds = { 600, 900 };
 
     private LobbyUIManager uiManager;
 
@@ -321,7 +321,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         {
             NetworkGameManager.Instance.StartGame(
                 (GameMode)SelectedModeIndex,
-                new int[] { 180, 300, 600 }[SelectedTimeIndex],
+                timeInSeconds[SelectedTimeIndex],
                 sceneName
             );
         }

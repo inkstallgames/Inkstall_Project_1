@@ -28,11 +28,16 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameStateText;      // Shows current game state
     [SerializeField] private TextMeshProUGUI timerText;          // Round timer
 
+    [Header("State Panels")]
+    [SerializeField] private GameObject waitingForPlayersPanel; // Panel shown while waiting for others
+
     // Cached references
     private NetworkRunner runner;
     private NetworkObject localPlayerObject;
     private NetworkBombBehaviour localBombBehaviour;
     private NetworkPistolBehaviour localPistolBehaviour;
+    private bool isWaitingScreenActive = false;
+    private NetworkLaserBehaviour localLaserBehaviour;
     private NetworkWeaponEquipSystem localEquipSystem;
     private PlayerNetworkData localPlayerData;
 
@@ -98,6 +103,12 @@ public class NetworkUIManager : MonoBehaviour
         }
 
         UpdateGameInfoUI();
+
+        // Check if we should hide the waiting screen
+        if (isWaitingScreenActive && NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.IsGameReady)
+        {
+            ShowWaitingForPlayersScreen(false);
+        }
     }
 
     // ---------------------------------------------------------------
@@ -129,12 +140,14 @@ public class NetworkUIManager : MonoBehaviour
         {
             localBombBehaviour = localPlayerObject.GetComponent<NetworkBombBehaviour>();
             localPistolBehaviour = localPlayerObject.GetComponent<NetworkPistolBehaviour>();
+            localLaserBehaviour = localPlayerObject.GetComponent<NetworkLaserBehaviour>();
             localEquipSystem = localPlayerObject.GetComponent<NetworkWeaponEquipSystem>();
             localPlayerData = localPlayerObject.GetComponent<PlayerNetworkData>();
 
             Debug.Log($"[NetworkUIManager] Local player found! Object: {localPlayerObject.name}");
             Debug.Log($"[NetworkUIManager]   - NetworkBombBehaviour: {(localBombBehaviour != null ? "FOUND" : "MISSING")}");
             Debug.Log($"[NetworkUIManager]   - NetworkPistolBehaviour: {(localPistolBehaviour != null ? "FOUND" : "MISSING")}");
+            Debug.Log($"[NetworkUIManager]   - NetworkLaserBehaviour: {(localLaserBehaviour != null ? "FOUND" : "MISSING")}");
             Debug.Log($"[NetworkUIManager]   - NetworkWeaponEquipSystem: {(localEquipSystem != null ? "FOUND" : "MISSING")}");
             Debug.Log($"[NetworkUIManager]   - PlayerNetworkData: {(localPlayerData != null ? "FOUND" : "MISSING")}");
         }
@@ -146,7 +159,7 @@ public class NetworkUIManager : MonoBehaviour
 
     /// <summary>
     /// Called when the throw button is pressed.
-    /// Fires the currently equipped weapon (bomb or pistol).
+    /// Fires the currently equipped weapon (bomb, pistol, or laser).
     /// </summary>
     public void OnThrowButtonPressed()
     {
@@ -162,6 +175,11 @@ public class NetworkUIManager : MonoBehaviour
             {
                 Debug.Log("[NetworkUIManager] Throw button pressed - Pistol is equipped, shooting pistol");
                 localPistolBehaviour.RequestShoot();
+            }
+            else if (localEquipSystem.IsLaserEquipped() && localLaserBehaviour != null)
+            {
+                Debug.Log("[NetworkUIManager] Throw button pressed - Laser is equipped, shooting laser");
+                localLaserBehaviour.RequestShoot();
             }
             else
             {
@@ -286,6 +304,15 @@ public class NetworkUIManager : MonoBehaviour
     // ---------------------------------------------------------------
     // Cleanup
     // ---------------------------------------------------------------
+
+    public void ShowWaitingForPlayersScreen(bool show)
+    {
+        if (waitingForPlayersPanel != null)
+        {
+            waitingForPlayersPanel.SetActive(show);
+            isWaitingScreenActive = show;
+        }
+    }
 
     private void OnDestroy()
     {

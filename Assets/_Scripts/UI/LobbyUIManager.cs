@@ -16,6 +16,7 @@ public class LobbyUIManager : MonoBehaviour
     public GameObject heroSelectionPanel;
     public GameObject inGameUIPanel;
     public GameObject loadingScreenPanel;
+    public GameObject waitingForPlayersPanel;
 
     [Header("Host Settings")]
     public Button mapButton;
@@ -45,6 +46,7 @@ public class LobbyUIManager : MonoBehaviour
     public Button sendChatButton;
 
     private bool isHost = false;
+    private bool isWaitingScreenActive = false;
     
     private void Awake()
     {
@@ -106,6 +108,16 @@ public class LobbyUIManager : MonoBehaviour
         {
             chatContent.richText = true;
             chatContent.color = Color.white;
+        }
+    }
+
+    private void Update()
+    {
+        // Manually check if the game is ready and hide the waiting screen
+        if (isWaitingScreenActive && NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.IsGameReady)
+        {
+            ShowWaitingForPlayersScreen(false);
+            isWaitingScreenActive = false; // Ensure this only runs once
         }
     }
 
@@ -324,6 +336,21 @@ public class LobbyUIManager : MonoBehaviour
             if (lobbyPanel != null) lobbyPanel.SetActive(false);
             if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
             if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
+            if (waitingForPlayersPanel != null) waitingForPlayersPanel.SetActive(false);
+        }
+    }
+
+    public void ShowWaitingForPlayersScreen(bool show)
+    {
+        if (waitingForPlayersPanel != null) waitingForPlayersPanel.SetActive(show);
+        isWaitingScreenActive = show;
+
+        if (show)
+        {
+            if (lobbyPanel != null) lobbyPanel.SetActive(false);
+            if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
+            if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
+            if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
         }
     }
 }

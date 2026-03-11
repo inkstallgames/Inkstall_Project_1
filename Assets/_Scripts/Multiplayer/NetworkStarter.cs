@@ -693,11 +693,35 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             }
         }
 
-        // Hide loading screen for all clients
+        // Hide the main loading screen that persists between scenes
         if (LobbyUIManager.Instance != null)
         {
-            UnityEngine.Debug.Log("[NetworkStarter] Hiding loading screen after scene load");
             LobbyUIManager.Instance.ShowLoadingScreen(false);
+        }
+
+        // If we are in the game scene, tell the scene's specific UI manager to show the waiting screen.
+        if (currentScene.name == "Rust")
+        {
+            if (NetworkUIManager.Instance != null)
+            {
+                UnityEngine.Debug.Log("[NetworkStarter] In Rust scene, showing waiting for players screen via NetworkUIManager.");
+                NetworkUIManager.Instance.ShowWaitingForPlayersScreen(true);
+            }
+            else
+            {
+                UnityEngine.Debug.LogError("[NetworkStarter] NetworkUIManager.Instance is null in the Rust scene!");
+            }
+        }
+
+        // Notify the lobby manager that this player has loaded the scene
+        if (NetworkLobbyManager.Instance != null)
+        {
+            UnityEngine.Debug.Log($"[NetworkStarter] Player {runner.LocalPlayer.PlayerId} has loaded the scene, notifying lobby manager.");
+            NetworkLobbyManager.Instance.RPC_PlayerHasLoadedScene(runner.LocalPlayer);
+        }
+        else
+        {
+            UnityEngine.Debug.LogError("[NetworkStarter] NetworkLobbyManager.Instance is null, cannot notify that scene is loaded.");
         }
 
         // Respawn all players if necessary. This handles late-joiners.

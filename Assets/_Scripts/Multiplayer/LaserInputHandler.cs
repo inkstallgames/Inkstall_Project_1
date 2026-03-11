@@ -10,10 +10,6 @@ public class LaserInputHandler : MonoBehaviour
     [Header("Input Settings")]
     [SerializeField] private KeyCode shootKey = KeyCode.Mouse0;
     [SerializeField] private KeyCode reloadKey = KeyCode.R;
-    
-    [Header("UI Button References (Optional)")]
-    [SerializeField] private Button shootButton;
-    [SerializeField] private Button reloadButton;
 
     private NetworkLaserBehaviour laserBehaviour;
     private bool isLocalPlayer = false;
@@ -44,15 +40,11 @@ public class LaserInputHandler : MonoBehaviour
 
     private void SetupUIButtons()
     {
-        if (shootButton != null)
-        {
-            shootButton.onClick.AddListener(OnShootButtonPressed);
-        }
-
-        if (reloadButton != null)
-        {
-            reloadButton.onClick.AddListener(OnReloadButtonPressed);
-        }
+        // Use the same throw button as pistol shooting through NetworkUIManager
+        // The NetworkUIManager.OnThrowButtonPressed() now handles laser shooting
+        // So we don't need to set up separate button listeners here
+        
+        Debug.Log("[LaserInputHandler] Using shared throw button through NetworkUIManager for laser shooting");
     }
 
     private void Update()
@@ -120,15 +112,7 @@ public class LaserInputHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (shootButton != null)
-        {
-            shootButton.onClick.RemoveListener(OnShootButtonPressed);
-        }
-
-        if (reloadButton != null)
-        {
-            reloadButton.onClick.RemoveListener(OnReloadButtonPressed);
-        }
+        // No button listeners to clean up since we use NetworkUIManager's shared button
     }
 
     /// <summary>

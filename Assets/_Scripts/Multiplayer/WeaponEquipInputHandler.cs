@@ -47,8 +47,8 @@ public class WeaponEquipInputHandler : MonoBehaviour
         // Find buttons by tag if not assigned in Inspector
         if (primaryButton == null)
         {
-            // Try to find team-specific buttons first
-            string buttonTag = playerData != null && playerData.TeamId == 1 ? "LaserButton" : "PistolButton";
+            // Use the same button for both pistol and laser teams since they share shooting button
+            string buttonTag = "PistolButton";
             GameObject primaryButtonObj = GameObject.FindGameObjectWithTag(buttonTag);
             if (primaryButtonObj != null)
             {
@@ -82,7 +82,7 @@ public class WeaponEquipInputHandler : MonoBehaviour
         {
             primaryButton.onClick.AddListener(OnPrimaryButtonPressed);
             string weaponName = playerData != null && playerData.TeamId == 1 ? "Laser" : "Pistol";
-            Debug.Log($"[WeaponEquipInputHandler] {weaponName} button listener added");
+            Debug.Log($"[WeaponEquipInputHandler] {weaponName} equip button listener added (shared button)");
         }
 
         if (bombButton != null)

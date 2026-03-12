@@ -32,6 +32,10 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private GameObject waitingForPlayersPanel; // Panel shown while waiting for others
     [SerializeField] private TextMeshProUGUI waitingStatusText;  // Text inside the waiting panel
 
+    [Header("Respawn UI")]
+    [SerializeField] private GameObject respawnPanel;             // Panel shown when player dies
+    [SerializeField] private TextMeshProUGUI respawnTimerText;    // Timer text inside the respawn panel
+
     // Cached references
     private NetworkRunner runner;
     private NetworkObject localPlayerObject;
@@ -119,6 +123,18 @@ public class NetworkUIManager : MonoBehaviour
 
                     if (lobbyManager.GameStartTimer.Expired(runner))
                     {
+                        // Countdown finished — transition to InProgress and start the game timer
+                        if (NetworkGameManager.Instance != null && runner.IsServer)
+                        {
+                            NetworkGameManager.Instance.StartRoundAfterCountdown();
+                        }
+
+                        // Enable the game timer text (deactivated by default in the scene)
+                        if (timerText != null)
+                        {
+                            timerText.gameObject.SetActive(true);
+                        }
+
                         ShowWaitingForPlayersScreen(false);
                     }
                 }
@@ -309,15 +325,18 @@ public class NetworkUIManager : MonoBehaviour
         }
 
         // Timer
-        if (timerText != null && NetworkGameManager.Instance.CurrentGameState == GameState.InProgress)
+        if (timerText != null && runner != null && runner.IsRunning && NetworkGameManager.Instance.CurrentGameState == GameState.InProgress)
         {
-            float elapsed = Time.time - NetworkGameManager.Instance.RoundStartTime;
+            float elapsed = runner.SimulationTime - NetworkGameManager.Instance.RoundStartTime;
             float remaining = NetworkGameManager.Instance.RoundTime - elapsed;
             remaining = Mathf.Max(0, remaining);
 
             int minutes = Mathf.FloorToInt(remaining / 60f);
             int seconds = Mathf.FloorToInt(remaining % 60f);
             timerText.text = $"{minutes:00}:{seconds:00}";
+
+            // Log the remaining time for debugging
+            Debug.Log($"[NetworkUIManager] Game Timer Remaining: {remaining}s");
         }
     }
 
@@ -331,6 +350,42 @@ public class NetworkUIManager : MonoBehaviour
         {
             waitingForPlayersPanel.SetActive(show);
             isWaitingScreenActive = show;
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Respawn UI
+    // ---------------------------------------------------------------
+
+    /// <summary>
+    /// Called when the local player dies. Shows the respawn panel with a 7-second countdown.
+    /// </summary>
+    public void ShowRespawnScreen()
+    {
+        if (respawnPanel != null)
+        {
+            respawnPanel.SetActive(true);
+            StartCoroutine(RespawnCountdown(7f));
+        }
+    }
+
+    private System.Collections.IEnumerator RespawnCountdown(float duration)
+    {
+        float timer = duration;
+        while (timer > 0f)
+        {
+            if (respawnTimerText != null)
+            {
+                respawnTimerText.text = $"Respawning in {Mathf.CeilToInt(timer)}";
+            }
+            yield return null;
+            timer -= Time.deltaTime;
+        }
+
+        // Hide the respawn panel when countdown finishes
+        if (respawnPanel != null)
+        {
+            respawnPanel.SetActive(false);
         }
     }
 

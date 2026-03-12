@@ -132,7 +132,7 @@ public class NetworkGameManager : NetworkBehaviour
         CurrentGameMode = mode;
         RoundTime = time;
         CurrentGameState = GameState.Starting;
-        GameStartTime = Time.time;
+        GameStartTime = Runner.SimulationTime;
         CurrentRound = 1;
         BlueTeamScore = 0;
         RedTeamScore = 0;
@@ -175,8 +175,12 @@ public class NetworkGameManager : NetworkBehaviour
         Runner.LoadScene(sceneName, UnityEngine.SceneManagement.LoadSceneMode.Single);
 
         yield return null; // Yield for one frame to let the load process begin.
-        
+
         Debug.Log($"[NetworkGameManager] Asynchronous scene load for {sceneName} has been initiated.");
+
+        // After the scene load is initiated, wait for a moment and then initialize the game logic.
+        // This ensures that the game state is correctly set to InProgress after the scene is ready.
+        StartCoroutine(InitializeGameAfterDelay(1.0f));
     }
 
     private System.Collections.IEnumerator InitializeGameAfterDelay(float delay)
@@ -201,8 +205,23 @@ public class NetworkGameManager : NetworkBehaviour
         // Spawn all players immediately
         SpawnAllPlayers();
         
+        // Stay in Starting state — InProgress will be set after the game start countdown ends
+        CurrentGameState = GameState.Starting;
+        Debug.Log("[NetworkGameManager] Game state set to Starting. Waiting for countdown to finish before InProgress.");
+    }
+
+    /// <summary>
+    /// Called after the game start countdown timer expires.
+    /// Transitions the game to InProgress and starts the round timer.
+    /// </summary>
+    public void StartRoundAfterCountdown()
+    {
+        if (!Object.HasStateAuthority) return;
+
+        Debug.Log("[NetworkGameManager] Countdown finished. Transitioning to InProgress.");
         CurrentGameState = GameState.InProgress;
-        RoundStartTime = Time.time;
+        RoundStartTime = Runner.SimulationTime;
+        OnRoundStarted?.Invoke();
     }
 
     private void SpawnAllPlayers()
@@ -276,7 +295,7 @@ public class NetworkGameManager : NetworkBehaviour
     private void StartNewRound()
     {
         CurrentGameState = GameState.InProgress;
-        RoundStartTime = Time.time;
+        RoundStartTime = Runner.SimulationTime;
         
         // Reset player states and respawn them
         foreach (var player in players.Keys.ToList())

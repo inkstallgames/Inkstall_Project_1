@@ -224,13 +224,19 @@ public class PlayerNetworkData : NetworkBehaviour
 
         
 
+        // Show respawn UI for the local player who died
+        if (Object.HasInputAuthority && NetworkUIManager.Instance != null)
+        {
+            NetworkUIManager.Instance.ShowRespawnScreen();
+        }
+
         if (Object.HasStateAuthority)
 
         {
 
-            // Handle respawn after delay
+            // Handle respawn after 7-second delay
 
-            StartCoroutine(RespawnAfterDelay(3f));
+            StartCoroutine(RespawnAfterDelay(7f));
 
         }
 

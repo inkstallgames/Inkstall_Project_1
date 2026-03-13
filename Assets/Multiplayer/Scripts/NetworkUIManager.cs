@@ -28,6 +28,10 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameStateText;      // Shows current game state
     [SerializeField] private TextMeshProUGUI timerText;          // Round timer
 
+    [Header("Team Score UI")]
+    [SerializeField] private TextMeshProUGUI blueTeamScoreText;  // Blue team score display
+    [SerializeField] private TextMeshProUGUI redTeamScoreText;   // Red team score display
+
     [Header("State Panels")]
     [SerializeField] private GameObject waitingForPlayersPanel; // Panel shown while waiting for others
     [SerializeField] private TextMeshProUGUI waitingStatusText;  // Text inside the waiting panel
@@ -369,6 +373,17 @@ public class NetworkUIManager : MonoBehaviour
             int minutes = Mathf.FloorToInt(remaining / 60f);
             int seconds = Mathf.FloorToInt(remaining % 60f);
             timerText.text = $"{minutes:00}:{seconds:00}";
+        }
+
+        // Team scores
+        if (blueTeamScoreText != null)
+        {
+            blueTeamScoreText.text = $"{NetworkGameManager.Instance.BlueTeamScore}";
+        }
+
+        if (redTeamScoreText != null)
+        {
+            redTeamScoreText.text = $"{NetworkGameManager.Instance.RedTeamScore}";
         }
     }
 

@@ -180,6 +180,8 @@ public class PlayerNetworkData : NetworkBehaviour
 
                 }
 
+                // Notify game manager to update team scores
+                NetworkGameManager.Instance?.OnPlayerKilled(Object.InputAuthority, sourcePlayer);
             }
 
             
@@ -234,63 +236,37 @@ public class PlayerNetworkData : NetworkBehaviour
 
         {
 
-            // Handle respawn after 7-second delay
+            PlayerRef playerRef = Object.InputAuthority;
 
-            StartCoroutine(RespawnAfterDelay(7f));
+            int teamId = TeamId;
 
-        }
+            string playerName = PlayerName;
 
-    }
-
-
-
-    private System.Collections.IEnumerator RespawnAfterDelay(float delay)
-
-    {
-
-        // Store player info before destroying
-
-        PlayerRef playerRef = Object.InputAuthority;
-
-        int teamId = TeamId;
-
-        string playerName = PlayerName;
-
-        
-
-        // Wait for respawn delay
-
-        yield return new WaitForSeconds(delay);
-
-        
-
-        // Destroy the current player object
-
-        if (Runner != null && Object != null)
-
-        {
-
-            // Debug.Log($"[PlayerNetworkData] Despawning player {playerName} for respawn");
-
-            Runner.Despawn(Object);
-
-            
-
-            // Request respawn from NetworkGameManager
-
+            // Ask the Game Manager to wait 7 seconds to respawn the player
             if (NetworkGameManager.Instance != null)
 
             {
 
-                // Debug.Log($"[PlayerNetworkData] Requesting respawn for player {playerRef.PlayerId}");
+                NetworkGameManager.Instance.ScheduleRespawn(playerRef, teamId, playerName, 7f);
 
-                NetworkGameManager.Instance.RespawnPlayer(playerRef, teamId, playerName);
+            }
+
+            // Immediately destroy the current player object
+            if (Runner != null && Object != null)
+
+            {
+
+                Runner.Despawn(Object);
 
             }
 
         }
 
     }
+
+
+
+
 
 
 

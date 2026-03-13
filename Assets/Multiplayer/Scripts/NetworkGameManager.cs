@@ -376,7 +376,9 @@ public class NetworkGameManager : NetworkBehaviour
                 if (killerData.TeamId == 0) BlueTeamScore++;
                 else RedTeamScore++;
                 
-                // Debug.Log($"Team Score - Blue: {BlueTeamScore}, Red: {RedTeamScore}");
+                string winningTeamName = killerData.TeamId == 0 ? "Blue" : "Red";
+                Debug.Log($"[NetworkGameManager] Player {victimData.PlayerName} (Team {victimData.TeamId}) was killed by {killerData.PlayerName} (Team {killerData.TeamId}).");
+                Debug.Log($"[NetworkGameManager] Point awarded to {winningTeamName} Team! Score - Blue: {BlueTeamScore}, Red: {RedTeamScore}");
                 
                 // Check for round/game end
                 CheckGameEndConditions();
@@ -511,6 +513,18 @@ public class NetworkGameManager : NetworkBehaviour
         selectedSpawn.isOccupied = true;
 
         return selectedSpawn.transform;
+    }
+
+    public void ScheduleRespawn(PlayerRef playerRef, int teamId, string playerName, float delay)
+    {
+        if (!Object.HasStateAuthority) return;
+        StartCoroutine(RespawnRoutine(playerRef, teamId, playerName, delay));
+    }
+
+    private System.Collections.IEnumerator RespawnRoutine(PlayerRef playerRef, int teamId, string playerName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        RespawnPlayer(playerRef, teamId, playerName);
     }
 
     public void RespawnPlayer(PlayerRef playerRef, int teamId, string playerName)

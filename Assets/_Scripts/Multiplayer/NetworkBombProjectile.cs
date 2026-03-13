@@ -78,7 +78,7 @@ public class NetworkBombProjectile : NetworkBehaviour
             // Don't damage yourself
             if (playerData.Object.InputAuthority != SourcePlayer)
             {
-                Debug.Log($"[NetworkBombProjectile] Bomb from player {SourcePlayer} hit player {playerData.Object.InputAuthority}!");
+                // Debug.Log($"[NetworkBombProjectile] Bomb from player {SourcePlayer} hit player {playerData.Object.InputAuthority}!");
 
                 // Deal damage using the existing RPC on PlayerNetworkData
                 playerData.RPC_TakeDamage(Damage, SourcePlayer);

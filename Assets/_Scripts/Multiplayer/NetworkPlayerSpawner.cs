@@ -61,7 +61,7 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
         {
 
-            Debug.LogWarning("No spawn points found in the scene. Using default spawn behavior.");
+            // Debug.LogWarning("No spawn points found in the scene. Using default spawn behavior.");
 
         }
 
@@ -75,7 +75,7 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
         _runner = runner;
 
-        Debug.Log($"[NetworkPlayerSpawner] Initialized with Runner. IsServer: {_runner.IsServer}");
+        // Debug.Log($"[NetworkPlayerSpawner] Initialized with Runner. IsServer: {_runner.IsServer}");
 
     }
 
@@ -85,7 +85,7 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
     {
 
-        Debug.Log($"Player {player.PlayerId} joined the game");
+        // Debug.Log($"Player {player.PlayerId} joined the game");
 
 
 
@@ -123,13 +123,13 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
     public void SpawnPlayer(PlayerRef player)
     {
-        Debug.Log($"[NetworkPlayerSpawner] SpawnPlayer called for player {player.PlayerId}. IsServer: {_runner.IsServer}, IsClient: {_runner.IsClient}");
+        // Debug.Log($"[NetworkPlayerSpawner] SpawnPlayer called for player {player.PlayerId}. IsServer: {_runner.IsServer}, IsClient: {_runner.IsClient}");
 
         // Check if player already has an object
         var existingObject = _runner.GetPlayerObject(player);
         if (existingObject != null)
         {
-            Debug.LogWarning($"[NetworkPlayerSpawner] Player {player.PlayerId} already has a spawned object: {existingObject.name}");
+            // Debug.LogWarning($"[NetworkPlayerSpawner] Player {player.PlayerId} already has a spawned object: {existingObject.name}");
             return;
         }
 
@@ -139,7 +139,7 @@ public class NetworkPlayerSpawner : MonoBehaviour
         if (lobbyManager != null && lobbyManager.LobbyPlayers.ContainsKey(player))
         {
             teamId = lobbyManager.LobbyPlayers[player].TeamID;
-            Debug.Log($"[NetworkPlayerSpawner] Got TeamId {teamId} from lobby data for player {player.PlayerId}");
+            // Debug.Log($"[NetworkPlayerSpawner] Got TeamId {teamId} from lobby data for player {player.PlayerId}");
         }
 
         // Pick prefab based on team
@@ -147,16 +147,16 @@ public class NetworkPlayerSpawner : MonoBehaviour
         if (teamId == 1 && teamBPlayerPrefab != null)
         {
             prefabToSpawn = teamBPlayerPrefab;
-            Debug.Log($"[NetworkPlayerSpawner] Player {player.PlayerId} is Team B — using teamBPlayerPrefab.");
+            // Debug.Log($"[NetworkPlayerSpawner] Player {player.PlayerId} is Team B — using teamBPlayerPrefab.");
         }
         else
         {
-            Debug.Log($"[NetworkPlayerSpawner] Player {player.PlayerId} is Team A (or unassigned) — using playerPrefab.");
+            // Debug.Log($"[NetworkPlayerSpawner] Player {player.PlayerId} is Team A (or unassigned) — using playerPrefab.");
         }
 
         if (prefabToSpawn == null)
         {
-            Debug.LogError("[NetworkPlayerSpawner] Prefab to spawn is null! Check Inspector assignments.");
+            // Debug.LogError("[NetworkPlayerSpawner] Prefab to spawn is null! Check Inspector assignments.");
             return;
         }
 
@@ -164,14 +164,14 @@ public class NetworkPlayerSpawner : MonoBehaviour
         var networkObject = prefabToSpawn.GetComponent<NetworkObject>();
         if (networkObject == null)
         {
-            Debug.LogError($"[NetworkPlayerSpawner] Prefab '{prefabToSpawn.name}' does not have a NetworkObject component!");
+            // Debug.LogError($"[NetworkPlayerSpawner] Prefab '{prefabToSpawn.name}' does not have a NetworkObject component!");
             return;
         }
 
         Vector3 spawnPosition = GetSpawnPosition(teamId);
         Quaternion spawnRotation = Quaternion.Euler(0f, 0f, 0f);
 
-        Debug.Log($"[NetworkPlayerSpawner] Spawning player {player.PlayerId} with prefab '{prefabToSpawn.name}' at {spawnPosition}");
+        // Debug.Log($"[NetworkPlayerSpawner] Spawning player {player.PlayerId} with prefab '{prefabToSpawn.name}' at {spawnPosition}");
 
         var playerObject = _runner.Spawn(
             prefabToSpawn,
@@ -189,18 +189,18 @@ public class NetworkPlayerSpawner : MonoBehaviour
             if (playerNetworkData != null)
             {
                 playerNetworkData.TeamId = teamId;
-                Debug.Log($"[NetworkPlayerSpawner] Set TeamId {teamId} on PlayerNetworkData for player {player.PlayerId}");
+                // Debug.Log($"[NetworkPlayerSpawner] Set TeamId {teamId} on PlayerNetworkData for player {player.PlayerId}");
             }
             else
             {
-                Debug.LogError($"[NetworkPlayerSpawner] PlayerNetworkData component not found on spawned player {player.PlayerId}!");
+                // Debug.LogError($"[NetworkPlayerSpawner] PlayerNetworkData component not found on spawned player {player.PlayerId}!");
             }
             
-            Debug.Log($"[NetworkPlayerSpawner] Successfully spawned and registered player {player.PlayerId}. Object ID: {playerObject.Id}");
+            // Debug.Log($"[NetworkPlayerSpawner] Successfully spawned and registered player {player.PlayerId}. Object ID: {playerObject.Id}");
         }
         else
         {
-            Debug.LogError($"[NetworkPlayerSpawner] Failed to spawn player {player.PlayerId} - Runner.Spawn returned null!");
+            // Debug.LogError($"[NetworkPlayerSpawner] Failed to spawn player {player.PlayerId} - Runner.Spawn returned null!");
         }
     }
 
@@ -208,12 +208,12 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
     private Vector3 GetSpawnPosition(int teamId)
     {
-        Debug.Log($"[NetworkPlayerSpawner] GetSpawnPosition called for TeamId: {teamId}");
+        // Debug.Log($"[NetworkPlayerSpawner] GetSpawnPosition called for TeamId: {teamId}");
 
         // For FreeForAll (teamId = -1), use any spawn point with teamId = -1
         if (teamId == -1)
         {
-            Debug.Log("[NetworkPlayerSpawner] FreeForAll mode - looking for FreeForAll spawn points (teamId = -1)");
+            // Debug.Log("[NetworkPlayerSpawner] FreeForAll mode - looking for FreeForAll spawn points (teamId = -1)");
             var freeForAllSpawns = spawnPoints.Where(p => p.teamId == -1).ToList();
             if (freeForAllSpawns.Count > 0)
             {
@@ -222,7 +222,7 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
                 var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
                 occupiedSpawnIndices.Add(spawnPoints.IndexOf(spawnPoint));
-                Debug.Log($"[NetworkPlayerSpawner] Selected FreeForAll spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
+                // Debug.Log($"[NetworkPlayerSpawner] Selected FreeForAll spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
                 return spawnPoint.transform.position;
             }
         }
@@ -236,25 +236,25 @@ public class NetworkPlayerSpawner : MonoBehaviour
 
             var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
             occupiedSpawnIndices.Add(spawnPoints.IndexOf(spawnPoint));
-            Debug.Log($"[NetworkPlayerSpawner] Selected team spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
+            // Debug.Log($"[NetworkPlayerSpawner] Selected team spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
             return spawnPoint.transform.position;
         }
 
         // If no team-specific spawns, use any available spawn point as a fallback
         if (spawnPoints.Count > 0)
         {
-            Debug.LogWarning($"[NetworkPlayerSpawner] No spawn points found for team {teamId}. Using any available spawn point.");
+            // Debug.LogWarning($"[NetworkPlayerSpawner] No spawn points found for team {teamId}. Using any available spawn point.");
             var availableSpawns = spawnPoints.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
             if (availableSpawns.Count == 0) availableSpawns = spawnPoints;
 
             var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
             occupiedSpawnIndices.Add(spawnPoints.IndexOf(spawnPoint));
-            Debug.Log($"[NetworkPlayerSpawner] Selected fallback spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
+            // Debug.Log($"[NetworkPlayerSpawner] Selected fallback spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
             return spawnPoint.transform.position;
         }
 
         // Fallback to random position if no spawn points are found at all
-        Debug.LogError("[NetworkPlayerSpawner] No spawn points found in scene. Using random position as fallback.");
+        // Debug.LogError("[NetworkPlayerSpawner] No spawn points found in scene. Using random position as fallback.");
         return new Vector3(Random.Range(-spawnRadius, spawnRadius), 1, Random.Range(-spawnRadius, spawnRadius));
     }
 
@@ -319,14 +319,14 @@ public class NetworkPlayerSpawner : MonoBehaviour
                     if (bomb.Object != null && bomb.Object.HasInputAuthority)
                     {
                         _cachedLocalBombBehaviour = bomb;
-                        Debug.Log($"[NetworkPlayerSpawner] OnInput — found local bomb behaviour via fallback scan: {bomb.gameObject.name}");
+                        // Debug.Log($"[NetworkPlayerSpawner] OnInput — found local bomb behaviour via fallback scan: {bomb.gameObject.name}");
                         break;
                     }
                 }
 
                 if (_cachedLocalBombBehaviour == null && Time.frameCount % 120 == 0)
                 {
-                    Debug.LogWarning("[NetworkPlayerSpawner] OnInput — local player object is NULL. Bomb input will NOT be sent.");
+                    // Debug.LogWarning("[NetworkPlayerSpawner] OnInput — local player object is NULL. Bomb input will NOT be sent.");
                 }
             }
         }

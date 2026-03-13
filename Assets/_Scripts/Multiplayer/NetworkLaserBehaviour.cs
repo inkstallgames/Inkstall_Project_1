@@ -82,31 +82,31 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
     public void RequestShoot()
     {
-        Debug.Log("[NetworkLaserBehaviour] RequestShoot() called!");
+        // Debug.Log("[NetworkLaserBehaviour] RequestShoot() called!");
         wantsToShoot = true;
     }
 
     public void StopShooting()
     {
-        Debug.Log("[NetworkLaserBehaviour] StopShooting() called!");
+        // Debug.Log("[NetworkLaserBehaviour] StopShooting() called!");
         wantsToShoot = false;
     }
 
     public void CollectNetworkInput(ref StarterAssets.NetworkInputData inputData)
     {
-        Debug.Log($"[NetworkLaserBehaviour] *** CollectNetworkInput *** wantsToShoot: {wantsToShoot} | isShootingContinuously: {isShootingContinuously} | inputData.isShooting: {inputData.isShooting}");
+        // Debug.Log($"[NetworkLaserBehaviour] *** CollectNetworkInput *** wantsToShoot: {wantsToShoot} | isShootingContinuously: {isShootingContinuously} | inputData.isShooting: {inputData.isShooting}");
         
         // Set shooting state based on wantsToShoot (frame-persistent)
         if (wantsToShoot)
         {
             isShootingContinuously = true;
-            Debug.Log("[NetworkLaserBehaviour] *** INPUT: wantsToShoot true -> isShootingContinuously true");
+            // Debug.Log("[NetworkLaserBehaviour] *** INPUT: wantsToShoot true -> isShootingContinuously true");
         }
         // Only reset if wantsToShoot is false AND we were previously shooting
         else if (!wantsToShoot && isShootingContinuously)
         {
             isShootingContinuously = false;
-            Debug.Log("[NetworkLaserBehaviour] *** INPUT: wantsToShoot false & was shooting -> isShootingContinuously false");
+            // Debug.Log("[NetworkLaserBehaviour] *** INPUT: wantsToShoot false & was shooting -> isShootingContinuously false");
         }
         
         inputData.isShooting = isShootingContinuously;
@@ -120,7 +120,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         // DON'T reset wantsToShoot here - let it persist until explicitly cleared
         // wantsToShoot = false; // REMOVED THIS LINE
         
-        Debug.Log($"[NetworkLaserBehaviour] *** CollectNetworkInput END *** inputData.isShooting: {inputData.isShooting} | isShootingContinuously: {isShootingContinuously}");
+        // Debug.Log($"[NetworkLaserBehaviour] *** CollectNetworkInput END *** inputData.isShooting: {inputData.isShooting} | isShootingContinuously: {isShootingContinuously}");
     }
 
     public override void FixedUpdateNetwork()
@@ -140,7 +140,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 {
                     if (Object.HasStateAuthority)
                     {
-                        Debug.Log($"[NetworkLaserBehaviour] *** RELOAD COMPLETE! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy} → {maxEnergy} (FULL RELOAD)");
+                        // Debug.Log($"[NetworkLaserBehaviour] *** RELOAD COMPLETE! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy} → {maxEnergy} (FULL RELOAD)");
                         CurrentEnergy = maxEnergy;
                         IsReloading = false;
                         ReloadTimer = TickTimer.None;
@@ -151,7 +151,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 {
                     // Still reloading - don't allow normal regen
                     float remainingTime = ReloadTimer.RemainingTime(Runner) ?? 0f;
-                    Debug.Log($"[NetworkLaserBehaviour] *** RELOADING... *** Player {Object.InputAuthority.PlayerId} | {remainingTime:F1}s remaining");
+                    // Debug.Log($"[NetworkLaserBehaviour] *** RELOADING... *** Player {Object.InputAuthority.PlayerId} | {remainingTime:F1}s remaining");
                     return;
                 }
             }
@@ -166,7 +166,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                     
                     if (energyGained > 0)
                     {
-                        Debug.Log($"[NetworkLaserBehaviour] *** ENERGY RECHARGING *** Player {Object.InputAuthority.PlayerId} | Energy: {oldEnergy} → {CurrentEnergy}/{maxEnergy} (+{energyGained})");
+                        // Debug.Log($"[NetworkLaserBehaviour] *** ENERGY RECHARGING *** Player {Object.InputAuthority.PlayerId} | Energy: {oldEnergy} → {CurrentEnergy}/{maxEnergy} (+{energyGained})");
                     }
                     
                     RPC_UpdateEnergy(CurrentEnergy);
@@ -179,23 +179,23 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             if (Object.HasStateAuthority)
             {
                 EnergyRegenTimer = TickTimer.CreateFromSeconds(Runner, regenDelay);
-                Debug.Log($"[NetworkLaserBehaviour] *** RECHARGE DELAY STARTED *** Player {Object.InputAuthority.PlayerId} - Energy regen paused for {regenDelay}s");
+                // Debug.Log($"[NetworkLaserBehaviour] *** RECHARGE DELAY STARTED *** Player {Object.InputAuthority.PlayerId} - Energy regen paused for {regenDelay}s");
             }
         }
 
         if (input.isShooting && CurrentEnergy > 0 && !IsReloading)
         {
-            Debug.Log($"[NetworkLaserBehaviour] *** SHOOTING CONDITIONS MET *** isShooting: {input.isShooting} | CurrentEnergy: {CurrentEnergy} | isBeamActive: {isBeamActive} | IsReloading: {IsReloading}");
+            // Debug.Log($"[NetworkLaserBehaviour] *** SHOOTING CONDITIONS MET *** isShooting: {input.isShooting} | CurrentEnergy: {CurrentEnergy} | isBeamActive: {isBeamActive} | IsReloading: {IsReloading}");
             
             // Start continuous beam if not already active
             if (!isBeamActive)
             {
-                Debug.Log("[NetworkLaserBehaviour] *** BRANCH: Starting new beam ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** BRANCH: Starting new beam ***");
                 TryShoot(input.aimOrigin, input.aimDirection, false); // Initial shot, NO energy consumption
             }
             else if (isBeamActive)
             {
-                Debug.Log("[NetworkLaserBehaviour] *** BRANCH: Updating continuous beam ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** BRANCH: Updating continuous beam ***");
                 // Update continuous beam
                 Vector3 origin = firePoint != null ? firePoint.position : input.aimOrigin;
                 Vector3 direction = input.aimDirection;
@@ -212,20 +212,20 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 // Consume energy and update network (only on state authority)
                 if (Object.HasStateAuthority)
                 {
-                    Debug.Log($"[NetworkLaserBehaviour] *** ENERGY PER SHOT VALUE *** {energyPerShot}");
+                    // Debug.Log($"[NetworkLaserBehaviour] *** ENERGY PER SHOT VALUE *** {energyPerShot}");
                     CurrentEnergy -= energyPerShot;
-                    Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS ENERGY CONSUMPTION *** Energy: {CurrentEnergy + energyPerShot} → {CurrentEnergy} (-{energyPerShot})");
+                    // Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS ENERGY CONSUMPTION *** Energy: {CurrentEnergy + energyPerShot} → {CurrentEnergy} (-{energyPerShot})");
                     if (CurrentEnergy <= 0)
                     {
                         CurrentEnergy = 0;
-                        Debug.Log($"[NetworkLaserBehaviour] *** ENERGY DEPLETED! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy}");
-                        Debug.Log($"[NetworkLaserBehaviour] *** STARTING RELOAD *** Starting {reloadTime}s reload timer");
+                        // Debug.Log($"[NetworkLaserBehaviour] *** ENERGY DEPLETED! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy}");
+                        // Debug.Log($"[NetworkLaserBehaviour] *** STARTING RELOAD *** Starting {reloadTime}s reload timer");
                         StopContinuousBeam();
                         
                         // Start reload process
                         IsReloading = true;
                         ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
-                        Debug.Log($"[NetworkLaserBehaviour] *** RELOAD TIMER STARTED *** Reload will complete in {reloadTime}s");
+                        // Debug.Log($"[NetworkLaserBehaviour] *** RELOAD TIMER STARTED *** Reload will complete in {reloadTime}s");
                     }
                     RPC_UpdateEnergy(CurrentEnergy);
                 }
@@ -237,14 +237,14 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             if (input.isShooting && IsReloading)
             {
                 float remainingTime = ReloadTimer.RemainingTime(Runner) ?? 0f;
-                Debug.Log($"[NetworkLaserBehaviour] *** SHOOTING BLOCKED - RELOADING *** Player {Object.InputAuthority.PlayerId} | {remainingTime:F1}s remaining");
+                // Debug.Log($"[NetworkLaserBehaviour] *** SHOOTING BLOCKED - RELOADING *** Player {Object.InputAuthority.PlayerId} | {remainingTime:F1}s remaining");
             }
             else if (input.isShooting && CurrentEnergy <= 0)
             {
-                Debug.Log($"[NetworkLaserBehaviour] *** SHOOTING BLOCKED - NO ENERGY *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy}");
+                // Debug.Log($"[NetworkLaserBehaviour] *** SHOOTING BLOCKED - NO ENERGY *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy}");
             }
             
-            Debug.Log($"[NetworkLaserBehaviour] *** STOPPING BEAM CONDITIONS *** isShooting: {input.isShooting} | CurrentEnergy: {CurrentEnergy} | isBeamActive: {isBeamActive}");
+            // Debug.Log($"[NetworkLaserBehaviour] *** STOPPING BEAM CONDITIONS *** isShooting: {input.isShooting} | CurrentEnergy: {CurrentEnergy} | isBeamActive: {isBeamActive}");
             // Stop continuous beam when not shooting or out of energy/overheated
             StopContinuousBeam();
         }
@@ -260,7 +260,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         
         if (equipSystem != null && !equipSystem.IsLaserEquipped())
         {
-            Debug.Log("[NetworkLaserBehaviour] TryShoot — skipped, laser not equipped.");
+            // Debug.Log("[NetworkLaserBehaviour] TryShoot — skipped, laser not equipped.");
             return;
         }
 
@@ -271,7 +271,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
         if (CurrentEnergy < energyPerShot && consumeEnergy)
         {
-            Debug.Log($"[NetworkLaserBehaviour] *** ENERGY DEPLETED! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy} | Need: {energyPerShot}");
+            // Debug.Log($"[NetworkLaserBehaviour] *** ENERGY DEPLETED! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy} | Need: {energyPerShot}");
             return;
         }
 
@@ -281,32 +281,32 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             CurrentEnergy -= energyPerShot;
             FireCooldownTimer = TickTimer.CreateFromSeconds(Runner, fireRate);
             
-            Debug.Log($"[NetworkLaserBehaviour] *** LASER FIRED! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy} (-{energyPerShot}) | Direction: {direction}");
+            // Debug.Log($"[NetworkLaserBehaviour] *** LASER FIRED! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy} (-{energyPerShot}) | Direction: {direction}");
         }
         else
         {
-            Debug.Log($"[NetworkLaserBehaviour] *** INITIAL BEAM SETUP *** Player {Object.InputAuthority.PlayerId} | No energy consumed | Direction: {direction}");
+            // Debug.Log($"[NetworkLaserBehaviour] *** INITIAL BEAM SETUP *** Player {Object.InputAuthority.PlayerId} | No energy consumed | Direction: {direction}");
         }
 
         Vector3 shootOrigin = firePoint != null ? firePoint.position : origin;
         
         if (Physics.Raycast(shootOrigin, direction, out RaycastHit hit, range, hitLayers))
         {
-            Debug.Log($"[NetworkLaserBehaviour] Laser hit: {hit.collider.name} at distance {hit.distance}");
+            // Debug.Log($"[NetworkLaserBehaviour] Laser hit: {hit.collider.name} at distance {hit.distance}");
 
             var targetPlayerData = hit.collider.GetComponentInParent<PlayerNetworkData>();
             if (targetPlayerData != null)
             {
-                Debug.Log($"[NetworkLaserBehaviour] *** LASER HIT PLAYER *** Target: {targetPlayerData.PlayerName} (ID:{targetPlayerData.Object.InputAuthority.PlayerId}) | Shooter: Player {Object.InputAuthority.PlayerId}");
+                // Debug.Log($"[NetworkLaserBehaviour] *** LASER HIT PLAYER *** Target: {targetPlayerData.PlayerName} (ID:{targetPlayerData.Object.InputAuthority.PlayerId}) | Shooter: Player {Object.InputAuthority.PlayerId}");
                 
                 if (targetPlayerData.Object.InputAuthority != Object.InputAuthority)
                 {
                     targetPlayerData.RPC_TakeDamage(damage, Object.InputAuthority);
-                    Debug.Log($"[NetworkLaserBehaviour] Dealt {damage} laser damage to {targetPlayerData.PlayerName}");
+                    // Debug.Log($"[NetworkLaserBehaviour] Dealt {damage} laser damage to {targetPlayerData.PlayerName}");
                 }
                 else
                 {
-                    Debug.Log($"[NetworkLaserBehaviour] Cannot shoot yourself! Ignoring hit.");
+                    // Debug.Log($"[NetworkLaserBehaviour] Cannot shoot yourself! Ignoring hit.");
                 }
             }
 
@@ -324,7 +324,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnLaserShot(Vector3 origin, Vector3 endPoint, bool didHit, Vector3 hitPoint, Vector3 hitNormal)
     {
-        Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS BEAM STARTED *** Player {Object.InputAuthority.PlayerId}");
+        // Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS BEAM STARTED *** Player {Object.InputAuthority.PlayerId}");
         
         // Start continuous beam instead of instant effects
         StartContinuousBeam(origin, endPoint, hitPoint, hitNormal, didHit);
@@ -351,7 +351,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
     private System.Collections.IEnumerator ShowMuzzleFlash()
     {
-        Debug.Log($"[NetworkLaserBehaviour] *** LASER MUZZLE FLASH *** Player {Object.InputAuthority.PlayerId} - Muzzle flash visible");
+        // Debug.Log($"[NetworkLaserBehaviour] *** LASER MUZZLE FLASH *** Player {Object.InputAuthority.PlayerId} - Muzzle flash visible");
         
         if (muzzleFlashPrefab != null)
         {
@@ -361,7 +361,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             
             // CRITICAL: Ensure the GameObject is active!
             tempMuzzleFlash.SetActive(true);
-            Debug.Log($"[NetworkLaserBehaviour] Muzzle flash GameObject activated: {tempMuzzleFlash.activeInHierarchy}");
+            // Debug.Log($"[NetworkLaserBehaviour] Muzzle flash GameObject activated: {tempMuzzleFlash.activeInHierarchy}");
             
             // Use particle system
             var muzzleEffect = tempMuzzleFlash.GetComponent<MuzzleFlashEffect>();
@@ -369,11 +369,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             {
                 muzzleEffect.SetContinuousMode(false); // Single burst mode
                 muzzleEffect.Play();
-                Debug.Log("[NetworkLaserBehaviour] *** SINGLE MUZZLE FLASH PARTICLE EFFECT PLAYED ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** SINGLE MUZZLE FLASH PARTICLE EFFECT PLAYED ***");
             }
             else
             {
-                Debug.LogWarning("[NetworkLaserBehaviour] MuzzleFlashEffect component not found on muzzle flash prefab!");
+                // Debug.LogWarning("[NetworkLaserBehaviour] MuzzleFlashEffect component not found on muzzle flash prefab!");
             }
             
             yield return new WaitForSeconds(0.05f); // Short flash duration
@@ -384,7 +384,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 muzzleEffect.Stop();
             }
             Destroy(tempMuzzleFlash);
-            Debug.Log($"[NetworkLaserBehaviour] *** LASER MUZZLE FLASH *** Player {Object.InputAuthority.PlayerId} - Muzzle flash hidden");
+            // Debug.Log($"[NetworkLaserBehaviour] *** LASER MUZZLE FLASH *** Player {Object.InputAuthority.PlayerId} - Muzzle flash hidden");
         }
     }
 
@@ -396,11 +396,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     
     private void StartContinuousBeam(Vector3 origin, Vector3 direction, Vector3 hitPoint, Vector3 hitNormal, bool didHit)
     {
-        Debug.Log($"[NetworkLaserBehaviour] *** StartContinuousBeam CALLED *** isBeamActive: {isBeamActive} | didHit: {didHit}");
+        // Debug.Log($"[NetworkLaserBehaviour] *** StartContinuousBeam CALLED *** isBeamActive: {isBeamActive} | didHit: {didHit}");
         
         if (isBeamActive)
         {
-            Debug.Log("[NetworkLaserBehaviour] *** BEAM ALREADY ACTIVE - SKIPPING CREATION ***");
+            // Debug.Log("[NetworkLaserBehaviour] *** BEAM ALREADY ACTIVE - SKIPPING CREATION ***");
             return;
         }
         
@@ -424,11 +424,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 continuousBeam.SetPosition(0, origin);
                 continuousBeam.SetPosition(1, origin + direction * 100f);
                 continuousBeam.enabled = true;
-                Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS BEAM CREATED *** #{++beamDestructionCount}");
+                // Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS BEAM CREATED *** #{++beamDestructionCount}");
             }
             else
             {
-                Debug.LogError("[NetworkLaserBehaviour] *** BEAM CREATION FAILED *** LineRenderer component not found!");
+                // Debug.LogError("[NetworkLaserBehaviour] *** BEAM CREATION FAILED *** LineRenderer component not found!");
                 Destroy(beamObj);
                 return;
             }
@@ -445,11 +445,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             if (impactEffect != null)
             {
                 impactEffect.SetContinuousMode(true);
-                Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT MODE SET ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT MODE SET ***");
             }
             else
             {
-                Debug.Log("[NetworkLaserBehaviour] *** WARNING: LaserImpactEffect component not found on impact prefab ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** WARNING: LaserImpactEffect component not found on impact prefab ***");
             }
             
             // Get the particle system and make sure it plays
@@ -457,14 +457,14 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             if (impactParticles != null)
             {
                 impactParticles.Play();
-                Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT PARTICLES STARTED ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT PARTICLES STARTED ***");
             }
             else
             {
-                Debug.Log("[NetworkLaserBehaviour] *** WARNING: ParticleSystem component not found on impact prefab ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** WARNING: ParticleSystem component not found on impact prefab ***");
             }
             
-            Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT CREATED ***");
+            // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT CREATED ***");
         }
         
         // Create continuous muzzle flash
@@ -479,26 +479,26 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             {
                 muzzleEffect.SetContinuousMode(true);
                 muzzleEffect.Play();
-                Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS MUZZLE FLASH MODE SET ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS MUZZLE FLASH MODE SET ***");
             }
             else
             {
-                Debug.Log("[NetworkLaserBehaviour] *** WARNING: MuzzleFlashEffect component not found on muzzle flash prefab ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** WARNING: MuzzleFlashEffect component not found on muzzle flash prefab ***");
                 
                 // Fallback to old quad behavior
                 continuousMuzzleFlash.SetActive(true);
             }
             
-            Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS MUZZLE FLASH CREATED ***");
+            // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS MUZZLE FLASH CREATED ***");
         }
         
         isBeamActive = true;
-        Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS BEAM STARTED ***");
+        // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS BEAM STARTED ***");
     }
     
     private void UpdateContinuousBeam(Vector3 origin, Vector3 endPoint, Vector3 hitPoint, Vector3 hitNormal, bool didHit)
     {
-        Debug.Log($"[NetworkLaserBehaviour] *** UpdateContinuousBeam CALLED *** isBeamActive: {isBeamActive} | continuousBeam: {continuousBeam != null} | beamEnabled: {(continuousBeam != null ? continuousBeam.enabled.ToString() : "null")}");
+        // Debug.Log($"[NetworkLaserBehaviour] *** UpdateContinuousBeam CALLED *** isBeamActive: {isBeamActive} | continuousBeam: {continuousBeam != null} | beamEnabled: {(continuousBeam != null ? continuousBeam.enabled.ToString() : "null")}");
         
         // Only update positions if beam is already active
         if (isBeamActive && continuousBeam != null)
@@ -511,24 +511,24 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             if (!continuousBeam.enabled)
             {
                 continuousBeam.enabled = true;
-                Debug.Log("[NetworkLaserBehaviour] *** BEAM RE-ENABLED ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** BEAM RE-ENABLED ***");
             }
             
-            Debug.Log($"[NetworkLaserBehaviour] *** BEAM POSITIONS UPDATED *** {origin} → {endPoint}");
+            // Debug.Log($"[NetworkLaserBehaviour] *** BEAM POSITIONS UPDATED *** {origin} → {endPoint}");
             
             // Update continuous impact position
             if (continuousImpact != null && didHit)
             {
                 continuousImpact.transform.position = hitPoint;
                 continuousImpact.transform.rotation = Quaternion.LookRotation(hitNormal);
-                Debug.Log($"[NetworkLaserBehaviour] *** IMPACT POSITION UPDATED *** Position: {hitPoint}");
+                // Debug.Log($"[NetworkLaserBehaviour] *** IMPACT POSITION UPDATED *** Position: {hitPoint}");
                 
                 // Make sure particles are still playing
                 var impactParticles = continuousImpact.GetComponent<ParticleSystem>();
                 if (impactParticles != null && !impactParticles.isPlaying)
                 {
                     impactParticles.Play();
-                    Debug.Log("[NetworkLaserBehaviour] *** IMPACT PARTICLES RESTARTED ***");
+                    // Debug.Log("[NetworkLaserBehaviour] *** IMPACT PARTICLES RESTARTED ***");
                 }
             }
             
@@ -542,13 +542,13 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         else if (isBeamActive && continuousBeam == null)
         {
             // Beam was destroyed unexpectedly - recreate it
-            Debug.Log("[NetworkLaserBehaviour] *** BEAM DESTROYED UNEXPECTEDLY - RECREATING ***");
+            // Debug.Log("[NetworkLaserBehaviour] *** BEAM DESTROYED UNEXPECTEDLY - RECREATING ***");
             isBeamActive = false; // Reset flag before recreation
             StartContinuousBeam(origin, playerCamera != null ? playerCamera.transform.forward : Vector3.forward, hitPoint, hitNormal, didHit);
         }
         else
         {
-            Debug.Log($"[NetworkLaserBehaviour] *** BEAM UPDATE SKIPPED *** isBeamActive: {isBeamActive} | continuousBeam: {continuousBeam != null}");
+            // Debug.Log($"[NetworkLaserBehaviour] *** BEAM UPDATE SKIPPED *** isBeamActive: {isBeamActive} | continuousBeam: {continuousBeam != null}");
         }
     }
     
@@ -556,24 +556,24 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     {
         if (continuousBeam != null)
         {
-            Debug.Log($"[NetworkLaserBehaviour] *** ONDESTROY CALLED *** Beam was destroyed externally! #{beamDestructionCount}");
+            // Debug.Log($"[NetworkLaserBehaviour] *** ONDESTROY CALLED *** Beam was destroyed externally! #{beamDestructionCount}");
             continuousBeam = null;
         }
     }
     
     private void StopContinuousBeam()
     {
-        Debug.Log($"[NetworkLaserBehaviour] *** StopContinuousBeam CALLED *** isBeamActive: {isBeamActive} | continuousBeam: {(continuousBeam != null ? "exists" : "null")}");
+        // Debug.Log($"[NetworkLaserBehaviour] *** StopContinuousBeam CALLED *** isBeamActive: {isBeamActive} | continuousBeam: {(continuousBeam != null ? "exists" : "null")}");
         
         if (isBeamActive)
         {
-            Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS BEAM STOPPED ***");
+            // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS BEAM STOPPED ***");
             isBeamActive = false;
             
             // Clean up continuous beam
             if (continuousBeam != null)
             {
-                Debug.Log($"[NetworkLaserBehaviour] *** DESTROYING CONTINUOUS BEAM *** #{beamDestructionCount} | Caller: {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name}");
+                // Debug.Log($"[NetworkLaserBehaviour] *** DESTROYING CONTINUOUS BEAM *** #{beamDestructionCount} | Caller: {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name}");
                 Destroy(continuousBeam.gameObject);
                 continuousBeam = null;
             }
@@ -581,7 +581,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             // Clean up continuous muzzle flash
             if (continuousMuzzleFlash != null)
             {
-                Debug.Log("[NetworkLaserBehaviour] *** DESTROYING CONTINUOUS MUZZLE FLASH ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** DESTROYING CONTINUOUS MUZZLE FLASH ***");
                 
                 // Stop particle system if it has the component
                 var muzzleEffect = continuousMuzzleFlash.GetComponent<MuzzleFlashEffect>();
@@ -597,14 +597,14 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             // Clean up continuous impact
             if (continuousImpact != null)
             {
-                Debug.Log("[NetworkLaserBehaviour] *** DESTROYING CONTINUOUS IMPACT ***");
+                // Debug.Log("[NetworkLaserBehaviour] *** DESTROYING CONTINUOUS IMPACT ***");
                 Destroy(continuousImpact);
                 continuousImpact = null;
             }
         }
         else
         {
-            Debug.Log("[NetworkLaserBehaviour] *** STOP BEAM CALLED BUT BEAM NOT ACTIVE ***");
+            // Debug.Log("[NetworkLaserBehaviour] *** STOP BEAM CALLED BUT BEAM NOT ACTIVE ***");
         }
     }
     

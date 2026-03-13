@@ -25,7 +25,7 @@ public class WeaponEquipInputHandler : MonoBehaviour
     {
         equipSystem = GetComponent<NetworkWeaponEquipSystem>();
         playerData = GetComponent<PlayerNetworkData>();
-        Debug.Log($"[WeaponEquipInputHandler] Start called. EquipSystem found: {equipSystem != null}");
+        // Debug.Log($"[WeaponEquipInputHandler] Start called. EquipSystem found: {equipSystem != null}");
     }
     
     private void CheckLocalPlayer()
@@ -38,7 +38,7 @@ public class WeaponEquipInputHandler : MonoBehaviour
             hasCheckedLocalPlayer = true;
             FindUIButtonsAtRuntime();
             SetupUIButtons();
-            Debug.Log($"[WeaponEquipInputHandler] Local player detected! Input handling enabled.");
+            // Debug.Log($"[WeaponEquipInputHandler] Local player detected! Input handling enabled.");
         }
     }
 
@@ -53,11 +53,11 @@ public class WeaponEquipInputHandler : MonoBehaviour
             if (primaryButtonObj != null)
             {
                 primaryButton = primaryButtonObj.GetComponent<Button>();
-                Debug.Log($"[WeaponEquipInputHandler] Found {buttonTag} at runtime using tag");
+                // Debug.Log($"[WeaponEquipInputHandler] Found {buttonTag} at runtime using tag");
             }
             else
             {
-                Debug.LogWarning($"[WeaponEquipInputHandler] {buttonTag} not found! Make sure a UI button has the tag '{buttonTag}'");
+                // Debug.LogWarning($"[WeaponEquipInputHandler] {buttonTag} not found! Make sure a UI button has the tag '{buttonTag}'");
             }
         }
 
@@ -67,11 +67,11 @@ public class WeaponEquipInputHandler : MonoBehaviour
             if (bombButtonObj != null)
             {
                 bombButton = bombButtonObj.GetComponent<Button>();
-                Debug.Log($"[WeaponEquipInputHandler] Found BombButton at runtime using tag");
+                // Debug.Log($"[WeaponEquipInputHandler] Found BombButton at runtime using tag");
             }
             else
             {
-                Debug.LogWarning($"[WeaponEquipInputHandler] BombButton not found! Make sure a UI button has the tag 'BombButton'");
+                // Debug.LogWarning($"[WeaponEquipInputHandler] BombButton not found! Make sure a UI button has the tag 'BombButton'");
             }
         }
     }
@@ -82,13 +82,13 @@ public class WeaponEquipInputHandler : MonoBehaviour
         {
             primaryButton.onClick.AddListener(OnPrimaryButtonPressed);
             string weaponName = playerData != null && playerData.TeamId == 1 ? "Laser" : "Pistol";
-            Debug.Log($"[WeaponEquipInputHandler] {weaponName} equip button listener added (shared button)");
+            // Debug.Log($"[WeaponEquipInputHandler] {weaponName} equip button listener added (shared button)");
         }
 
         if (bombButton != null)
         {
             bombButton.onClick.AddListener(OnBombButtonPressed);
-            Debug.Log($"[WeaponEquipInputHandler] Bomb button listener added");
+            // Debug.Log($"[WeaponEquipInputHandler] Bomb button listener added");
         }
     }
 
@@ -108,13 +108,13 @@ public class WeaponEquipInputHandler : MonoBehaviour
         if (Input.GetKeyDown(primaryKey))
         {
             string weaponName = playerData != null && playerData.TeamId == 1 ? "LASER" : "PISTOL";
-            Debug.Log($"[WeaponEquipInputHandler] Key '1' pressed - Requesting to equip {weaponName}");
+            // Debug.Log($"[WeaponEquipInputHandler] Key '1' pressed - Requesting to equip {weaponName}");
             equipSystem.RequestEquipPrimary();
         }
 
         if (Input.GetKeyDown(bombKey))
         {
-            Debug.Log("[WeaponEquipInputHandler] Key '2' pressed - Requesting to equip BOMB");
+            // Debug.Log("[WeaponEquipInputHandler] Key '2' pressed - Requesting to equip BOMB");
             equipSystem.RequestEquipBomb();
         }
     }
@@ -124,7 +124,7 @@ public class WeaponEquipInputHandler : MonoBehaviour
         if (equipSystem != null)
         {
             string weaponName = playerData != null && playerData.TeamId == 1 ? "LASER" : "PISTOL";
-            Debug.Log($"[WeaponEquipInputHandler] {weaponName} button pressed - Requesting to equip {weaponName}");
+            // Debug.Log($"[WeaponEquipInputHandler] {weaponName} button pressed - Requesting to equip {weaponName}");
             equipSystem.RequestEquipPrimary();
         }
     }
@@ -133,7 +133,7 @@ public class WeaponEquipInputHandler : MonoBehaviour
     {
         if (equipSystem != null)
         {
-            Debug.Log("[WeaponEquipInputHandler] Bomb button pressed - Requesting to equip BOMB");
+            // Debug.Log("[WeaponEquipInputHandler] Bomb button pressed - Requesting to equip BOMB");
             equipSystem.RequestEquipBomb();
         }
     }

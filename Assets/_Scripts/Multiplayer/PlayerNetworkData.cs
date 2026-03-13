@@ -157,11 +157,11 @@ public class PlayerNetworkData : NetworkBehaviour
         if (Health <= 0) return; // Already dead
 
         Health = Mathf.Max(0, Health - damage);
-        Debug.Log($"[PlayerNetworkData] Player {PlayerName} (ID:{Object.InputAuthority}) took {damage} damage. Health: {Health}/100. Source: {sourcePlayer}");
+        // Debug.Log($"[PlayerNetworkData] Player {PlayerName} (ID:{Object.InputAuthority}) took {damage} damage. Health: {Health}/100. Source: {sourcePlayer}");
         
         if (Health <= 0)
         {
-            Debug.Log($"[PlayerNetworkData] *** HEALTH DEPLETED *** Player {PlayerName} (ID:{Object.InputAuthority}) was eliminated by Player {sourcePlayer}!");
+            // Debug.Log($"[PlayerNetworkData] *** HEALTH DEPLETED *** Player {PlayerName} (ID:{Object.InputAuthority}) was eliminated by Player {sourcePlayer}!");
             // Player died
             Deaths++;
             
@@ -220,7 +220,7 @@ public class PlayerNetworkData : NetworkBehaviour
 
         // Handle death effects, animations, etc.
 
-        Debug.Log($"{PlayerName} died!");
+        // Debug.Log($"{PlayerName} died!");
 
         
 
@@ -270,7 +270,7 @@ public class PlayerNetworkData : NetworkBehaviour
 
         {
 
-            Debug.Log($"[PlayerNetworkData] Despawning player {playerName} for respawn");
+            // Debug.Log($"[PlayerNetworkData] Despawning player {playerName} for respawn");
 
             Runner.Despawn(Object);
 
@@ -282,7 +282,7 @@ public class PlayerNetworkData : NetworkBehaviour
 
             {
 
-                Debug.Log($"[PlayerNetworkData] Requesting respawn for player {playerRef.PlayerId}");
+                // Debug.Log($"[PlayerNetworkData] Requesting respawn for player {playerRef.PlayerId}");
 
                 NetworkGameManager.Instance.RespawnPlayer(playerRef, teamId, playerName);
 

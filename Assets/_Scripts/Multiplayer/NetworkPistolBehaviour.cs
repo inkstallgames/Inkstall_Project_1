@@ -121,7 +121,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         if (equipSystem != null && !equipSystem.IsPistolEquipped())
         {
-            Debug.Log("[NetworkPistolBehaviour] TryShoot — skipped, pistol not equipped.");
+            // Debug.Log("[NetworkPistolBehaviour] TryShoot — skipped, pistol not equipped.");
             return;
         }
 
@@ -133,34 +133,34 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         if (CurrentAmmo <= 0)
         {
-            Debug.Log($"[NetworkPistolBehaviour] Out of ammo! Player {Object.InputAuthority}");
+            // Debug.Log($"[NetworkPistolBehaviour] Out of ammo! Player {Object.InputAuthority}");
             return;
         }
 
         CurrentAmmo--;
         FireCooldownTimer = TickTimer.CreateFromSeconds(Runner, fireRate);
         
-        Debug.Log($"[NetworkPistolBehaviour] SHOT FIRED! Player {Object.InputAuthority.PlayerId} | Ammo: {CurrentAmmo}/{maxAmmo} | Direction: {direction}");
+        // Debug.Log($"[NetworkPistolBehaviour] SHOT FIRED! Player {Object.InputAuthority.PlayerId} | Ammo: {CurrentAmmo}/{maxAmmo} | Direction: {direction}");
 
         Vector3 shootOrigin = firePoint != null ? firePoint.position : origin;
         
         if (Physics.Raycast(shootOrigin, direction, out RaycastHit hit, range, hitLayers))
         {
-            Debug.Log($"[NetworkPistolBehaviour] Hit: {hit.collider.name} at distance {hit.distance}");
+            // Debug.Log($"[NetworkPistolBehaviour] Hit: {hit.collider.name} at distance {hit.distance}");
 
             var playerData = hit.collider.GetComponentInParent<PlayerNetworkData>();
             if (playerData != null)
             {
-                Debug.Log($"[NetworkPistolBehaviour] *** RAYCAST HIT PLAYER *** Target: {playerData.PlayerName} (ID:{playerData.Object.InputAuthority.PlayerId}) | Shooter: Player {Object.InputAuthority.PlayerId}");
+                // Debug.Log($"[NetworkPistolBehaviour] *** RAYCAST HIT PLAYER *** Target: {playerData.PlayerName} (ID:{playerData.Object.InputAuthority.PlayerId}) | Shooter: Player {Object.InputAuthority.PlayerId}");
                 
                 if (playerData.Object.InputAuthority != Object.InputAuthority)
                 {
                     playerData.RPC_TakeDamage(damage, Object.InputAuthority);
-                    Debug.Log($"[NetworkPistolBehaviour] Dealt {damage} damage to {playerData.PlayerName}");
+                    // Debug.Log($"[NetworkPistolBehaviour] Dealt {damage} damage to {playerData.PlayerName}");
                 }
                 else
                 {
-                    Debug.Log($"[NetworkPistolBehaviour] Cannot shoot yourself! Ignoring hit.");
+                    // Debug.Log($"[NetworkPistolBehaviour] Cannot shoot yourself! Ignoring hit.");
                 }
             }
 
@@ -187,20 +187,20 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         if (CurrentAmmo >= maxAmmo)
         {
-            Debug.Log($"[NetworkPistolBehaviour] Magazine already full!");
+            // Debug.Log($"[NetworkPistolBehaviour] Magazine already full!");
             return;
         }
 
         if (ReserveAmmo <= 0)
         {
-            Debug.Log($"[NetworkPistolBehaviour] No reserve ammo!");
+            // Debug.Log($"[NetworkPistolBehaviour] No reserve ammo!");
             return;
         }
 
         IsReloading = true;
         ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
         RPC_OnReloadStart();
-        Debug.Log($"[NetworkPistolBehaviour] Reloading... Player {Object.InputAuthority}");
+        // Debug.Log($"[NetworkPistolBehaviour] Reloading... Player {Object.InputAuthority}");
     }
 
     private void FinishReload()
@@ -217,13 +217,13 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         ReserveAmmo -= ammoToReload;
         IsReloading = false;
 
-        Debug.Log($"[NetworkPistolBehaviour] Reload complete! Ammo: {CurrentAmmo}/{maxAmmo}, Reserve: {ReserveAmmo}");
+        // Debug.Log($"[NetworkPistolBehaviour] Reload complete! Ammo: {CurrentAmmo}/{maxAmmo}, Reserve: {ReserveAmmo}");
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnShot(Vector3 origin, Vector3 endPoint, bool didHit, Vector3 hitPoint, Vector3 hitNormal)
     {
-        Debug.Log($"[NetworkPistolBehaviour] RPC_OnShot called!");
+        // Debug.Log($"[NetworkPistolBehaviour] RPC_OnShot called!");
         
         // Try to use new muzzle flash particle system first
         if (muzzleFlashPrefab != null && firePoint != null)
@@ -233,27 +233,27 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             
             // CRITICAL: Ensure the GameObject is active!
             tempMuzzleFlash.SetActive(true);
-            Debug.Log($"[NetworkPistolBehaviour] Muzzle flash GameObject activated: {tempMuzzleFlash.activeInHierarchy}");
+            // Debug.Log($"[NetworkPistolBehaviour] Muzzle flash GameObject activated: {tempMuzzleFlash.activeInHierarchy}");
             
             var muzzleEffect = tempMuzzleFlash.GetComponent<MuzzleFlashEffect>();
             if (muzzleEffect != null)
             {
                 muzzleEffect.SetContinuousMode(false); // Single burst mode for pistol
                 muzzleEffect.Play();
-                Debug.Log("[NetworkPistolBehaviour] *** PISTOL MUZZLE FLASH PARTICLE EFFECT PLAYED ***");
+                // Debug.Log("[NetworkPistolBehaviour] *** PISTOL MUZZLE FLASH PARTICLE EFFECT PLAYED ***");
                 
                 // Auto-destroy after effect
                 Destroy(tempMuzzleFlash, 0.3f);
             }
             else
             {
-                Debug.LogWarning("[NetworkPistolBehaviour] MuzzleFlashEffect component not found on muzzle flash prefab!");
+                // Debug.LogWarning("[NetworkPistolBehaviour] MuzzleFlashEffect component not found on muzzle flash prefab!");
                 Destroy(tempMuzzleFlash, 0.3f);
             }
         }
         else
         {
-            Debug.LogWarning("[NetworkPistolBehaviour] No muzzle flash prefab assigned!");
+            // Debug.LogWarning("[NetworkPistolBehaviour] No muzzle flash prefab assigned!");
         }
 
         if (shootSound != null)

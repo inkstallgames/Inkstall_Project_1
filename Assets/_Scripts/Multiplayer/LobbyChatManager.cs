@@ -31,7 +31,7 @@ public class LobbyChatManager : NetworkBehaviour
         // Safety check - ensure we have a valid message
         if (string.IsNullOrEmpty(message))
         {
-            Debug.LogWarning("Received empty chat message");
+            // Debug.LogWarning("Received empty chat message");
             return;
         }
 
@@ -39,7 +39,7 @@ public class LobbyChatManager : NetworkBehaviour
         const int MAX_MESSAGE_LENGTH = 80; // Reduced further to account for RPC overhead
         if (message.Length > MAX_MESSAGE_LENGTH)
         {
-            Debug.LogWarning($"Truncating long message from {message.Length} to {MAX_MESSAGE_LENGTH} characters");
+            // Debug.LogWarning($"Truncating long message from {message.Length} to {MAX_MESSAGE_LENGTH} characters");
             message = message.Substring(0, MAX_MESSAGE_LENGTH);
         }
 
@@ -72,7 +72,7 @@ public class LobbyChatManager : NetworkBehaviour
         }
         else
         {
-            Debug.LogWarning($"[LobbyChatManager] Could not find player data for sender {sender}. Using default name.");
+            // Debug.LogWarning($"[LobbyChatManager] Could not find player data for sender {sender}. Using default name.");
         }
 
         // Add the new message
@@ -86,6 +86,6 @@ public class LobbyChatManager : NetworkBehaviour
         Messages.Add(chatMessage);
         
         // Debug the message size for troubleshooting
-        //Debug.Log($"Added message from {playerName}. Length: {message?.Length ?? 0}");
+        //// Debug.Log($"Added message from {playerName}. Length: {message?.Length ?? 0}");
     }
 }

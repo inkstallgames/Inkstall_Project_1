@@ -89,33 +89,33 @@ public class NetworkGameManager : NetworkBehaviour
         playerSpawner = FindObjectOfType<NetworkPlayerSpawner>();
         if (playerSpawner != null)
         { 
-            Debug.Log("[NetworkGameManager] NetworkPlayerSpawner found and assigned");
+            // Debug.Log("[NetworkGameManager] NetworkPlayerSpawner found and assigned");
             if (Runner != null)
             {
                 playerSpawner.Init(Runner);
-                Debug.Log("[NetworkGameManager] NetworkPlayerSpawner initialized with Runner");
+                // Debug.Log("[NetworkGameManager] NetworkPlayerSpawner initialized with Runner");
             }
         }
         else
         {
-            Debug.LogWarning("[NetworkGameManager] NetworkPlayerSpawner not found in current scene");
+            // Debug.LogWarning("[NetworkGameManager] NetworkPlayerSpawner not found in current scene");
         }
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RPC_NotifyGameStarting()
     {
-        Debug.Log("[NetworkGameManager] Game is starting, preparing to load scene...");
+        // Debug.Log("[NetworkGameManager] Game is starting, preparing to load scene...");
         
         // Show loading screen on all clients
         if (LobbyUIManager.Instance != null)
         {
-            Debug.Log("[NetworkGameManager] Showing loading screen for all clients");
+            // Debug.Log("[NetworkGameManager] Showing loading screen for all clients");
             LobbyUIManager.Instance.ShowLoadingScreen(true);
         }
         else
         {
-            Debug.LogWarning("[NetworkGameManager] LobbyUIManager.Instance is null, cannot show loading screen");
+            // Debug.LogWarning("[NetworkGameManager] LobbyUIManager.Instance is null, cannot show loading screen");
         }
     }
 
@@ -123,11 +123,11 @@ public class NetworkGameManager : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) 
         {
-            Debug.LogError("[NetworkGameManager] Only the server can start the game!");
+            // Debug.LogError("[NetworkGameManager] Only the server can start the game!");
             return;
         }
 
-        Debug.Log($"[NetworkGameManager] Starting game with mode: {mode}, time: {time}, scene: {sceneName}");
+        // Debug.Log($"[NetworkGameManager] Starting game with mode: {mode}, time: {time}, scene: {sceneName}");
         
         CurrentGameMode = mode;
         RoundTime = time;
@@ -167,7 +167,7 @@ public class NetworkGameManager : NetworkBehaviour
     
     private System.Collections.IEnumerator LoadSceneAsync(string sceneName)
     {
-        Debug.Log($"[NetworkGameManager] Starting asynchronous scene load for: {sceneName}");
+        // Debug.Log($"[NetworkGameManager] Starting asynchronous scene load for: {sceneName}");
 
         // Runner.LoadScene is already async in its operation with the server,
         // but we run it in a coroutine to ensure the local client's frame doesn't freeze
@@ -176,7 +176,7 @@ public class NetworkGameManager : NetworkBehaviour
 
         yield return null; // Yield for one frame to let the load process begin.
 
-        Debug.Log($"[NetworkGameManager] Asynchronous scene load for {sceneName} has been initiated.");
+        // Debug.Log($"[NetworkGameManager] Asynchronous scene load for {sceneName} has been initiated.");
 
         // After the scene load is initiated, wait for a moment and then initialize the game logic.
         // This ensures that the game state is correctly set to InProgress after the scene is ready.
@@ -188,7 +188,7 @@ public class NetworkGameManager : NetworkBehaviour
         yield return new WaitForSeconds(delay);
         if (Runner.IsServer)
         {
-            Debug.Log("[NetworkGameManager] Scene loaded, initializing game...");
+            // Debug.Log("[NetworkGameManager] Scene loaded, initializing game...");
             InitializeGame();
         }
     }
@@ -197,7 +197,7 @@ public class NetworkGameManager : NetworkBehaviour
     {
         if (!Runner.IsServer) return;
 
-        Debug.Log("[NetworkGameManager] Initializing game state...");
+        // Debug.Log("[NetworkGameManager] Initializing game state...");
         
         // Refresh spawner reference in case scene changed
         RefreshPlayerSpawner();
@@ -207,7 +207,7 @@ public class NetworkGameManager : NetworkBehaviour
         
         // Stay in Starting state — InProgress will be set after the game start countdown ends
         CurrentGameState = GameState.Starting;
-        Debug.Log("[NetworkGameManager] Game state set to Starting. Waiting for countdown to finish before InProgress.");
+        // Debug.Log("[NetworkGameManager] Game state set to Starting. Waiting for countdown to finish before InProgress.");
     }
 
     /// <summary>
@@ -218,7 +218,7 @@ public class NetworkGameManager : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
 
-        Debug.Log("[NetworkGameManager] Countdown finished. Transitioning to InProgress.");
+        // Debug.Log("[NetworkGameManager] Countdown finished. Transitioning to InProgress.");
         CurrentGameState = GameState.InProgress;
         RoundStartTime = Runner.SimulationTime;
         OnRoundStarted?.Invoke();
@@ -228,24 +228,24 @@ public class NetworkGameManager : NetworkBehaviour
     {
         if (!Runner.IsServer) return;
 
-        Debug.Log("[NetworkGameManager] Spawner is ready, spawning all active players.");
+        // Debug.Log("[NetworkGameManager] Spawner is ready, spawning all active players.");
 
         foreach (var player in Runner.ActivePlayers)
         {
             if (playerSpawner != null)
             {
-                Debug.Log($"[NetworkGameManager] Spawning player {player.PlayerId}");
+                // Debug.Log($"[NetworkGameManager] Spawning player {player.PlayerId}");
                 playerSpawner.SpawnPlayer(player);
             }
             else
             {
-                Debug.LogError("[NetworkGameManager] NetworkPlayerSpawner is null, cannot spawn players!");
+                // Debug.LogError("[NetworkGameManager] NetworkPlayerSpawner is null, cannot spawn players!");
             }
             AlivePlayers.Add(player);
         }
 
         PlayersAlive = AlivePlayers.Count;
-        Debug.Log($"[NetworkGameManager] Game started with {PlayersAlive} players");
+        // Debug.Log($"[NetworkGameManager] Game started with {PlayersAlive} players");
         OnGameStarted?.Invoke();
     }
 
@@ -268,7 +268,7 @@ public class NetworkGameManager : NetworkBehaviour
         if (!players.ContainsKey(player))
         {
             players[player] = playerData;
-            Debug.Log($"Player {player.PlayerId} registered with team {playerData.TeamId}");
+            // Debug.Log($"Player {player.PlayerId} registered with team {playerData.TeamId}");
             
             // If game is in progress, spawn the player
             if (CurrentGameState == GameState.InProgress || CurrentGameState == GameState.RoundOver)
@@ -282,7 +282,7 @@ public class NetworkGameManager : NetworkBehaviour
     {
         if (players.Remove(player))
         {
-            Debug.Log($"Player {player.PlayerId} unregistered");
+            // Debug.Log($"Player {player.PlayerId} unregistered");
             
             // Check if the game should end due to player disconnect
             if (Object.HasStateAuthority && CurrentGameState == GameState.InProgress)
@@ -320,7 +320,7 @@ public class NetworkGameManager : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnRoundStarted()
     {
-        Debug.Log($"Round {CurrentRound} started!");
+        // Debug.Log($"Round {CurrentRound} started!");
         OnRoundStarted?.Invoke();
     }
     
@@ -362,7 +362,7 @@ public class NetworkGameManager : NetworkBehaviour
         AlivePlayers.Remove(victim);
         PlayersAlive = AlivePlayers.Count;
         
-        Debug.Log($"Player {killer.PlayerId} killed Player {victim.PlayerId}");
+        // Debug.Log($"Player {killer.PlayerId} killed Player {victim.PlayerId}");
         
         // Update scores based on game mode
         if (CurrentGameMode == GameMode.TeamDeathmatch)
@@ -376,7 +376,7 @@ public class NetworkGameManager : NetworkBehaviour
                 if (killerData.TeamId == 0) BlueTeamScore++;
                 else RedTeamScore++;
                 
-                Debug.Log($"Team Score - Blue: {BlueTeamScore}, Red: {RedTeamScore}");
+                // Debug.Log($"Team Score - Blue: {BlueTeamScore}, Red: {RedTeamScore}");
                 
                 // Check for round/game end
                 CheckGameEndConditions();
@@ -388,7 +388,7 @@ public class NetworkGameManager : NetworkBehaviour
             var killerKills = PlayerKills[killer];
             if (killerKills >= 20) // First to 20 kills wins
             {
-                Debug.Log($"Player {killer.PlayerId} wins with {killerKills} kills!");
+                // Debug.Log($"Player {killer.PlayerId} wins with {killerKills} kills!");
                 var killerData = Runner.GetPlayerObject(killer)?.GetComponent<PlayerNetworkData>();
                 EndGame(killerData?.TeamId ?? -1);
             }
@@ -466,7 +466,7 @@ public class NetworkGameManager : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnGameEnded(int winningTeam)
     {
-        Debug.Log($"Game Over! Team {winningTeam + 1} wins!");
+        // Debug.Log($"Game Over! Team {winningTeam + 1} wins!");
         OnGameEnded?.Invoke();
     }
 
@@ -474,7 +474,7 @@ public class NetworkGameManager : NetworkBehaviour
     {
         if (playerSpawner == null)
         {
-            Debug.LogError("[NetworkGameManager] PlayerSpawner is null, cannot get spawn point!");
+            // Debug.LogError("[NetworkGameManager] PlayerSpawner is null, cannot get spawn point!");
             return null;
         }
 
@@ -483,7 +483,7 @@ public class NetworkGameManager : NetworkBehaviour
         
         if (spawnPoints.Length == 0)
         {
-            Debug.LogWarning("[NetworkGameManager] No spawn points found in scene!");
+            // Debug.LogWarning("[NetworkGameManager] No spawn points found in scene!");
             return null;
         }
 
@@ -493,7 +493,7 @@ public class NetworkGameManager : NetworkBehaviour
         // If no team-specific spawn points, use any available spawn point
         if (teamSpawnPoints.Length == 0)
         {
-            Debug.LogWarning($"[NetworkGameManager] No spawn points found for team {teamId}, using any available spawn point");
+            // Debug.LogWarning($"[NetworkGameManager] No spawn points found for team {teamId}, using any available spawn point");
             teamSpawnPoints = spawnPoints;
         }
 
@@ -517,18 +517,18 @@ public class NetworkGameManager : NetworkBehaviour
     {
         if (!Object.HasStateAuthority)
         {
-            Debug.LogError("[NetworkGameManager] Only the server can respawn players!");
+            // Debug.LogError("[NetworkGameManager] Only the server can respawn players!");
             return;
         }
 
         if (playerSpawner == null)
         {
-            Debug.LogError("[NetworkGameManager] PlayerSpawner is null, cannot respawn player!");
+            // Debug.LogError("[NetworkGameManager] PlayerSpawner is null, cannot respawn player!");
             RefreshPlayerSpawner();
             if (playerSpawner == null) return;
         }
 
-        Debug.Log($"[NetworkGameManager] Respawning player {playerRef.PlayerId} with team {teamId} and name {playerName}");
+        // Debug.Log($"[NetworkGameManager] Respawning player {playerRef.PlayerId} with team {teamId} and name {playerName}");
 
         // Spawn the player using the spawner
         playerSpawner.SpawnPlayer(playerRef);
@@ -544,7 +544,7 @@ public class NetworkGameManager : NetworkBehaviour
                 playerData.PlayerName = playerName;
                 playerData.Health = 100;
                 playerData.UpdateVisuals();
-                Debug.Log($"[NetworkGameManager] Successfully respawned player {playerName} with full health");
+                // Debug.Log($"[NetworkGameManager] Successfully respawned player {playerName} with full health");
             }
             
             // Reset bombs to full capacity
@@ -552,12 +552,12 @@ public class NetworkGameManager : NetworkBehaviour
             if (bombBehaviour != null)
             {
                 bombBehaviour.CurrentBombs = bombBehaviour.MaxBombs;
-                Debug.Log($"[NetworkGameManager] Reset bombs to {bombBehaviour.MaxBombs} for player {playerName}");
+                // Debug.Log($"[NetworkGameManager] Reset bombs to {bombBehaviour.MaxBombs} for player {playerName}");
             }
         }
         else
         {
-            Debug.LogError($"[NetworkGameManager] Failed to get player object after spawning for player {playerRef.PlayerId}");
+            // Debug.LogError($"[NetworkGameManager] Failed to get player object after spawning for player {playerRef.PlayerId}");
         }
     }
 

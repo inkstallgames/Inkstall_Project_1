@@ -69,20 +69,20 @@ public class NetworkLobbyManager : NetworkBehaviour
         }
 
         base.Spawned();
-        Debug.Log($"[NetworkLobbyManager] Spawned called. Object: {gameObject.name}, IsServer: {Runner.IsServer}, LocalPlayer: {Runner.LocalPlayer}");
+        // Debug.Log($"[NetworkLobbyManager] Spawned called. Object: {gameObject.name}, IsServer: {Runner.IsServer}, LocalPlayer: {Runner.LocalPlayer}");
         
         uiManager = LobbyUIManager.Instance;
-        Debug.Log($"[NetworkLobbyManager] UI Manager found: {uiManager != null}");
+        // Debug.Log($"[NetworkLobbyManager] UI Manager found: {uiManager != null}");
         
         if (uiManager == null)
         {
-            Debug.LogError("[NetworkLobbyManager] LobbyUIManager.Instance is null! Make sure it exists in the scene.");
+            // Debug.LogError("[NetworkLobbyManager] LobbyUIManager.Instance is null! Make sure it exists in the scene.");
         }
 
         // Only the host generates a join code
         if (Runner.IsServer)
         {
-            Debug.Log("[NetworkLobbyManager] This is the server (host)");
+            // Debug.Log("[NetworkLobbyManager] This is the server (host)");
             
             // Immediately show the lobby UI for host
             if (uiManager != null)
@@ -95,13 +95,13 @@ public class NetworkLobbyManager : NetworkBehaviour
             if (networkStarter != null && !string.IsNullOrEmpty(networkStarter.CurrentJoinCode))
             {
                 JoinCode = networkStarter.CurrentJoinCode;
-                Debug.Log($"[NetworkLobbyManager] Using join code from NetworkStarter: {JoinCode}");
+                // Debug.Log($"[NetworkLobbyManager] Using join code from NetworkStarter: {JoinCode}");
             }
             else if (string.IsNullOrEmpty(JoinCode))
             {
                 // Fallback to generating a new code if not provided by NetworkStarter
                 JoinCode = GenerateJoinCode();
-                Debug.Log($"[NetworkLobbyManager] Generated new Join Code: {JoinCode}");
+                // Debug.Log($"[NetworkLobbyManager] Generated new Join Code: {JoinCode}");
             }
             
             // Update UI with join code immediately
@@ -111,12 +111,12 @@ public class NetworkLobbyManager : NetworkBehaviour
             }
             
             // Add self to lobby
-            Debug.Log("[NetworkLobbyManager] Adding host player to lobby");
+            // Debug.Log("[NetworkLobbyManager] Adding host player to lobby");
             AddPlayerToLobby(Runner.LocalPlayer, true);
         }
         else
         {
-            Debug.Log("[NetworkLobbyManager] This is a client");
+            // Debug.Log("[NetworkLobbyManager] This is a client");
         }
 
         // Initialize UI only after room is fully created
@@ -149,17 +149,17 @@ public class NetworkLobbyManager : NetworkBehaviour
             // Update UI with join code if we have one
             if (!string.IsNullOrEmpty(JoinCode))
             {
-                Debug.Log($"[NetworkLobbyManager] Setting join code in UI: {JoinCode}");
+                // Debug.Log($"[NetworkLobbyManager] Setting join code in UI: {JoinCode}");
                 uiManager.SetJoinCode(JoinCode);
             }
             else
             {
-                Debug.Log("[NetworkLobbyManager] No join code to display");
+                // Debug.Log("[NetworkLobbyManager] No join code to display");
             }
         }
         else
         {
-            Debug.LogError("[NetworkLobbyManager] UI Manager is null!");
+            // Debug.LogError("[NetworkLobbyManager] UI Manager is null!");
         }
 
         if (NetworkGameManager.Instance != null)
@@ -171,7 +171,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         if (Runner.IsClient && !Runner.IsServer)
         {
             string playerName = PlayerPrefs.GetString("PlayerName", "Unknown Player");
-            Debug.Log($"[NetworkLobbyManager] Sending player name to host: {playerName}");
+            // Debug.Log($"[NetworkLobbyManager] Sending player name to host: {playerName}");
             RPC_SetLobbyPlayerName(playerName);
         }
     }
@@ -211,7 +211,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             else if (kvp.Value.TeamID == 1) teamBCount++;
         }
         int assignedTeam = (teamBCount < teamACount) ? 1 : 0; // tie or A fewer → Team A
-        Debug.Log($"[NetworkLobbyManager] Auto-assigning player {player.PlayerId} to Team {assignedTeam} (A:{teamACount} B:{teamBCount})");
+        // Debug.Log($"[NetworkLobbyManager] Auto-assigning player {player.PlayerId} to Team {assignedTeam} (A:{teamACount} B:{teamBCount})");
 
         var playerData = new PlayerLobbyData
         {
@@ -227,7 +227,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         // Use modulo to cycle through available colors if we have more players than colors
         int colorIndex = (LobbyPlayers.Count - 1) % playerColors.Count;
         Color assignedColor = playerColors[colorIndex];
-        Debug.Log($"[NetworkLobbyManager] Assigning color at index {colorIndex}: {assignedColor} (R:{assignedColor.r}, G:{assignedColor.g}, B:{assignedColor.b})");
+        // Debug.Log($"[NetworkLobbyManager] Assigning color at index {colorIndex}: {assignedColor} (R:{assignedColor.r}, G:{assignedColor.g}, B:{assignedColor.b})");
         
         var data = LobbyPlayers[player];
         data.PlayerColor = assignedColor;
@@ -235,7 +235,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         
         // Verify the color was set
         var verifyData = LobbyPlayers[player];
-        Debug.Log($"[NetworkLobbyManager] Added player {player.PlayerId} to lobby. IsHost: {isHost}, Team: {assignedTeam}, Assigned Color: {assignedColor}, Stored Color: {verifyData.PlayerColor}");
+        // Debug.Log($"[NetworkLobbyManager] Added player {player.PlayerId} to lobby. IsHost: {isHost}, Team: {assignedTeam}, Assigned Color: {assignedColor}, Stored Color: {verifyData.PlayerColor}");
         
         // If this is the host, update their ready status in the UI immediately
         if (isHost && uiManager != null)
@@ -262,7 +262,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         if (!LobbyPlayers.ContainsKey(Runner.LocalPlayer)) return;
         int currentTeam = LobbyPlayers[Runner.LocalPlayer].TeamID;
         int newTeam = (currentTeam == 0) ? 1 : 0;
-        Debug.Log($"[NetworkLobbyManager] Local player switching from Team {currentTeam} to Team {newTeam}");
+        // Debug.Log($"[NetworkLobbyManager] Local player switching from Team {currentTeam} to Team {newTeam}");
         RPC_SetPlayerTeam(newTeam);
     }
 
@@ -287,26 +287,26 @@ public class NetworkLobbyManager : NetworkBehaviour
 
         public void StartGame()
     {
-        Debug.Log($"[NetworkLobbyManager] StartGame called. IsServer: {Runner?.IsServer}");
+        // Debug.Log($"[NetworkLobbyManager] StartGame called. IsServer: {Runner?.IsServer}");
 
         if (!Runner.IsServer)
         {
-            Debug.LogError("[NetworkLobbyManager] Only the server can start the game!");
+            // Debug.LogError("[NetworkLobbyManager] Only the server can start the game!");
             return;
         }
 
         // Hero selection is disabled — spawn players directly with playerPrefab
-        Debug.Log("[NetworkLobbyManager] Skipping hero selection. Loading map immediately...");
+        // Debug.Log("[NetworkLobbyManager] Skipping hero selection. Loading map immediately...");
         
         // Validate map selection
         if (SelectedMapIndex < 0 || SelectedMapIndex >= mapOptions.Count)
         {
-            Debug.LogError($"[NetworkLobbyManager] Invalid map index: {SelectedMapIndex}. Defaulting to index 0.");
+            // Debug.LogError($"[NetworkLobbyManager] Invalid map index: {SelectedMapIndex}. Defaulting to index 0.");
             SelectedMapIndex = 0;
         }
 
         string sceneName = mapOptions[SelectedMapIndex];
-        Debug.Log($"[NetworkLobbyManager] Loading map: {sceneName}");
+        // Debug.Log($"[NetworkLobbyManager] Loading map: {sceneName}");
 
         // Notify all clients the game is starting (shows loading screen etc.)
         RPC_NotifyGameStarting();
@@ -327,7 +327,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         }
         else
         {
-            Debug.LogError("[NetworkLobbyManager] NetworkGameManager.Instance is null! Cannot start game.");
+            // Debug.LogError("[NetworkLobbyManager] NetworkGameManager.Instance is null! Cannot start game.");
         }
     }
 
@@ -366,7 +366,7 @@ public class NetworkLobbyManager : NetworkBehaviour
                     {
                         var playerData = kvp.Value;
                         players[kvp.Key.PlayerId] = playerData;
-                        Debug.Log($"[RPC_UpdateLobbyUI] Adding player {kvp.Key.PlayerId}: {playerData.PlayerName} (Host: {playerData.IsHost}, Ready: {playerData.IsReady})");
+                        // Debug.Log($"[RPC_UpdateLobbyUI] Adding player {kvp.Key.PlayerId}: {playerData.PlayerName} (Host: {playerData.IsHost}, Ready: {playerData.IsReady})");
                     }
                 }
                 
@@ -408,7 +408,7 @@ public class NetworkLobbyManager : NetworkBehaviour
                                 bool allReady = LobbyPlayers.Count >= requiredPlayers && 
                                              LobbyPlayers.All(p => p.Value.IsReady);
                                 
-                                Debug.Log($"[NetworkLobbyManager] Start button check - Testing Mode: {isTestingMode}, Players: {LobbyPlayers.Count}, Required: {requiredPlayers}, All Ready: {allReady}");
+                                // Debug.Log($"[NetworkLobbyManager] Start button check - Testing Mode: {isTestingMode}, Players: {LobbyPlayers.Count}, Required: {requiredPlayers}, All Ready: {allReady}");
                                 uiManager.startGameButton.interactable = allReady;
                             }
                         }
@@ -417,7 +417,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             }
             catch (Exception e)
             {
-                Debug.LogError($"[RPC_UpdateLobbyUI] Error updating UI: {e.Message}\n{e.StackTrace}");
+                // Debug.LogError($"[RPC_UpdateLobbyUI] Error updating UI: {e.Message}\n{e.StackTrace}");
             }
         }
     }
@@ -479,12 +479,12 @@ public class NetworkLobbyManager : NetworkBehaviour
             var data = LobbyPlayers[playerRef];
             data.IsReady = isReady;
             LobbyPlayers.Set(playerRef, data);
-            Debug.Log($"[RPC_SetPlayerReady] Player {playerRef.PlayerId} set ready state to {isReady}");
+            // Debug.Log($"[RPC_SetPlayerReady] Player {playerRef.PlayerId} set ready state to {isReady}");
             RPC_UpdateLobbyUI();
         }
         else
         {
-            Debug.LogError($"[RPC_SetPlayerReady] Received ready state from invalid player: {playerRef.PlayerId}");
+            // Debug.LogError($"[RPC_SetPlayerReady] Received ready state from invalid player: {playerRef.PlayerId}");
         }
     }
 
@@ -502,7 +502,7 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SetLobbyPlayerName(string name, RpcInfo info = default)
     {
-        Debug.Log($"[NetworkLobbyManager] Received name update from {info.Source}: {name}");
+        // Debug.Log($"[NetworkLobbyManager] Received name update from {info.Source}: {name}");
         if (LobbyPlayers.ContainsKey(info.Source))
         {
             var data = LobbyPlayers[info.Source];
@@ -526,7 +526,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             var data = LobbyPlayers[source];
             data.TeamID = teamId;
             LobbyPlayers.Set(source, data);
-            Debug.Log($"[NetworkLobbyManager] Player {source.PlayerId} team set to {teamId}");
+            // Debug.Log($"[NetworkLobbyManager] Player {source.PlayerId} team set to {teamId}");
             // Broadcast updated player list to all clients
             RPC_UpdateLobbyUI();
         }
@@ -535,7 +535,7 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RPC_NotifyGameStarting()
     {
-        Debug.Log($"[NetworkLobbyManager] Game is starting! Loading map: {mapOptions[SelectedMapIndex]}");
+        // Debug.Log($"[NetworkLobbyManager] Game is starting! Loading map: {mapOptions[SelectedMapIndex]}");
         
         // Show loading screen or transition effect
         if (uiManager != null)
@@ -548,7 +548,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         if (LobbyPlayers.ContainsKey(localPlayer))
         {
             var playerData = LobbyPlayers[localPlayer];
-            Debug.Log($"[NetworkLobbyManager] Player {localPlayer.PlayerId} ({playerData.PlayerName}) received game start notification");
+            // Debug.Log($"[NetworkLobbyManager] Player {localPlayer.PlayerId} ({playerData.PlayerName}) received game start notification");
         }
         
         // Client confirms they're ready to load the scene
@@ -563,7 +563,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         // Small delay to ensure UI is ready
         yield return new WaitForSeconds(0.5f);
         
-        Debug.Log($"[NetworkLobbyManager] Client {Runner.LocalPlayer.PlayerId} confirming ready to load");
+        // Debug.Log($"[NetworkLobbyManager] Client {Runner.LocalPlayer.PlayerId} confirming ready to load");
         RPC_ConfirmReadyToLoad(Runner.LocalPlayer);
     }
     
@@ -572,7 +572,7 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         if (Runner.IsServer)
         {
-            Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} confirmed ready to load");
+            // Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} confirmed ready to load");
             PlayersReadyToLoad.Set(player, true);
             
             // Check if all players are ready
@@ -585,17 +585,17 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         if (Runner.IsServer)
         {
-            Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} joined the lobby");
+            // Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} joined the lobby");
             AddPlayerToLobby(player, false);
             
             // Force update the UI for all clients
             RPC_UpdateLobbyUI();
             
             // Log the current player count for debugging
-            Debug.Log($"[NetworkLobbyManager] Total players in lobby: {LobbyPlayers.Count}");
+            // Debug.Log($"[NetworkLobbyManager] Total players in lobby: {LobbyPlayers.Count}");
             foreach (var kvp in LobbyPlayers)
             {
-                Debug.Log($"- Player {kvp.Key.PlayerId}: {kvp.Value.PlayerName} (Host: {kvp.Value.IsHost}, Ready: {kvp.Value.IsReady})");
+                // Debug.Log($"- Player {kvp.Key.PlayerId}: {kvp.Value.PlayerName} (Host: {kvp.Value.IsHost}, Ready: {kvp.Value.IsReady})");
             }
         }
     }
@@ -618,11 +618,11 @@ public class NetworkLobbyManager : NetworkBehaviour
         if (!Runner.IsServer) return;
 
         PlayersLoadedCount++;
-        Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} has loaded the scene. {PlayersLoadedCount}/{LobbyPlayers.Count} players loaded.");
+        // Debug.Log($"[NetworkLobbyManager] Player {player.PlayerId} has loaded the scene. {PlayersLoadedCount}/{LobbyPlayers.Count} players loaded.");
 
         if (PlayersLoadedCount >= LobbyPlayers.Count && !IsGameReady)
         {
-            Debug.Log("[NetworkLobbyManager] All players have loaded the scene. Starting 5-second countdown.");
+            // Debug.Log("[NetworkLobbyManager] All players have loaded the scene. Starting 5-second countdown.");
             IsGameReady = true;
             GameStartTimer = TickTimer.CreateFromSeconds(Runner, 5.0f);
         }
@@ -638,17 +638,17 @@ public class NetworkLobbyManager : NetworkBehaviour
         
         if (allPlayersReady)
         {
-            Debug.Log("[NetworkLobbyManager] All players are ready to load. Proceeding with scene load...");
+            // Debug.Log("[NetworkLobbyManager] All players are ready to load. Proceeding with scene load...");
             
             // Load the scene
             string sceneName = mapOptions[SelectedMapIndex];
             string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-            Debug.Log($"[NetworkLobbyManager] Loading scene: {sceneName} (Current scene: {currentScene})");
+            // Debug.Log($"[NetworkLobbyManager] Loading scene: {sceneName} (Current scene: {currentScene})");
             
             // Initialize the game with the selected scene
             if (NetworkGameManager.Instance != null)
             {
-                Debug.Log($"[NetworkLobbyManager] Initializing game with scene: {sceneName}");
+                // Debug.Log($"[NetworkLobbyManager] Initializing game with scene: {sceneName}");
                 GameMode gameMode = (GameMode)SelectedModeIndex;
 
                 // Assign teams based on the selected game mode
@@ -660,7 +660,7 @@ public class NetworkLobbyManager : NetworkBehaviour
                         var playerData = kvp.Value;
                         playerData.TeamID = -1; // -1 for FreeForAll
                         LobbyPlayers.Set(player, playerData);
-                        Debug.Log($"[NetworkLobbyManager] Set TeamID for Player {player.PlayerId} to -1 for FreeForAll.");
+                        // Debug.Log($"[NetworkLobbyManager] Set TeamID for Player {player.PlayerId} to -1 for FreeForAll.");
                     }
                 }
                 else if (gameMode == GameMode.TeamDeathmatch)
@@ -672,7 +672,7 @@ public class NetworkLobbyManager : NetworkBehaviour
                         var playerData = kvp.Value;
                         playerData.TeamID = teamCounter % 2; // Alternate between Team 0 and Team 1
                         LobbyPlayers.Set(player, playerData);
-                        Debug.Log($"[NetworkLobbyManager] Set TeamID for Player {player.PlayerId} to {playerData.TeamID} for TeamDeathmatch.");
+                        // Debug.Log($"[NetworkLobbyManager] Set TeamID for Player {player.PlayerId} to {playerData.TeamID} for TeamDeathmatch.");
                         teamCounter++;
                     }
                 }
@@ -681,12 +681,12 @@ public class NetworkLobbyManager : NetworkBehaviour
             }
             else
             {
-                Debug.LogError("[NetworkLobbyManager] NetworkGameManager instance not found!");
+                // Debug.LogError("[NetworkLobbyManager] NetworkGameManager instance not found!");
             }
         }
         else
         {
-            Debug.Log($"[NetworkLobbyManager] Not all players are ready to load. {PlayersReadyToLoad.Count}/{LobbyPlayers.Count} players ready. Waiting...");
+            // Debug.Log($"[NetworkLobbyManager] Not all players are ready to load. {PlayersReadyToLoad.Count}/{LobbyPlayers.Count} players ready. Waiting...");
         }
     }
 }

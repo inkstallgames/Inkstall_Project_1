@@ -57,7 +57,7 @@ public class NetworkJoystickControl : MonoBehaviour, IPointerDownHandler, IDragH
         }
         else
         {
-            Debug.LogWarning("[NetworkJoystickControl] Duplicate instance destroyed.");
+            // Debug.LogWarning("[NetworkJoystickControl] Duplicate instance destroyed.");
             Destroy(gameObject);
             return;
         }

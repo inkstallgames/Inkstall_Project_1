@@ -13,7 +13,6 @@ public class LaserInputHandler : MonoBehaviour
 
     private NetworkLaserBehaviour laserBehaviour;
     private bool isLocalPlayer = false;
-    private bool isMousePressed = false; // Track mouse state
 
     private void Start()
     {
@@ -29,11 +28,11 @@ public class LaserInputHandler : MonoBehaviour
         if (isLocalPlayer)
         {
             SetupUIButtons();
-            Debug.Log("[LaserInputHandler] Laser controls enabled for local player");
+            // Debug.Log("[LaserInputHandler] Laser controls enabled for local player");
         }
         else
         {
-            Debug.Log("[LaserInputHandler] Laser controls disabled - not local player");
+            // Debug.Log("[LaserInputHandler] Laser controls disabled - not local player");
             this.enabled = false;
         }
     }
@@ -44,7 +43,7 @@ public class LaserInputHandler : MonoBehaviour
         // The NetworkUIManager.OnThrowButtonPressed() now handles laser shooting
         // So we don't need to set up separate button listeners here
         
-        Debug.Log("[LaserInputHandler] Using shared throw button through NetworkUIManager for laser shooting");
+        // Debug.Log("[LaserInputHandler] Using shared throw button through NetworkUIManager for laser shooting");
     }
 
     private void Update()
@@ -54,50 +53,29 @@ public class LaserInputHandler : MonoBehaviour
             return;
         }
 
-#if UNITY_EDITOR || UNITY_STANDALONE
-        // Track mouse button state for continuous firing
-        bool currentMouseState = Input.GetMouseButton(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
-        
-        // Mouse pressed - start shooting
-        if (currentMouseState && !isMousePressed)
-        {
-            Debug.Log("[LaserInputHandler] Mouse pressed - starting continuous laser fire");
-            laserBehaviour.RequestShoot();
-        }
-        // Mouse held - continue shooting every frame
-        else if (currentMouseState && isMousePressed)
-        {
-            laserBehaviour.RequestShoot();
-        }
-        // Mouse released - stop shooting
-        else if (!currentMouseState && isMousePressed)
-        {
-            Debug.Log("[LaserInputHandler] Mouse released - stopping laser fire");
-            laserBehaviour.StopShooting(); // Explicitly stop shooting
-        }
-        
-        isMousePressed = currentMouseState;
-#endif
+        // Mouse button input DISABLED for laser gun.
+        // Laser gun can only be fired via the throw button (UI or T key)
+        // through NetworkUIManager.OnThrowButtonPressed() -> OnShootButtonPressed().
 
         // Reload input works on all platforms (for laser, this could be for emergency cooldown reset)
         if (Input.GetKeyDown(reloadKey))
         {
             // For laser weapons, reload could serve as an emergency cooldown reset
-            Debug.Log("[LaserInputHandler] Emergency cooldown reset requested");
+            // Debug.Log("[LaserInputHandler] Emergency cooldown reset requested");
         }
     }
 
     public void OnShootButtonPressed()
     {
-        Debug.Log("[LaserInputHandler] OnShootButtonPressed called");
+        // Debug.Log("[LaserInputHandler] OnShootButtonPressed called");
         if (laserBehaviour != null)
         {
-            Debug.Log("[LaserInputHandler] Calling laserBehaviour.RequestShoot()");
+            // Debug.Log("[LaserInputHandler] Calling laserBehaviour.RequestShoot()");
             laserBehaviour.RequestShoot();
         }
         else
         {
-            Debug.LogError("[LaserInputHandler] laserBehaviour is null!");
+            // Debug.LogError("[LaserInputHandler] laserBehaviour is null!");
         }
     }
 
@@ -106,7 +84,7 @@ public class LaserInputHandler : MonoBehaviour
         if (laserBehaviour != null)
         {
             // For laser weapons, this could trigger emergency cooldown reset
-            Debug.Log("[LaserInputHandler] Emergency cooldown reset via UI");
+            // Debug.Log("[LaserInputHandler] Emergency cooldown reset via UI");
         }
     }
 
@@ -121,6 +99,6 @@ public class LaserInputHandler : MonoBehaviour
     public void OnTeamChanged()
     {
         // Prefab separation handles team restrictions - no action needed
-        Debug.Log("[LaserInputHandler] Team changed - prefab separation handles restrictions");
+        // Debug.Log("[LaserInputHandler] Team changed - prefab separation handles restrictions");
     }
 }

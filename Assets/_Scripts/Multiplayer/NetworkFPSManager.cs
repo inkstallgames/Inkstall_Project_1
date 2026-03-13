@@ -39,18 +39,18 @@ public class NetworkFPSManager : MonoBehaviour
         if (disableVSync)
         {
             QualitySettings.vSyncCount = 0;
-            Debug.Log($"[NetworkFPSManager] VSync disabled");
+            // Debug.Log($"[NetworkFPSManager] VSync disabled");
         }
         
         // Set target frame rate
         Application.targetFrameRate = targetFrameRate;
-        Debug.Log($"[NetworkFPSManager] Target frame rate set to {targetFrameRate} FPS");
+        // Debug.Log($"[NetworkFPSManager] Target frame rate set to {targetFrameRate} FPS");
         
         // Ensure the game runs in background (important for multiplayer)
         Application.runInBackground = true;
         
         // Log current quality settings
-        Debug.Log($"[NetworkFPSManager] Current Quality Level: {QualitySettings.names[QualitySettings.GetQualityLevel()]}");
+        // Debug.Log($"[NetworkFPSManager] Current Quality Level: {QualitySettings.names[QualitySettings.GetQualityLevel()]}");
     }
     
     private void InitializeGUIStyle()

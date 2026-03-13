@@ -39,7 +39,7 @@ public class NetworkWeaponEquipSystem : NetworkBehaviour
         bombBehaviour = GetComponent<NetworkBombBehaviour>();
         playerData = GetComponent<PlayerNetworkData>();
 
-        Debug.Log($"[NetworkWeaponEquipSystem] Components found - Pistol: {pistolBehaviour != null}, Laser: {laserBehaviour != null}, Bomb: {bombBehaviour != null}, PlayerData: {playerData != null}");
+        // Debug.Log($"[NetworkWeaponEquipSystem] Components found - Pistol: {pistolBehaviour != null}, Laser: {laserBehaviour != null}, Bomb: {bombBehaviour != null}, PlayerData: {playerData != null}");
 
         if (Object.HasStateAuthority)
         {
@@ -55,19 +55,19 @@ public class NetworkWeaponEquipSystem : NetworkBehaviour
         // Wait for team data to sync (TeamId will be -1 initially)
         while (playerData != null && playerData.TeamId == -1)
         {
-            Debug.Log("[NetworkWeaponEquipSystem] Waiting for team data to sync...");
+            // Debug.Log("[NetworkWeaponEquipSystem] Waiting for team data to sync...");
             yield return new WaitForSeconds(0.1f);
         }
 
         if (playerData != null && playerData.TeamId == 1)
         {
             CurrentWeapon = WeaponType.Laser; // Team B starts with laser
-            Debug.Log("[NetworkWeaponEquipSystem] Team B detected - setting default weapon to LASER");
+            // Debug.Log("[NetworkWeaponEquipSystem] Team B detected - setting default weapon to LASER");
         }
         else
         {
             CurrentWeapon = WeaponType.Pistol; // Team A starts with pistol
-            Debug.Log("[NetworkWeaponEquipSystem] Team A detected - setting default weapon to PISTOL");
+            // Debug.Log("[NetworkWeaponEquipSystem] Team A detected - setting default weapon to PISTOL");
         }
 
         UpdateWeaponVisuals();
@@ -119,13 +119,13 @@ public class NetworkWeaponEquipSystem : NetworkBehaviour
         switch (weapon)
         {
             case WeaponType.Pistol:
-                Debug.Log("[NetworkWeaponEquipSystem] *** Player 1 EQUIPPED PISTOL ***");
+                // Debug.Log("[NetworkWeaponEquipSystem] *** Player 1 EQUIPPED PISTOL ***");
                 break;
             case WeaponType.Laser:
-                Debug.Log("[NetworkWeaponEquipSystem] *** Player 1 EQUIPPED LASER ***");
+                // Debug.Log("[NetworkWeaponEquipSystem] *** Player 1 EQUIPPED LASER ***");
                 break;
             case WeaponType.Bomb:
-                Debug.Log("[NetworkWeaponEquipSystem] *** Player 1 EQUIPPED BOMB ***");
+                // Debug.Log("[NetworkWeaponEquipSystem] *** Player 1 EQUIPPED BOMB ***");
                 break;
         }
     }
@@ -183,12 +183,12 @@ public class NetworkWeaponEquipSystem : NetworkBehaviour
     public void RequestEquipPrimary()
     {
         wantsToEquipPrimary = true;
-        Debug.Log("[NetworkWeaponEquipSystem] RequestEquipPrimary() called");
+        // Debug.Log("[NetworkWeaponEquipSystem] RequestEquipPrimary() called");
     }
 
     public void RequestEquipBomb()
     {
         wantsToEquipBomb = true;
-        Debug.Log("[NetworkWeaponEquipSystem] RequestEquipBomb() called");
+        // Debug.Log("[NetworkWeaponEquipSystem] RequestEquipBomb() called");
     }
 }

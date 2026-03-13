@@ -45,6 +45,8 @@ public class NetworkUIManager : MonoBehaviour
     private NetworkLaserBehaviour localLaserBehaviour;
     private NetworkWeaponEquipSystem localEquipSystem;
     private PlayerNetworkData localPlayerData;
+    private HoldableButton throwHoldable; // Tracks throw button hold state for continuous laser fire
+    private bool wasThrowHeld = false; // Previous frame's held state for detecting release
 
     private void Awake()
     {
@@ -65,6 +67,11 @@ public class NetworkUIManager : MonoBehaviour
         if (throwButton != null)
         {
             throwButton.onClick.AddListener(OnThrowButtonPressed);
+            
+            // Add HoldableButton for hold-to-fire support (laser gun)
+            throwHoldable = throwButton.gameObject.GetComponent<HoldableButton>();
+            if (throwHoldable == null)
+                throwHoldable = throwButton.gameObject.AddComponent<HoldableButton>();
         }
     }
 
@@ -76,7 +83,7 @@ public class NetworkUIManager : MonoBehaviour
             runner = FindObjectOfType<NetworkRunner>();
             if (runner != null)
             {
-                Debug.Log("[NetworkUIManager] NetworkRunner found.");
+                // Debug.Log("[NetworkUIManager] NetworkRunner found.");
             }
         }
 
@@ -91,19 +98,47 @@ public class NetworkUIManager : MonoBehaviour
             UpdateBombUI();
             UpdatePlayerStatsUI();
 
-            // Keyboard shortcut: press T to throw
-            if (Input.GetKeyDown(KeyCode.T))
+            // Keyboard shortcut: press T to throw/shoot
+            // For laser: use GetKey (held) for continuous fire, GetKeyDown for others
+            bool isLaserEquipped = localEquipSystem != null && localEquipSystem.IsLaserEquipped();
+            
+            if (isLaserEquipped)
             {
-                Debug.Log("[NetworkUIManager] T key pressed — calling OnThrowButtonPressed()");
+                if (Input.GetKey(KeyCode.T))
+                {
+                    if (localLaserBehaviour != null)
+                        localLaserBehaviour.RequestShoot();
+                }
+                else if (Input.GetKeyUp(KeyCode.T))
+                {
+                    if (localLaserBehaviour != null)
+                        localLaserBehaviour.StopShooting();
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.T))
+            {
                 OnThrowButtonPressed();
             }
+            
+            // Continuous laser fire while throw button is held (via HoldableButton)
+            bool isThrowHeld = throwHoldable != null && throwHoldable.IsHeld;
+            if (isThrowHeld && isLaserEquipped && localLaserBehaviour != null)
+            {
+                localLaserBehaviour.RequestShoot();
+            }
+            // Detect release: was held last frame, not held this frame -> stop laser
+            else if (wasThrowHeld && !isThrowHeld && isLaserEquipped && localLaserBehaviour != null)
+            {
+                localLaserBehaviour.StopShooting();
+            }
+            wasThrowHeld = isThrowHeld;
         }
         else
         {
             // Log periodically to show we're still looking (every 2 seconds)
             if (Time.frameCount % 120 == 0)
             {
-                Debug.LogWarning($"[NetworkUIManager] Local player NOT found yet. Runner: {(runner != null ? "exists" : "null")}, Runner.IsRunning: {(runner != null ? runner.IsRunning.ToString() : "N/A")}");
+                // Debug.LogWarning($"[NetworkUIManager] Local player NOT found yet. Runner: {(runner != null ? "exists" : "null")}, Runner.IsRunning: {(runner != null ? runner.IsRunning.ToString() : "N/A")}");
             }
         }
 
@@ -166,7 +201,7 @@ public class NetworkUIManager : MonoBehaviour
                 if (bomb.Object != null && bomb.Object.HasInputAuthority)
                 {
                     localPlayerObject = bomb.Object;
-                    Debug.Log($"[NetworkUIManager] Found local player via fallback scan: {localPlayerObject.name}");
+                    // Debug.Log($"[NetworkUIManager] Found local player via fallback scan: {localPlayerObject.name}");
                     break;
                 }
             }
@@ -180,12 +215,12 @@ public class NetworkUIManager : MonoBehaviour
             localEquipSystem = localPlayerObject.GetComponent<NetworkWeaponEquipSystem>();
             localPlayerData = localPlayerObject.GetComponent<PlayerNetworkData>();
 
-            Debug.Log($"[NetworkUIManager] Local player found! Object: {localPlayerObject.name}");
-            Debug.Log($"[NetworkUIManager]   - NetworkBombBehaviour: {(localBombBehaviour != null ? "FOUND" : "MISSING")}");
-            Debug.Log($"[NetworkUIManager]   - NetworkPistolBehaviour: {(localPistolBehaviour != null ? "FOUND" : "MISSING")}");
-            Debug.Log($"[NetworkUIManager]   - NetworkLaserBehaviour: {(localLaserBehaviour != null ? "FOUND" : "MISSING")}");
-            Debug.Log($"[NetworkUIManager]   - NetworkWeaponEquipSystem: {(localEquipSystem != null ? "FOUND" : "MISSING")}");
-            Debug.Log($"[NetworkUIManager]   - PlayerNetworkData: {(localPlayerData != null ? "FOUND" : "MISSING")}");
+            // Debug.Log($"[NetworkUIManager] Local player found! Object: {localPlayerObject.name}");
+            // Debug.Log($"[NetworkUIManager]   - NetworkBombBehaviour: {(localBombBehaviour != null ? "FOUND" : "MISSING")}");
+            // Debug.Log($"[NetworkUIManager]   - NetworkPistolBehaviour: {(localPistolBehaviour != null ? "FOUND" : "MISSING")}");
+            // Debug.Log($"[NetworkUIManager]   - NetworkLaserBehaviour: {(localLaserBehaviour != null ? "FOUND" : "MISSING")}");
+            // Debug.Log($"[NetworkUIManager]   - NetworkWeaponEquipSystem: {(localEquipSystem != null ? "FOUND" : "MISSING")}");
+            // Debug.Log($"[NetworkUIManager]   - PlayerNetworkData: {(localPlayerData != null ? "FOUND" : "MISSING")}");
         }
     }
 
@@ -204,22 +239,22 @@ public class NetworkUIManager : MonoBehaviour
         {
             if (localEquipSystem.IsBombEquipped() && localBombBehaviour != null)
             {
-                Debug.Log("[NetworkUIManager] Throw button pressed - Bomb is equipped, throwing bomb");
+                // Debug.Log("[NetworkUIManager] Throw button pressed - Bomb is equipped, throwing bomb");
                 localBombBehaviour.RequestThrow();
             }
             else if (localEquipSystem.IsPistolEquipped() && localPistolBehaviour != null)
             {
-                Debug.Log("[NetworkUIManager] Throw button pressed - Pistol is equipped, shooting pistol");
+                // Debug.Log("[NetworkUIManager] Throw button pressed - Pistol is equipped, shooting pistol");
                 localPistolBehaviour.RequestShoot();
             }
             else if (localEquipSystem.IsLaserEquipped() && localLaserBehaviour != null)
             {
-                Debug.Log("[NetworkUIManager] Throw button pressed - Laser is equipped, shooting laser");
+                // Debug.Log("[NetworkUIManager] Throw button pressed - Laser is equipped, shooting laser");
                 localLaserBehaviour.RequestShoot();
             }
             else
             {
-                Debug.LogWarning("[NetworkUIManager] Throw button pressed but no weapon equipped or behaviour missing");
+                // Debug.LogWarning("[NetworkUIManager] Throw button pressed but no weapon equipped or behaviour missing");
             }
         }
         else
@@ -231,7 +266,7 @@ public class NetworkUIManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("[NetworkUIManager] Cannot throw — local player components not found.");
+                // Debug.LogWarning("[NetworkUIManager] Cannot throw — local player components not found.");
                 TryFindLocalPlayer(); // Try to re-find
             }
         }
@@ -334,9 +369,6 @@ public class NetworkUIManager : MonoBehaviour
             int minutes = Mathf.FloorToInt(remaining / 60f);
             int seconds = Mathf.FloorToInt(remaining % 60f);
             timerText.text = $"{minutes:00}:{seconds:00}";
-
-            // Log the remaining time for debugging
-            Debug.Log($"[NetworkUIManager] Game Timer Remaining: {remaining}s");
         }
     }
 

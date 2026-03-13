@@ -40,7 +40,7 @@ public class NetworkTransformInterpolation : NetworkBehaviour
         // or it will fight with CharacterController causing rubberbanding.
         if (GetComponent<CharacterController>() != null)
         {
-            Debug.Log($"[NetworkTransformInterpolation] Disabled on {gameObject.name} - CharacterController handles movement");
+            // Debug.Log($"[NetworkTransformInterpolation] Disabled on {gameObject.name} - CharacterController handles movement");
             enabled = false;
             return;
         }
@@ -57,14 +57,14 @@ public class NetworkTransformInterpolation : NetworkBehaviour
         
         if (showDebugInfo)
         {
-            Debug.Log($"[NetworkTransformInterpolation] Spawned on {gameObject.name}. IsLocalPlayer: {_isLocalPlayer}");
+            // Debug.Log($"[NetworkTransformInterpolation] Spawned on {gameObject.name}. IsLocalPlayer: {_isLocalPlayer}");
             if (_isLocalPlayer)
             {
-                Debug.Log($"[NetworkTransformInterpolation] LOCAL player - Position: Direct, Rotation: Interpolated");
+                // Debug.Log($"[NetworkTransformInterpolation] LOCAL player - Position: Direct, Rotation: Interpolated");
             }
             else
             {
-                Debug.Log($"[NetworkTransformInterpolation] REMOTE player - Position: Interpolated, Rotation: Interpolated");
+                // Debug.Log($"[NetworkTransformInterpolation] REMOTE player - Position: Interpolated, Rotation: Interpolated");
             }
         }
     }

@@ -651,31 +651,18 @@ public class NetworkLobbyManager : NetworkBehaviour
                 // Debug.Log($"[NetworkLobbyManager] Initializing game with scene: {sceneName}");
                 GameMode gameMode = (GameMode)SelectedModeIndex;
 
-                // Assign teams based on the selected game mode
-                if (gameMode == GameMode.FreeForAll)
+                // Assign teams for TeamDeathmatch
+                int teamCounter = 0;
+                foreach (var kvp in LobbyPlayers)
                 {
-                    foreach (var kvp in LobbyPlayers)
-                    {
-                        var player = kvp.Key;
-                        var playerData = kvp.Value;
-                        playerData.TeamID = -1; // -1 for FreeForAll
-                        LobbyPlayers.Set(player, playerData);
-                        // Debug.Log($"[NetworkLobbyManager] Set TeamID for Player {player.PlayerId} to -1 for FreeForAll.");
-                    }
+                    var player = kvp.Key;
+                    var playerData = kvp.Value;
+                    playerData.TeamID = teamCounter % 2; // Alternate between Team 0 and Team 1
+                    LobbyPlayers.Set(player, playerData);
+                    // Debug.Log($"[NetworkLobbyManager] Set TeamID for Player {player.PlayerId} to {playerData.TeamID} for TeamDeathmatch.");
+                    teamCounter++;
                 }
-                else if (gameMode == GameMode.TeamDeathmatch)
-                {
-                    int teamCounter = 0;
-                    foreach (var kvp in LobbyPlayers)
-                    {
-                        var player = kvp.Key;
-                        var playerData = kvp.Value;
-                        playerData.TeamID = teamCounter % 2; // Alternate between Team 0 and Team 1
-                        LobbyPlayers.Set(player, playerData);
-                        // Debug.Log($"[NetworkLobbyManager] Set TeamID for Player {player.PlayerId} to {playerData.TeamID} for TeamDeathmatch.");
-                        teamCounter++;
-                    }
-                }
+
 
                 NetworkGameManager.Instance.StartGame(gameMode, timeInSeconds[SelectedTimeIndex], sceneName);
             }

@@ -5,11 +5,7 @@ using System.Linq;
 
 public enum GameMode
 {
-    FreeForAll,      // Classic deathmatch
-    TeamDeathmatch,  // Team-based deathmatch
-    BattleRoyale,    // Last player/team standing
-    GunGame,         // Progress through weapons on each kill
-    OneInTheChamber  // One bullet, one kill
+    TeamDeathmatch   // Team-based deathmatch
 }
 
 public enum GameState
@@ -27,7 +23,7 @@ public class NetworkGameManager : NetworkBehaviour
 
     [Header("Game Settings")]
     [SerializeField] private bool _gameSettingsHeader;
-    [Networked] public GameMode CurrentGameMode { get; set; } = GameMode.FreeForAll;
+    [Networked] public GameMode CurrentGameMode { get; set; } = GameMode.TeamDeathmatch;
     [Networked] public int RoundTime { get; private set; } = 300; // 5 minutes default
     [Networked] public int RoundsToWin { get; private set; } = 3;
     [Networked] public GameState CurrentGameState { get; private set; }
@@ -119,7 +115,7 @@ public class NetworkGameManager : NetworkBehaviour
         }
     }
 
-    public void StartGame(GameMode mode = GameMode.FreeForAll, int time = 300, string sceneName = null)
+    public void StartGame(GameMode mode = GameMode.TeamDeathmatch, int time = 300, string sceneName = null)
     {
         if (!Object.HasStateAuthority) 
         {
@@ -362,38 +358,32 @@ public class NetworkGameManager : NetworkBehaviour
         AlivePlayers.Remove(victim);
         PlayersAlive = AlivePlayers.Count;
         
-        // Debug.Log($"Player {killer.PlayerId} killed Player {victim.PlayerId}");
+        var killerData = Runner.GetPlayerObject(killer)?.GetComponent<PlayerNetworkData>();
+        var victimData = Runner.GetPlayerObject(victim)?.GetComponent<PlayerNetworkData>();
+
+        string killerName = killerData != null ? killerData.PlayerName : $"Player {killer.PlayerId}";
+        string victimName = victimData != null ? victimData.PlayerName : $"Player {victim.PlayerId}";
+
+        Debug.Log($"[NetworkGameManager] *** KILL LOG *** {victimName} was eliminated by {killerName}!");
         
-        // Update scores based on game mode
+        // Update scores - always award points if players have valid, distinct teams 
+        // regardless of whether the mode was explicitly set to TeamDeathmatch in the Lobby
+        if (killerData != null && victimData != null && 
+            killerData.TeamId >= 0 && victimData.TeamId >= 0 && 
+            killerData.TeamId != victimData.TeamId)
+        {
+            // Award point to killer's team
+            if (killerData.TeamId == 0) BlueTeamScore++;
+            else RedTeamScore++;
+            
+            string winningTeamName = killerData.TeamId == 0 ? "Blue" : "Red";
+            Debug.Log($"[NetworkGameManager] Point awarded to {winningTeamName} Team! New Score - Blue: {BlueTeamScore}, Red: {RedTeamScore}");
+        }
+
         if (CurrentGameMode == GameMode.TeamDeathmatch)
         {
-            var killerData = Runner.GetPlayerObject(killer)?.GetComponent<PlayerNetworkData>();
-            var victimData = Runner.GetPlayerObject(victim)?.GetComponent<PlayerNetworkData>();
-            
-            if (killerData != null && victimData != null && killerData.TeamId != victimData.TeamId)
-            {
-                // Award point to killer's team
-                if (killerData.TeamId == 0) BlueTeamScore++;
-                else RedTeamScore++;
-                
-                string winningTeamName = killerData.TeamId == 0 ? "Blue" : "Red";
-                Debug.Log($"[NetworkGameManager] Player {victimData.PlayerName} (Team {victimData.TeamId}) was killed by {killerData.PlayerName} (Team {killerData.TeamId}).");
-                Debug.Log($"[NetworkGameManager] Point awarded to {winningTeamName} Team! Score - Blue: {BlueTeamScore}, Red: {RedTeamScore}");
-                
-                // Check for round/game end
-                CheckGameEndConditions();
-            }
-        }
-        else if (CurrentGameMode == GameMode.FreeForAll)
-        {
-            // Check if someone reached kill limit
-            var killerKills = PlayerKills[killer];
-            if (killerKills >= 20) // First to 20 kills wins
-            {
-                // Debug.Log($"Player {killer.PlayerId} wins with {killerKills} kills!");
-                var killerData = Runner.GetPlayerObject(killer)?.GetComponent<PlayerNetworkData>();
-                EndGame(killerData?.TeamId ?? -1);
-            }
+            // Check for round/game end
+            CheckGameEndConditions();
         }
     }
     

@@ -187,7 +187,7 @@ public class PlayerNetworkData : NetworkBehaviour
             
 
             RPC_OnDeath();
-
+            return; // Exit immediately to avoid accessing despawned object
         }
 
         

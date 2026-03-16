@@ -275,6 +275,12 @@ public class NetworkPlayerSpawner : MonoBehaviour
             return;
         }
 
+        // Do not collect input if the settings panel is open
+        if (NetworkUIManager.Instance != null && NetworkUIManager.Instance.IsSettingsPanelActive)
+        {
+            return;
+        }
+
         PlayerInputData data = new PlayerInputData();
 
         // Use joystick input if available (Android), fall back to keyboard (Editor)

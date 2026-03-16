@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+ using UnityEngine;
 using Fusion;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -97,6 +97,11 @@ namespace StarterAssets
         [Tooltip("For locking the camera position on all axis")]
         public bool LockCameraPosition = false;
 
+        [Header("Multiplayer Sensitivity")]
+        [Tooltip("Base sensitivity loaded independently from single-player game.")]
+        public float mpCameraSensitivity = 0.2f;
+        private const string MP_SENSITIVITY_KEY = "MultiplayerSensitivity";
+
         private float _cinemachineTargetYaw;
         private float _cinemachineTargetPitch;
         private float _speed;
@@ -164,6 +169,15 @@ namespace StarterAssets
             // Get StarterAssetsInputs component for THIS specific player instance
             _nativeInput = GetComponent<StarterAssetsInputs>();
             
+            // Load custom standalone multiplayer sensitivity
+            mpCameraSensitivity = PlayerPrefs.GetFloat(MP_SENSITIVITY_KEY, 0.2f);
+            
+            // Listen for sensitivity updates mid-game if this is our player
+            if (Object.HasInputAuthority)
+            {
+                MultiplayerSettingsManager.OnSensitivityChangedEvent += UpdateSensitivity;
+            }
+            
             // Disable CharacterController temporarily to allow position to be set correctly
             if (_controller != null)
             {
@@ -215,6 +229,19 @@ namespace StarterAssets
                     }
                 }
             }
+        }
+
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            if (Object.HasInputAuthority)
+            {
+                MultiplayerSettingsManager.OnSensitivityChangedEvent -= UpdateSensitivity;
+            }
+        }
+
+        private void UpdateSensitivity(float newSensitivity)
+        {
+            mpCameraSensitivity = newSensitivity;
         }
 
         private void SetupCameraAndInput()
@@ -472,6 +499,17 @@ namespace StarterAssets
         public void OnInput(NetworkRunner runner, NetworkInput input)
         {
             var data = new NetworkInputData();
+
+            // Do not collect input if the settings panel is open
+            if (NetworkUIManager.Instance != null && NetworkUIManager.Instance.IsSettingsPanelActive)
+            {
+                // Ensure camera doesn't drift
+                data.cameraYaw = _cinemachineTargetYaw;
+                data.cameraPitch = _cinemachineTargetPitch;
+                input.Set(data);
+                return;
+            }
+
             if (_nativeInput != null)
             {
                 data.move = _nativeInput.move;
@@ -574,7 +612,11 @@ namespace StarterAssets
             if (_latestInput.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
                 float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
-                _cinemachineTargetYaw += _latestInput.look.x * deltaTimeMultiplier;
+                
+                // Apply custom multiplayer stand-alone sensitivity
+                float adjustedSensitivity = deltaTimeMultiplier * mpCameraSensitivity;
+                
+                _cinemachineTargetYaw += _latestInput.look.x * adjustedSensitivity;
                 
                 // Y-axis inversion logic:
                 // - Client players (PlayerId > 1): Always inverted (works on all platforms)
@@ -593,7 +635,7 @@ namespace StarterAssets
                 {
                     verticalLook *= -1;
                 }
-                _cinemachineTargetPitch += verticalLook * deltaTimeMultiplier;
+                _cinemachineTargetPitch += verticalLook * adjustedSensitivity;
             }
 
             _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);

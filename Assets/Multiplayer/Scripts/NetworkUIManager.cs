@@ -40,6 +40,11 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private GameObject respawnPanel;             // Panel shown when player dies
     [SerializeField] private TextMeshProUGUI respawnTimerText;    // Timer text inside the respawn panel
 
+    [Header("Settings Panel")]
+    [SerializeField] private GameObject settingsPanel;            // Panel shown when settings button is clicked
+    
+    public bool IsSettingsPanelActive => settingsPanel != null && settingsPanel.activeSelf;
+
     // Cached references
     private NetworkRunner runner;
     private NetworkObject localPlayerObject;
@@ -447,5 +452,23 @@ public class NetworkUIManager : MonoBehaviour
         {
             Instance = null;
         }
+    }
+
+    public void SettingBTn()
+    {
+        settingsPanel.SetActive(true);
+        
+        // Unlock and show cursor so the player can interact with UI
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void CloseSettingBTn()
+    {
+        settingsPanel.SetActive(false);
+        
+        // Re-lock the cursor when closing settings (assuming gameplay requires it)
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }

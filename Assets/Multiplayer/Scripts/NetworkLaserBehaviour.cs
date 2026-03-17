@@ -46,11 +46,14 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     private PlayerNetworkData playerData;
     private float lastShotTime;
     
-    // Continuous beam effects
+    // Decoupled Visual State NetworkBool
+    [Networked] public NetworkBool IsFiringLaser { get; set; }
+    private bool _lastIsFiringLaser;
+    
+    // Continuous beam visual references
     private LineRenderer continuousBeam;
     private GameObject continuousImpact;
     private GameObject continuousMuzzleFlash;
-    private bool isBeamActive = false;
     
     // Track beam destruction
     private int beamDestructionCount = 0;
@@ -183,158 +186,57 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
         }
 
-        if (input.isShooting && CurrentEnergy > 0 && !IsReloading)
+        if (input.isShooting && CurrentEnergy > 0 && !IsReloading && equipSystem != null && equipSystem.IsLaserEquipped())
         {
-            // Debug.Log($"[NetworkLaserBehaviour] *** SHOOTING CONDITIONS MET *** isShooting: {input.isShooting} | CurrentEnergy: {CurrentEnergy} | isBeamActive: {isBeamActive} | IsReloading: {IsReloading}");
-            
-            // Start continuous beam if not already active
-            if (!isBeamActive)
+            IsFiringLaser = true;
+
+            // Only consume energy and deal damage on state authority
+            if (Object.HasStateAuthority)
             {
-                // Debug.Log("[NetworkLaserBehaviour] *** BRANCH: Starting new beam ***");
-                TryShoot(input.aimOrigin, input.aimDirection, false); // Initial shot, NO energy consumption
-            }
-            else if (isBeamActive)
-            {
-                // Debug.Log("[NetworkLaserBehaviour] *** BRANCH: Updating continuous beam ***");
-                // Update continuous beam
-                Vector3 origin = firePoint != null ? firePoint.position : input.aimOrigin;
-                Vector3 direction = input.aimDirection;
-                float maxDistance = 100f;
-                
-                RaycastHit hit;
-                Vector3 endPoint = origin + direction * maxDistance;
-                bool didHit = Physics.Raycast(origin, direction, out hit, maxDistance, hitLayers);
-                
-                
-                // Update existing beam positions (every frame, regardless of authority)
-                UpdateContinuousBeam(origin, endPoint, hit.point, hit.normal, didHit);
-                
-                // Consume energy and update network (only on state authority)
-                if (Object.HasStateAuthority)
-                {
-                    // Debug.Log($"[NetworkLaserBehaviour] *** ENERGY PER SHOT VALUE *** {energyPerShot}");
-                    CurrentEnergy -= energyPerShot;
-                    // Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS ENERGY CONSUMPTION *** Energy: {CurrentEnergy + energyPerShot} → {CurrentEnergy} (-{energyPerShot})");
-                    if (CurrentEnergy <= 0)
-                    {
-                        CurrentEnergy = 0;
-                        // Debug.Log($"[NetworkLaserBehaviour] *** ENERGY DEPLETED! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy}");
-                        // Debug.Log($"[NetworkLaserBehaviour] *** STARTING RELOAD *** Starting {reloadTime}s reload timer");
-                        StopContinuousBeam();
-                        
-                        // Start reload process
-                        IsReloading = true;
-                        ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
-                        // Debug.Log($"[NetworkLaserBehaviour] *** RELOAD TIMER STARTED *** Reload will complete in {reloadTime}s");
-                    }
-                    RPC_UpdateEnergy(CurrentEnergy);
-                }
+                TryShootAuthority(input.aimOrigin, input.aimDirection);
             }
         }
         else
         {
-            // Log why shooting is blocked
-            if (input.isShooting && IsReloading)
-            {
-                float remainingTime = ReloadTimer.RemainingTime(Runner) ?? 0f;
-                // Debug.Log($"[NetworkLaserBehaviour] *** SHOOTING BLOCKED - RELOADING *** Player {Object.InputAuthority.PlayerId} | {remainingTime:F1}s remaining");
-            }
-            else if (input.isShooting && CurrentEnergy <= 0)
-            {
-                // Debug.Log($"[NetworkLaserBehaviour] *** SHOOTING BLOCKED - NO ENERGY *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy}");
-            }
-            
-            // Debug.Log($"[NetworkLaserBehaviour] *** STOPPING BEAM CONDITIONS *** isShooting: {input.isShooting} | CurrentEnergy: {CurrentEnergy} | isBeamActive: {isBeamActive}");
-            // Stop continuous beam when not shooting or out of energy/overheated
-            StopContinuousBeam();
+            IsFiringLaser = false;
         }
     }
 
-    private void TryShoot(Vector3 origin, Vector3 direction, bool consumeEnergy = true)
+    private void TryShootAuthority(Vector3 origin, Vector3 direction)
     {
-        if (!Object.HasStateAuthority)
-        {
-            return;
-        }
-
-        
-        if (equipSystem != null && !equipSystem.IsLaserEquipped())
-        {
-            // Debug.Log("[NetworkLaserBehaviour] TryShoot — skipped, laser not equipped.");
-            return;
-        }
-
         if (!FireCooldownTimer.ExpiredOrNotRunning(Runner))
         {
             return;
         }
 
-        if (CurrentEnergy < energyPerShot && consumeEnergy)
-        {
-            // Debug.Log($"[NetworkLaserBehaviour] *** ENERGY DEPLETED! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy} | Need: {energyPerShot}");
-            return;
-        }
+        CurrentEnergy -= energyPerShot;
+        FireCooldownTimer = TickTimer.CreateFromSeconds(Runner, fireRate);
 
-        // Only consume energy if this is not the initial beam setup
-        if (consumeEnergy)
+        if (CurrentEnergy <= 0)
         {
-            CurrentEnergy -= energyPerShot;
-            FireCooldownTimer = TickTimer.CreateFromSeconds(Runner, fireRate);
-            
-            // Debug.Log($"[NetworkLaserBehaviour] *** LASER FIRED! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy}/{maxEnergy} (-{energyPerShot}) | Direction: {direction}");
-        }
-        else
-        {
-            // Debug.Log($"[NetworkLaserBehaviour] *** INITIAL BEAM SETUP *** Player {Object.InputAuthority.PlayerId} | No energy consumed | Direction: {direction}");
+            CurrentEnergy = 0;
+            IsReloading = true;
+            ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
         }
 
         Vector3 shootOrigin = firePoint != null ? firePoint.position : origin;
         
         if (Physics.Raycast(shootOrigin, direction, out RaycastHit hit, range, hitLayers))
         {
-            // Debug.Log($"[NetworkLaserBehaviour] Laser hit: {hit.collider.name} at distance {hit.distance}");
-
             var targetPlayerData = hit.collider.GetComponentInParent<PlayerNetworkData>();
             if (targetPlayerData != null)
             {
-                // Debug.Log($"[NetworkLaserBehaviour] *** LASER HIT PLAYER *** Target: {targetPlayerData.PlayerName} (ID:{targetPlayerData.Object.InputAuthority.PlayerId}) | Shooter: Player {Object.InputAuthority.PlayerId}");
-                
                 if (targetPlayerData.Object.InputAuthority != Object.InputAuthority)
                 {
                     targetPlayerData.RPC_TakeDamage(damage, Object.InputAuthority);
-                    // Debug.Log($"[NetworkLaserBehaviour] Dealt {damage} laser damage to {targetPlayerData.PlayerName}");
-                }
-                else
-                {
-                    // Debug.Log($"[NetworkLaserBehaviour] Cannot shoot yourself! Ignoring hit.");
                 }
             }
-
-            RPC_OnLaserShot(shootOrigin, hit.point, true, hit.point, hit.normal);
-        }
-        else
-        {
-            Vector3 endPoint = shootOrigin + direction * range;
-            RPC_OnLaserShot(shootOrigin, endPoint, false, Vector3.zero, Vector3.zero);
         }
 
         RPC_UpdateEnergy(CurrentEnergy);
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_OnLaserShot(Vector3 origin, Vector3 endPoint, bool didHit, Vector3 hitPoint, Vector3 hitNormal)
-    {
-        // Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS BEAM STARTED *** Player {Object.InputAuthority.PlayerId}");
-        
-        // Start continuous beam instead of instant effects
-        StartContinuousBeam(origin, endPoint, hitPoint, hitNormal, didHit);
-        
-        // Play laser sound (looping sound could be added here for continuous beam)
-        if (laserShootSound != null)
-        {
-            AudioSource.PlayClipAtPoint(laserShootSound, origin, soundVolume);
-        }
-    }
+
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_UpdateEnergy(int newEnergy)
@@ -394,15 +296,16 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         return true; // Prefab separation handles team restrictions
     }
     
-    private void StartContinuousBeam(Vector3 origin, Vector3 direction, Vector3 hitPoint, Vector3 hitNormal, bool didHit)
+    private void StartContinuousBeam()
     {
-        // Debug.Log($"[NetworkLaserBehaviour] *** StartContinuousBeam CALLED *** isBeamActive: {isBeamActive} | didHit: {didHit}");
-        
-        if (isBeamActive)
+        if (continuousBeam != null)
         {
-            // Debug.Log("[NetworkLaserBehaviour] *** BEAM ALREADY ACTIVE - SKIPPING CREATION ***");
             return;
         }
+
+        Vector3 origin = firePoint != null ? firePoint.position : transform.position;
+        Vector3 direction = playerCamera != null ? playerCamera.transform.forward : Vector3.forward;
+
         
         // Create continuous beam
         if (laserBeamPrefab != null)
@@ -434,10 +337,14 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
         }
         
+        // Hit logic now dynamically calculated in Render
+        RaycastHit visualHit;
+        bool didHit = Physics.Raycast(origin, direction, out visualHit, 100f, hitLayers);
+
         // Create continuous impact
         if (didHit && laserImpactPrefab != null)
         {
-            continuousImpact = Instantiate(laserImpactPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
+            continuousImpact = Instantiate(laserImpactPrefab, visualHit.point, Quaternion.LookRotation(visualHit.normal));
             continuousImpact.transform.SetParent(transform);
             
             // Set continuous mode for impact particles
@@ -483,52 +390,51 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
             else
             {
-                // Debug.Log("[NetworkLaserBehaviour] *** WARNING: MuzzleFlashEffect component not found on muzzle flash prefab ***");
-                
                 // Fallback to old quad behavior
                 continuousMuzzleFlash.SetActive(true);
             }
-            
-            // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS MUZZLE FLASH CREATED ***");
         }
         
-        isBeamActive = true;
-        // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS BEAM STARTED ***");
+        if (laserShootSound != null) AudioSource.PlayClipAtPoint(laserShootSound, origin, soundVolume);
     }
     
-    private void UpdateContinuousBeam(Vector3 origin, Vector3 endPoint, Vector3 hitPoint, Vector3 hitNormal, bool didHit)
+    private void UpdateContinuousBeam()
     {
-        // Debug.Log($"[NetworkLaserBehaviour] *** UpdateContinuousBeam CALLED *** isBeamActive: {isBeamActive} | continuousBeam: {continuousBeam != null} | beamEnabled: {(continuousBeam != null ? continuousBeam.enabled.ToString() : "null")}");
-        
         // Only update positions if beam is already active
-        if (isBeamActive && continuousBeam != null)
+        if (continuousBeam != null && playerCamera != null)
         {
+            Vector3 origin = firePoint != null ? firePoint.position : transform.position;
+            Vector3 direction = playerCamera.transform.forward;
+            float maxDistance = 100f;
+            
+            RaycastHit hit;
+            Vector3 endPoint = origin + direction * maxDistance;
+            bool didHit = Physics.Raycast(origin, direction, out hit, maxDistance, hitLayers);
+            
+            Vector3 hitPoint = didHit ? hit.point : endPoint;
+            Vector3 hitNormal = didHit ? hit.normal : Vector3.zero;
+
             // Update beam positions
             continuousBeam.SetPosition(0, origin);
-            continuousBeam.SetPosition(1, endPoint);
+            continuousBeam.SetPosition(1, hitPoint);
             
             // Ensure beam is enabled
             if (!continuousBeam.enabled)
             {
                 continuousBeam.enabled = true;
-                // Debug.Log("[NetworkLaserBehaviour] *** BEAM RE-ENABLED ***");
             }
-            
-            // Debug.Log($"[NetworkLaserBehaviour] *** BEAM POSITIONS UPDATED *** {origin} → {endPoint}");
             
             // Update continuous impact position
             if (continuousImpact != null && didHit)
             {
                 continuousImpact.transform.position = hitPoint;
                 continuousImpact.transform.rotation = Quaternion.LookRotation(hitNormal);
-                // Debug.Log($"[NetworkLaserBehaviour] *** IMPACT POSITION UPDATED *** Position: {hitPoint}");
                 
                 // Make sure particles are still playing
                 var impactParticles = continuousImpact.GetComponent<ParticleSystem>();
                 if (impactParticles != null && !impactParticles.isPlaying)
                 {
                     impactParticles.Play();
-                    // Debug.Log("[NetworkLaserBehaviour] *** IMPACT PARTICLES RESTARTED ***");
                 }
             }
             
@@ -539,16 +445,10 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 continuousMuzzleFlash.transform.rotation = firePoint.rotation;
             }
         }
-        else if (isBeamActive && continuousBeam == null)
+        else if (continuousBeam == null)
         {
             // Beam was destroyed unexpectedly - recreate it
-            // Debug.Log("[NetworkLaserBehaviour] *** BEAM DESTROYED UNEXPECTEDLY - RECREATING ***");
-            isBeamActive = false; // Reset flag before recreation
-            StartContinuousBeam(origin, playerCamera != null ? playerCamera.transform.forward : Vector3.forward, hitPoint, hitNormal, didHit);
-        }
-        else
-        {
-            // Debug.Log($"[NetworkLaserBehaviour] *** BEAM UPDATE SKIPPED *** isBeamActive: {isBeamActive} | continuousBeam: {continuousBeam != null}");
+            StartContinuousBeam();
         }
     }
     
@@ -563,86 +463,51 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     
     private void StopContinuousBeam()
     {
-        // Debug.Log($"[NetworkLaserBehaviour] *** StopContinuousBeam CALLED *** isBeamActive: {isBeamActive} | continuousBeam: {(continuousBeam != null ? "exists" : "null")}");
-        
-        if (isBeamActive)
+        // Clean up continuous beam
+        if (continuousBeam != null)
         {
-            // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS BEAM STOPPED ***");
-            isBeamActive = false;
-            
-            // Clean up continuous beam
-            if (continuousBeam != null)
-            {
-                // Debug.Log($"[NetworkLaserBehaviour] *** DESTROYING CONTINUOUS BEAM *** #{beamDestructionCount} | Caller: {new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name}");
-                Destroy(continuousBeam.gameObject);
-                continuousBeam = null;
-            }
-            
-            // Clean up continuous muzzle flash
-            if (continuousMuzzleFlash != null)
-            {
-                // Debug.Log("[NetworkLaserBehaviour] *** DESTROYING CONTINUOUS MUZZLE FLASH ***");
-                
-                // Stop particle system if it has the component
-                var muzzleEffect = continuousMuzzleFlash.GetComponent<MuzzleFlashEffect>();
-                if (muzzleEffect != null)
-                {
-                    muzzleEffect.Stop();
-                }
-                
-                Destroy(continuousMuzzleFlash);
-                continuousMuzzleFlash = null;
-            }
-            
-            // Clean up continuous impact
-            if (continuousImpact != null)
-            {
-                // Debug.Log("[NetworkLaserBehaviour] *** DESTROYING CONTINUOUS IMPACT ***");
-                Destroy(continuousImpact);
-                continuousImpact = null;
-            }
+            Destroy(continuousBeam.gameObject);
+            continuousBeam = null;
         }
-        else
+        
+        // Clean up continuous muzzle flash
+        if (continuousMuzzleFlash != null)
         {
-            // Debug.Log("[NetworkLaserBehaviour] *** STOP BEAM CALLED BUT BEAM NOT ACTIVE ***");
+            var muzzleEffect = continuousMuzzleFlash.GetComponent<MuzzleFlashEffect>();
+            if (muzzleEffect != null)
+            {
+                muzzleEffect.Stop();
+            }
+            
+            Destroy(continuousMuzzleFlash);
+            continuousMuzzleFlash = null;
+        }
+        
+        // Clean up continuous impact
+        if (continuousImpact != null)
+        {
+            Destroy(continuousImpact);
+            continuousImpact = null;
         }
     }
     
-    private void Update()
+    public override void Render()
     {
-        // Update continuous beam if active (visual only, runs on all clients)
-        if (isBeamActive && continuousBeam != null && playerCamera != null)
+        if (IsFiringLaser && !_lastIsFiringLaser)
         {
-            Vector3 origin = firePoint != null ? firePoint.position : transform.position;
-            Vector3 direction = playerCamera.transform.forward;
-            float maxDistance = 100f;
-            
-            RaycastHit hit;
-            Vector3 endPoint = origin + direction * maxDistance;
-            bool didHit = Physics.Raycast(origin, direction, out hit, maxDistance, hitLayers);
-            
-            if (didHit)
-            {
-                endPoint = hit.point;
-                
-                // Update impact effect
-                if (continuousImpact != null)
-                {
-                    continuousImpact.transform.position = hit.point;
-                    continuousImpact.transform.rotation = Quaternion.LookRotation(hit.normal);
-                }
-            }
-            
-            // Update beam
-            continuousBeam.SetPosition(0, origin);
-            continuousBeam.SetPosition(1, endPoint);
-            
-            // Update muzzle flash
-            if (continuousMuzzleFlash != null && firePoint != null)
-            {
-                continuousMuzzleFlash.transform.position = firePoint.position;
-                continuousMuzzleFlash.transform.rotation = firePoint.rotation;
-            }
+            StartContinuousBeam();
         }
+        else if (!IsFiringLaser && _lastIsFiringLaser)
+        {
+            StopContinuousBeam();
+        }
+
+        // Standard graphical continuous beam updates perfectly synced to screen refresh
+        if (IsFiringLaser)
+        {
+            UpdateContinuousBeam();
+        }
+
+        _lastIsFiringLaser = IsFiringLaser;
     }
 }

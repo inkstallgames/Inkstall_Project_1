@@ -173,95 +173,51 @@ public class PlayerNetworkData : NetworkBehaviour
                 var sourcePlayerData = Runner.GetPlayerObject(sourcePlayer)?.GetComponent<PlayerNetworkData>();
 
                 if (sourcePlayerData != null)
-
                 {
-
                     sourcePlayerData.Kills++;
-
                 }
-
-                // Notify game manager to update team scores
-                NetworkGameManager.Instance?.OnPlayerKilled(Object.InputAuthority, sourcePlayer);
             }
 
-            
+            // Notify game manager to update team scores
+            NetworkGameManager.Instance?.OnPlayerKilled(Object.InputAuthority, sourcePlayer);
 
-            RPC_OnDeath();
+            // Notice: We do not call a local RPC_OnDeath() here anymore.
+            // The object is about to be Despawned, so local RPCs will be dropped by clients.
+            
+            if (Object.HasStateAuthority)
+            {
+                PlayerRef playerRef = Object.InputAuthority;
+                int teamId = TeamId;
+                string playerName = PlayerName;
+
+                // Ask the Game Manager to wait 7 seconds to respawn the player
+                if (NetworkGameManager.Instance != null)
+                {
+                    NetworkGameManager.Instance.ScheduleRespawn(playerRef, teamId, playerName, 7f);
+                    
+                    // Route the UI trigger through the persistent Game Manager so it isn't dropped!
+                    NetworkGameManager.Instance.RPC_NotifyPlayerDied(playerRef, 7f);
+                }
+
+                // Immediately destroy the current player object
+                if (Runner != null && Object != null)
+                {
+                    Runner.Despawn(Object);
+                }
+            }
+
             return; // Exit immediately to avoid accessing despawned object
         }
 
-        
-
         // Update visuals on all clients
-
         RPC_UpdateHealth(Health);
-
     }
 
-
-
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-
     private void RPC_UpdateHealth(int newHealth)
-
     {
-
         Health = newHealth;
-
         UpdateVisuals();
-
-    }
-
-
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-
-    private void RPC_OnDeath()
-
-    {
-
-        // Handle death effects, animations, etc.
-
-        // Debug.Log($"{PlayerName} died!");
-
-        
-
-        // Show respawn UI for the local player who died
-        if (Object.HasInputAuthority && NetworkUIManager.Instance != null)
-        {
-            NetworkUIManager.Instance.ShowRespawnScreen();
-        }
-
-        if (Object.HasStateAuthority)
-
-        {
-
-            PlayerRef playerRef = Object.InputAuthority;
-
-            int teamId = TeamId;
-
-            string playerName = PlayerName;
-
-            // Ask the Game Manager to wait 7 seconds to respawn the player
-            if (NetworkGameManager.Instance != null)
-
-            {
-
-                NetworkGameManager.Instance.ScheduleRespawn(playerRef, teamId, playerName, 7f);
-
-            }
-
-            // Immediately destroy the current player object
-            if (Runner != null && Object != null)
-
-            {
-
-                Runner.Despawn(Object);
-
-            }
-
-        }
-
     }
 
 

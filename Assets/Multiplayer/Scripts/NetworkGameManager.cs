@@ -320,6 +320,16 @@ public class NetworkGameManager : NetworkBehaviour
         OnRoundStarted?.Invoke();
     }
     
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_NotifyPlayerDied(PlayerRef victim, float respawnDuration)
+    {
+        // If this client IS the victim, show the UI
+        if (Runner.LocalPlayer == victim && NetworkUIManager.Instance != null)
+        {
+            NetworkUIManager.Instance.ShowRespawnScreen(respawnDuration);
+        }
+    }
+    
     private void AssignTeams()
     {
         // Simple team assignment - alternate between teams

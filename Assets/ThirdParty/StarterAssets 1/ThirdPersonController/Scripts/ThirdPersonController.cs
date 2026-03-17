@@ -33,7 +33,7 @@ namespace StarterAssets
         public bool equipBomb;
     }
 
-    [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(NetworkCharacterController))]
     public class ThirdPersonController : NetworkBehaviour, INetworkRunnerCallbacks
     {
         [Header("Player")]
@@ -41,7 +41,7 @@ namespace StarterAssets
         public float MoveSpeed = 4.0f;
 
         [Tooltip("Sprint speed of the character in m/s")]
-        public float SprintSpeed = 6.5f;
+        public float SprintSpeed = 3.64f;
 
         [Tooltip("How fast the character turns to face movement direction")]
         [Range(0.0f, 0.3f)]
@@ -119,7 +119,7 @@ namespace StarterAssets
         private int _animIDMotionSpeed;
 
         private Animator _animator;
-        private CharacterController _controller;
+        private NetworkCharacterController _networkController;
         private StarterAssetsInputs _nativeInput;
         private GameObject _mainCamera;
         private bool _hasAnimator;
@@ -135,10 +135,6 @@ namespace StarterAssets
         // Networked movement state - authoritative position from server
         [Networked] public Vector3 NetworkedPosition { get; set; }
         [Networked] public float NetworkedSpeed { get; set; }
-        
-        // Client prediction state
-        private Vector3 _clientPredictedPosition;
-        private bool _isClientPredicting = false;
 
         private bool IsCurrentDeviceMouse
         {
@@ -164,7 +160,7 @@ namespace StarterAssets
         {
             // Initialize components for ALL players (needed for FixedUpdateNetwork)
             _hasAnimator = TryGetComponent(out _animator);
-            _controller = GetComponent<CharacterController>();
+            _networkController = GetComponent<NetworkCharacterController>();
             
             // Get StarterAssetsInputs component for THIS specific player instance
             _nativeInput = GetComponent<StarterAssetsInputs>();
@@ -178,31 +174,15 @@ namespace StarterAssets
                 MultiplayerSettingsManager.OnSensitivityChangedEvent += UpdateSensitivity;
             }
             
-            // Disable CharacterController temporarily to allow position to be set correctly
-            if (_controller != null)
-            {
-                _controller.enabled = false;
-            }
-
             AssignAnimationIDs();
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
-            
-            // Re-enable CharacterController after position is set
-            if (_controller != null)
-            {
-                _controller.enabled = true;
-            }
 
             // Initialize networked position
             if (Object.HasStateAuthority)
             {
                 NetworkedPosition = transform.position;
             }
-            
-            // Client prediction setup
-            _isClientPredicting = Object.HasInputAuthority && !Object.HasStateAuthority;
-            _clientPredictedPosition = transform.position;
 
             // Enable/disable input components based on authority
             if (_nativeInput != null)
@@ -259,33 +239,20 @@ namespace StarterAssets
 
         public override void FixedUpdateNetwork()
         {
-            // Reset client prediction base to server's authoritative position each tick
-            // This prevents accumulation during Fusion's resimulation (which re-runs this method)
-            if (_isClientPredicting)
-            {
-                _clientPredictedPosition = NetworkedPosition;
-            }
-            
             if (GetInput(out NetworkInputData data))
             {
                 _latestInput = data;
 
-                // Debug: Log input received on server
-                if (Object.HasStateAuthority && data.move.sqrMagnitude > 0.01f && Time.frameCount % 60 == 0)
-                {
-                    Debug.Log($"[FixedUpdateNetwork] SERVER received input - Move: {data.move}, Player: {Object.InputAuthority.PlayerId}, Position: {transform.position}");
-                }
-
-                // Apply camera rotation from input (server authoritative)
+                // Application of gravity, movement, and camera logic
                 if (Object.HasStateAuthority)
                 {
                     _cinemachineTargetYaw = data.cameraYaw;
                     _cinemachineTargetPitch = data.cameraPitch;
                 }
 
-                // Movement, jumping, and gravity should be simulated for all clients to see.
-                JumpAndGravity(data);
+                // Check Grounded state using physics spheres manually
                 GroundedCheck();
+                JumpAndGravity(data);
                 Move(data);
 
                 // Sync animation state to all clients via networked properties
@@ -296,15 +263,9 @@ namespace StarterAssets
             }
             else
             {
-                // Debug: Log when no input received
-                if (Object.HasStateAuthority && Time.frameCount % 120 == 0)
-                {
-                    Debug.LogWarning($"[FixedUpdateNetwork] SERVER - No input received for Player {Object.InputAuthority.PlayerId}");
-                }
-                
                 // If no input, still apply gravity and check grounded state
-                JumpAndGravity(default);
                 GroundedCheck();
+                JumpAndGravity(default);
                 Move(default);
             }
         }
@@ -320,27 +281,6 @@ namespace StarterAssets
                 _animator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _animator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
                 _animator.SetBool(_animIDFreeFall, NetworkedVerticalVelocity < 0f && !NetworkedGrounded);
-            }
-
-            // Correct client prediction toward server's authoritative position
-            if (_isClientPredicting)
-            {
-                float errorDistance = Vector3.Distance(_clientPredictedPosition, NetworkedPosition);
-                
-                if (errorDistance > 5f)
-                {
-                    // Large error (teleport/respawn) — snap immediately
-                    _clientPredictedPosition = NetworkedPosition;
-                }
-                else if (errorDistance > 0.02f)
-                {
-                    // Small prediction error — smoothly correct toward server position
-                    // This is invisible at <80ms ping since errors are tiny
-                    _clientPredictedPosition = Vector3.Lerp(_clientPredictedPosition, NetworkedPosition, Time.deltaTime * 15f);
-                }
-                // else: error is negligible, no correction needed
-                
-                transform.position = _clientPredictedPosition;
             }
         }
 
@@ -382,7 +322,8 @@ namespace StarterAssets
 
             // Character always faces camera direction (rotates when camera rotates, not when moving)
             // Instant rotation - no smoothing for zero delay
-            transform.rotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
+            Quaternion desiredRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
+            transform.rotation = desiredRotation;
 
             // Calculate movement direction relative to camera facing
             Vector3 inputDirection = new Vector3(input.move.x, 0.0f, input.move.y).normalized;
@@ -391,44 +332,49 @@ namespace StarterAssets
             if (input.move != Vector2.zero)
             {
                 // Move relative to camera direction
-                targetDirection = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f) * inputDirection;
+                targetDirection = desiredRotation * inputDirection;
             }
 
-            // Calculate the movement delta
-            Vector3 horizontalMovement = targetDirection.normalized * (_speed * Runner.DeltaTime);
-            Vector3 verticalMovement = new Vector3(0.0f, _verticalVelocity, 0.0f) * Runner.DeltaTime;
-            Vector3 moveDelta = horizontalMovement + verticalMovement;
-            
+            // Sync Custom ThirdPersonController settings directly into the NetworkCharacterController
+            if (_networkController != null)
+            {
+                _networkController.maxSpeed = _speed;
+                _networkController.gravity = Gravity;
+                
+                // NetworkCharacterController expects a raw normalized direction vector, NOT a pre-calculated delta!
+                // It internally scales by DeltaTime, Gravity, and maxSpeed.
+                _networkController.Move(targetDirection.normalized);
+                
+                // Override the NetworkCharacterController's rotation logic back to our custom camera yaw
+                transform.rotation = desiredRotation;
+            }
+
             if (Object.HasStateAuthority)
             {
-                // Server/Host: Use CharacterController for authoritative physics movement
-                _controller.Move(moveDelta);
                 NetworkedPosition = transform.position;
                 NetworkedSpeed = _speed;
             }
-            else if (_isClientPredicting)
-            {
-                // Client: Predict position using pure math (no CharacterController)
-                // This avoids double-move during Fusion's resimulation ticks
-                _clientPredictedPosition += moveDelta;
-                transform.position = _clientPredictedPosition;
-            }
         }
 
-        private void JumpAndGravity(NetworkInputData input)
+         private void JumpAndGravity(NetworkInputData input)
         {
+            if (_networkController == null) return;
+
+            // Use the Native Grounded state from the controller
+            Grounded = _networkController.Grounded;
+
             if (Grounded)
             {
                 _fallTimeoutDelta = FallTimeout;
-
-                if (_verticalVelocity < 0.0f)
-                {
-                    _verticalVelocity = -2f;
-                }
+                _verticalVelocity = _networkController.Velocity.y;
 
                 if (input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
-                    _verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                    // Sync impulse height and trigger native jump
+                    float jumpImpulse = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                    _networkController.jumpImpulse = jumpImpulse;
+                    _networkController.Jump();
+                    _verticalVelocity = jumpImpulse;
                 }
 
                 if (_jumpTimeoutDelta >= 0.0f)
@@ -443,12 +389,11 @@ namespace StarterAssets
                 {
                     _fallTimeoutDelta -= Runner.DeltaTime;
                 }
+                
+                _verticalVelocity = _networkController.Velocity.y;
             }
-
-            if (_verticalVelocity < _terminalVelocity)
-            {
-                _verticalVelocity += Gravity * Runner.DeltaTime;
-            }
+            
+            // Gravity is tracked internally by _networkController.Move(), we do not apply it mathematically here.
         }
 
         private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
@@ -471,18 +416,18 @@ namespace StarterAssets
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                if (FootstepAudioClips.Length > 0)
+                if (FootstepAudioClips.Length > 0 && _networkController != null)
                 {
                     var index = UnityEngine.Random.Range(0, FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.position, FootstepAudioVolume);
                 }
             }
         }
 
         private void OnLand(AnimationEvent animationEvent)
         {
-            if (animationEvent.animatorClipInfo.weight > 0.5f)
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+            if (animationEvent.animatorClipInfo.weight > 0.5f && _networkController != null)
+                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.position, FootstepAudioVolume);
         }
 
         #region INetworkRunnerCallbacks

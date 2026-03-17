@@ -44,6 +44,12 @@ public class NetworkJoystickControl : MonoBehaviour, IPointerDownHandler, IDragH
     /// </summary>
     public bool IsSprinting { get; private set; }
 
+    /// <summary>
+    /// Tracks which finger ID originally touched the joystick.
+    /// Prevents conflicting multi-touch events (e.g., right thumb camera dragging).
+    /// </summary>
+    private int activePointerId = -1;
+
     // ───────────────────────────────────────────────
     // Lifecycle
     // ───────────────────────────────────────────────
@@ -92,13 +98,22 @@ public class NetworkJoystickControl : MonoBehaviour, IPointerDownHandler, IDragH
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        // Treat initial touch the same as a drag
+        // If we are already tracking a finger, ignore any new touches
+        if (activePointerId != -1) return;
+
+        // Lock onto this specific finger ID
+        activePointerId = eventData.pointerId;
+        
+        // Treat initial touch the same as a drag using that specific finger
         OnDrag(eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (containerRect == null) return;
+
+        // Ignore drag events from any OTHER fingers touching the screen
+        if (eventData.pointerId != activePointerId) return;
 
         // Convert screen position to local position inside the container
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -139,7 +154,13 @@ public class NetworkJoystickControl : MonoBehaviour, IPointerDownHandler, IDragH
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        // Reset everything when the finger lifts
+        // Ignore lift events from any OTHER fingers touching the screen
+        if (eventData.pointerId != activePointerId) return;
+
+        // Reset the tracker so the joystick can be touched by another finger
+        activePointerId = -1;
+
+        // Reset everything when the tracking finger lifts
         MovementInput = Vector2.zero;
         IsSprinting = false;
 

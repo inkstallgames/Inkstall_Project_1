@@ -243,7 +243,6 @@ public class NetworkUIManager : MonoBehaviour
     /// </summary>
     public void OnThrowButtonPressed()
     {
-        // Check which weapon is equipped
         if (localEquipSystem != null)
         {
             if (localEquipSystem.IsBombEquipped() && localBombBehaviour != null)
@@ -258,8 +257,8 @@ public class NetworkUIManager : MonoBehaviour
             }
             else if (localEquipSystem.IsLaserEquipped() && localLaserBehaviour != null)
             {
-                // Debug.Log("[NetworkUIManager] Throw button pressed - Laser is equipped, shooting laser");
-                localLaserBehaviour.RequestShoot();
+                // We deliberately ignore single-taps for Laser because it's a Hold-weapon.
+                // The HoldableButton logic in Update() natively handles the Laser instead!
             }
             else
             {
@@ -412,12 +411,12 @@ public class NetworkUIManager : MonoBehaviour
     /// <summary>
     /// Called when the local player dies. Shows the respawn panel with a 7-second countdown.
     /// </summary>
-    public void ShowRespawnScreen()
+    public void ShowRespawnScreen(float duration = 7f)
     {
         if (respawnPanel != null)
         {
             respawnPanel.SetActive(true);
-            StartCoroutine(RespawnCountdown(7f));
+            StartCoroutine(RespawnCountdown(duration));
         }
     }
 

@@ -1083,7 +1083,6 @@ GameObject:
   - component: {fileID: 7097533242563867028}
   - component: {fileID: 8741235711646507819}
   - component: {fileID: 918964218175342091}
-  - component: {fileID: 7507724042949624427}
   - component: {fileID: 2671153054746154757}
   - component: {fileID: 2896081923170901391}
   - component: {fileID: 3537175789903063825}
@@ -1091,6 +1090,7 @@ GameObject:
   - component: {fileID: 1380529191341539094}
   - component: {fileID: 2695427475046890927}
   - component: {fileID: 6294513283305607629}
+  - component: {fileID: 3336852099050109295}
   m_Layer: 8
   m_Name: PlayerArmature
   m_TagString: Player
@@ -1209,11 +1209,14 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
+  mpCameraSensitivity: 0.2
   _NetworkedAnimationBlend: 0
   _NetworkedMotionSpeed: 0
   _NetworkedGrounded:
     _value: 0
   _NetworkedVerticalVelocity: 0
+  _NetworkedPosition: {x: 0, y: 0, z: 0}
+  _NetworkedSpeed: 0
 --- !u!114 &5841311861055146809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1368,12 +1371,12 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 5424901534557904540}
   - {fileID: 918964218175342091}
-  - {fileID: 7507724042949624427}
   - {fileID: 2671153054746154757}
   - {fileID: 2896081923170901391}
   - {fileID: 3537175789903063825}
   - {fileID: 2792046304724239895}
   - {fileID: 2695427475046890927}
+  - {fileID: 3336852099050109295}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
 MonoBehaviour:
@@ -1396,23 +1399,6 @@ MonoBehaviour:
   nameTag: {fileID: 0}
   healthBar: {fileID: 0}
   teamIndicators: []
---- !u!114 &7507724042949624427
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3928277030421997894}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
 --- !u!114 &2671153054746154757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1557,6 +1543,25 @@ MonoBehaviour:
   bombKey: 50
   primaryButton: {fileID: 0}
   bombButton: {fileID: 0}
+--- !u!114 &3336852099050109295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3928277030421997894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  gravity: -20
+  jumpImpulse: 8
+  acceleration: 10
+  braking: 10
+  maxSpeed: 2
+  rotationSpeed: 15
 --- !u!1 &4483834934949140703
 GameObject:
   m_ObjectHideFlags: 0

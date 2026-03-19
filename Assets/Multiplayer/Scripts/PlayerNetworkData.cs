@@ -157,7 +157,9 @@ public class PlayerNetworkData : NetworkBehaviour
         if (Health <= 0) return; // Already dead
 
         Health = Mathf.Max(0, Health - damage);
-        // Debug.Log($"[PlayerNetworkData] Player {PlayerName} (ID:{Object.InputAuthority}) took {damage} damage. Health: {Health}/100. Source: {sourcePlayer}");
+        
+        // Update visuals on all clients first, so the UI hits 0
+        RPC_UpdateHealth(Health);
         
         if (Health <= 0)
         {
@@ -167,11 +169,8 @@ public class PlayerNetworkData : NetworkBehaviour
             
             // Award kill to the source player if it's not a suicide
             if (sourcePlayer != Object.InputAuthority && sourcePlayer != default)
-
             {
-
                 var sourcePlayerData = Runner.GetPlayerObject(sourcePlayer)?.GetComponent<PlayerNetworkData>();
-
                 if (sourcePlayerData != null)
                 {
                     sourcePlayerData.Kills++;
@@ -181,36 +180,21 @@ public class PlayerNetworkData : NetworkBehaviour
             // Notify game manager to update team scores
             NetworkGameManager.Instance?.OnPlayerKilled(Object.InputAuthority, sourcePlayer);
 
-            // Notice: We do not call a local RPC_OnDeath() here anymore.
-            // The object is about to be Despawned, so local RPCs will be dropped by clients.
-            
             if (Object.HasStateAuthority)
             {
                 PlayerRef playerRef = Object.InputAuthority;
                 int teamId = TeamId;
                 string playerName = PlayerName;
 
-                // Ask the Game Manager to wait 7 seconds to respawn the player
+                // Let the Game Manager handle a delayed despawn and the respawn UI notification
                 if (NetworkGameManager.Instance != null)
                 {
-                    NetworkGameManager.Instance.ScheduleRespawn(playerRef, teamId, playerName, 7f);
-                    
-                    // Route the UI trigger through the persistent Game Manager so it isn't dropped!
-                    NetworkGameManager.Instance.RPC_NotifyPlayerDied(playerRef, 7f);
-                }
-
-                // Immediately destroy the current player object
-                if (Runner != null && Object != null)
-                {
-                    Runner.Despawn(Object);
+                    NetworkGameManager.Instance.ScheduleDeathSequence(playerRef, teamId, playerName, 7f);
                 }
             }
 
-            return; // Exit immediately to avoid accessing despawned object
+            return; // Exit
         }
-
-        // Update visuals on all clients
-        RPC_UpdateHealth(Health);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

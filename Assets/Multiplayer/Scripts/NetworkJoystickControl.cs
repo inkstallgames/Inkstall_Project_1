@@ -84,6 +84,51 @@ public class NetworkJoystickControl : MonoBehaviour, IPointerDownHandler, IDragH
         }
     }
 
+    private void Update()
+    {
+        // Safety net: if we're tracking a finger but it no longer exists in Input.touches, reset.
+        // This catches cases where the finger slides off the joystick rect before lifting.
+        if (activePointerId == -1) return;
+
+        bool touchStillActive = false;
+
+#if UNITY_EDITOR
+        // In editor, mouse button acts as the pointer
+        if (activePointerId == -1 || Input.GetMouseButton(0))
+        {
+            touchStillActive = activePointerId != -1 && Input.GetMouseButton(0);
+        }
+#else
+        foreach (Touch touch in Input.touches)
+        {
+            if (touch.fingerId == activePointerId &&
+                touch.phase != TouchPhase.Ended &&
+                touch.phase != TouchPhase.Canceled)
+            {
+                touchStillActive = true;
+                break;
+            }
+        }
+#endif
+
+        if (!touchStillActive)
+        {
+            ResetJoystick();
+        }
+    }
+
+    private void ResetJoystick()
+    {
+        activePointerId = -1;
+        MovementInput = Vector2.zero;
+        IsSprinting = false;
+
+        if (handleRect != null)
+        {
+            handleRect.anchoredPosition = Vector2.zero;
+        }
+    }
+
     private void OnDestroy()
     {
         if (Instance == this)
@@ -123,14 +168,11 @@ public class NetworkJoystickControl : MonoBehaviour, IPointerDownHandler, IDragH
             out Vector2 localPoint
         );
 
-        // Normalize to -1..1 range based on container size
-        Vector2 normalized = new Vector2(
-            localPoint.x / (containerRect.sizeDelta.x * 0.5f),
-            localPoint.y / (containerRect.sizeDelta.y * 0.5f)
-        );
+        // Clamp the raw pixel offset to the joystick's physical range (circular boundary)
+        Vector2 clampedPixels = Vector2.ClampMagnitude(localPoint, joystickRange);
 
-        // Clamp magnitude to 1 (circular)
-        Vector2 clamped = Vector2.ClampMagnitude(normalized, 1f);
+        // Normalize to -1..1 by dividing by the range
+        Vector2 clamped = clampedPixels / joystickRange;
 
         // Apply dead zone
         if (clamped.magnitude < deadZone)
@@ -157,16 +199,6 @@ public class NetworkJoystickControl : MonoBehaviour, IPointerDownHandler, IDragH
         // Ignore lift events from any OTHER fingers touching the screen
         if (eventData.pointerId != activePointerId) return;
 
-        // Reset the tracker so the joystick can be touched by another finger
-        activePointerId = -1;
-
-        // Reset everything when the tracking finger lifts
-        MovementInput = Vector2.zero;
-        IsSprinting = false;
-
-        if (handleRect != null)
-        {
-            handleRect.anchoredPosition = Vector2.zero;
-        }
+        ResetJoystick();
     }
 }

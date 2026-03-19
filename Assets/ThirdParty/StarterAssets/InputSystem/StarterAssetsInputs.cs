@@ -138,6 +138,13 @@ namespace StarterAssets
 			}
 			
 			bool newJump = jumpAction.IsPressed();
+			
+			// Fallback to UI Button for mobile
+			if (NetworkUIManager.Instance != null && NetworkUIManager.Instance.IsJumpHeld)
+			{
+				newJump = true;
+			}
+			
 			JumpInput(newJump);
 			
 			// Sprint: use joystick sprint state if joystick is active, otherwise use keyboard

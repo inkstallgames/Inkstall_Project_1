@@ -527,6 +527,36 @@ public class NetworkGameManager : NetworkBehaviour
         RespawnPlayer(playerRef, teamId, playerName);
     }
 
+    public void ScheduleDeathSequence(PlayerRef playerRef, int teamId, string playerName, float respawnDelay)
+    {
+        if (!Object.HasStateAuthority) return;
+        StartCoroutine(DeathSequenceRoutine(playerRef, teamId, playerName, respawnDelay));
+    }
+
+    private System.Collections.IEnumerator DeathSequenceRoutine(PlayerRef playerRef, int teamId, string playerName, float respawnDelay)
+    {
+        // 1. Wait a moment so the client has time to receive RPC_UpdateHealth(0) and update UI
+        yield return new WaitForSeconds(0.5f);
+
+        // 2. Notify the dead player to show the respawn screen
+        // Subtract the 0.5s delay so the total time dead is roughly `respawnDelay`
+        float remainingRespawnTime = Mathf.Max(0.1f, respawnDelay - 0.5f);
+        RPC_NotifyPlayerDied(playerRef, remainingRespawnTime);
+
+        // 3. Despawn the player
+        if (Runner != null)
+        {
+            var playerObject = Runner.GetPlayerObject(playerRef);
+            if (playerObject != null)
+            {
+                Runner.Despawn(playerObject);
+            }
+        }
+
+        // 4. Schedule the actual respawn
+        ScheduleRespawn(playerRef, teamId, playerName, remainingRespawnTime);
+    }
+
     public void RespawnPlayer(PlayerRef playerRef, int teamId, string playerName)
     {
         if (!Object.HasStateAuthority)

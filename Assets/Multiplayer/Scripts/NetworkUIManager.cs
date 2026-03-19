@@ -17,6 +17,12 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private GameObject[] bombUIElements;        // Individual bomb icons (like offline mode)
     [SerializeField] private Image throwCooldownOverlay;         // Optional overlay on throw button to show cooldown
     
+    [Header("Movement UI")]
+    [Tooltip("UI Button that players hold down to jump.")]
+    [SerializeField] private HoldableButton jumpButton;
+    
+    public bool IsJumpHeld => jumpButton != null && jumpButton.IsHeld;
+
     [Header("Player Stats UI")]
     [SerializeField] private Slider healthBar;                   // Local player health bar
     [SerializeField] private TextMeshProUGUI healthText;         // Health number text
@@ -417,6 +423,16 @@ public class NetworkUIManager : MonoBehaviour
         {
             respawnPanel.SetActive(true);
             StartCoroutine(RespawnCountdown(duration));
+        }
+
+        // Force health bar to zero on death
+        if (healthBar != null)
+        {
+            healthBar.value = 0f;
+        }
+        if (healthText != null)
+        {
+            healthText.text = "0";
         }
     }
 

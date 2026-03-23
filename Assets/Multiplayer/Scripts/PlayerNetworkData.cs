@@ -156,6 +156,10 @@ public class PlayerNetworkData : NetworkBehaviour
     {
         if (Health <= 0) return; // Already dead
 
+        // Shield ability — Hero players are immune to damage while shielded
+        var abilityController = GetComponent<PlayerAbilityController>();
+        if (abilityController != null && abilityController.IsShielded) return;
+
         Health = Mathf.Max(0, Health - damage);
         
         // Update visuals on all clients first, so the UI hits 0
@@ -174,6 +178,8 @@ public class PlayerNetworkData : NetworkBehaviour
                 if (sourcePlayerData != null)
                 {
                     sourcePlayerData.Kills++;
+                    // Recharge killer's ability on kill
+                    sourcePlayerData.GetComponent<PlayerAbilityController>()?.GrantAbilityCharge();
                 }
             }
 

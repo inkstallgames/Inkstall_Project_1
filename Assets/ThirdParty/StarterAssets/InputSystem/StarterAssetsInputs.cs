@@ -91,7 +91,8 @@ namespace StarterAssets
 			if (NetworkJoystickControl.Instance != null && NetworkJoystickControl.Instance.MovementInput.sqrMagnitude > 0.01f)
 			{
 				// Use joystick input when available and active
-				newMove = NetworkJoystickControl.Instance.MovementInput;
+				Vector2 raw = NetworkJoystickControl.Instance.MovementInput;
+				newMove = new Vector2(raw.x, raw.y);
 				usingJoystick = true;
 			}
 			else

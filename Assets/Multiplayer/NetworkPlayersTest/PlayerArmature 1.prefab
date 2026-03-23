@@ -1091,6 +1091,7 @@ GameObject:
   - component: {fileID: 8713692567660585926}
   - component: {fileID: 7681208430689285799}
   - component: {fileID: 7001192333874516496}
+  - component: {fileID: 5221942292753347827}
   m_Layer: 8
   m_Name: PlayerArmature 1
   m_TagString: Player
@@ -1377,6 +1378,7 @@ MonoBehaviour:
   - {fileID: 2695427475046890927}
   - {fileID: 8713692567660585926}
   - {fileID: 7001192333874516496}
+  - {fileID: 5221942292753347827}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
 MonoBehaviour:
@@ -1531,6 +1533,8 @@ MonoBehaviour:
   laserOverheatSound: {fileID: 0}
   soundVolume: 1
   _CurrentEnergy: 0
+  _IsFiringLaser:
+    _value: 0
 --- !u!114 &7681208430689285799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1564,6 +1568,31 @@ MonoBehaviour:
   braking: 10
   maxSpeed: 2
   rotationSpeed: 15
+--- !u!114 &5221942292753347827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3928277030421997894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c53b8e6e45e69c6448db7af080dc1095, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _IsShielded:
+    _value: 0
+  _IsInvisible:
+    _value: 0
+  _AbilityCooldownEnd: 0
+  abilityDuration: 5
+  abilityCooldown: 15
+  playerRenderers:
+  - {fileID: 1108060021997994795}
+  - {fileID: 7157909402367430055}
+  shieldGlowColor: {r: 0, g: 0.5, b: 1, a: 1}
+  shieldGlowIntensity: 0.34
+  selfInvisibleAlpha: 0.15
 --- !u!1 &4483834934949140703
 GameObject:
   m_ObjectHideFlags: 0
@@ -3223,6 +3252,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d6e21688f526218458359db205e49cbe, type: 3}
+--- !u!23 &7157909402367430055 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: d6e21688f526218458359db205e49cbe,
+    type: 3}
+  m_PrefabInstance: {fileID: 8401347511006564643}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8294834956599162568 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d6e21688f526218458359db205e49cbe,

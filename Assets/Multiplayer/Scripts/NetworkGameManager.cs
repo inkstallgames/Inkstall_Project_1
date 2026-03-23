@@ -259,6 +259,31 @@ public class NetworkGameManager : NetworkBehaviour
         }
     }
 
+    public override void FixedUpdateNetwork()
+    {
+        // Only the server checks timer expiry
+        if (!Object.HasStateAuthority) return;
+        if (CurrentGameState != GameState.InProgress) return;
+
+        float elapsed = Runner.SimulationTime - RoundStartTime;
+        if (elapsed >= RoundTime)
+        {
+            EndGameByTimer();
+        }
+    }
+
+    private void EndGameByTimer()
+    {
+        if (CurrentGameState != GameState.InProgress) return; // guard double-call
+
+        int winningTeam;
+        if (BlueTeamScore > RedTeamScore)      winningTeam = 0;
+        else if (RedTeamScore > BlueTeamScore) winningTeam = 1;
+        else                                   winningTeam = -1; // draw
+
+        EndGame(winningTeam);
+    }
+
     public void RegisterPlayer(PlayerRef player, PlayerNetworkData playerData)
     {
         if (!players.ContainsKey(player))
@@ -446,12 +471,17 @@ public class NetworkGameManager : NetworkBehaviour
     
     private void EndGame(int winningTeam)
     {
+        if (CurrentGameState == GameState.GameOver) return; // prevent duplicate calls
         CurrentGameState = GameState.GameOver;
         WinningTeam = winningTeam;
-        
-        RPC_OnGameEnded(winningTeam);
 
-        // Return to lobby after a short delay
+        string winnerName = winningTeam == 0 ? "Hero's Won"
+                          : winningTeam == 1 ? "Alien's won"
+                          : "It's a Draw!";
+
+        RPC_OnGameEnded(winningTeam, winnerName);
+
+        // Return to lobby after a delay
         StartCoroutine(ReturnToLobbyAfterDelay(10f));
     }
 
@@ -460,16 +490,15 @@ public class NetworkGameManager : NetworkBehaviour
         yield return new WaitForSeconds(delay);
         if (Object.HasStateAuthority)
         {
-            // Assuming the lobby is at build index 0
             Runner.LoadScene(SceneRef.FromIndex(0), UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
     }
-    
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_OnGameEnded(int winningTeam)
+    private void RPC_OnGameEnded(int winningTeam, string winnerText)
     {
-        // Debug.Log($"Game Over! Team {winningTeam + 1} wins!");
         OnGameEnded?.Invoke();
+        NetworkUIManager.Instance?.ShowGameOverScreen(winnerText, winningTeam);
     }
 
     public Transform GetSpawnPoint(int teamId)
@@ -588,6 +617,8 @@ public class NetworkGameManager : NetworkBehaviour
                 playerData.PlayerName = playerName;
                 playerData.Health = 100;
                 playerData.UpdateVisuals();
+                // Restore ability charge on respawn
+                playerObject.GetComponent<PlayerAbilityController>()?.GrantAbilityCharge();
                 // Debug.Log($"[NetworkGameManager] Successfully respawned player {playerName} with full health");
             }
             

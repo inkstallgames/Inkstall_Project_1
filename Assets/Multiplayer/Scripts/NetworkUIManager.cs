@@ -46,6 +46,16 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private GameObject respawnPanel;             // Panel shown when player dies
     [SerializeField] private TextMeshProUGUI respawnTimerText;    // Timer text inside the respawn panel
 
+    [Header("Game Over UI")]
+    [SerializeField] private GameObject gameOverPanel;            // Panel shown when the match ends
+    [SerializeField] private TextMeshProUGUI gameOverText;        // "Blue Team Wins!" / "Red Team Wins!" / "It's a Draw!"
+    [SerializeField] private UnityEngine.UI.Image gameOverImage;  // Tinted Blue / Red / Grey based on winner
+
+    [Header("Ability UI")]
+    [SerializeField] private UnityEngine.UI.Button abilityButton;          // On-screen ability button
+    [SerializeField] private UnityEngine.UI.Image  abilityCooldownOverlay; // Radial/fill overlay (fill amount = cooldown %)
+    [SerializeField] private TextMeshProUGUI        abilityCooldownText;    // Optional: "Q  5s" countdown
+
     [Header("Settings Panel")]
     [SerializeField] private GameObject settingsPanel;            // Panel shown when settings button is clicked
     
@@ -62,6 +72,7 @@ public class NetworkUIManager : MonoBehaviour
     private PlayerNetworkData localPlayerData;
     private HoldableButton throwHoldable; // Tracks throw button hold state for continuous laser fire
     private bool wasThrowHeld = false; // Previous frame's held state for detecting release
+    private PlayerAbilityController localAbilityController;
 
     private void Awake()
     {
@@ -88,6 +99,9 @@ public class NetworkUIManager : MonoBehaviour
             if (throwHoldable == null)
                 throwHoldable = throwButton.gameObject.AddComponent<HoldableButton>();
         }
+
+        if (abilityButton != null)
+            abilityButton.onClick.AddListener(OnAbilityButtonPressed);
     }
 
     private void Update()
@@ -147,6 +161,13 @@ public class NetworkUIManager : MonoBehaviour
                 localLaserBehaviour.StopShooting();
             }
             wasThrowHeld = isThrowHeld;
+
+            // --- Ability (Q key) ---
+            if (Input.GetKeyDown(KeyCode.Q))
+                OnAbilityButtonPressed();
+
+            // --- Ability cooldown UI ---
+            UpdateAbilityCooldownUI();
         }
         else
         {
@@ -229,6 +250,7 @@ public class NetworkUIManager : MonoBehaviour
             localLaserBehaviour = localPlayerObject.GetComponent<NetworkLaserBehaviour>();
             localEquipSystem = localPlayerObject.GetComponent<NetworkWeaponEquipSystem>();
             localPlayerData = localPlayerObject.GetComponent<PlayerNetworkData>();
+            localAbilityController = localPlayerObject.GetComponent<PlayerAbilityController>();
 
             // Debug.Log($"[NetworkUIManager] Local player found! Object: {localPlayerObject.name}");
             // Debug.Log($"[NetworkUIManager]   - NetworkBombBehaviour: {(localBombBehaviour != null ? "FOUND" : "MISSING")}");
@@ -284,6 +306,43 @@ public class NetworkUIManager : MonoBehaviour
                 TryFindLocalPlayer(); // Try to re-find
             }
         }
+    }
+
+    // ---------------------------------------------------------------
+    // Ability Button
+    // ---------------------------------------------------------------
+
+    /// <summary>Called when the ability button is pressed (UI button or Q key).</summary>
+    public void OnAbilityButtonPressed()
+    {
+        if (localAbilityController == null) return;
+        if (localAbilityController.IsOnCooldown()) return;
+        localAbilityController.RPC_UseAbility();
+    }
+
+    private void UpdateAbilityCooldownUI()
+    {
+        if (localAbilityController == null) return;
+
+        bool ready = !localAbilityController.IsOnCooldown(); // true = has charge
+
+        // Radial fill overlay: fully filled (blocked) when no charge, hidden when ready
+        if (abilityCooldownOverlay != null)
+        {
+            abilityCooldownOverlay.fillAmount = ready ? 0f : 1f;
+            abilityCooldownOverlay.gameObject.SetActive(!ready);
+        }
+
+        // Text: "Q" when ready, "🔒" (or "—") when waiting for a kill
+        if (abilityCooldownText != null)
+        {
+            abilityCooldownText.text = ready ? "Q" : "KILL";
+            abilityCooldownText.gameObject.SetActive(true);
+        }
+
+        // Grey out button when no charge
+        if (abilityButton != null)
+            abilityButton.interactable = ready;
     }
 
     // ---------------------------------------------------------------
@@ -456,12 +515,42 @@ public class NetworkUIManager : MonoBehaviour
         }
     }
 
+    // ---------------------------------------------------------------
+    // Game Over UI
+    // ---------------------------------------------------------------
+
+    /// <summary>
+    /// Called on all clients when the match ends. Shows the game-over panel,
+    /// sets the winner text, and tints the panel image:
+    ///   winningTeam 0 = Blue (Team A), 1 = Red (Team B), -1 = Grey (Draw).
+    /// </summary>
+    public void ShowGameOverScreen(string winnerText, int winningTeam)
+    {
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+        }
+
+        if (gameOverText != null)
+        {
+            gameOverText.text = winnerText;
+        }
+
+        if (gameOverImage != null)
+        {
+            if (winningTeam == 0)       gameOverImage.color = new Color(0.18f, 0.47f, 1f);   // Blue
+            else if (winningTeam == 1)  gameOverImage.color = new Color(1f, 0.22f, 0.22f);   // Red
+            else                        gameOverImage.color = new Color(0.55f, 0.55f, 0.55f); // Grey
+        }
+    }
+
     private void OnDestroy()
     {
         if (throwButton != null)
-        {
             throwButton.onClick.RemoveListener(OnThrowButtonPressed);
-        }
+
+        if (abilityButton != null)
+            abilityButton.onClick.RemoveListener(OnAbilityButtonPressed);
 
         if (Instance == this)
         {

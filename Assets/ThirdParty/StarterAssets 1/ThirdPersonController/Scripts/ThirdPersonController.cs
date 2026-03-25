@@ -282,12 +282,6 @@ namespace StarterAssets
                 NetworkedMotionSpeed = data.move.magnitude;
                 NetworkedGrounded = Grounded;
                 NetworkedVerticalVelocity = _verticalVelocity;
-                
-                // Debug: Log speed changes
-                if (Time.frameCount % 30 == 0) // Log every 30 frames to avoid spam
-                {
-                    Debug.Log($"[Animation] Speed: {normalizedSpeed:F3}, MoveMag: {data.move.magnitude:F3}, TargetSpeed: {(data.sprint ? SprintSpeed : MoveSpeed):F1}");
-                }
             }
             else
             {
@@ -309,36 +303,24 @@ namespace StarterAssets
             // Update animations directly from networked state
             if (_hasAnimator && _animator != null)
             {
-                // Get current animator speed value for comparison
-                float currentAnimatorSpeed = _animator.GetFloat(_animIDSpeed);
-                
                 _animator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, NetworkedMotionSpeed);
                 _animator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _animator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
                 
-                // Debug: Log animator parameter updates
-                if (Time.frameCount % 60 == 0) // Log every 60 frames (1 second at 60fps)
-                {
-                    Debug.Log($"[Render] Animator Speed: {currentAnimatorSpeed:F3} -> {NetworkedAnimationBlend:F3}, Grounded: {NetworkedGrounded}, Jumping: {(NetworkedVerticalVelocity > 0f && !NetworkedGrounded)}");
-                }
-                
                 // Handle weapon and action animations from input
                 if (_latestInput.isShooting)
                 {
-                    Debug.Log($"[Animation] Fire trigger activated");
                     _animator.SetTrigger(_animIDFire);
                 }
                 
                 if (_latestInput.equipBomb)
                 {
-                    Debug.Log($"[Animation] EquipGranade trigger activated");
                     _animator.SetTrigger(_animIDEquipGranade);
                 }
                 
                 if (_latestInput.isThrowingBomb)
                 {
-                    Debug.Log($"[Animation] ThrowGranade trigger activated");
                     _animator.SetTrigger(_animIDThrowGranade);
                 }
             }
@@ -390,12 +372,6 @@ namespace StarterAssets
             float normalizedSpeed = _animationBlend / SprintSpeed; // SprintSpeed is max speed
             normalizedSpeed = Mathf.Clamp01(normalizedSpeed);
             
-            // Debug: Log detailed speed calculation
-            if (input.move.sqrMagnitude > 0.01f && Time.frameCount % 60 == 0)
-            {
-                Debug.Log($"[Move] TargetSpeed: {targetSpeed:F1}, _speed: {_speed:F1}, _animationBlend: {_animationBlend:F1}, Normalized: {normalizedSpeed:F3}, Sprint: {input.sprint}");
-            }
-
             // Character always faces camera direction (rotates when camera rotates, not when moving)
             // Instant rotation - no smoothing for zero delay
             Quaternion desiredRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
@@ -540,12 +516,6 @@ namespace StarterAssets
                 data.cameraYaw = _cinemachineTargetYaw;
                 data.cameraPitch = _cinemachineTargetPitch;
                 _nativeInput.jump = false;
-                
-                // Debug: Log input when movement detected
-                if (data.move.sqrMagnitude > 0.01f && Time.frameCount % 60 == 0)
-                {
-                    Debug.Log($"[OnInput] Sending input to server - Move: {data.move}, Sprint: {data.sprint}, Yaw: {data.cameraYaw:F1}");
-                }
             }
             else
             {

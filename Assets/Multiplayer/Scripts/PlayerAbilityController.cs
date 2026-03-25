@@ -169,12 +169,22 @@ public class PlayerAbilityController : NetworkBehaviour
                 if (on)
                 {
                     mat.EnableKeyword("_EMISSION");
+                    mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
                     mat.SetColor("_EmissionColor", emissionColor);
+
+                    // Tint base color heavily to ensure visibility on mobile (where bloom is off)
+                    if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", shieldGlowColor);
+                    else if (mat.HasProperty("_Color")) mat.SetColor("_Color", shieldGlowColor);
                 }
                 else
                 {
                     mat.DisableKeyword("_EMISSION");
+                    mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
                     mat.SetColor("_EmissionColor", Color.black);
+
+                    // Revert base color
+                    if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", Color.white);
+                    else if (mat.HasProperty("_Color")) mat.SetColor("_Color", Color.white);
                 }
             }
         }

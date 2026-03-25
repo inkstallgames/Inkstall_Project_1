@@ -115,7 +115,9 @@ namespace StarterAssets
         private int _animIDSpeed;
         private int _animIDGrounded;
         private int _animIDJump;
-        private int _animIDFreeFall;  
+        private int _animIDFire;
+        private int _animIDEquipGranade;
+        private int _animIDThrowGranade;
         private int _animIDMotionSpeed;
 
         private Animator _animator;
@@ -159,8 +161,26 @@ namespace StarterAssets
         public override void Spawned()
         {
             // Initialize components for ALL players (needed for FixedUpdateNetwork)
-            _hasAnimator = TryGetComponent(out _animator);
             _networkController = GetComponent<NetworkCharacterController>();
+            
+            // Get Animator component - ensure it's found
+            _animator = GetComponent<Animator>();
+            _hasAnimator = _animator != null;
+            
+            // Fallback: search in children if not found on this GameObject
+            if (!_hasAnimator)
+            {
+                _animator = GetComponentInChildren<Animator>();
+                _hasAnimator = _animator != null;
+                Debug.Log($"[Spawned] Animator found in children: {_hasAnimator}");
+            }
+            
+            Debug.Log($"[Spawned] Animator found: {_hasAnimator}, Animator component: {_animator != null}");
+            
+            if (_hasAnimator)
+            {
+                Debug.Log($"[Spawned] Animator Controller: {_animator.runtimeAnimatorController?.name}");
+            }
             
             // Get StarterAssetsInputs component for THIS specific player instance
             _nativeInput = GetComponent<StarterAssetsInputs>();
@@ -254,12 +274,20 @@ namespace StarterAssets
                 GroundedCheck();
                 JumpAndGravity(data);
                 Move(data);
-
+                
                 // Sync animation state to all clients via networked properties
-                NetworkedAnimationBlend = _animationBlend;
+                float normalizedSpeed = SprintSpeed > 0 ? _animationBlend / SprintSpeed : 0f;
+                normalizedSpeed = Mathf.Clamp01(normalizedSpeed);
+                NetworkedAnimationBlend = normalizedSpeed;
                 NetworkedMotionSpeed = data.move.magnitude;
                 NetworkedGrounded = Grounded;
                 NetworkedVerticalVelocity = _verticalVelocity;
+                
+                // Debug: Log speed changes
+                if (Time.frameCount % 30 == 0) // Log every 30 frames to avoid spam
+                {
+                    Debug.Log($"[Animation] Speed: {normalizedSpeed:F3}, MoveMag: {data.move.magnitude:F3}, TargetSpeed: {(data.sprint ? SprintSpeed : MoveSpeed):F1}");
+                }
             }
             else
             {
@@ -267,29 +295,67 @@ namespace StarterAssets
                 GroundedCheck();
                 JumpAndGravity(default);
                 Move(default);
+                
+                // Reset animation state when no input
+                NetworkedAnimationBlend = 0f;
+                NetworkedMotionSpeed = 0f;
+                NetworkedGrounded = Grounded;
+                NetworkedVerticalVelocity = _verticalVelocity;
             }
         }
 
         public override void Render()
         {
-            // Read animation state from [Networked] properties so all clients
-            // (including clients viewing the host character) see correct animations.
-            if (_hasAnimator)
+            // Update animations directly from networked state
+            if (_hasAnimator && _animator != null)
             {
+                // Get current animator speed value for comparison
+                float currentAnimatorSpeed = _animator.GetFloat(_animIDSpeed);
+                
                 _animator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, NetworkedMotionSpeed);
                 _animator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _animator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
-                _animator.SetBool(_animIDFreeFall, NetworkedVerticalVelocity < 0f && !NetworkedGrounded);
+                
+                // Debug: Log animator parameter updates
+                if (Time.frameCount % 60 == 0) // Log every 60 frames (1 second at 60fps)
+                {
+                    Debug.Log($"[Render] Animator Speed: {currentAnimatorSpeed:F3} -> {NetworkedAnimationBlend:F3}, Grounded: {NetworkedGrounded}, Jumping: {(NetworkedVerticalVelocity > 0f && !NetworkedGrounded)}");
+                }
+                
+                // Handle weapon and action animations from input
+                if (_latestInput.isShooting)
+                {
+                    Debug.Log($"[Animation] Fire trigger activated");
+                    _animator.SetTrigger(_animIDFire);
+                }
+                
+                if (_latestInput.equipBomb)
+                {
+                    Debug.Log($"[Animation] EquipGranade trigger activated");
+                    _animator.SetTrigger(_animIDEquipGranade);
+                }
+                
+                if (_latestInput.isThrowingBomb)
+                {
+                    Debug.Log($"[Animation] ThrowGranade trigger activated");
+                    _animator.SetTrigger(_animIDThrowGranade);
+                }
+            }
+            else
+            {
+                Debug.LogError($"[Render] Animator component missing! _hasAnimator: {_hasAnimator}, _animator: {_animator == null}");
             }
         }
 
         private void AssignAnimationIDs()
         {
             _animIDSpeed = Animator.StringToHash("Speed");
-            _animIDGrounded = Animator.StringToHash("Grounded");
-            _animIDJump = Animator.StringToHash("Jump");
-            _animIDFreeFall = Animator.StringToHash("FreeFall");
+            _animIDGrounded = Animator.StringToHash("isGrounded");
+            _animIDJump = Animator.StringToHash("isJumping");
+            _animIDFire = Animator.StringToHash("Fire");
+            _animIDEquipGranade = Animator.StringToHash("EquipGranade");
+            _animIDThrowGranade = Animator.StringToHash("ThrowGranade");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
         }
 
@@ -319,6 +385,16 @@ namespace StarterAssets
 
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Runner.DeltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
+
+            // Normalize animation blend to 0-1 range for Animator
+            float normalizedSpeed = _animationBlend / SprintSpeed; // SprintSpeed is max speed
+            normalizedSpeed = Mathf.Clamp01(normalizedSpeed);
+            
+            // Debug: Log detailed speed calculation
+            if (input.move.sqrMagnitude > 0.01f && Time.frameCount % 60 == 0)
+            {
+                Debug.Log($"[Move] TargetSpeed: {targetSpeed:F1}, _speed: {_speed:F1}, _animationBlend: {_animationBlend:F1}, Normalized: {normalizedSpeed:F3}, Sprint: {input.sprint}");
+            }
 
             // Character always faces camera direction (rotates when camera rotates, not when moving)
             // Instant rotation - no smoothing for zero delay

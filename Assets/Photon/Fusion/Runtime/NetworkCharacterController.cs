@@ -65,7 +65,6 @@ namespace Fusion {
       _controller.enabled = true;
     }
 
-
     public void Jump(bool ignoreGrounded = false, float? overrideImpulse = null) {
       if (Data.Grounded || ignoreGrounded) {
         var newVel = Data.Velocity;
@@ -106,10 +105,11 @@ namespace Fusion {
       Data.Velocity = (transform.position - previousPos) * Runner.TickRate;
       Data.Grounded = _controller.isGrounded;
     }
-    
+
     public override void Spawned() {
       _initial = default;
       TryGetComponent(out _controller);
+
       // Without disabling and re-enabling the CharacterController here, the first Move call will reset the position to 0,0,0 instead of
       // keeping the position it was spawned at. Presumably disabling it clears some kind of internally cached "previous position" value
       _controller.enabled = false;
@@ -131,10 +131,6 @@ namespace Fusion {
 
     void IBeforeCopyPreviousState.BeforeCopyPreviousState() {
       CopyToBuffer();
-    }
-    
-    void Awake() {
-      TryGetComponent(out _controller);
     }
 
     void CopyToBuffer() {

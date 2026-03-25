@@ -76,8 +76,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5801880005060367422}
   - {fileID: 2296920327939070584}
+  - {fileID: 5801880005060367422}
   - {fileID: 5953109149071819961}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 177.334, z: 0}
@@ -505,6 +505,7 @@ MonoBehaviour:
   braking: 10
   maxSpeed: 2
   rotationSpeed: 15
+  animator: {fileID: 0}
 --- !u!114 &6567890570193737134
 MonoBehaviour:
   m_ObjectHideFlags: 0

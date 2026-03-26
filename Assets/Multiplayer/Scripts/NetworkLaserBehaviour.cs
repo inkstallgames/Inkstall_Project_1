@@ -9,7 +9,9 @@ using UnityEngine;
 public class NetworkLaserBehaviour : NetworkBehaviour
 {
     [Header("Laser Settings")]
-    [SerializeField] private Transform firePoint;
+    [SerializeField] private Transform firePoint; // Will be auto-detected from active model
+    [Tooltip("Name of the shoot point transform (e.g. 'Shootpoint'). Will search in active weapon models.")]
+    [SerializeField] private string shootPointName = "Shootpoint";
     [SerializeField] private float fireRate = 0.5f; // Slower than pistol
     [SerializeField] private float range = 150f; // Longer range than pistol
     [SerializeField] private int damage = 25; // Higher damage than pistol
@@ -72,7 +74,17 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
         equipSystem = GetComponent<NetworkWeaponEquipSystem>();
         playerData = GetComponent<PlayerNetworkData>();
-
+        
+        // Auto-detect firePoint if not manually assigned
+        if (firePoint == null)
+        {
+            Debug.Log($"[NetworkLaserBehaviour] Spawned() - Attempting initial firePoint detection | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
+            FindActiveFirePoint();
+            
+            // Retry after a short delay to ensure PlayerVisualManager has toggled models
+            StartCoroutine(DelayedFirePointDetection());
+        }
+        
         // Force energy per shot to override Inspector values
         energyPerShot = 1; // Much slower consumption for longer duration
 
@@ -81,6 +93,75 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         {
             muzzleFlashPrefab.SetActive(false);
         }
+    }
+    
+    private System.Collections.IEnumerator DelayedFirePointDetection()
+    {
+        yield return new WaitForSeconds(0.1f); // Wait for PlayerVisualManager to run
+        
+        if (firePoint == null || !firePoint.gameObject.activeInHierarchy)
+        {
+            Debug.Log($"[NetworkLaserBehaviour] Delayed retry - Re-detecting firePoint after model visibility change | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
+            FindActiveFirePoint();
+        }
+    }
+    
+    /// <summary>
+    /// Dynamically finds the active shoot point from either the full body or arms-only model.
+    /// This allows the same script to work with both local (arms) and remote (full body) views.
+    /// </summary>
+    private void FindActiveFirePoint()
+    {
+        Debug.Log($"[NetworkLaserBehaviour] FindActiveFirePoint() called | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
+        
+        // Search for shoot point by name in all active children
+        Transform[] allTransforms = GetComponentsInChildren<Transform>(false); // false = only active objects
+        foreach (Transform t in allTransforms)
+        {
+            if (t.name == shootPointName)
+            {
+                // Check if this shoot point's parent hierarchy is active
+                if (t.gameObject.activeInHierarchy)
+                {
+                    firePoint = t;
+                    Debug.Log($"[NetworkLaserBehaviour] ✅ PICKED ACTIVE SHOOT POINT: '{t.name}' at path: {GetTransformPath(t)} | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
+                    return;
+                }
+            }
+        }
+        
+        // If not found, try searching inactive objects as fallback
+        allTransforms = GetComponentsInChildren<Transform>(true); // true = include inactive
+        foreach (Transform t in allTransforms)
+        {
+            if (t.name == shootPointName)
+            {
+                firePoint = t;
+                Debug.LogWarning($"[NetworkLaserBehaviour] ⚠️ PICKED INACTIVE SHOOT POINT: '{t.name}' at path: {GetTransformPath(t)} | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
+                return;
+            }
+        }
+        
+        Debug.LogError($"[NetworkLaserBehaviour] ❌ NO SHOOT POINT FOUND with name '{shootPointName}' in player hierarchy! | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
+    }
+    
+    private string GetTransformPath(Transform t)
+    {
+        string path = t.name;
+        while (t.parent != null && t.parent != transform)
+        {
+            t = t.parent;
+            path = t.name + "/" + path;
+        }
+        return path;
+    }
+    
+    /// <summary>
+    /// Call this to refresh the fire point reference (useful after model visibility changes).
+    /// </summary>
+    public void RefreshFirePoint()
+    {
+        FindActiveFirePoint();
     }
 
     public void RequestShoot()
@@ -219,9 +300,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
         }
 
-        Vector3 shootOrigin = firePoint != null ? firePoint.position : origin;
-        
-        if (Physics.Raycast(shootOrigin, direction, out RaycastHit hit, range, hitLayers))
+        // Raycast from camera position for accurate shooting (origin = camera position from input)
+        // firePoint is only used for visual effects spawn position
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, range, hitLayers))
         {
             var targetPlayerData = hit.collider.GetComponentInParent<PlayerNetworkData>();
             if (targetPlayerData != null)
@@ -403,19 +484,21 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         // Only update positions if beam is already active
         if (continuousBeam != null && playerCamera != null)
         {
-            Vector3 origin = firePoint != null ? firePoint.position : transform.position;
+            Vector3 visualOrigin = firePoint != null ? firePoint.position : transform.position;
             Vector3 direction = playerCamera.transform.forward;
             float maxDistance = 100f;
             
+            // Raycast from camera position for accurate hit detection
+            Vector3 cameraOrigin = playerCamera.transform.position;
             RaycastHit hit;
-            Vector3 endPoint = origin + direction * maxDistance;
-            bool didHit = Physics.Raycast(origin, direction, out hit, maxDistance, hitLayers);
+            Vector3 endPoint = cameraOrigin + direction * maxDistance;
+            bool didHit = Physics.Raycast(cameraOrigin, direction, out hit, maxDistance, hitLayers);
             
             Vector3 hitPoint = didHit ? hit.point : endPoint;
             Vector3 hitNormal = didHit ? hit.normal : Vector3.zero;
 
-            // Update beam positions
-            continuousBeam.SetPosition(0, origin);
+            // Update beam positions (visual starts from firePoint, ends at camera raycast hit)
+            continuousBeam.SetPosition(0, visualOrigin);
             continuousBeam.SetPosition(1, hitPoint);
             
             // Ensure beam is enabled

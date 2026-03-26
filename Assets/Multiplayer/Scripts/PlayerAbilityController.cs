@@ -37,16 +37,12 @@ public class PlayerAbilityController : NetworkBehaviour
     [SerializeField] private Renderer[] playerRenderers;
 
     [Header("Shield Glow — Team A / Hero")]
-    [Tooltip("Emission colour added to the player's materials while shielded.")]
-    [SerializeField] private Color shieldGlowColor = new Color(0f, 0.5f, 1f); // cyan-blue
-    [Tooltip("HDR brightness multiplier for the glow. 0 = off, 0.3 = subtle, 1 = full bright.")]
-    [Range(0f, 3f)]
-    [SerializeField] private float shieldGlowIntensity = 0.4f;
+    [Tooltip("Assign your custom Hologram Material here. It overlays a glowing shell *on top* of your original mesh when the shield is active!")]
+    [SerializeField] private Material shieldMaterial;
 
     [Header("Invisibility — Team B / Alien")]
-    [Tooltip("Opacity applied to the LOCAL player's own renderers while invisible.")]
-    [Range(0f, 1f)]
-    [SerializeField] private float selfInvisibleAlpha = 0.15f;
+    [Tooltip("Assign a ghostly transparent material here to be used when invisible.")]
+    [SerializeField] private Material invisibilityMaterial;
 
     // ---------------------------------------------------------------
     // Private
@@ -54,6 +50,7 @@ public class PlayerAbilityController : NetworkBehaviour
 
     private PlayerNetworkData _playerData;
     private Coroutine _abilityCoroutine;
+    private System.Collections.Generic.Dictionary<Renderer, Material[]> _originalMaterials = new System.Collections.Generic.Dictionary<Renderer, Material[]>();
 
     // ---------------------------------------------------------------
     // Lifecycle
@@ -63,6 +60,32 @@ public class PlayerAbilityController : NetworkBehaviour
     {
         base.Spawned();
         _playerData = GetComponent<PlayerNetworkData>();
+
+        // Auto-fetch renderers if the array is empty or contains missing references (e.g. after mesh replacement)
+        bool needsRenderers = (playerRenderers == null || playerRenderers.Length == 0);
+        if (!needsRenderers)
+        {
+            foreach (var r in playerRenderers)
+            {
+                if (r == null) { needsRenderers = true; break; }
+            }
+        }
+        
+        if (needsRenderers)
+        {
+            playerRenderers = GetComponentsInChildren<Renderer>(true);
+        }
+
+        // Cache original materials
+        _originalMaterials.Clear();
+        foreach (var r in playerRenderers)
+        {
+            if (r != null)
+            {
+                _originalMaterials[r] = r.sharedMaterials; // Use sharedMaterials to avoid instancing duplicates
+            }
+        }
+
         SetShieldGlow(false); // ensure no glow at spawn
 
         // Give charge on spawn
@@ -156,35 +179,26 @@ public class PlayerAbilityController : NetworkBehaviour
     private void SetShieldGlow(bool on)
     {
         if (playerRenderers == null) return;
-
-        Color emissionColor = on
-            ? shieldGlowColor * shieldGlowIntensity
-            : Color.black;
+        if (shieldMaterial == null) return;
 
         foreach (var r in playerRenderers)
         {
             if (r == null) continue;
-            foreach (var mat in r.materials)
+            
+            if (on)
             {
-                if (on)
+                // ADD the shield material as an extra layer on top of the original materials!
+                Material[] original = _originalMaterials.ContainsKey(r) ? _originalMaterials[r] : r.sharedMaterials;
+                Material[] newMats = new Material[original.Length + 1];
+                for (int i = 0; i < original.Length; i++) newMats[i] = original[i];
+                newMats[newMats.Length - 1] = shieldMaterial;
+                r.sharedMaterials = newMats;
+            }
+            else
+            {
+                if (_originalMaterials.TryGetValue(r, out var original))
                 {
-                    mat.EnableKeyword("_EMISSION");
-                    mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.RealtimeEmissive;
-                    mat.SetColor("_EmissionColor", emissionColor);
-
-                    // Tint base color heavily to ensure visibility on mobile (where bloom is off)
-                    if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", shieldGlowColor);
-                    else if (mat.HasProperty("_Color")) mat.SetColor("_Color", shieldGlowColor);
-                }
-                else
-                {
-                    mat.DisableKeyword("_EMISSION");
-                    mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.EmissiveIsBlack;
-                    mat.SetColor("_EmissionColor", Color.black);
-
-                    // Revert base color
-                    if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", Color.white);
-                    else if (mat.HasProperty("_Color")) mat.SetColor("_Color", Color.white);
+                    r.sharedMaterials = original;
                 }
             }
         }
@@ -207,47 +221,29 @@ public class PlayerAbilityController : NetworkBehaviour
             if (IsInvisible)
             {
                 if (isLocalPlayer)
-                    SetRendererAlpha(r, selfInvisibleAlpha); // faint self-view
+                {
+                    if (invisibilityMaterial != null)
+                    {
+                        Material[] newMats = new Material[r.sharedMaterials.Length];
+                        for (int i = 0; i < newMats.Length; i++) newMats[i] = invisibilityMaterial;
+                        r.sharedMaterials = newMats;
+                    }
+                }
                 else
-                    r.enabled = false;                        // fully hidden from others
+                {
+                    r.enabled = false;
+                }
             }
             else
             {
                 r.enabled = true;
-                SetRendererAlpha(r, 1f);
-            }
-        }
-    }
-
-    private void SetRendererAlpha(Renderer r, float alpha)
-    {
-        foreach (var mat in r.materials)
-        {
-            if (!mat.HasProperty("_Color")) continue;
-
-            Color c = mat.color;
-            c.a = alpha;
-            mat.color = c;
-
-            if (alpha < 1f)
-            {
-                mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-                mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-                mat.SetInt("_ZWrite", 0);
-                mat.DisableKeyword("_ALPHATEST_ON");
-                mat.EnableKeyword("_ALPHABLEND_ON");
-                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                mat.renderQueue = 3000;
-            }
-            else
-            {
-                mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-                mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
-                mat.SetInt("_ZWrite", 1);
-                mat.DisableKeyword("_ALPHATEST_ON");
-                mat.DisableKeyword("_ALPHABLEND_ON");
-                mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-                mat.renderQueue = -1;
+                if (invisibilityMaterial != null)
+                {
+                    if (_originalMaterials.TryGetValue(r, out var original))
+                    {
+                        r.sharedMaterials = original;
+                    }
+                }
             }
         }
     }

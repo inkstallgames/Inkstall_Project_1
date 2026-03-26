@@ -532,9 +532,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  shieldGlowColor: {r: 0, g: 0.5, b: 1, a: 1}
-  shieldGlowIntensity: 0.34
-  selfInvisibleAlpha: 0.15
+  shieldMaterial: {fileID: 2100000, guid: e2002a38a660a584db60c728562929a1, type: 2}
+  invisibilityMaterial: {fileID: 0}
 --- !u!1 &4750772492329756353
 GameObject:
   m_ObjectHideFlags: 0

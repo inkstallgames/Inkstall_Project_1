@@ -419,8 +419,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45762338a5676574aa83a513a63821f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePoint: {fileID: 7565443263615335434}
-  shootPointName: Shootpoint
+  armFirePoint: {fileID: 5275751693916508372}
+  bodyFirePoint: {fileID: 7565443263615335434}
   fireRate: 0.2
   range: 100
   damage: 15
@@ -644,7 +644,7 @@ Transform:
   m_GameObject: {fileID: 6786352350621694814}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -0, z: 0.071}
+  m_LocalPosition: {x: 0, y: 0, z: 0.071}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -725,6 +725,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 26d40934eedd50944a95edfe7689a7a3, type: 3}
+--- !u!4 &5275751693916508372 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5028391153448574169, guid: 26d40934eedd50944a95edfe7689a7a3,
+    type: 3}
+  m_PrefabInstance: {fileID: 936558689149242381}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8489637698339041156 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8731938356357276553, guid: 26d40934eedd50944a95edfe7689a7a3,

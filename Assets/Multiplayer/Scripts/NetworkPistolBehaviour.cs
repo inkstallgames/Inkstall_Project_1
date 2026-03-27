@@ -8,9 +8,12 @@ using UnityEngine;
 public class NetworkPistolBehaviour : NetworkBehaviour
 {
     [Header("Pistol Settings")]
-    [SerializeField] private Transform firePoint; // Will be auto-detected from active model
-    [Tooltip("Name of the shoot point transform (e.g. 'Shootpoint'). Will search in active weapon models.")]
-    [SerializeField] private string shootPointName = "Shootpoint";
+    [Tooltip("Shoot point on the FPS arm model (used for local player VFX)")]
+    [SerializeField] private Transform armFirePoint;
+    
+    [Tooltip("Shoot point on the full body model (used for remote player VFX)")]
+    [SerializeField] private Transform bodyFirePoint;
+    
     [SerializeField] private float fireRate = 0.2f;
     [SerializeField] private float range = 100f;
     [SerializeField] private int damage = 15;
@@ -41,6 +44,26 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     private bool wantsToReload;
     private NetworkWeaponEquipSystem equipSystem;
     private PlayerNetworkData playerData;
+    private bool isLocalPlayer;
+
+    /// <summary>
+    /// Returns the correct fire point based on whether this is the local or remote player.
+    /// Local player uses arm model shoot point, remote player uses full body shoot point.
+    /// </summary>
+    private Transform ActiveFirePoint
+    {
+        get
+        {
+            if (isLocalPlayer)
+            {
+                return armFirePoint;
+            }
+            else
+            {
+                return bodyFirePoint;
+            }
+        }
+    }
 
     public override void Spawned()
     {
@@ -51,7 +74,9 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             IsReloading = false;
         }
 
-        if (Object.HasInputAuthority)
+        isLocalPlayer = Object.HasInputAuthority;
+
+        if (isLocalPlayer)
         {
             playerCamera = Camera.main;
         }
@@ -65,84 +90,8 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             muzzleFlashPrefab.SetActive(false);
         }
         
-        // Auto-detect firePoint if not manually assigned
-        if (firePoint == null)
-        {
-            Debug.Log($"[NetworkPistolBehaviour] Spawned() - Attempting initial firePoint detection | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-            FindActiveFirePoint();
-            
-            // Retry after a short delay to ensure PlayerVisualManager has toggled models
-            StartCoroutine(DelayedFirePointDetection());
-        }
-    }
-    
-    private System.Collections.IEnumerator DelayedFirePointDetection()
-    {
-        yield return new WaitForSeconds(0.1f); // Wait for PlayerVisualManager to run
-        
-        if (firePoint == null || !firePoint.gameObject.activeInHierarchy)
-        {
-            Debug.Log($"[NetworkPistolBehaviour] Delayed retry - Re-detecting firePoint after model visibility change | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-            FindActiveFirePoint();
-        }
-    }
-    
-    /// <summary>
-    /// Dynamically finds the active shoot point from either the full body or arms-only model.
-    /// This allows the same script to work with both local (arms) and remote (full body) views.
-    /// </summary>
-    private void FindActiveFirePoint()
-    {
-        Debug.Log($"[NetworkPistolBehaviour] FindActiveFirePoint() called | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-        
-        // Search for shoot point by name in all active children
-        Transform[] allTransforms = GetComponentsInChildren<Transform>(false); // false = only active objects
-        foreach (Transform t in allTransforms)
-        {
-            if (t.name == shootPointName)
-            {
-                // Check if this shoot point's parent hierarchy is active
-                if (t.gameObject.activeInHierarchy)
-                {
-                    firePoint = t;
-                    Debug.Log($"[NetworkPistolBehaviour] ✅ PICKED ACTIVE SHOOT POINT: '{t.name}' at path: {GetTransformPath(t)} | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-                    return;
-                }
-            }
-        }
-        
-        // If not found, try searching inactive objects as fallback
-        allTransforms = GetComponentsInChildren<Transform>(true); // true = include inactive
-        foreach (Transform t in allTransforms)
-        {
-            if (t.name == shootPointName)
-            {
-                firePoint = t;
-                Debug.LogWarning($"[NetworkPistolBehaviour] ⚠️ PICKED INACTIVE SHOOT POINT: '{t.name}' at path: {GetTransformPath(t)} | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-                return;
-            }
-        }
-        
-        Debug.LogError($"[NetworkPistolBehaviour] ❌ NO SHOOT POINT FOUND with name '{shootPointName}' in player hierarchy! | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-    }
-    
-    private string GetTransformPath(Transform t)
-    {
-        string path = t.name;
-        while (t.parent != null && t.parent != transform)
-        {
-            t = t.parent;
-            path = t.name + "/" + path;
-        }
-        return path;
-    }
-    
-    /// <summary>
-    /// Call this to refresh the fire point reference (useful after model visibility changes).
-    /// </summary>
-    public void RefreshFirePoint()
-    {
-        FindActiveFirePoint();
+        // Log which fire points are assigned
+        Debug.Log($"[NetworkPistolBehaviour] Spawned | Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | ArmFirePoint: {(armFirePoint != null ? armFirePoint.name : "NULL")} | BodyFirePoint: {(bodyFirePoint != null ? bodyFirePoint.name : "NULL")}");
     }
 
     public void RequestShoot()
@@ -202,11 +151,9 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         if (equipSystem != null && !equipSystem.IsPistolEquipped())
         {
-            // Debug.Log("[NetworkPistolBehaviour] TryShoot — skipped, pistol not equipped.");
             return;
         }
 
-        
         if (!FireCooldownTimer.ExpiredOrNotRunning(Runner))
         {
             return;
@@ -214,42 +161,24 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         if (CurrentAmmo <= 0)
         {
-            // Debug.Log($"[NetworkPistolBehaviour] Out of ammo! Player {Object.InputAuthority}");
             return;
         }
 
         CurrentAmmo--;
         FireCooldownTimer = TickTimer.CreateFromSeconds(Runner, fireRate);
-        
-        // Debug.Log($"[NetworkPistolBehaviour] SHOT FIRED! Player {Object.InputAuthority.PlayerId} | Ammo: {CurrentAmmo}/{maxAmmo} | Direction: {direction}");
 
-        // Ensure we have the correct active firePoint
-        if (firePoint == null || !firePoint.gameObject.activeInHierarchy)
-        {
-            FindActiveFirePoint();
-        }
-        
-        // Raycast from camera position for accurate shooting (origin = camera position from input)
-        // firePoint is only used for visual effects spawn position
-        Vector3 effectsOrigin = firePoint != null ? firePoint.position : origin;
+        // Use the active fire point for VFX origin, fall back to camera origin
+        Transform fp = ActiveFirePoint;
+        Vector3 effectsOrigin = fp != null ? fp.position : origin;
         
         if (Physics.Raycast(origin, direction, out RaycastHit hit, range, hitLayers))
         {
-            // Debug.Log($"[NetworkPistolBehaviour] Hit: {hit.collider.name} at distance {hit.distance}");
-
-            var playerData = hit.collider.GetComponentInParent<PlayerNetworkData>();
-            if (playerData != null)
+            var hitPlayerData = hit.collider.GetComponentInParent<PlayerNetworkData>();
+            if (hitPlayerData != null)
             {
-                // Debug.Log($"[NetworkPistolBehaviour] *** RAYCAST HIT PLAYER *** Target: {playerData.PlayerName} (ID:{playerData.Object.InputAuthority.PlayerId}) | Shooter: Player {Object.InputAuthority.PlayerId}");
-                
-                if (playerData.Object.InputAuthority != Object.InputAuthority)
+                if (hitPlayerData.Object.InputAuthority != Object.InputAuthority)
                 {
-                    playerData.RPC_TakeDamage(damage, Object.InputAuthority);
-                    // Debug.Log($"[NetworkPistolBehaviour] Dealt {damage} damage to {playerData.PlayerName}");
-                }
-                else
-                {
-                    // Debug.Log($"[NetworkPistolBehaviour] Cannot shoot yourself! Ignoring hit.");
+                    hitPlayerData.RPC_TakeDamage(damage, Object.InputAuthority);
                 }
             }
 
@@ -276,20 +205,17 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         if (CurrentAmmo >= maxAmmo)
         {
-            // Debug.Log($"[NetworkPistolBehaviour] Magazine already full!");
             return;
         }
 
         if (ReserveAmmo <= 0)
         {
-            // Debug.Log($"[NetworkPistolBehaviour] No reserve ammo!");
             return;
         }
 
         IsReloading = true;
         ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
         RPC_OnReloadStart();
-        // Debug.Log($"[NetworkPistolBehaviour] Reloading... Player {Object.InputAuthority}");
     }
 
     private void FinishReload()
@@ -305,50 +231,36 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         CurrentAmmo += ammoToReload;
         ReserveAmmo -= ammoToReload;
         IsReloading = false;
-
-        // Debug.Log($"[NetworkPistolBehaviour] Reload complete! Ammo: {CurrentAmmo}/{maxAmmo}, Reserve: {ReserveAmmo}");
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnShot(Vector3 origin, Vector3 endPoint, bool didHit, Vector3 hitPoint, Vector3 hitNormal)
     {
-        // Debug.Log($"[NetworkPistolBehaviour] RPC_OnShot called!");
+        // Get the correct fire point for this player's view
+        Transform fp = ActiveFirePoint;
         
-        // Ensure we have the correct active firePoint for visual effects
-        if (firePoint == null || !firePoint.gameObject.activeInHierarchy)
+        // Muzzle flash at the correct shoot point
+        if (muzzleFlashPrefab != null && fp != null)
         {
-            FindActiveFirePoint();
-        }
-        
-        // Try to use new muzzle flash particle system first
-        if (muzzleFlashPrefab != null && firePoint != null)
-        {
-            GameObject tempMuzzleFlash = Instantiate(muzzleFlashPrefab, firePoint.position, firePoint.rotation);
-            tempMuzzleFlash.transform.SetParent(firePoint);
+            GameObject tempMuzzleFlash = Instantiate(muzzleFlashPrefab, fp.position, fp.rotation);
+            tempMuzzleFlash.transform.SetParent(fp);
             
             // CRITICAL: Ensure the GameObject is active!
             tempMuzzleFlash.SetActive(true);
-            // Debug.Log($"[NetworkPistolBehaviour] Muzzle flash GameObject activated: {tempMuzzleFlash.activeInHierarchy}");
             
             var muzzleEffect = tempMuzzleFlash.GetComponent<MuzzleFlashEffect>();
             if (muzzleEffect != null)
             {
                 muzzleEffect.SetContinuousMode(false); // Single burst mode for pistol
                 muzzleEffect.Play();
-                // Debug.Log("[NetworkPistolBehaviour] *** PISTOL MUZZLE FLASH PARTICLE EFFECT PLAYED ***");
                 
                 // Auto-destroy after effect
                 Destroy(tempMuzzleFlash, 0.3f);
             }
             else
             {
-                // Debug.LogWarning("[NetworkPistolBehaviour] MuzzleFlashEffect component not found on muzzle flash prefab!");
                 Destroy(tempMuzzleFlash, 0.3f);
             }
-        }
-        else
-        {
-            // Debug.LogWarning("[NetworkPistolBehaviour] No muzzle flash prefab assigned!");
         }
 
         if (shootSound != null)
@@ -390,3 +302,4 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         ReserveAmmo += amount;
     }
 }
+

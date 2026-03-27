@@ -77,8 +77,11 @@ public class PlayerCameraController : NetworkBehaviour
             // Set high priority to ensure this camera is active for the local player
             virtualCamera.Priority = 100;
             
-            // Set near clip plane
-            virtualCamera.m_Lens.NearClipPlane = 0.3f;
+            // Remove near clip plane restriction for arm model visibility
+            virtualCamera.m_Lens.NearClipPlane = 0.01f;
+            
+            // Increase field of view for better arm visibility
+            virtualCamera.m_Lens.FieldOfView = 75f;
             
             // Configure third-person follow if not already present
             var thirdPersonFollow = virtualCamera.GetCinemachineComponent<Cinemachine3rdPersonFollow>();
@@ -87,9 +90,16 @@ public class PlayerCameraController : NetworkBehaviour
                 thirdPersonFollow = virtualCamera.AddCinemachineComponent<Cinemachine3rdPersonFollow>();
                 if (thirdPersonFollow != null)
                 {
+                    // Camera positioned to the right so arms appear on right side of screen
                     thirdPersonFollow.CameraDistance = 0f;
-                    thirdPersonFollow.ShoulderOffset = new Vector3(0, 0, 0.1f);
+                    thirdPersonFollow.ShoulderOffset = new Vector3(0.15f, -0.1f, 0.1f);
                 }
+            }
+            else
+            {
+                // Update existing third-person follow settings
+                thirdPersonFollow.CameraDistance = 0f;
+                thirdPersonFollow.ShoulderOffset = new Vector3(0.15f, -0.1f, 0.1f);
             }
         }
         else
@@ -114,7 +124,7 @@ public class PlayerCameraController : NetworkBehaviour
             // Create a new camera target
             cameraTarget = new GameObject(cameraTargetName);
             cameraTarget.transform.SetParent(transform);
-            cameraTarget.transform.localPosition = Vector3.up * 1.5f; // Position at head height
+            cameraTarget.transform.localPosition = Vector3.up * 1.85f; // Position higher for better arm model view
 
         }
         

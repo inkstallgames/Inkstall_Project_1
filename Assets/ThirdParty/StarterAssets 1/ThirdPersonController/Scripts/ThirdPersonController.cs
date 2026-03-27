@@ -121,10 +121,14 @@ namespace StarterAssets
         private int _animIDMotionSpeed;
 
         private Animator _animator;
+        private Animator _armAnimator;
+        private Animator _fullBodyAnimator;
         private NetworkCharacterController _networkController;
         private StarterAssetsInputs _nativeInput;
         private GameObject _mainCamera;
         private bool _hasAnimator;
+        private bool _hasArmAnimator;
+        private bool _hasFullBodyAnimator;
         private const float _threshold = 0.01f;
         private NetworkInputData _latestInput;
 
@@ -163,24 +167,58 @@ namespace StarterAssets
             // Initialize components for ALL players (needed for FixedUpdateNetwork)
             _networkController = GetComponent<NetworkCharacterController>();
             
-            // Get Animator component - ensure it's found
+            // Get PlayerVisualManager to identify arm and full body models
+            var visualManager = GetComponent<PlayerVisualManager>();
+            
+            // Find both animators separately (search in inactive GameObjects too)
+            if (visualManager != null)
+            {
+                // Get arm animator from first person arms (local player)
+                var armModel = visualManager.GetType().GetField("firstPersonArms", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (armModel != null)
+                {
+                    var armObjects = armModel.GetValue(visualManager) as GameObject[];
+                    if (armObjects != null && armObjects.Length > 0 && armObjects[0] != null)
+                    {
+                        _armAnimator = armObjects[0].GetComponentInChildren<Animator>(true);
+                        _hasArmAnimator = _armAnimator != null;
+                        if (_hasArmAnimator)
+                        {
+                            _armAnimator.enabled = true;
+                            Debug.Log($"[Spawned] Arm Animator found and enabled");
+                        }
+                    }
+                }
+                
+                // Get full body animator from third person body (remote players)
+                var bodyModel = visualManager.GetType().GetField("thirdPersonBody", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (bodyModel != null)
+                {
+                    var bodyObjects = bodyModel.GetValue(visualManager) as GameObject[];
+                    if (bodyObjects != null && bodyObjects.Length > 0 && bodyObjects[0] != null)
+                    {
+                        _fullBodyAnimator = bodyObjects[0].GetComponentInChildren<Animator>(true);
+                        _hasFullBodyAnimator = _fullBodyAnimator != null;
+                        if (_hasFullBodyAnimator)
+                        {
+                            _fullBodyAnimator.enabled = true;
+                            Debug.Log($"[Spawned] Full Body Animator found and enabled");
+                        }
+                    }
+                }
+            }
+            
+            // Fallback: Get Animator component for backward compatibility
             _animator = GetComponent<Animator>();
             _hasAnimator = _animator != null;
             
-            // Fallback: search in children if not found on this GameObject
             if (!_hasAnimator)
             {
                 _animator = GetComponentInChildren<Animator>();
                 _hasAnimator = _animator != null;
-                Debug.Log($"[Spawned] Animator found in children: {_hasAnimator}");
             }
             
-            Debug.Log($"[Spawned] Animator found: {_hasAnimator}, Animator component: {_animator != null}");
-            
-            if (_hasAnimator)
-            {
-                Debug.Log($"[Spawned] Animator Controller: {_animator.runtimeAnimatorController?.name}");
-            }
+            Debug.Log($"[Spawned] Animators - Arm: {_hasArmAnimator}, FullBody: {_hasFullBodyAnimator}, Fallback: {_hasAnimator}");
             
             // Get StarterAssetsInputs component for THIS specific player instance
             _nativeInput = GetComponent<StarterAssetsInputs>();
@@ -300,33 +338,47 @@ namespace StarterAssets
 
         public override void Render()
         {
-            // Update animations directly from networked state
-            if (_hasAnimator && _animator != null)
+            // Update arm animator (for local player first-person view)
+            if (_hasArmAnimator && _armAnimator != null)
+            {
+                if (!_armAnimator.enabled) _armAnimator.enabled = true;
+                
+                _armAnimator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
+                _armAnimator.SetFloat(_animIDMotionSpeed, NetworkedMotionSpeed);
+                _armAnimator.SetBool(_animIDGrounded, NetworkedGrounded);
+                _armAnimator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
+                
+                if (_latestInput.isShooting) _armAnimator.SetTrigger(_animIDFire);
+                if (_latestInput.equipBomb) _armAnimator.SetTrigger(_animIDEquipGranade);
+                if (_latestInput.isThrowingBomb) _armAnimator.SetTrigger(_animIDThrowGranade);
+            }
+            
+            // Update full body animator (for remote players and shadows)
+            if (_hasFullBodyAnimator && _fullBodyAnimator != null)
+            {
+                if (!_fullBodyAnimator.enabled) _fullBodyAnimator.enabled = true;
+                
+                _fullBodyAnimator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
+                _fullBodyAnimator.SetFloat(_animIDMotionSpeed, NetworkedMotionSpeed);
+                _fullBodyAnimator.SetBool(_animIDGrounded, NetworkedGrounded);
+                _fullBodyAnimator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
+                
+                if (_latestInput.isShooting) _fullBodyAnimator.SetTrigger(_animIDFire);
+                if (_latestInput.equipBomb) _fullBodyAnimator.SetTrigger(_animIDEquipGranade);
+                if (_latestInput.isThrowingBomb) _fullBodyAnimator.SetTrigger(_animIDThrowGranade);
+            }
+            
+            // Fallback: Update legacy single animator if dual animators not found
+            if (!_hasArmAnimator && !_hasFullBodyAnimator && _hasAnimator && _animator != null)
             {
                 _animator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, NetworkedMotionSpeed);
                 _animator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _animator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
                 
-                // Handle weapon and action animations from input
-                if (_latestInput.isShooting)
-                {
-                    _animator.SetTrigger(_animIDFire);
-                }
-                
-                if (_latestInput.equipBomb)
-                {
-                    _animator.SetTrigger(_animIDEquipGranade);
-                }
-                
-                if (_latestInput.isThrowingBomb)
-                {
-                    _animator.SetTrigger(_animIDThrowGranade);
-                }
-            }
-            else
-            {
-                Debug.LogError($"[Render] Animator component missing! _hasAnimator: {_hasAnimator}, _animator: {_animator == null}");
+                if (_latestInput.isShooting) _animator.SetTrigger(_animIDFire);
+                if (_latestInput.equipBomb) _animator.SetTrigger(_animIDEquipGranade);
+                if (_latestInput.isThrowingBomb) _animator.SetTrigger(_animIDThrowGranade);
             }
         }
 

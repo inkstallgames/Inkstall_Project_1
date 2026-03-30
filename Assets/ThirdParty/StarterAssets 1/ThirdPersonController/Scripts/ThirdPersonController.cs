@@ -118,7 +118,6 @@ namespace StarterAssets
         private int _animIDFire;
         private int _animIDEquipGranade;
         private int _animIDThrowGranade;
-        private int _animIDMotionSpeed;
 
         private Animator _animator;
         private Animator _armAnimator;
@@ -343,8 +342,25 @@ namespace StarterAssets
             {
                 if (!_armAnimator.enabled) _armAnimator.enabled = true;
                 
+                // Detect if moving backward relative to facing direction
+                bool isMovingBackward = false;
+                if (_latestInput.move.sqrMagnitude > 0.01f)
+                {
+                    // Calculate actual movement direction in world space
+                    Vector3 inputDirection = new Vector3(_latestInput.move.x, 0f, _latestInput.move.y).normalized;
+                    Quaternion desiredRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
+                    Vector3 worldMoveDirection = desiredRotation * inputDirection;
+                    
+                    // Check if world movement is opposite to character's forward
+                    float dotProduct = Vector3.Dot(worldMoveDirection, transform.forward);
+                    isMovingBackward = dotProduct < -0.5f;
+                }
+                
+                // Set global animator speed for reverse playback
+                float animatorSpeed = isMovingBackward ? -1f : 1f;
+                _armAnimator.speed = animatorSpeed;
+                
                 _armAnimator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
-                _armAnimator.SetFloat(_animIDMotionSpeed, NetworkedMotionSpeed);
                 _armAnimator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _armAnimator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
                 
@@ -358,8 +374,25 @@ namespace StarterAssets
             {
                 if (!_fullBodyAnimator.enabled) _fullBodyAnimator.enabled = true;
                 
+                // Detect if moving backward relative to facing direction
+                bool isMovingBackward = false;
+                if (_latestInput.move.sqrMagnitude > 0.01f)
+                {
+                    // Calculate actual movement direction in world space
+                    Vector3 inputDirection = new Vector3(_latestInput.move.x, 0f, _latestInput.move.y).normalized;
+                    Quaternion desiredRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
+                    Vector3 worldMoveDirection = desiredRotation * inputDirection;
+                    
+                    // Check if world movement is opposite to character's forward
+                    float dotProduct = Vector3.Dot(worldMoveDirection, transform.forward);
+                    isMovingBackward = dotProduct < -0.5f;
+                }
+                
+                // Set global animator speed for reverse playback
+                float animatorSpeed = isMovingBackward ? -1f : 1f;
+                _fullBodyAnimator.speed = animatorSpeed;
+                
                 _fullBodyAnimator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
-                _fullBodyAnimator.SetFloat(_animIDMotionSpeed, NetworkedMotionSpeed);
                 _fullBodyAnimator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _fullBodyAnimator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
                 
@@ -371,8 +404,26 @@ namespace StarterAssets
             // Fallback: Update legacy single animator if dual animators not found
             if (!_hasArmAnimator && !_hasFullBodyAnimator && _hasAnimator && _animator != null)
             {
+                // Detect if moving backward relative to facing direction
+                bool isMovingBackward = false;
+                if (_latestInput.move.sqrMagnitude > 0.01f)
+                {
+                    // Calculate actual movement direction in world space
+                    Vector3 inputDirection = new Vector3(_latestInput.move.x, 0f, _latestInput.move.y).normalized;
+                    Quaternion desiredRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
+                    Vector3 worldMoveDirection = desiredRotation * inputDirection;
+                    
+                    // Check if world movement is opposite to character's forward
+                    float dotProduct = Vector3.Dot(worldMoveDirection, transform.forward);
+                    isMovingBackward = dotProduct < -0.5f;
+                }
+                
+                // Set global animator speed for reverse playback
+                float animatorSpeed = isMovingBackward ? -1f : 1f;
+                _animator.speed = animatorSpeed;
+                
+                // Set the blend value (always positive)
                 _animator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
-                _animator.SetFloat(_animIDMotionSpeed, NetworkedMotionSpeed);
                 _animator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _animator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
                 
@@ -390,7 +441,6 @@ namespace StarterAssets
             _animIDFire = Animator.StringToHash("Fire");
             _animIDEquipGranade = Animator.StringToHash("EquipGranade");
             _animIDThrowGranade = Animator.StringToHash("ThrowGranade");
-            _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
         }
 
         private void GroundedCheck()

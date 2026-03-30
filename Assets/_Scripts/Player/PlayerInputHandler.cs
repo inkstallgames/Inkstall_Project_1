@@ -53,10 +53,33 @@ public class PlayerInputHandler : NetworkBehaviour
             // Get aim input (Mouse/Right Stick)
             if (playerInput.currentControlScheme == "Keyboard&Mouse")
             {
-                // Mouse position relative to player
-                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Vector3 direction = mousePos - transform.position;
-                aimInput = new Vector2(direction.x, direction.y).normalized;
+                // Get camera for raycasting
+                Camera mainCamera = Camera.main;
+                if (mainCamera == null)
+                    mainCamera = FindObjectOfType<Camera>();
+                
+                if (mainCamera != null)
+                {
+                    // Create ray from camera through mouse position
+                    Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+                    Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+                    
+                    if (groundPlane.Raycast(ray, out float distance))
+                    {
+                        Vector3 worldPos = ray.GetPoint(distance);
+                        Vector3 direction = worldPos - transform.position;
+                        direction.y = 0; // Keep only horizontal direction
+                        aimInput = new Vector2(direction.x, direction.z).normalized;
+                    }
+                    else
+                    {
+                        aimInput = Vector2.zero;
+                    }
+                }
+                else
+                {
+                    aimInput = Vector2.zero;
+                }
             }
             else
             {

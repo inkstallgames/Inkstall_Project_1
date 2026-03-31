@@ -9,9 +9,11 @@ using UnityEngine;
 public class NetworkLaserBehaviour : NetworkBehaviour
 {
     [Header("Laser Settings")]
-    [SerializeField] private Transform firePoint; // Will be auto-detected from active model
-    [Tooltip("Name of the shoot point transform (e.g. 'Shootpoint'). Will search in active weapon models.")]
-    [SerializeField] private string shootPointName = "Shootpoint";
+    [Tooltip("Shoot point on the FPS arm model (used for local player VFX)")]
+    [SerializeField] private Transform armFirePoint;
+    
+    [Tooltip("Shoot point on the full body model (used for remote player VFX)")]
+    [SerializeField] private Transform bodyFirePoint;
     [SerializeField] private float fireRate = 0.5f; // Slower than pistol
     [SerializeField] private float range = 150f; // Longer range than pistol
     [SerializeField] private int damage = 25; // Higher damage than pistol
@@ -47,6 +49,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     private NetworkWeaponEquipSystem equipSystem;
     private PlayerNetworkData playerData;
     private float lastShotTime;
+    private bool isLocalPlayer;
     
     // Decoupled Visual State NetworkBool
     [Networked] public NetworkBool IsFiringLaser { get; set; }
@@ -60,6 +63,25 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     // Track beam destruction
     private int beamDestructionCount = 0;
 
+    /// <summary>
+    /// Returns the correct fire point based on whether this is the local or remote player.
+    /// Local player uses arm model shoot point, remote player uses full body shoot point.
+    /// </summary>
+    private Transform ActiveFirePoint
+    {
+        get
+        {
+            if (isLocalPlayer)
+            {
+                return armFirePoint;
+            }
+            else
+            {
+                return bodyFirePoint;
+            }
+        }
+    }
+
     public override void Spawned()
     {
         if (Object.HasStateAuthority)
@@ -67,23 +89,15 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             CurrentEnergy = currentEnergy;
         }
 
-        if (Object.HasInputAuthority)
+        isLocalPlayer = Object.HasInputAuthority;
+
+        if (isLocalPlayer)
         {
             playerCamera = Camera.main;
         }
 
         equipSystem = GetComponent<NetworkWeaponEquipSystem>();
         playerData = GetComponent<PlayerNetworkData>();
-        
-        // Auto-detect firePoint if not manually assigned
-        if (firePoint == null)
-        {
-            Debug.Log($"[NetworkLaserBehaviour] Spawned() - Attempting initial firePoint detection | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-            FindActiveFirePoint();
-            
-            // Retry after a short delay to ensure PlayerVisualManager has toggled models
-            StartCoroutine(DelayedFirePointDetection());
-        }
         
         // Force energy per shot to override Inspector values
         energyPerShot = 1; // Much slower consumption for longer duration
@@ -93,76 +107,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         {
             muzzleFlashPrefab.SetActive(false);
         }
+        
+        // Log which fire points are assigned
+        Debug.Log($"[NetworkLaserBehaviour] Spawned | Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | ArmFirePoint: {(armFirePoint != null ? armFirePoint.name : "NULL")} | BodyFirePoint: {(bodyFirePoint != null ? bodyFirePoint.name : "NULL")}");
     }
     
-    private System.Collections.IEnumerator DelayedFirePointDetection()
-    {
-        yield return new WaitForSeconds(0.1f); // Wait for PlayerVisualManager to run
-        
-        if (firePoint == null || !firePoint.gameObject.activeInHierarchy)
-        {
-            Debug.Log($"[NetworkLaserBehaviour] Delayed retry - Re-detecting firePoint after model visibility change | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-            FindActiveFirePoint();
-        }
-    }
-    
-    /// <summary>
-    /// Dynamically finds the active shoot point from either the full body or arms-only model.
-    /// This allows the same script to work with both local (arms) and remote (full body) views.
-    /// </summary>
-    private void FindActiveFirePoint()
-    {
-        Debug.Log($"[NetworkLaserBehaviour] FindActiveFirePoint() called | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-        
-        // Search for shoot point by name in all active children
-        Transform[] allTransforms = GetComponentsInChildren<Transform>(false); // false = only active objects
-        foreach (Transform t in allTransforms)
-        {
-            if (t.name == shootPointName)
-            {
-                // Check if this shoot point's parent hierarchy is active
-                if (t.gameObject.activeInHierarchy)
-                {
-                    firePoint = t;
-                    Debug.Log($"[NetworkLaserBehaviour] ✅ PICKED ACTIVE SHOOT POINT: '{t.name}' at path: {GetTransformPath(t)} | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-                    return;
-                }
-            }
-        }
-        
-        // If not found, try searching inactive objects as fallback
-        allTransforms = GetComponentsInChildren<Transform>(true); // true = include inactive
-        foreach (Transform t in allTransforms)
-        {
-            if (t.name == shootPointName)
-            {
-                firePoint = t;
-                Debug.LogWarning($"[NetworkLaserBehaviour] ⚠️ PICKED INACTIVE SHOOT POINT: '{t.name}' at path: {GetTransformPath(t)} | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-                return;
-            }
-        }
-        
-        Debug.LogError($"[NetworkLaserBehaviour] ❌ NO SHOOT POINT FOUND with name '{shootPointName}' in player hierarchy! | Player: {(Object.HasInputAuthority ? "LOCAL" : "REMOTE")}");
-    }
-    
-    private string GetTransformPath(Transform t)
-    {
-        string path = t.name;
-        while (t.parent != null && t.parent != transform)
-        {
-            t = t.parent;
-            path = t.name + "/" + path;
-        }
-        return path;
-    }
-    
-    /// <summary>
-    /// Call this to refresh the fire point reference (useful after model visibility changes).
-    /// </summary>
-    public void RefreshFirePoint()
-    {
-        FindActiveFirePoint();
-    }
 
     public void RequestShoot()
     {
@@ -270,6 +219,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (input.isShooting && CurrentEnergy > 0 && !IsReloading && equipSystem != null && equipSystem.IsLaserEquipped())
         {
             IsFiringLaser = true;
+            Debug.Log($"[NetworkLaserBehaviour] *** LASER FIRING *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | Energy: {CurrentEnergy}/{maxEnergy} | IsFiringLaser: TRUE");
 
             // Only consume energy and deal damage on state authority
             if (Object.HasStateAuthority)
@@ -280,6 +230,10 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         else
         {
             IsFiringLaser = false;
+            if (input.isShooting)
+            {
+                Debug.LogWarning($"[NetworkLaserBehaviour] *** LASER NOT FIRING *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | Energy: {CurrentEnergy} | IsReloading: {IsReloading} | EquipSystem: {(equipSystem != null)} | IsLaserEquipped: {(equipSystem != null ? equipSystem.IsLaserEquipped() : false)}");
+            }
         }
     }
 
@@ -332,15 +286,32 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         RPC_UpdateEnergy(CurrentEnergy);
     }
 
+    /// <summary>
+    /// Resets laser energy to full when player gets a kill.
+    /// Called by NetworkGameManager on kill.
+    /// </summary>
+    public void ResetEnergyOnKill()
+    {
+        if (!Object.HasStateAuthority) return;
+        
+        CurrentEnergy = maxEnergy;
+        IsReloading = false;
+        ReloadTimer = TickTimer.None;
+        
+        Debug.Log($"[NetworkLaserBehaviour] Energy reset on kill - Energy: {CurrentEnergy}/{maxEnergy}");
+        RPC_UpdateEnergy(CurrentEnergy);
+    }
+
     private System.Collections.IEnumerator ShowMuzzleFlash()
     {
         // Debug.Log($"[NetworkLaserBehaviour] *** LASER MUZZLE FLASH *** Player {Object.InputAuthority.PlayerId} - Muzzle flash visible");
         
-        if (muzzleFlashPrefab != null)
+        Transform fp = ActiveFirePoint;
+        if (muzzleFlashPrefab != null && fp != null)
         {
             // Create temporary muzzle flash for single shot
-            GameObject tempMuzzleFlash = Instantiate(muzzleFlashPrefab, firePoint.position, firePoint.rotation);
-            tempMuzzleFlash.transform.SetParent(firePoint);
+            GameObject tempMuzzleFlash = Instantiate(muzzleFlashPrefab, fp.position, fp.rotation);
+            tempMuzzleFlash.transform.SetParent(fp);
             
             // CRITICAL: Ensure the GameObject is active!
             tempMuzzleFlash.SetActive(true);
@@ -381,12 +352,15 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     {
         if (continuousBeam != null)
         {
+            Debug.Log($"[NetworkLaserBehaviour] *** BEAM ALREADY EXISTS *** Skipping creation");
             return;
         }
 
-        Vector3 origin = firePoint != null ? firePoint.position : transform.position;
+        Transform fp = ActiveFirePoint;
+        Vector3 origin = fp != null ? fp.position : transform.position;
         Vector3 direction = playerCamera != null ? playerCamera.transform.forward : Vector3.forward;
 
+        Debug.Log($"[NetworkLaserBehaviour] *** CREATING BEAM *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | FirePoint: {(fp != null ? fp.name : "NULL")} | Origin: {origin} | Direction: {direction}");
         
         // Create continuous beam
         if (laserBeamPrefab != null)
@@ -395,11 +369,18 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             beamObj.transform.SetParent(transform); // Parent to the weapon!
             continuousBeam = beamObj.GetComponent<LineRenderer>();
             
+            Debug.Log($"[NetworkLaserBehaviour] *** BEAM PREFAB INSTANTIATED *** BeamObj: {beamObj.name} | LineRenderer: {(continuousBeam != null ? "FOUND" : "NULL")}");
+            
             // Set continuous mode to prevent auto-destruct
             var beamEffect = beamObj.GetComponent<LaserBeamEffect>();
             if (beamEffect != null)
             {
                 beamEffect.SetContinuousMode(true);
+                Debug.Log($"[NetworkLaserBehaviour] *** BEAM EFFECT SET TO CONTINUOUS MODE ***");
+            }
+            else
+            {
+                Debug.LogWarning($"[NetworkLaserBehaviour] *** LaserBeamEffect component not found on beam prefab! ***");
             }
             
             if (continuousBeam != null)
@@ -408,14 +389,18 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 continuousBeam.SetPosition(0, origin);
                 continuousBeam.SetPosition(1, origin + direction * 100f);
                 continuousBeam.enabled = true;
-                // Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS BEAM CREATED *** #{++beamDestructionCount}");
+                Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS BEAM CREATED SUCCESSFULLY *** #{++beamDestructionCount} | Enabled: {continuousBeam.enabled} | Positions: {origin} -> {origin + direction * 100f}");
             }
             else
             {
-                // Debug.LogError("[NetworkLaserBehaviour] *** BEAM CREATION FAILED *** LineRenderer component not found!");
+                Debug.LogError("[NetworkLaserBehaviour] *** BEAM CREATION FAILED *** LineRenderer component not found!");
                 Destroy(beamObj);
                 return;
             }
+        }
+        else
+        {
+            Debug.LogError($"[NetworkLaserBehaviour] *** BEAM CREATION FAILED *** laserBeamPrefab is NULL!");
         }
         
         // Hit logic now dynamically calculated in Render
@@ -456,10 +441,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         }
         
         // Create continuous muzzle flash
-        if (muzzleFlashPrefab != null && firePoint != null)
+        Transform fp2 = ActiveFirePoint;
+        if (muzzleFlashPrefab != null && fp2 != null)
         {
-            continuousMuzzleFlash = Instantiate(muzzleFlashPrefab, firePoint.position, firePoint.rotation);
-            continuousMuzzleFlash.transform.SetParent(firePoint);
+            continuousMuzzleFlash = Instantiate(muzzleFlashPrefab, fp2.position, fp2.rotation);
+            continuousMuzzleFlash.transform.SetParent(fp2);
             
             // Set continuous mode for muzzle flash particles
             var muzzleEffect = continuousMuzzleFlash.GetComponent<MuzzleFlashEffect>();
@@ -484,7 +470,8 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         // Only update positions if beam is already active
         if (continuousBeam != null && playerCamera != null)
         {
-            Vector3 visualOrigin = firePoint != null ? firePoint.position : transform.position;
+            Transform fp = ActiveFirePoint;
+            Vector3 visualOrigin = fp != null ? fp.position : transform.position;
             Vector3 direction = playerCamera.transform.forward;
             float maxDistance = 100f;
             
@@ -522,10 +509,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
             
             // Update continuous muzzle flash position
-            if (continuousMuzzleFlash != null && firePoint != null)
+            Transform fp2 = ActiveFirePoint;
+            if (continuousMuzzleFlash != null && fp2 != null)
             {
-                continuousMuzzleFlash.transform.position = firePoint.position;
-                continuousMuzzleFlash.transform.rotation = firePoint.rotation;
+                continuousMuzzleFlash.transform.position = fp2.position;
+                continuousMuzzleFlash.transform.rotation = fp2.rotation;
             }
         }
         else if (continuousBeam == null)
@@ -578,10 +566,12 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     {
         if (IsFiringLaser && !_lastIsFiringLaser)
         {
+            Debug.Log($"[NetworkLaserBehaviour] *** RENDER: STARTING BEAM *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | ActiveFirePoint: {(ActiveFirePoint != null ? ActiveFirePoint.name : "NULL")}");
             StartContinuousBeam();
         }
         else if (!IsFiringLaser && _lastIsFiringLaser)
         {
+            Debug.Log($"[NetworkLaserBehaviour] *** RENDER: STOPPING BEAM *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")}");
             StopContinuousBeam();
         }
 

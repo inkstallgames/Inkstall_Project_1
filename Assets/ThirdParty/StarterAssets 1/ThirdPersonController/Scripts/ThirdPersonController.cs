@@ -300,8 +300,10 @@ namespace StarterAssets
             {
                 _latestInput = data;
 
-                // Application of gravity, movement, and camera logic
-                if (Object.HasStateAuthority)
+                // Only apply network camera rotation for proxies or the server.
+                // Doing this for the local player causes past ticks to overwrite the 
+                // butter-smooth LateUpdate rotation, causing severe 'resistance' and stuttering.
+                if (!Object.HasInputAuthority)
                 {
                     _cinemachineTargetYaw = data.cameraYaw;
                     _cinemachineTargetPitch = data.cameraPitch;
@@ -704,30 +706,23 @@ namespace StarterAssets
 
             if (_latestInput.look.sqrMagnitude >= _threshold && !LockCameraPosition)
             {
-                float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+                // Both Mouse and Touch deltas are physical pixel offsets per frame.
+                // Multiplying by Time.deltaTime causes severe input sluggishness/lag!
+                bool isTouch = _nativeInput != null && _nativeInput.isTouchLook;
                 
-                // Apply custom multiplayer stand-alone sensitivity
-                float adjustedSensitivity = deltaTimeMultiplier * mpCameraSensitivity;
+                // Keep sensitivity 1:1 to what it was before
+                float adjustedSensitivity = mpCameraSensitivity;
                 
                 _cinemachineTargetYaw += _latestInput.look.x * adjustedSensitivity;
                 
-                // Y-axis inversion logic:
-                // - Client players (PlayerId > 1): Always inverted (works on all platforms)
-                // - Host on Android: Needs inversion due to touch input polarity difference
+                // Y-axis inversion: touch screen deltas have opposite vertical polarity
+                // compared to mouse deltas, so we invert only for touch input.
                 float verticalLook = _latestInput.look.y;
-                bool shouldInvert = Object.InputAuthority.PlayerId > 1; // Clients always inverted
-                
-                #if UNITY_ANDROID && !UNITY_EDITOR
-                if (Object.InputAuthority.PlayerId == 1) // Host on Android also needs inversion
+                if (isTouch)
                 {
-                    shouldInvert = true;
+                    verticalLook *= -1f;
                 }
-                #endif
                 
-                if (shouldInvert)
-                {
-                    verticalLook *= -1;
-                }
                 _cinemachineTargetPitch += verticalLook * adjustedSensitivity;
             }
 

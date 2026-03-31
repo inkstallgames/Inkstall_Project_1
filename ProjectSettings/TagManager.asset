@@ -19,6 +19,7 @@ TagManager:
   - SpawnPoint
   - PistolButton
   - BombButton
+  - FirstPersonArms
   layers:
   - Default
   - TransparentFX
@@ -28,9 +29,9 @@ TagManager:
   - UI
   - Highlightable
   - Weapon
-  - FPS_Hands
-  - LocalPlayer
-  - RemotePlayer
+  - FirstPersonArms
+  - 
+  - 
   - 
   - 
   - 

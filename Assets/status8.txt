@@ -1,0 +1,36 @@
+﻿On branch main
+Your branch is behind 'origin/main' by 1 commit, and can be fast-forwarded.
+  (use "git pull" to update your local branch)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   GeneratedLocalRepo.meta
+	modified:   Multiplayer/ArmsModel/ARM.controller
+	modified:   Multiplayer/Prefab/Player.prefab
+	modified:   Multiplayer/Scripts/NetworkGameManager.cs
+	modified:   Multiplayer/Scripts/NetworkLaserBehaviour.cs
+	modified:   Multiplayer/Scripts/NetworkPistolBehaviour.cs
+	modified:   Multiplayer/Scripts/PlayerVisualManager.cs
+	modified:   ThirdParty/StarterAssets 1/ThirdPersonController/Scripts/ThirdPersonController.cs
+	modified:   ThirdParty/StarterAssets/InputSystem/StarterAssetsInputs.cs
+	modified:   URP/Settings/URP-Balanced.asset
+	modified:   URP/Settings/URP-HighFidelity.asset
+	modified:   URP/Settings/URP-Performant.asset
+	modified:   _Scenes/Lobby.unity
+	modified:   _Scenes/Rust.unity
+	modified:   ../ProjectSettings/ProjectSettings.asset
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	Multiplayer/ArmsModel/Fire.anim
+	Multiplayer/ArmsModel/Fire.anim.meta
+	Multiplayer/ArmsModel/Shooting.anim
+	Multiplayer/ArmsModel/Shooting.anim.meta
+	Multiplayer/Prefab/Alien.prefab
+	Multiplayer/Prefab/Alien.prefab.meta
+	git_log.txt
+	status.txt
+	status8.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")

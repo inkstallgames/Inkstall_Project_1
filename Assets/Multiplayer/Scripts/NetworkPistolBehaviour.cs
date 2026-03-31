@@ -301,5 +301,22 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         ReserveAmmo += amount;
     }
+
+    /// <summary>
+    /// Resets pistol ammo to full (magazine + reserve) when player gets a kill.
+    /// Reserve ammo is capped at 30 to prevent exceeding limit on multiple kills.
+    /// Called by NetworkGameManager on kill.
+    /// </summary>
+    public void ResetAmmoOnKill()
+    {
+        if (!Object.HasStateAuthority) return;
+        
+        CurrentAmmo = maxAmmo;
+        // Set reserve ammo to maximum (30), capped to never exceed
+        ReserveAmmo = Mathf.Min(reserveAmmo, 30);
+        IsReloading = false;
+        
+        Debug.Log($"[NetworkPistolBehaviour] Ammo reset on kill - Magazine: {CurrentAmmo}/{maxAmmo}, Reserve: {ReserveAmmo}/30");
+    }
 }
 

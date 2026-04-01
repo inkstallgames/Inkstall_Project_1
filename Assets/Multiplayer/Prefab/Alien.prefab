@@ -258,6 +258,7 @@ MonoBehaviour:
   analogMovement: 0
   cursorLocked: 1
   cursorInputForLook: 1
+  isTouchLook: 0
 --- !u!114 &7097533242563867028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -563,7 +564,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   shieldMaterial: {fileID: 2100000, guid: e2002a38a660a584db60c728562929a1, type: 2}
-  invisibilityMaterial: {fileID: 0}
+  invisibilityMaterial: {fileID: 2100000, guid: fc8eaee3c6ab82a4eb6a4ecf319f42a9,
+    type: 2}
 --- !u!114 &794800702146022241
 MonoBehaviour:
   m_ObjectHideFlags: 0

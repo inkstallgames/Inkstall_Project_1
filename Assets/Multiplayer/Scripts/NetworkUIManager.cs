@@ -55,6 +55,7 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private UnityEngine.UI.Button abilityButton;          // On-screen ability button
     [SerializeField] private UnityEngine.UI.Image  abilityCooldownOverlay; // Radial/fill overlay (fill amount = cooldown %)
     [SerializeField] private TextMeshProUGUI        abilityCooldownText;    // Optional: "Q  5s" countdown
+    [SerializeField] private Slider                abilityDurationSlider;  // Shows active ability remaining duration
 
     [Header("Settings Panel")]
     [SerializeField] private GameObject settingsPanel;            // Panel shown when settings button is clicked
@@ -73,6 +74,8 @@ public class NetworkUIManager : MonoBehaviour
     private HoldableButton throwHoldable; // Tracks throw button hold state for continuous laser fire
     private bool wasThrowHeld = false; // Previous frame's held state for detecting release
     private PlayerAbilityController localAbilityController;
+    private bool wasAbilityActive = false;
+    private float abilityActiveEndTime = 0f;
 
     private void Awake()
     {
@@ -168,6 +171,7 @@ public class NetworkUIManager : MonoBehaviour
 
             // --- Ability cooldown UI ---
             UpdateAbilityCooldownUI();
+            UpdateAbilityDurationUI();
         }
         else
         {
@@ -343,6 +347,41 @@ public class NetworkUIManager : MonoBehaviour
         // Grey out button when no charge
         if (abilityButton != null)
             abilityButton.interactable = ready;
+    }
+
+    private void UpdateAbilityDurationUI()
+    {
+        if (localAbilityController == null) return;
+
+        bool isAbilityActive = localAbilityController.IsAbilityActive;
+        
+        if (isAbilityActive && !wasAbilityActive)
+        {
+            // Ability just activated locally (or via network sync)
+            abilityActiveEndTime = Time.time + localAbilityController.GetAbilityDuration();
+        }
+        
+        wasAbilityActive = isAbilityActive;
+
+        if (abilityDurationSlider != null)
+        {
+            if (isAbilityActive)
+            {
+                if (!abilityDurationSlider.gameObject.activeSelf)
+                    abilityDurationSlider.gameObject.SetActive(true);
+
+                float remaining = abilityActiveEndTime - Time.time;
+                float duration = localAbilityController.GetAbilityDuration();
+                
+                // Slider value goes from 1 to 0 mapping the duration left
+                abilityDurationSlider.value = Mathf.Clamp01(remaining / duration);
+            }
+            else
+            {
+                if (abilityDurationSlider.gameObject.activeSelf)
+                    abilityDurationSlider.gameObject.SetActive(false);
+            }
+        }
     }
 
     // ---------------------------------------------------------------

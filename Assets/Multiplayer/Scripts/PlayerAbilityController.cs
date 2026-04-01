@@ -131,6 +131,12 @@ public class PlayerAbilityController : NetworkBehaviour
     /// <summary>Returns 0 when ready, 1 when no charge (used for UI fill amount).</summary>
     public float GetCooldownRemaining() => AbilityReady ? 0f : 1f;
 
+    /// <summary>Returns the max duration of the ability.</summary>
+    public float GetAbilityDuration() => abilityDuration;
+
+    /// <summary>True when the ability is currently active.</summary>
+    public bool IsAbilityActive => IsShielded || IsInvisible;
+
     // ---------------------------------------------------------------
     // Server-side activation
     // ---------------------------------------------------------------

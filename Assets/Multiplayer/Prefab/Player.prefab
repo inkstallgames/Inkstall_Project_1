@@ -120,8 +120,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e54e5a728a9234ab24fcf1460ed8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 2
-  SprintSpeed: 4
+  MoveSpeed: 3
+  SprintSpeed: 5
   RotationSmoothTime: 0.3
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
@@ -323,6 +323,7 @@ MonoBehaviour:
   - {fileID: 3336852099050109295}
   - {fileID: 6567890570193737134}
   - {fileID: 6894604345526994491}
+  - {fileID: 5052869178604035527}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
 MonoBehaviour:
@@ -1164,7 +1165,11 @@ PrefabInstance:
     - {fileID: 8775335786359818784, guid: 26d40934eedd50944a95edfe7689a7a3, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8243209128910584115, guid: 26d40934eedd50944a95edfe7689a7a3,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5052869178604035527}
   m_SourcePrefab: {fileID: 100100000, guid: 26d40934eedd50944a95edfe7689a7a3, type: 3}
 --- !u!4 &5275751693916508372 stripped
 Transform:
@@ -1178,6 +1183,44 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 936558689149242381}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &9122762518877648190 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8243209128910584115, guid: 26d40934eedd50944a95edfe7689a7a3,
+    type: 3}
+  m_PrefabInstance: {fileID: 936558689149242381}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5052869178604035527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9122762518877648190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14578e8ebcd553740a630872344e7f0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableWobble: 1
+  walkSpeed: 2
+  runSpeed: 3
+  walkSwingAmount: 0.1
+  runSwingAmount: 0.2
+  movementSmooth: 8
+  swayPhaseOffset: 0.5
+  enableWeaponSway: 1
+  swayAmount: 0.02
+  swaySmooth: 8
+  maxSwayDistance: 0.08
+  enableBreathing: 1
+  breathingSpeed: 1.5
+  breathingAmount: 0.003
+  breathingSmooth: 8
+  enableJumpEffects: 1
+  jumpLiftAmount: 0.06
+  fallAmount: 0.04
+  landingBounce: 0.025
+  jumpSmooth: 18
 --- !u!1001 &7121996584671567366
 PrefabInstance:
   m_ObjectHideFlags: 0

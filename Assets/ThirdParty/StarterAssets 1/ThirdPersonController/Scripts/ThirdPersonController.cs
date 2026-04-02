@@ -63,7 +63,7 @@ namespace StarterAssets
 
         [Space(10)]
         [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
-        public float JumpTimeout = 0.50f;
+        public float JumpTimeout = 0.25f;
 
         [Tooltip("Time required to pass before entering the fall state. Useful for walking down stairs")]
         public float FallTimeout = 0.15f;
@@ -300,6 +300,12 @@ namespace StarterAssets
             {
                 _latestInput = data;
 
+                // Debug log to track jump input state
+                if (data.jump)
+                {
+                    Debug.Log($"[FixedUpdateNetwork] Processing jump input - Grounded: {Grounded}, Timeout: {_jumpTimeoutDelta}, CanJump: {_jumpTimeoutDelta <= 0.0f}");
+                }
+
                 // Only apply network camera rotation for proxies or the server.
                 // Doing this for the local player causes past ticks to overwrite the 
                 // butter-smooth LateUpdate rotation, causing severe 'resistance' and stuttering.
@@ -321,6 +327,12 @@ namespace StarterAssets
                 NetworkedMotionSpeed = data.move.magnitude;
                 NetworkedGrounded = Grounded;
                 NetworkedVerticalVelocity = _verticalVelocity;
+                
+                // Debug log for animation values
+                if (data.move.magnitude > 0.01f)
+                {
+                    Debug.Log($"[FixedUpdateNetwork] Move: {data.move.magnitude}, AnimationBlend: {_animationBlend}, NormalizedSpeed: {normalizedSpeed}, Sprint: {data.sprint}");
+                }
             }
             else
             {
@@ -334,6 +346,19 @@ namespace StarterAssets
                 NetworkedMotionSpeed = 0f;
                 NetworkedGrounded = Grounded;
                 NetworkedVerticalVelocity = _verticalVelocity;
+            }
+            
+            // Debug jump timeout state every frame (critical for auto-jump diagnosis)
+            if (_jumpTimeoutDelta > 0f)
+            {
+                Debug.Log($"[FixedUpdateNetwork] JumpTimeoutDelta: {_jumpTimeoutDelta:F3} (decreasing)");
+            }
+            
+            // CRITICAL: Log any jump execution without input
+            if (_jumpTimeoutDelta <= 0f && Grounded && _latestInput.jump == false && _verticalVelocity > 0f)
+            {
+                Debug.LogError($"[AUTO-JUMP DETECTED] No jump input but jumping! Timeout: {_jumpTimeoutDelta}, Grounded: {Grounded}, VerticalVel: {_verticalVelocity}");
+                Debug.LogError($"[AUTO-JUMP DEBUG] _networkController.Velocity.y: {_networkController?.Velocity.y}, JumpImpulse: {_networkController?.jumpImpulse}");
             }
         }
 
@@ -437,12 +462,30 @@ namespace StarterAssets
 
         private void AssignAnimationIDs()
         {
-            _animIDSpeed = Animator.StringToHash("Speed");
+            // Try to detect which animator controller is being used
+            string armControllerName = _hasArmAnimator ? _armAnimator.runtimeAnimatorController?.name ?? "" : "";
+            string fullBodyControllerName = _hasFullBodyAnimator ? _fullBodyAnimator.runtimeAnimatorController?.name ?? "" : "";
+            string fallbackControllerName = _hasAnimator ? _animator.runtimeAnimatorController?.name ?? "" : "";
+            
+            Debug.Log($"[AssignAnimationIDs] Controllers - Arm: {armControllerName}, FullBody: {fullBodyControllerName}, Fallback: {fallbackControllerName}");
+            
+            // Use "MotionSpeed" for HeroAnimationController, "Speed" for others
+            if (armControllerName.Contains("Hero") || fullBodyControllerName.Contains("Hero") || fallbackControllerName.Contains("Hero"))
+            {
+                _animIDSpeed = Animator.StringToHash("MotionSpeed");
+                Debug.Log("[AssignAnimationIDs] Using MotionSpeed parameter for HeroAnimationController");
+            }
+            else
+            {
+                _animIDSpeed = Animator.StringToHash("Speed");
+                Debug.Log("[AssignAnimationIDs] Using Speed parameter for other controllers");
+            }
+            
             _animIDGrounded = Animator.StringToHash("isGrounded");
             _animIDJump = Animator.StringToHash("isJumping");
             _animIDFire = Animator.StringToHash("Fire");
-            _animIDEquipGranade = Animator.StringToHash("EquipGranade");
-            _animIDThrowGranade = Animator.StringToHash("ThrowGranade");
+            _animIDEquipGranade = Animator.StringToHash("EquipGrenade");
+            _animIDThrowGranade = Animator.StringToHash("ThrowGrenade");
         }
 
         private void GroundedCheck()
@@ -519,23 +562,59 @@ namespace StarterAssets
             // Use the Native Grounded state from the controller
             Grounded = _networkController.Grounded;
 
+            // Debug log for jump state
+            if (input.jump)
+            {
+                Debug.Log($"[JumpAndGravity] Jump input received. Grounded: {Grounded}, JumpTimeoutDelta: {_jumpTimeoutDelta}, VerticalVelocity: {_verticalVelocity}");
+            }
+
             if (Grounded)
             {
                 _fallTimeoutDelta = FallTimeout;
+                
+                // CRITICAL: Force zero vertical velocity when grounded and no jump input
+                if (!_latestInput.jump && _networkController.Velocity.y > 0.1f)
+                {
+                    Debug.LogError($"[VELOCITY RESET] Clearing unauthorized upward velocity ({_networkController.Velocity.y}) without jump input!");
+                    _networkController.Velocity = new Vector3(_networkController.Velocity.x, 0f, _networkController.Velocity.z);
+                    _verticalVelocity = 0f;
+                }
+                
                 _verticalVelocity = _networkController.Velocity.y;
 
                 if (input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
+                    // CRITICAL: Triple-check that we actually have jump input to prevent auto-jumps
+                    if (!_latestInput.jump)
+                    {
+                        Debug.LogError($"[JUMP BLOCKED] Input.jump is true but _latestInput.jump is false! Preventing auto-jump.");
+                        return;
+                    }
+                    
+                    // CRITICAL: Additional check - ensure we're not getting velocity from elsewhere
+                    if (_networkController.Velocity.y > 0.1f && !input.jump)
+                    {
+                        Debug.LogError($"[JUMP BLOCKED] NetworkController has upward velocity ({_networkController.Velocity.y}) without jump input! Preventing jump.");
+                        return;
+                    }
+                    
                     // Sync impulse height and trigger native jump
                     float jumpImpulse = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                     _networkController.jumpImpulse = jumpImpulse;
                     _networkController.Jump();
                     _verticalVelocity = jumpImpulse;
+                    
+                    Debug.Log($"[JumpAndGravity] Jump executed! JumpImpulse: {jumpImpulse}");
+                }
+                else if (input.jump && _jumpTimeoutDelta > 0.0f)
+                {
+                    Debug.Log($"[JumpAndGravity] Jump blocked by timeout. TimeoutDelta: {_jumpTimeoutDelta}");
                 }
 
-                if (_jumpTimeoutDelta >= 0.0f)
+                if (_jumpTimeoutDelta > 0.0f)
                 {
                     _jumpTimeoutDelta -= Runner.DeltaTime;
+                    _jumpTimeoutDelta = Mathf.Max(0f, _jumpTimeoutDelta); // Never go below 0
                 }
             }
             else  
@@ -613,13 +692,23 @@ namespace StarterAssets
 
             if (_nativeInput != null)
             {
+                // Debug log for jump input state
+                if (_nativeInput.jump)
+                {
+                    Debug.Log($"[OnInput] Jump input detected from _nativeInput");
+                }
+                
                 data.move = _nativeInput.move;
                 data.look = _nativeInput.look;
                 data.jump = _nativeInput.jump;
                 data.sprint = _nativeInput.sprint;
                 data.cameraYaw = _cinemachineTargetYaw;
                 data.cameraPitch = _cinemachineTargetPitch;
+                
+                // Immediately clear jump input to prevent auto-jumping
                 _nativeInput.jump = false;
+                
+                Debug.Log($"[OnInput] Input collected - Jump: {data.jump}, Move: {data.move}");
             }
             else
             {

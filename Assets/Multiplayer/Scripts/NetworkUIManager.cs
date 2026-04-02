@@ -17,6 +17,9 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private GameObject[] bombUIElements;        // Individual bomb icons (like offline mode)
     [SerializeField] private Image throwCooldownOverlay;         // Optional overlay on throw button to show cooldown
     
+    [Header("Bullet UI")]
+    [SerializeField] private TextMeshProUGUI bulletAmmoText;    // Shows current bullets in 00:00 format or RELOADING text
+    
     [Header("Movement UI")]
     [Tooltip("UI Button that players hold down to jump.")]
     [SerializeField] private HoldableButton jumpButton;
@@ -128,6 +131,7 @@ public class NetworkUIManager : MonoBehaviour
         if (localPlayerObject != null)
         {
             UpdateBombUI();
+            UpdateBulletAmmoUI();
             UpdatePlayerStatsUI();
 
             // Keyboard shortcut: press T to throw/shoot
@@ -417,6 +421,80 @@ public class NetworkUIManager : MonoBehaviour
         if (throwButton != null)
         {
             throwButton.interactable = currentBombs > 0;
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Bullet Ammo UI
+    // ---------------------------------------------------------------
+
+    private void UpdateBulletAmmoUI()
+    {
+        // Check which weapon is equipped
+        if (localEquipSystem != null)
+        {
+            if (localEquipSystem.IsPistolEquipped() && localPistolBehaviour != null)
+            {
+                UpdatePistolAmmoUI();
+            }
+            else if (localEquipSystem.IsLaserEquipped() && localLaserBehaviour != null)
+            {
+                UpdateLaserAmmoUI();
+            }
+        }
+        // Fallback to pistol if equip system not available
+        else if (localPistolBehaviour != null)
+        {
+            UpdatePistolAmmoUI();
+        }
+    }
+
+    private void UpdatePistolAmmoUI()
+    {
+        // Auto-reload when current ammo is zero
+        if (localPistolBehaviour.CurrentAmmo == 0 && !localPistolBehaviour.IsReloading && localPistolBehaviour.ReserveAmmo > 0)
+        {
+            localPistolBehaviour.RequestReload();
+        }
+
+        // Update bullet ammo text in 00/00 format or show reload dots
+        if (bulletAmmoText != null)
+        {
+            if (localPistolBehaviour.IsReloading)
+            {
+                bulletAmmoText.text = "...";
+            }
+            else
+            {
+                int currentBullets = localPistolBehaviour.CurrentAmmo;
+                int reserveBullets = localPistolBehaviour.ReserveAmmo;
+                bulletAmmoText.text = $"{currentBullets:D2}/{reserveBullets:D2}";
+            }
+        }
+    }
+
+    private void UpdateLaserAmmoUI()
+    {
+        // Auto-reload when energy reaches zero
+        if (localLaserBehaviour.CurrentEnergy == 0 && !localLaserBehaviour.IsReloading)
+        {
+            // Laser auto-reloads when energy reaches zero (handled in NetworkLaserBehaviour)
+        }
+
+        // Update laser energy text in 00/00 format or show reload dots
+        if (bulletAmmoText != null)
+        {
+            if (localLaserBehaviour.IsReloading)
+            {
+                bulletAmmoText.text = "...";
+            }
+            else
+            {
+                int currentEnergy = localLaserBehaviour.CurrentEnergy;
+                // For laser, show current energy with max energy as "reserve"
+                int maxEnergy = 100; // This should match the maxEnergy in NetworkLaserBehaviour
+                bulletAmmoText.text = $"{currentEnergy:D2}/{maxEnergy:D2}";
+            }
         }
     }
 

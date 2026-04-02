@@ -296,6 +296,18 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Gets the current reload progress (0.0 to 1.0). Returns 0 if not reloading.
+    /// </summary>
+    public float GetReloadProgress(NetworkRunner runner)
+    {
+        if (!IsReloading || !ReloadTimer.IsRunning) return 0f;
+        
+        float remainingTime = ReloadTimer.RemainingTime(runner) ?? 0f;
+        float progress = remainingTime / reloadTime;
+        return Mathf.Clamp01(progress);
+    }
+
     public void AddAmmo(int amount)
     {
         if (!Object.HasStateAuthority) return;

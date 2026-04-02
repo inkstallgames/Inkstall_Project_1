@@ -475,6 +475,14 @@ namespace StarterAssets
                 _animIDSpeed = Animator.StringToHash("MotionSpeed");
                 Debug.Log("[AssignAnimationIDs] Using MotionSpeed parameter for HeroAnimationController");
             }
+            else if (armControllerName.Contains("AlienArm") || fullBodyControllerName.Contains("AlienBody") || 
+                     (armControllerName.Contains("Alien") && _hasArmAnimator) || 
+                     (fullBodyControllerName.Contains("Alien") && _hasFullBodyAnimator) ||
+                     fallbackControllerName.Contains("Alien"))
+            {
+                _animIDSpeed = Animator.StringToHash("MotionSpeed");
+                Debug.Log("[AssignAnimationIDs] Using MotionSpeed parameter for AlienAnimationController");
+            }
             else
             {
                 _animIDSpeed = Animator.StringToHash("Speed");

@@ -41,7 +41,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [Networked] private TickTimer FireCooldownTimer { get; set; }
     [Networked] private TickTimer EnergyRegenTimer { get; set; }
     [Networked] private TickTimer ReloadTimer { get; set; }
-    [Networked] private bool IsReloading { get; set; }
+    [Networked] public bool IsReloading { get; set; }
 
     private Camera playerCamera;
     private bool wantsToShoot;

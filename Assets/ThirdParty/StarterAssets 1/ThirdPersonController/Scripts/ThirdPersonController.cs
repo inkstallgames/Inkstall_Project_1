@@ -118,6 +118,12 @@ namespace StarterAssets
         private int _animIDFire;
         private int _animIDEquipGranade;
         private int _animIDThrowGranade;
+        
+        // NEW: Animation parameters for backward movement
+        private int _animIDIsMovingBackward;
+        private int _animIDHasPistol;
+        private int _animIDPistolWalkBackward;
+        private int _animIDPistolRunBackward;
 
         private Animator _animator;
         private Animator _armAnimator;
@@ -419,9 +425,38 @@ namespace StarterAssets
                 float animatorSpeed = isMovingBackward ? -1f : 1f;
                 _fullBodyAnimator.speed = animatorSpeed;
                 
+                // Basic animation parameters
                 _fullBodyAnimator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
                 _fullBodyAnimator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _fullBodyAnimator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
+                
+                // NEW: Pistol backward movement animations
+                bool hasPistol = _cachedEquipSystem != null && _cachedEquipSystem.CurrentWeapon == NetworkWeaponEquipSystem.WeaponType.Pistol;
+                _fullBodyAnimator.SetBool(_animIDHasPistol, hasPistol);
+                _fullBodyAnimator.SetBool(_animIDIsMovingBackward, isMovingBackward);
+                
+                // Trigger pistol backward animations based on speed and direction
+                if (hasPistol && isMovingBackward && _latestInput.move.sqrMagnitude > 0.01f)
+                {
+                    bool isRunning = _latestInput.sprint && NetworkedAnimationBlend > 0.5f;
+                    
+                    if (isRunning)
+                    {
+                        _fullBodyAnimator.SetBool(_animIDPistolRunBackward, true);
+                        _fullBodyAnimator.SetBool(_animIDPistolWalkBackward, false);
+                    }
+                    else
+                    {
+                        _fullBodyAnimator.SetBool(_animIDPistolWalkBackward, true);
+                        _fullBodyAnimator.SetBool(_animIDPistolRunBackward, false);
+                    }
+                }
+                else
+                {
+                    // Reset pistol backward animations when not applicable
+                    _fullBodyAnimator.SetBool(_animIDPistolWalkBackward, false);
+                    _fullBodyAnimator.SetBool(_animIDPistolRunBackward, false);
+                }
                 
                 if (_latestInput.isShooting) _fullBodyAnimator.SetTrigger(_animIDFire);
                 if (_latestInput.equipBomb) _fullBodyAnimator.SetTrigger(_animIDEquipGranade);
@@ -494,6 +529,12 @@ namespace StarterAssets
             _animIDFire = Animator.StringToHash("Fire");
             _animIDEquipGranade = Animator.StringToHash("EquipGrenade");
             _animIDThrowGranade = Animator.StringToHash("ThrowGrenade");
+            
+            // NEW: Animation parameters for backward movement
+            _animIDIsMovingBackward = Animator.StringToHash("isMovingBackward");
+            _animIDHasPistol = Animator.StringToHash("hasPistol");
+            _animIDPistolWalkBackward = Animator.StringToHash("pistolWalkBackward");
+            _animIDPistolRunBackward = Animator.StringToHash("pistolRunBackward");
         }
 
         private void GroundedCheck()

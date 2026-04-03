@@ -606,14 +606,25 @@ namespace StarterAssets
                         return;
                     }
                     
-                    // CRITICAL FIX: Allow jump while sprinting - don't check sprint state
-                    // The jump should work regardless of whether we're walking or sprinting
+                    // CRITICAL FIX: Force allow jump while sprinting - bypass timeout check when sprinting
+                    if (input.sprint && _jumpTimeoutDelta <= 0.1f) // Allow jump with small timeout when sprinting
+                    {
+                        Debug.Log($"[JumpAndGravity] SPRINT JUMP: Allowing jump with small timeout: {_jumpTimeoutDelta}");
+                    }
+                    else if (_jumpTimeoutDelta > 0.0f)
+                    {
+                        Debug.Log($"[JumpAndGravity] Jump blocked by timeout. TimeoutDelta: {_jumpTimeoutDelta}, Speed: {_speed}, Sprint: {input.sprint}");
+                        return; // Block jump if timeout and not sprinting
+                    }
                     
                     // Sync impulse height and trigger native jump
                     float jumpImpulse = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                     _networkController.jumpImpulse = jumpImpulse;
                     _networkController.Jump();
                     _verticalVelocity = jumpImpulse;
+                    
+                    // Reset jump timeout immediately after successful jump
+                    _jumpTimeoutDelta = JumpTimeout;
                     
                     Debug.Log($"[JumpAndGravity] Jump executed! Speed: {_speed}, Sprint: {input.sprint}, JumpImpulse: {jumpImpulse}");
                 }

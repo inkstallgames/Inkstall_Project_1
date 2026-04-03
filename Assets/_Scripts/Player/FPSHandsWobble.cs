@@ -11,22 +11,35 @@ public class FPSHandsWobble : NetworkBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private bool enableWobble = true;
-    [SerializeField] private float walkSwingDistance = 0.02f;    // How far hands swing when walking (like -1 to +1)
-    [SerializeField] private float runSwingDistance = 0.035f;     // How far hands swing when running
-    [SerializeField] private float movementSmooth = 8f;
-    [SerializeField] private float speedMultiplier = 1f;        // Adjust to match your preference
+    [SerializeField] private float walkSwingDistance = 0.025f;    // How far hands swing when walking (deadshot.io style)
+    [SerializeField] private float runSwingDistance = 0.04f;     // How far hands swing when running
+    [SerializeField] private float movementSmooth = 10f;       // Smoother transitions like deadshot.io
+    [SerializeField] private float speedMultiplier = 1.2f;      // Slightly more responsive
+    [SerializeField] private float walkFrequency = 2.2f;       // Walking step frequency (Hz)
+    [SerializeField] private float runFrequency = 3.8f;        // Running step frequency (Hz)
+    [SerializeField] private float accelerationInfluence = 0.3f; // How much acceleration affects swing
     
     [Header("Weapon Sway")]
     [SerializeField] private bool enableWeaponSway = true;
-    [SerializeField] private float swayAmount = 0.015f;
-    [SerializeField] private float swaySmooth = 15f;
-    [SerializeField] private float maxSwayDistance = 0.08f;
+    [SerializeField] private float swayAmount = 0.02f;           // Increased for deadshot.io feel
+    [SerializeField] private float swaySmooth = 20f;             // Faster response
+    [SerializeField] private float maxSwayDistance = 0.1f;      // More dynamic sway
+    [SerializeField] private float swayRecoverySpeed = 8f;      // How fast sway returns to center
+    [SerializeField] private float aimSwayMultiplier = 0.3f;     // Reduced sway when aiming
     
     [Header("Breathing")]
     [SerializeField] private bool enableBreathing = true;
     [SerializeField] private float breathingSpeed = 1.5f;
     [SerializeField] private float breathingAmount = 0.002f;
     [SerializeField] private float breathingSmooth = 8f;
+    
+    [Header("Deadshot.io Style Effects")]
+    [SerializeField] private bool enableDynamicEffects = true;
+    [SerializeField] private float landImpactAmount = 0.08f;     // Landing impact strength
+    [SerializeField] private float quickTurnSway = 0.015f;       // Sway when turning quickly
+    [SerializeField] private float strafeSwayAmount = 0.02f;      // Extra sway when strafing
+    [SerializeField] private float recoilInfluence = 0.5f;         // How much recoil affects overall movement
+    [SerializeField] private float momentumCarry = 0.7f;           // How much movement carries over
     
     [Header("Jump Effects")]
     [SerializeField] private bool enableJumpEffects = true;
@@ -52,6 +65,10 @@ public class FPSHandsWobble : NetworkBehaviour
     private float _swingPhase = 0f;           // Current phase in walking cycle
     private Vector3 _moveDirection = Vector3.forward;
     private ThirdPersonController _controller; // Cache reference
+    private float _acceleration = 0f;         // Current acceleration
+    private Vector3 _lastVelocity = Vector3.zero;
+    private float _lastYaw = 0f;              // For quick turn detection
+    private Vector3 _momentum = Vector3.zero; // Carried over movement
     
     // Sway tracking
     private Vector3 _currentSway;
@@ -62,6 +79,10 @@ public class FPSHandsWobble : NetworkBehaviour
     private float _jumpOffset = 0f;
     private float _targetJumpOffset = 0f;
     private float _jumpVelocity = 0f;
+    private float _jumpLiftAmount = 0.06f;
+    private float _fallAmount = 0.04f;
+    private float _landingBounce = 0.025f;
+    private float _jumpSmooth = 18f;
     
     // Breathing tracking
     private float _breathingOffset = 0f;
@@ -126,6 +147,11 @@ public class FPSHandsWobble : NetworkBehaviour
             _currentSpeed = _controller.NetworkedSpeed;
             _isMoving = _currentSpeed > 0.1f;
             
+            // Calculate acceleration for dynamic effects
+            Vector3 currentVelocity = _moveDirection * _currentSpeed;
+            _acceleration = Vector3.Distance(currentVelocity, _lastVelocity) / Time.deltaTime;
+            _lastVelocity = currentVelocity;
+            
             // Get movement direction from input
             var inputData = GetComponentInParent<StarterAssetsInputs>();
             if (inputData != null && inputData.move.sqrMagnitude > 0.01f)
@@ -138,6 +164,15 @@ public class FPSHandsWobble : NetworkBehaviour
                 {
                     Quaternion cameraRotation = Quaternion.Euler(0f, mainCamera.transform.eulerAngles.y, 0f);
                     _moveDirection = cameraRotation * inputDir;
+                    
+                    // Detect quick turns for deadshot.io style sway
+                    float currentYaw = mainCamera.transform.eulerAngles.y;
+                    float yawDelta = Mathf.Abs(Mathf.DeltaAngle(currentYaw, _lastYaw));
+                    if (yawDelta > 90f && Time.deltaTime > 0.01f) // Quick turn detection
+                    {
+                        _momentum += Vector3.right * quickTurnSway * (yawDelta / 180f);
+                    }
+                    _lastYaw = currentYaw;
                 }
                 else
                 {
@@ -145,19 +180,26 @@ public class FPSHandsWobble : NetworkBehaviour
                 }
             }
             
-            // Update swing phase based on ACTUAL player speed (0 to max)
+            // Update swing phase based on ACTUAL player speed (deadshot.io style)
             if (_isMoving && _isGrounded)
             {
-                // Use player's actual speed for dynamic swing frequency
-                // Maps speed 0-max to appropriate swing frequency
-                float minSwingFrequency = 1.5f;  // Slow walk steps/sec
-                float maxSwingFrequency = 3.5f;  // Fast run steps/sec
+                // Use specific frequencies for more realistic movement
+                float targetFrequency = _currentSpeed > _controller.MoveSpeed * 0.8f ? runFrequency : walkFrequency;
+                float speedRatio = _currentSpeed / _controller.SprintSpeed;
+                float swingFrequency = Mathf.Lerp(walkFrequency, runFrequency, speedRatio) * speedMultiplier;
                 
-                // Calculate swing frequency based on current speed (0 to max)
-                float speedRatio = _currentSpeed / _controller.SprintSpeed; // 0 to 1 based on max speed
-                float swingFrequency = Mathf.Lerp(minSwingFrequency, maxSwingFrequency, speedRatio) * speedMultiplier;
+                // Add acceleration influence for dynamic feel
+                float accelerationBonus = _acceleration * accelerationInfluence * 0.01f;
+                swingFrequency += accelerationBonus;
                 
                 _swingPhase += Time.deltaTime * swingFrequency * Mathf.PI * 2f; // Convert to radians
+            }
+            
+            // Apply momentum carry-over (deadshot.io style)
+            if (_momentum.magnitude > 0.001f)
+            {
+                _momentum *= momentumCarry; // Gradually reduce momentum
+                if (_momentum.magnitude < 0.001f) _momentum = Vector3.zero;
             }
             
             // Smooth movement state transitions
@@ -190,23 +232,30 @@ public class FPSHandsWobble : NetworkBehaviour
             float normalizedSpeed = _currentSpeed / _controller.MoveSpeed; // 0 to 1+ range
             float swingDistance = Mathf.Lerp(walkSwingDistance, runSwingDistance, normalizedSpeed);
             
-            // Create natural CURVED swing pattern (not linear)
-            // This creates a pendulum-like arc motion
+            // Create natural CURVED swing pattern (deadshot.io style)
+            // This creates a pendulum-like arc motion with more dynamic feel
             float swingValue = Mathf.Sin(_swingPhase); // -1 to +1
             
-            // CURVED SWING - Create arc motion like real arm swing
-            // Left position: hand moves back slightly
-            // Right position: hand moves forward slightly
-            // Center: hand returns to neutral
-            
+            // Enhanced CURVED SWING - Create arc motion like real arm swing
             float horizontalSwing = swingValue * swingDistance;                    // Main left-right movement
-            float depthSwing = Mathf.Sin(_swingPhase * 0.5f) * swingDistance * 0.3f; // Forward/back curve
-            float verticalSwing = Mathf.Abs(Mathf.Sin(_swingPhase * 2f)) * swingDistance * 0.1f; // Slight up/down
+            float depthSwing = Mathf.Sin(_swingPhase * 0.5f) * swingDistance * 0.4f; // Forward/back curve (enhanced)
+            float verticalSwing = Mathf.Abs(Mathf.Sin(_swingPhase * 2f)) * swingDistance * 0.15f; // Slight up/down (enhanced)
             
             // Combine for natural curved swing (fixed world space)
             Vector3 curvedSwing = Vector3.right * horizontalSwing;           // Left-right
             curvedSwing += Vector3.forward * depthSwing;                     // Forward-back curve
             curvedSwing += Vector3.up * verticalSwing;                        // Slight vertical
+            
+            // Add momentum carry-over for deadshot.io feel
+            curvedSwing += _momentum;
+            
+            // Add strafe-specific sway
+            var inputData = GetComponentInParent<StarterAssetsInputs>();
+            if (inputData != null && Mathf.Abs(inputData.move.x) > 0.5f)
+            {
+                float strafeDirection = Mathf.Sign(inputData.move.x);
+                curvedSwing += Vector3.forward * strafeDirection * strafeSwayAmount * Mathf.Sin(_swingPhase * 1.5f);
+            }
             
             _targetWobble = curvedSwing;
         }
@@ -266,7 +315,7 @@ public class FPSHandsWobble : NetworkBehaviour
             _targetJumpOffset = 0f;
         }
         
-        // Calculate weapon sway
+        // Calculate weapon sway with enhanced deadshot.io feel
         if (enableWeaponSway)
         {
             CalculateWeaponSway();

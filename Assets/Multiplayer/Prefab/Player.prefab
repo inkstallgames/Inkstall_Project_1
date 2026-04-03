@@ -1196,24 +1196,35 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9122762518877648190}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14578e8ebcd553740a630872344e7f0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enableWobble: 1
-  walkSwingDistance: 0.08
-  runSwingDistance: 0.08
+  walkSwingDistance: 0.1
+  runSwingDistance: 0.1
   movementSmooth: 8
   speedMultiplier: 0.8
-  enableWeaponSway: 1
+  walkFrequency: 2.2
+  runFrequency: 3.8
+  accelerationInfluence: 0.3
+  enableWeaponSway: 0
   swayAmount: 0.015
   swaySmooth: 15
   maxSwayDistance: 0.08
+  swayRecoverySpeed: 8
+  aimSwayMultiplier: 0.3
   enableBreathing: 0
   breathingSpeed: 1.5
   breathingAmount: 0.002
   breathingSmooth: 8
+  enableDynamicEffects: 1
+  landImpactAmount: 0.08
+  quickTurnSway: 0.015
+  strafeSwayAmount: 0.02
+  recoilInfluence: 0.5
+  momentumCarry: 0.7
   enableJumpEffects: 1
   jumpLiftAmount: 0.06
   fallAmount: 0.04

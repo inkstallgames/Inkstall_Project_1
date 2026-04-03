@@ -598,17 +598,20 @@ namespace StarterAssets
                         return;
                     }
                     
+                    // CRITICAL FIX: Allow jump while sprinting - don't check sprint state
+                    // The jump should work regardless of whether we're walking or sprinting
+                    
                     // Sync impulse height and trigger native jump
                     float jumpImpulse = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                     _networkController.jumpImpulse = jumpImpulse;
                     _networkController.Jump();
                     _verticalVelocity = jumpImpulse;
                     
-                    Debug.Log($"[JumpAndGravity] Jump executed! JumpImpulse: {jumpImpulse}");
+                    Debug.Log($"[JumpAndGravity] Jump executed! Speed: {_speed}, Sprint: {input.sprint}, JumpImpulse: {jumpImpulse}");
                 }
                 else if (input.jump && _jumpTimeoutDelta > 0.0f)
                 {
-                    Debug.Log($"[JumpAndGravity] Jump blocked by timeout. TimeoutDelta: {_jumpTimeoutDelta}");
+                    Debug.Log($"[JumpAndGravity] Jump blocked by timeout. TimeoutDelta: {_jumpTimeoutDelta}, Speed: {_speed}, Sprint: {input.sprint}");
                 }
 
                 if (_jumpTimeoutDelta > 0.0f)

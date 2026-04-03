@@ -1202,19 +1202,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableWobble: 1
-  walkSpeed: 2
-  runSpeed: 3
-  walkSwingAmount: 0.1
-  runSwingAmount: 0.2
+  walkSwingDistance: 0.08
+  runSwingDistance: 0.08
   movementSmooth: 8
-  swayPhaseOffset: 0.5
+  speedMultiplier: 0.8
   enableWeaponSway: 1
-  swayAmount: 0.02
-  swaySmooth: 8
+  swayAmount: 0.015
+  swaySmooth: 15
   maxSwayDistance: 0.08
-  enableBreathing: 1
+  enableBreathing: 0
   breathingSpeed: 1.5
-  breathingAmount: 0.003
+  breathingAmount: 0.002
   breathingSmooth: 8
   enableJumpEffects: 1
   jumpLiftAmount: 0.06

@@ -145,13 +145,18 @@ public class FPSHandsWobble : NetworkBehaviour
                 }
             }
             
-            // Update swing phase based on ACTUAL player speed
+            // Update swing phase based on ACTUAL player speed (0 to max)
             if (_isMoving && _isGrounded)
             {
-                // Use player's actual speed to determine swing frequency
-                // MoveSpeed = 4f (walk), SprintSpeed = 3.64f (run) from ThirdPersonController
-                float normalizedSpeed = _currentSpeed / _controller.MoveSpeed; // 0 to 1+ range
-                float swingFrequency = normalizedSpeed * 2f * speedMultiplier; // 2 steps/sec at normal speed
+                // Use player's actual speed for dynamic swing frequency
+                // Maps speed 0-max to appropriate swing frequency
+                float minSwingFrequency = 1.5f;  // Slow walk steps/sec
+                float maxSwingFrequency = 3.5f;  // Fast run steps/sec
+                
+                // Calculate swing frequency based on current speed (0 to max)
+                float speedRatio = _currentSpeed / _controller.SprintSpeed; // 0 to 1 based on max speed
+                float swingFrequency = Mathf.Lerp(minSwingFrequency, maxSwingFrequency, speedRatio) * speedMultiplier;
+                
                 _swingPhase += Time.deltaTime * swingFrequency * Mathf.PI * 2f; // Convert to radians
             }
             
@@ -160,9 +165,17 @@ public class FPSHandsWobble : NetworkBehaviour
             _wasGrounded = _isGrounded;
             _isGrounded = newGroundedState;
             
-            // Trigger landing bounce
+            // CRITICAL: Detect jump moment when going from grounded to not grounded
+            if (_wasGrounded && !_isGrounded && enableJumpEffects)
+            {
+                Debug.Log($"[FPSHandsWobble] Jump detected! Was grounded: {_wasGrounded}, Is grounded: {_isGrounded}");
+                TriggerLandingBounce(); // This will handle the jump lift
+            }
+            
+            // Trigger landing bounce when landing
             if (!_wasGrounded && _isGrounded && enableJumpEffects)
             {
+                Debug.Log($"[FPSHandsWobble] Landing detected! Was grounded: {_wasGrounded}, Is grounded: {_isGrounded}");
                 TriggerLandingBounce();
             }
         }
@@ -177,28 +190,30 @@ public class FPSHandsWobble : NetworkBehaviour
             float normalizedSpeed = _currentSpeed / _controller.MoveSpeed; // 0 to 1+ range
             float swingDistance = Mathf.Lerp(walkSwingDistance, runSwingDistance, normalizedSpeed);
             
-            // Create the -1 to +1 swing pattern you wanted
-            // This swings from center (0) to negative (-1), then positive (+1), then back to center (0)
-            float swingValue = Mathf.Sin(_swingPhase); // Goes from -1 to +1 smoothly
+            // Create natural CURVED swing pattern (not linear)
+            // This creates a pendulum-like arc motion
+            float swingValue = Mathf.Sin(_swingPhase); // -1 to +1
             
-            // Apply swing in movement direction (forward/back swing)
-            Vector3 forwardSwing = _moveDirection * swingValue * swingDistance;
+            // CURVED SWING - Create arc motion like real arm swing
+            // Left position: hand moves back slightly
+            // Right position: hand moves forward slightly
+            // Center: hand returns to neutral
             
-            // Add slight side sway for realism
-            float sideSwing = Mathf.Sin(_swingPhase * 0.5f) * swingDistance * 0.3f;
-            Vector3 sideMovement = Vector3.right * sideSwing;
+            float horizontalSwing = swingValue * swingDistance;                    // Main left-right movement
+            float depthSwing = Mathf.Sin(_swingPhase * 0.5f) * swingDistance * 0.3f; // Forward/back curve
+            float verticalSwing = Mathf.Abs(Mathf.Sin(_swingPhase * 2f)) * swingDistance * 0.1f; // Slight up/down
             
-            // Add slight vertical movement (hands rise/fall slightly)
-            float verticalSwing = Mathf.Abs(Mathf.Sin(_swingPhase * 2f)) * swingDistance * 0.2f;
-            Vector3 verticalMovement = Vector3.up * verticalSwing;
+            // Combine for natural curved swing (fixed world space)
+            Vector3 curvedSwing = Vector3.right * horizontalSwing;           // Left-right
+            curvedSwing += Vector3.forward * depthSwing;                     // Forward-back curve
+            curvedSwing += Vector3.up * verticalSwing;                        // Slight vertical
             
-            // Combine all swing movements
-            _targetWobble = forwardSwing + sideMovement + verticalMovement;
+            _targetWobble = curvedSwing;
         }
         else
         {
-            // Return to center position (0) when idle
-            _targetWobble = Vector3.SmoothDamp(_targetWobble, Vector3.zero, ref _wobbleVelocity, 0.3f);
+            // IMMEDIATE return to center position when speed is 0
+            _targetWobble = Vector3.zero; // No smooth damp - immediate return
         }
         
         // Calculate breathing
@@ -215,19 +230,30 @@ public class FPSHandsWobble : NetworkBehaviour
             _targetBreathingOffset = 0f;
         }
         
-        // Calculate jump effects
+        // Calculate jump effects with proper jump detection
         if (enableJumpEffects)
         {
             if (!_isGrounded)
             {
-                // In air - gradual fall
+                // In air - add both vertical and minimal horizontal movement
                 _targetJumpOffset = Mathf.SmoothDamp(_targetJumpOffset, -fallAmount, ref _jumpVelocity, 0.3f);
+                
+                // Add very subtle horizontal drift while in air (keep in camera view)
+                float airDriftAmount = 0.005f; // Reduced from 0.015f to stay in frame
+                Vector3 airDrift = Vector3.right * Mathf.Sin(_swingPhase * 0.5f) * airDriftAmount;
+                _targetWobble += airDrift;
             }
             else if (_wasGrounded && !_isGrounded)
             {
-                // Just jumped
+                // JUST JUMPED - this triggers when leaving ground
                 _targetJumpOffset = jumpLiftAmount;
                 _jumpVelocity = 0f;
+                
+                // Add minimal forward push when jumping (keep in camera view)
+                Vector3 jumpPush = Vector3.forward * jumpLiftAmount * 0.1f; // Reduced from 0.3f to 0.1f
+                _targetWobble += jumpPush;
+                
+                Debug.Log($"[FPSHandsWobble] Jump effects applied! Lift: {jumpLiftAmount}");
             }
             else
             {

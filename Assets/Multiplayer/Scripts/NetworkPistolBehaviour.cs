@@ -45,6 +45,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     private NetworkWeaponEquipSystem equipSystem;
     private PlayerNetworkData playerData;
     private bool isLocalPlayer;
+    private PistolRecoilAnimation pistolRecoilAnimation; // Reference to pistol recoil script
 
     /// <summary>
     /// Returns the correct fire point based on whether this is the local or remote player.
@@ -83,6 +84,9 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         equipSystem = GetComponent<NetworkWeaponEquipSystem>();
         playerData = GetComponent<PlayerNetworkData>();
+        
+        // Get reference to pistol recoil animation script
+        pistolRecoilAnimation = GetComponentInChildren<PistolRecoilAnimation>();
 
         // Ensure muzzle flash prefab is disabled on start
         if (muzzleFlashPrefab != null)
@@ -236,6 +240,12 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnShot(Vector3 origin, Vector3 endPoint, bool didHit, Vector3 hitPoint, Vector3 hitNormal)
     {
+        // Trigger pistol fire animation on FPS hands (only for local player)
+        if (isLocalPlayer && pistolRecoilAnimation != null)
+        {
+            pistolRecoilAnimation.TriggerPistolFire();
+        }
+        
         // Get the correct fire point for this player's view
         Transform fp = ActiveFirePoint;
         

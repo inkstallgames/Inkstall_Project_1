@@ -570,52 +570,63 @@ namespace StarterAssets
             _speed = targetSpeed; // Direct assignment instead of Lerp
 
             // round speed to 3 decimal places
-            _speed = Mathf.Round(_speed * 1000f) / 1000f;
-
             // CRITICAL FIX: Instant animation blend changes - eliminate momentum
             _animationBlend = targetSpeed; // Direct assignment instead of Lerp
             if (_animationBlend < 0.01f) _animationBlend = 0f;
-            
             // Normalize animation blend to 0-1 range for Animator
             float normalizedSpeed = _animationBlend / SprintSpeed; // SprintSpeed is max speed
             normalizedSpeed = Mathf.Clamp01(normalizedSpeed);
             
-            // CRITICAL FIX: Hard angular direction changes - no smooth rotation
-            // Character instantly snaps to movement direction like old-school games
+            // CRITICAL FIX: Complete stop on direction change - no movement until next frame
+            bool shouldBlockMovement = false;
+            
             if (input.move != Vector2.zero)
             {
-                // NEW: Character always faces camera direction, never rotates to face movement
-                // This allows backward animations to play while character faces forward
-                Quaternion cameraRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
-                transform.rotation = cameraRotation; // Always face camera direction
+                // Calculate movement direction relative to camera
+                Vector3 inputDirection = new Vector3(input.move.x, 0f, input.move.y).normalized;
                 
-                                                
-                // CRITICAL FIX: Reset velocity immediately when direction changes
-                Vector3 currentInputDirection = new Vector3(input.move.x, 0f, input.move.y).normalized;
-                bool directionChanged = Vector3.Dot(currentInputDirection, _lastInputDirection) < 0.9f;
-                if (directionChanged)
+                // Get camera rotation
+                float cameraYawRad = _cinemachineTargetYaw * Mathf.Deg2Rad;
+                Vector3 forward = new Vector3(Mathf.Sin(cameraYawRad), 0f, Mathf.Cos(cameraYawRad));
+                Vector3 right = new Vector3(Mathf.Cos(cameraYawRad), 0f, -Mathf.Sin(cameraYawRad));
+                
+                // Calculate world-space movement direction
+                Vector3 worldDirection = (forward * input.move.y + right * input.move.x).normalized;
+                
+                // CENTER POINT ROTATION: Character rotates from center, not facing movement direction
+                if (worldDirection != Vector3.zero)
                 {
-                    // Reset velocity immediately for instant direction change
+                    // Calculate rotation based on input relative to camera, but rotate in place
+                    Vector3 movementInput = (forward * input.move.y + right * input.move.x).normalized;
+                    if (movementInput != Vector3.zero)
+                    {
+                        Quaternion targetRotation = Quaternion.LookRotation(movementInput);
+                        transform.rotation = targetRotation; // Rotate in place from center
+                    }
+                }
+                
+                // COMPLETE STOP: Check for direction change and block movement
+                Vector3 currentInputDirection = worldDirection;
+                bool directionChanged = Vector3.Dot(currentInputDirection, _lastInputDirection) < 0.95f;
+                if (directionChanged && _lastInputDirection != Vector3.zero)
+                {
+                    // BLOCK MOVEMENT: Don't allow movement this frame after direction change
                     if (_networkController != null)
                     {
                         _networkController.Velocity = new Vector3(0f, _networkController.Velocity.y, 0f);
+                        _speed = 0f;
+                        _animationBlend = 0f;
+                        shouldBlockMovement = true; // Block movement for this frame
                     }
                 }
                 _lastInputDirection = currentInputDirection;
-            }
-            else
-            {
-                // CRITICAL FIX: When not moving, character should face camera direction
-                // This allows the player to rotate the character by looking around
-                Quaternion cameraRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
-                transform.rotation = cameraRotation; // Face camera direction when idle
             }
 
             // Calculate movement direction - character always faces camera, so move relative to camera
             Vector3 targetDirection = Vector3.zero;
             Vector3 movementInputDirection = Vector3.zero;
 
-            if (input.move != Vector2.zero)
+            if (input.move != Vector2.zero && !shouldBlockMovement)
             {
                 // Use camera yaw angle instead of camera transform to avoid diagonal issues
                 float cameraYawRad = _cinemachineTargetYaw * Mathf.Deg2Rad;

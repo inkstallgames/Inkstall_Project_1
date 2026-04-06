@@ -324,6 +324,7 @@ MonoBehaviour:
   - {fileID: 6567890570193737134}
   - {fileID: 6989195083982649758}
   - {fileID: 5052869178604035527}
+  - {fileID: 6851036423633329471}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
 MonoBehaviour:
@@ -1175,6 +1176,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5052869178604035527}
+    - targetCorrespondingSourceObject: {fileID: 8243209128910584115, guid: 26d40934eedd50944a95edfe7689a7a3,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6851036423633329471}
   m_SourcePrefab: {fileID: 100100000, guid: 26d40934eedd50944a95edfe7689a7a3, type: 3}
 --- !u!4 &5275751693916508372 stripped
 Transform:
@@ -1235,6 +1240,24 @@ MonoBehaviour:
   fallAmount: 0.04
   landingBounce: 0.025
   jumpSmooth: 18
+--- !u!114 &6851036423633329471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9122762518877648190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 639dff149f8582d41855e999aee514dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableRecoil: 1
+  recoilAmount: 3
+  recoilSpeed: 15
+  returnSpeed: 8
+  enableTestMode: 1
+  testKey: 32
 --- !u!1001 &7121996584671567366
 PrefabInstance:
   m_ObjectHideFlags: 0

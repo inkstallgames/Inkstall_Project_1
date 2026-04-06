@@ -56,7 +56,7 @@ GameObject:
   - component: {fileID: 6294513283305607629}
   - component: {fileID: 3336852099050109295}
   - component: {fileID: 6567890570193737134}
-  - component: {fileID: 6894604345526994491}
+  - component: {fileID: 6989195083982649758}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -322,7 +322,7 @@ MonoBehaviour:
   - {fileID: 2695427475046890927}
   - {fileID: 3336852099050109295}
   - {fileID: 6567890570193737134}
-  - {fileID: 6894604345526994491}
+  - {fileID: 6989195083982649758}
   - {fileID: 5052869178604035527}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
@@ -538,7 +538,7 @@ MonoBehaviour:
   - {fileID: 0}
   shieldMaterial: {fileID: 2100000, guid: e2002a38a660a584db60c728562929a1, type: 2}
   invisibilityMaterial: {fileID: 0}
---- !u!114 &6894604345526994491
+--- !u!114 &6989195083982649758
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -547,11 +547,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 3928277030421997894}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f68e725f7baf71d4a9fbee6bee38c0b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 3b8dc0c741b67d647b96634efca00e2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bodyTransform: {fileID: 2296920327939070584}
-  handsTransform: {fileID: 8489637698339041156}
+  firstPersonArms:
+  - {fileID: 9122762518877648190}
+  thirdPersonBody:
+  - {fileID: 3347766268668220439}
+  fullBodyCastsShadowsForLocal: 1
+  armPositionOffset: {x: 0.16, y: -1.73, z: -0.09}
+  armRotationOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &4750772492329756353
 GameObject:
   m_ObjectHideFlags: 0
@@ -1314,6 +1319,12 @@ PrefabInstance:
 --- !u!4 &2683713285843406509 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5181423443175116971, guid: 89d0594a2eafefb4cbbf9329f084fefe,
+    type: 3}
+  m_PrefabInstance: {fileID: 7121996584671567366}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3347766268668220439 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5522483551211473425, guid: 89d0594a2eafefb4cbbf9329f084fefe,
     type: 3}
   m_PrefabInstance: {fileID: 7121996584671567366}
   m_PrefabAsset: {fileID: 0}

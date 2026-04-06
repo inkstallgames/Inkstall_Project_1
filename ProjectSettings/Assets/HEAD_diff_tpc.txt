@@ -1,0 +1,21 @@
+﻿diff --git a/Assets/ThirdParty/StarterAssets 1/ThirdPersonController/Scripts/ThirdPersonController.cs b/Assets/ThirdParty/StarterAssets 1/ThirdPersonController/Scripts/ThirdPersonController.cs
+index b8855d36..e15feeb5 100644
+--- a/Assets/ThirdParty/StarterAssets 1/ThirdPersonController/Scripts/ThirdPersonController.cs	
++++ b/Assets/ThirdParty/StarterAssets 1/ThirdPersonController/Scripts/ThirdPersonController.cs	
+@@ -301,12 +301,10 @@ namespace StarterAssets
+             {
+                 _latestInput = data;
+ 
+-                // Application of gravity, movement, and camera logic
+-                if (Object.HasStateAuthority)
+-                {
+-                    _cinemachineTargetYaw = data.cameraYaw;
+-                    _cinemachineTargetPitch = data.cameraPitch;
+-                }
++                // Update camera rotation from input data before movement calculation
++                // This ensures movement direction changes instantly when camera rotates
++                _cinemachineTargetYaw = data.cameraYaw;
++                _cinemachineTargetPitch = data.cameraPitch;
+ 
+                 // Check Grounded state using physics spheres manually
+                 GroundedCheck();

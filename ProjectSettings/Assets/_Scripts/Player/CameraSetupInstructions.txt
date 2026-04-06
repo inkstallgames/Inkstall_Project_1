@@ -1,0 +1,76 @@
+INDIVIDUAL PLAYER CAMERA SETUP INSTRUCTIONS
+
+===========================================
+
+OVERVIEW:
+This system ensures each player sees only their own character's perspective.
+The host sees their character, and each client sees their own character.
+
+===========================================
+
+REQUIRED COMPONENTS ON PLAYER PREFABS:
+
+1. PlayerCameraController (NEW)
+   - Automatically sets up camera for local player only
+   - Creates camera target if needed
+   - Finds or creates Cinemachine Virtual Camera
+
+2. FirstPersonController (UPDATED)
+   - Already has input authority checks
+   - Now integrates with PlayerCameraController
+   - Only processes input for local player
+
+3. PlayerInputHandler (UPDATED)
+   - Already has input authority checks
+   - Only processes input for local player
+
+===========================================
+
+SETUP STEPS:
+
+1. Add PlayerCameraController to all player prefabs:
+   - Select each player prefab (Hero prefabs)
+   - Add Component > PlayerCameraController
+   - Leave default settings (autoFindCamera = true)
+
+2. Ensure Cinemachine package is installed:
+   - Window > Package Manager
+   - Install "Cinemachine" if not already installed
+
+3. Verify camera setup:
+   - The system automatically creates a camera if none exists
+   - Camera follows only the local player's character
+   - Remote players' cameras are disabled
+
+===========================================
+
+HOW IT WORKS:
+
+- When a player spawns, PlayerCameraController.Spawned() is called
+- Object.HasInputAuthority returns true only for the local player
+- Local player: Camera is set up to follow their character
+- Remote players: Camera components are disabled
+- FirstPersonController only processes input for local player
+- Each client sees only their own character's perspective
+
+===========================================
+
+TESTING:
+
+1. Host a game
+2. Client joins
+3. Both players should see only their own character from their camera
+4. Players should only control their own character
+
+===========================================
+
+TROUBLESHOOTING:
+
+If camera doesn't follow:
+- Check that PlayerCameraController is on the prefab
+- Verify Cinemachine is installed
+- Check console for error messages
+
+If input doesn't work:
+- Verify Object.HasInputAuthority checks are in place
+- Check that PlayerInput component is enabled only for local player

@@ -192,8 +192,7 @@ namespace StarterAssets
                         if (_hasArmAnimator)
                         {
                             _armAnimator.enabled = true;
-                            Debug.Log($"[Spawned] Arm Animator found and enabled");
-                        }
+                                                    }
                     }
                 }
                 
@@ -209,8 +208,7 @@ namespace StarterAssets
                         if (_hasFullBodyAnimator)
                         {
                             _fullBodyAnimator.enabled = true;
-                            Debug.Log($"[Spawned] Full Body Animator found and enabled");
-                        }
+                                                    }
                     }
                 }
             }
@@ -225,8 +223,7 @@ namespace StarterAssets
                 _hasAnimator = _animator != null;
             }
             
-            Debug.Log($"[Spawned] Animators - Arm: {_hasArmAnimator}, FullBody: {_hasFullBodyAnimator}, Fallback: {_hasAnimator}");
-            
+                        
             // Get StarterAssetsInputs component for THIS specific player instance
             _nativeInput = GetComponent<StarterAssetsInputs>();
             
@@ -308,12 +305,6 @@ namespace StarterAssets
             {
                 _latestInput = data;
 
-                // Debug log to track jump input state
-                if (data.jump && Grounded)
-                {
-                    Debug.Log($"[FixedUpdateNetwork] Processing jump input - Grounded: {Grounded}, Timeout: {_jumpTimeoutDelta}, CanJump: {_jumpTimeoutDelta <= 0.0f}");
-                }
-
                 // Only apply network camera rotation for proxies or the server.
                 // Doing this for the local player causes past ticks to overwrite the 
                 // butter-smooth LateUpdate rotation, causing severe 'resistance' and stuttering.
@@ -350,18 +341,11 @@ namespace StarterAssets
                 NetworkedVerticalVelocity = _verticalVelocity;
             }
             
-            // Debug jump timeout state every 10 frames (reduced frequency)
-            if (_jumpTimeoutDelta > 0f && (int)Time.frameCount % 10 == 0)
-            {
-                Debug.Log($"[FixedUpdateNetwork] JumpTimeoutDelta: {_jumpTimeoutDelta:F3} (decreasing)");
-            }
-            
+            // Removed the if statement here
             // CRITICAL: Log any jump execution without input
             if (_jumpTimeoutDelta <= 0f && Grounded && _latestInput.jump == false && _verticalVelocity > 0f)
             {
-                Debug.LogError($"[AUTO-JUMP DETECTED] No jump input but jumping! Timeout: {_jumpTimeoutDelta}, Grounded: {Grounded}, VerticalVel: {_verticalVelocity}");
-                Debug.LogError($"[AUTO-JUMP DEBUG] _networkController.Velocity.y: {_networkController?.Velocity.y}, JumpImpulse: {_networkController?.jumpImpulse}");
-            }
+                                            }
         }
 
         public override void Render()
@@ -403,41 +387,37 @@ namespace StarterAssets
             {
                 if (!_fullBodyAnimator.enabled) _fullBodyAnimator.enabled = true;
                 
-                // Detect if moving backward relative to facing direction
+                // NEW: Joystick angle-based direction calculation (0-360°)
+                float direction = 0f;
                 bool isMovingBackward = false;
                 if (_latestInput.move.sqrMagnitude > 0.01f)
                 {
-                    // Calculate actual movement direction in world space
-                    Vector3 inputDirection = new Vector3(_latestInput.move.x, 0f, _latestInput.move.y).normalized;
-                    Quaternion desiredRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
-                    Vector3 worldMoveDirection = desiredRotation * inputDirection;
+                    // Calculate joystick angle in degrees (0-360°)
+                    // 0° = forward, 90° = right, 180° = backward, 270° = left
+                    float joystickAngle = Mathf.Atan2(_latestInput.move.x, _latestInput.move.y) * Mathf.Rad2Deg;
+                    if (joystickAngle < 0) joystickAngle += 360f; // Convert negative angles to positive
                     
-                    // Check if world movement is opposite to character's forward
-                    float dotProduct = Vector3.Dot(worldMoveDirection, transform.forward);
-                    isMovingBackward = dotProduct < -0.5f;
-                }
-                
-                // NEW: Mobile-friendly direction calculation for joystick and keyboard
-                float direction = 0f;
-                if (_latestInput.move.sqrMagnitude > 0.01f)
-                {
-                    // Calculate forward/backward based on input Y component
-                    // This works for both keyboard (W/S) and joystick (up/down)
-                    direction = Mathf.Sign(_latestInput.move.y); // 1.0 for forward, -1.0 for backward
+                    // Determine backward movement based on joystick angle
+                    // Forward: 0° to 90° and 270° to 360° (180° total)
+                    // Backward: 90° to 270° (180° total)
+                    isMovingBackward = joystickAngle > 90f && joystickAngle < 270f;
                     
-                    // Optional: Add deadzone for joystick precision
-                    if (Mathf.Abs(_latestInput.move.y) < 0.3f)
+                    // Set direction parameter: 1 for forward, -1 for backward, 0 for strafing
+                    if (isMovingBackward)
                     {
-                        direction = 0f; // Treat as strafing if mostly horizontal
+                        direction = -1f; // Backward
                     }
-                }
+                    else if (joystickAngle < 90f || joystickAngle > 270f)
+                    {
+                        direction = 1f; // Forward
+                    }
+                    else
+                    {
+                        direction = 0f; // Strafing (left/right)
+                    }
+                    
+                                                        }
                 _fullBodyAnimator.SetFloat(_animIDDirection, direction);
-                
-                // TEMP DEBUG: Log direction values
-                if (_latestInput.move.sqrMagnitude > 0.01f)
-                {
-                    Debug.Log($"[ANIM DEBUG] Direction: {direction:F1}, Move.y: {_latestInput.move.y:F2}, MotionSpeed: {NetworkedAnimationBlend:F2}");
-                }
                 
                 // Set animator speed to normal (no more reverse playback)
                 _fullBodyAnimator.speed = 1f;
@@ -449,7 +429,6 @@ namespace StarterAssets
                 
                 if (_latestInput.isShooting) _fullBodyAnimator.SetTrigger(_animIDFire);
                 if (_latestInput.equipBomb) _fullBodyAnimator.SetTrigger(_animIDEquipGranade);
-                if (_latestInput.isThrowingBomb) _fullBodyAnimator.SetTrigger(_animIDThrowGranade);
                 
                 // NEW: Pistol backward movement animations with 2D blend tree support
                 bool hasPistol = _cachedEquipSystem != null && _cachedEquipSystem.CurrentWeapon == NetworkWeaponEquipSystem.WeaponType.Pistol;
@@ -482,25 +461,41 @@ namespace StarterAssets
             
             // Fallback: Update legacy single animator if dual animators not found
             if (!_hasArmAnimator && !_hasFullBodyAnimator && _hasAnimator && _animator != null)
-// ...
             {
-                // Detect if moving backward relative to facing direction
+                // NEW: Joystick angle-based direction calculation (0-360°)
+                float direction = 0f;
                 bool isMovingBackward = false;
                 if (_latestInput.move.sqrMagnitude > 0.01f)
                 {
-                    // Calculate actual movement direction in world space
-                    Vector3 inputDirection = new Vector3(_latestInput.move.x, 0f, _latestInput.move.y).normalized;
-                    Quaternion desiredRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
-                    Vector3 worldMoveDirection = desiredRotation * inputDirection;
+                    // Calculate joystick angle in degrees (0-360°)
+                    // 0° = forward, 90° = right, 180° = backward, 270° = left
+                    float joystickAngle = Mathf.Atan2(_latestInput.move.x, _latestInput.move.y) * Mathf.Rad2Deg;
+                    if (joystickAngle < 0) joystickAngle += 360f; // Convert negative angles to positive
                     
-                    // Check if world movement is opposite to character's forward
-                    float dotProduct = Vector3.Dot(worldMoveDirection, transform.forward);
-                    isMovingBackward = dotProduct < -0.5f;
-                }
+                    // Determine backward movement based on joystick angle
+                    // Forward: 0° to 90° and 270° to 360° (180° total)
+                    // Backward: 90° to 270° (180° total)
+                    isMovingBackward = joystickAngle > 90f && joystickAngle < 270f;
+                    
+                    // Set direction parameter: 1 for forward, -1 for backward, 0 for strafing
+                    if (isMovingBackward)
+                    {
+                        direction = -1f; // Backward
+                    }
+                    else if (joystickAngle < 90f || joystickAngle > 270f)
+                    {
+                        direction = 1f; // Forward
+                    }
+                    else
+                    {
+                        direction = 0f; // Strafing (left/right)
+                    }
+                    
+                                                        }
+                _animator.SetFloat(_animIDDirection, direction);
                 
-                // Set global animator speed for reverse playback
-                float animatorSpeed = isMovingBackward ? -1f : 1f;
-                _animator.speed = animatorSpeed;
+                // Set animator speed to normal (no more reverse playback)
+                _animator.speed = 1f;
                 
                 // Set the blend value (always positive)
                 _animator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
@@ -520,27 +515,23 @@ namespace StarterAssets
             string fullBodyControllerName = _hasFullBodyAnimator ? _fullBodyAnimator.runtimeAnimatorController?.name ?? "" : "";
             string fallbackControllerName = _hasAnimator ? _animator.runtimeAnimatorController?.name ?? "" : "";
             
-            Debug.Log($"[AssignAnimationIDs] Controllers - Arm: {armControllerName}, FullBody: {fullBodyControllerName}, Fallback: {fallbackControllerName}");
-            
+                        
             // Use "MotionSpeed" for HeroAnimationController, "Speed" for others
             if (armControllerName.Contains("Hero") || fullBodyControllerName.Contains("Hero") || fallbackControllerName.Contains("Hero"))
             {
                 _animIDSpeed = Animator.StringToHash("MotionSpeed");
-                Debug.Log("[AssignAnimationIDs] Using MotionSpeed parameter for HeroAnimationController");
-            }
+                            }
             else if (armControllerName.Contains("AlienArm") || fullBodyControllerName.Contains("AlienBody") || 
                      (armControllerName.Contains("Alien") && _hasArmAnimator) || 
                      (fullBodyControllerName.Contains("Alien") && _hasFullBodyAnimator) ||
                      fallbackControllerName.Contains("Alien"))
             {
                 _animIDSpeed = Animator.StringToHash("MotionSpeed");
-                Debug.Log("[AssignAnimationIDs] Using MotionSpeed parameter for AlienAnimationController");
-            }
+                            }
             else
             {
                 _animIDSpeed = Animator.StringToHash("Speed");
-                Debug.Log("[AssignAnimationIDs] Using Speed parameter for other controllers");
-            }
+                            }
             
             _animIDGrounded = Animator.StringToHash("isGrounded");
             _animIDJump = Animator.StringToHash("isJumping");
@@ -593,36 +584,49 @@ namespace StarterAssets
             // Character instantly snaps to movement direction like old-school games
             if (input.move != Vector2.zero)
             {
-                // Calculate target direction based on input
-                float targetAngle = Mathf.Atan2(input.move.x, input.move.y) * Mathf.Rad2Deg;
-                Quaternion targetRotation = Quaternion.Euler(0.0f, targetAngle + _cinemachineTargetYaw, 0.0f);
-                transform.rotation = targetRotation; // Instant snap, no interpolation
+                // NEW: Character always faces camera direction, never rotates to face movement
+                // This allows backward animations to play while character faces forward
+                Quaternion cameraRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
+                transform.rotation = cameraRotation; // Always face camera direction
                 
-                // CRITICAL FIX: Instant momentum transfer - preserve speed, change direction
+                                                
+                // CRITICAL FIX: Reset velocity immediately when direction changes
                 Vector3 currentInputDirection = new Vector3(input.move.x, 0f, input.move.y).normalized;
                 bool directionChanged = Vector3.Dot(currentInputDirection, _lastInputDirection) < 0.9f;
-                if (directionChanged && _networkController != null)
+                if (directionChanged)
                 {
-                    // Get current horizontal speed magnitude
-                    Vector3 horizontalVelocity = new Vector3(_networkController.Velocity.x, 0f, _networkController.Velocity.z);
-                    float currentSpeed = horizontalVelocity.magnitude;
-                    
-                    // Apply same speed in new direction instantly
-                    Vector3 newDirection = transform.forward * currentSpeed;
-                    _networkController.Velocity = new Vector3(newDirection.x, _networkController.Velocity.y, newDirection.z);
+                    // Reset velocity immediately for instant direction change
+                    if (_networkController != null)
+                    {
+                        _networkController.Velocity = new Vector3(0f, _networkController.Velocity.y, 0f);
+                    }
                 }
                 _lastInputDirection = currentInputDirection;
             }
+            else
+            {
+                // CRITICAL FIX: When not moving, character should face camera direction
+                // This allows the player to rotate the character by looking around
+                Quaternion cameraRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
+                transform.rotation = cameraRotation; // Face camera direction when idle
+            }
 
-            // Calculate movement direction - character already faces the right direction
+            // Calculate movement direction - character always faces camera, so move relative to camera
             Vector3 targetDirection = Vector3.zero;
             Vector3 movementInputDirection = Vector3.zero;
 
             if (input.move != Vector2.zero)
             {
-                // Character is already rotated to face movement direction, so just move forward
-                targetDirection = transform.forward;
-                movementInputDirection = new Vector3(input.move.x, 0f, input.move.y).normalized;
+                // Use camera yaw angle instead of camera transform to avoid diagonal issues
+                float cameraYawRad = _cinemachineTargetYaw * Mathf.Deg2Rad;
+                
+                // Calculate forward and right vectors from camera yaw only (no pitch influence)
+                Vector3 forward = new Vector3(Mathf.Sin(cameraYawRad), 0f, Mathf.Cos(cameraYawRad));
+                Vector3 right = new Vector3(Mathf.Cos(cameraYawRad), 0f, -Mathf.Sin(cameraYawRad));
+                
+                // Calculate movement direction based on input relative to camera yaw
+                targetDirection = (forward * input.move.y + right * input.move.x).normalized;
+                movementInputDirection = targetDirection;
             }
 
             // Sync Custom ThirdPersonController settings directly into the NetworkCharacterController
@@ -660,10 +664,8 @@ namespace StarterAssets
             // Use the Native Grounded state from the controller
             Grounded = _networkController.Grounded;
 
-            // Debug log for jump state - reduced frequency
             if (input.jump && (int)Time.frameCount % 10 == 0)
             {
-                Debug.Log($"[JumpAndGravity] Jump input received. Grounded: {Grounded}, JumpTimeoutDelta: {_jumpTimeoutDelta}, VerticalVelocity: {_verticalVelocity}");
             }
 
             if (Grounded)
@@ -673,8 +675,7 @@ namespace StarterAssets
                 // CRITICAL: Force zero vertical velocity when grounded and no jump input
                 if (!_latestInput.jump && _networkController.Velocity.y > 0.1f)
                 {
-                    Debug.LogError($"[VELOCITY RESET] Clearing unauthorized upward velocity ({_networkController.Velocity.y}) without jump input!");
-                    _networkController.Velocity = new Vector3(_networkController.Velocity.x, 0f, _networkController.Velocity.z);
+                                        _networkController.Velocity = new Vector3(_networkController.Velocity.x, 0f, _networkController.Velocity.z);
                     _verticalVelocity = 0f;
                 }
                 
@@ -685,26 +686,22 @@ namespace StarterAssets
                     // CRITICAL: Triple-check that we actually have jump input to prevent auto-jumps
                     if (!_latestInput.jump)
                     {
-                        Debug.LogError($"[JUMP BLOCKED] Input.jump is true but _latestInput.jump is false! Preventing auto-jump.");
-                        return;
+                                                return;
                     }
                     
                     // CRITICAL: Additional check - ensure we're not getting velocity from elsewhere
                     if (_networkController.Velocity.y > 0.1f && !input.jump)
                     {
-                        Debug.LogError($"[JUMP BLOCKED] NetworkController has upward velocity ({_networkController.Velocity.y}) without jump input! Preventing jump.");
-                        return;
+                                                return;
                     }
                     
                     // CRITICAL FIX: Force allow jump while sprinting - bypass timeout check when sprinting
                     if (input.sprint && _jumpTimeoutDelta <= 0.1f) // Allow jump with small timeout when sprinting
                     {
-                        Debug.Log($"[JumpAndGravity] SPRINT JUMP: Allowing jump with small timeout: {_jumpTimeoutDelta}");
-                    }
+                                            }
                     else if (_jumpTimeoutDelta > 0.0f)
                     {
-                        Debug.Log($"[JumpAndGravity] Jump blocked by timeout. TimeoutDelta: {_jumpTimeoutDelta}, Speed: {_speed}, Sprint: {input.sprint}");
-                        return; // Block jump if timeout and not sprinting
+                                                return; // Block jump if timeout and not sprinting
                     }
                     
                     // Sync impulse height and trigger native jump
@@ -716,12 +713,10 @@ namespace StarterAssets
                     // Reset jump timeout immediately after successful jump
                     _jumpTimeoutDelta = JumpTimeout;
                     
-                    Debug.Log($"[JumpAndGravity] Jump executed! Speed: {_speed}, Sprint: {input.sprint}, JumpImpulse: {jumpImpulse}");
-                }
+                                    }
                 else if (input.jump && _jumpTimeoutDelta > 0.0f)
                 {
-                    Debug.Log($"[JumpAndGravity] Jump blocked by timeout. TimeoutDelta: {_jumpTimeoutDelta}, Speed: {_speed}, Sprint: {input.sprint}");
-                }
+                                    }
 
                 if (_jumpTimeoutDelta > 0.0f)
                 {
@@ -814,8 +809,7 @@ namespace StarterAssets
             }
             else
             {
-                Debug.LogError($"[OnInput] _nativeInput is NULL for Player {Object.InputAuthority.PlayerId}");
-            }
+                            }
             
             // Collect weapon equip input
             if (_cachedEquipSystem == null)
@@ -884,11 +878,13 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-            if (!Object.HasInputAuthority || CinemachineCameraTarget == null)
+            // CRITICAL FIX: Force character to always face camera direction, overriding any unwanted rotation
+            if (Object.HasInputAuthority)
             {
-                return;
+                Quaternion cameraRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
+                transform.rotation = cameraRotation;
             }
-
+            
             if (_mainCamera == null)
             {
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");

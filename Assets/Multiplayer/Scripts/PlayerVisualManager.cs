@@ -37,6 +37,8 @@ public class PlayerVisualManager : NetworkBehaviour
     [SerializeField] private Vector3 armRotationOffset = Vector3.zero;
 
     private bool _armsParented;
+    private Camera _mainCam;
+    private Camera _handsCamera; // Found at runtime by tag "HandCamera" (scene object, not prefab)
 
     public override void Spawned()
     {
@@ -141,14 +143,13 @@ public class PlayerVisualManager : NetworkBehaviour
     private System.Collections.IEnumerator ParentArmsToCameraRoutine()
     {
         // Wait until MainCamera is found
-        Camera mainCam = null;
-        while (mainCam == null)
+        while (_mainCam == null)
         {
-            mainCam = Camera.main;
-            if (mainCam == null)
+            _mainCam = Camera.main;
+            if (_mainCam == null)
             {
                 var camObj = GameObject.FindGameObjectWithTag("MainCamera");
-                if (camObj != null) mainCam = camObj.GetComponent<Camera>();
+                if (camObj != null) _mainCam = camObj.GetComponent<Camera>();
             }
             yield return null;
         }
@@ -157,19 +158,33 @@ public class PlayerVisualManager : NetworkBehaviour
         {
             if (arms != null)
             {
-                arms.transform.SetParent(mainCam.transform, false);
+                arms.transform.SetParent(_mainCam.transform, false);
                 arms.transform.localPosition = armPositionOffset;
                 arms.transform.localRotation = Quaternion.Euler(armRotationOffset);
                 Debug.Log($"[PlayerVisualManager] Parented '{arms.name}' to MainCamera successfully.");
             }
         }
         _armsParented = true;
+
+        // Find HandsCamera at runtime by tag - it lives in the scene, not the prefab
+        var handsCamObj = GameObject.FindWithTag("HandCamera");
+        if (handsCamObj != null)
+        {
+            _handsCamera = handsCamObj.GetComponent<Camera>();
+            Debug.Log($"[PlayerVisualManager] HandsCamera found at runtime: {handsCamObj.name}");
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerVisualManager] HandsCamera not found! Make sure it has the tag 'HandCamera'.");
+        }
     }
 
     private void LateUpdate()
     {
+        if (!Object.HasInputAuthority) return;
+
         // Allow real-time tweaking of arm offsets in the editor
-        if (Object.HasInputAuthority && _armsParented && Application.isEditor)
+        if (_armsParented && Application.isEditor)
         {
             foreach (var arms in firstPersonArms)
             {
@@ -178,6 +193,18 @@ public class PlayerVisualManager : NetworkBehaviour
                     arms.transform.localPosition = armPositionOffset;
                     arms.transform.localRotation = Quaternion.Euler(armRotationOffset);
                 }
+            }
+        }
+
+        // Sync HandsCamera FOV to MainCamera every frame.
+        // Cinemachine (CinemachineBrain) can change MainCamera's FOV at runtime when
+        // virtual cameras activate/blend. If HandsCamera FOV differs from MainCamera FOV,
+        // the FPS arms and the laser beam are projected differently, causing a visual offset.
+        if (_handsCamera != null && _mainCam != null)
+        {
+            if (!Mathf.Approximately(_handsCamera.fieldOfView, _mainCam.fieldOfView))
+            {
+                _handsCamera.fieldOfView = _mainCam.fieldOfView;
             }
         }
     }

@@ -1,5 +1,6 @@
 using Fusion;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// Multiplayer laser shooting behaviour for Team B players.
@@ -62,6 +63,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     
     // Track beam destruction
     private int beamDestructionCount = 0;
+    
+    // HandsCamera reference for pre-render position update
+    private Camera _handsCamera;
 
     /// <summary>
     /// Returns the correct fire point based on whether this is the local or remote player.
@@ -100,7 +104,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         playerData = GetComponent<PlayerNetworkData>();
         
         // Force energy per shot to override Inspector values
-        energyPerShot = 1; // Much slower consumption for longer duration
+        energyPerShot = 1;
 
         // Ensure muzzle flash is disabled on start
         if (muzzleFlashPrefab != null)
@@ -108,8 +112,65 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             muzzleFlashPrefab.SetActive(false);
         }
         
-        // Log which fire points are assigned
         Debug.Log($"[NetworkLaserBehaviour] Spawned | Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | ArmFirePoint: {(armFirePoint != null ? armFirePoint.name : "NULL")} | BodyFirePoint: {(bodyFirePoint != null ? bodyFirePoint.name : "NULL")}");
+    }
+
+    private void OnEnable()
+    {
+        // Subscribe to URP pre-render callback.
+        // This fires right before each camera renders, AFTER all LateUpdates (including
+        // Cinemachine). Using this hook guarantees beam positions reflect the camera's
+        // FINAL position for the frame — no timing lag possible.
+        RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
+    }
+
+    private void OnDisable()
+    {
+        RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
+    }
+
+    /// <summary>
+    /// Called by URP right before each camera renders — after Cinemachine LateUpdate.
+    /// We only care about HandsCamera (the one that renders the FPS beam for local player).
+    /// </summary>
+    private void OnBeginCameraRendering(ScriptableRenderContext ctx, Camera cam)
+    {
+        if (!isLocalPlayer || !IsFiringLaser || continuousBeam == null) return;
+
+        // Lazy-find HandsCamera by tag the first time
+        if (_handsCamera == null)
+        {
+            var go = GameObject.FindWithTag("HandCamera");
+            if (go != null) _handsCamera = go.GetComponent<Camera>();
+        }
+
+        // Only update when HandsCamera is about to render — all transforms are final at this point
+        if (_handsCamera == null || cam != _handsCamera) return;
+
+        Transform fp = ActiveFirePoint;
+        if (fp == null || playerCamera == null) return;
+
+        Vector3 beamStart    = fp.position;
+        Vector3 camOrigin    = playerCamera.transform.position;
+        Vector3 direction    = playerCamera.transform.forward;
+
+        RaycastHit hit;
+        bool didHit = Physics.Raycast(camOrigin, direction, out hit, range, hitLayers);
+        Vector3 hitPoint = didHit ? hit.point : camOrigin + direction * range;
+
+        continuousBeam.SetPosition(0, beamStart);
+        continuousBeam.SetPosition(1, hitPoint);
+
+        // Keep impact marker in sync
+        if (continuousImpact != null)
+        {
+            continuousImpact.SetActive(didHit);
+            if (didHit)
+            {
+                continuousImpact.transform.position = hitPoint;
+                continuousImpact.transform.rotation = Quaternion.LookRotation(hit.normal);
+            }
+        }
     }
     
 
@@ -348,6 +409,14 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         return true; // Prefab separation handles team restrictions
     }
     
+    /// <summary>Sets the layer on a GameObject and all its children recursively.</summary>
+    private static void SetLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+        foreach (Transform child in obj.transform)
+            SetLayerRecursively(child.gameObject, layer);
+    }
+    
     private void StartContinuousBeam()
     {
         if (continuousBeam != null)
@@ -357,43 +426,46 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         }
 
         Transform fp = ActiveFirePoint;
-        Vector3 origin = fp != null ? fp.position : transform.position;
         Vector3 direction = playerCamera != null ? playerCamera.transform.forward : Vector3.forward;
 
-        Debug.Log($"[NetworkLaserBehaviour] *** CREATING BEAM *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | FirePoint: {(fp != null ? fp.name : "NULL")} | Origin: {origin} | Direction: {direction}");
+        // Always start the beam at the gun barrel (armFirePoint) so it visually fires from the gun.
+        // For local player the beam end-point is driven by a camera-center raycast (crosshair accuracy).
+        // The slight angle from barrel → hit-point naturally hides the FPS parallax gap.
+        Vector3 beamStart = fp != null ? fp.position : transform.position;
+
+        Debug.Log($"[NetworkLaserBehaviour] *** CREATING BEAM *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | BeamStart: {beamStart} | Direction: {direction}");
         
         // Create continuous beam
         if (laserBeamPrefab != null)
         {
-            GameObject beamObj = Instantiate(laserBeamPrefab, origin, Quaternion.LookRotation(direction));
-            beamObj.transform.SetParent(transform); // Parent to the weapon!
+            GameObject beamObj = Instantiate(laserBeamPrefab, beamStart, Quaternion.LookRotation(direction));
+            beamObj.transform.SetParent(transform);
             continuousBeam = beamObj.GetComponent<LineRenderer>();
-            
-            Debug.Log($"[NetworkLaserBehaviour] *** BEAM PREFAB INSTANTIATED *** BeamObj: {beamObj.name} | LineRenderer: {(continuousBeam != null ? "FOUND" : "NULL")}");
-            
-            // Set continuous mode to prevent auto-destruct
+
+            // Local player: put beam on FPS_Hands layer so HandsCamera renders it
+            if (isLocalPlayer)
+            {
+                int fpsHandsLayer = LayerMask.NameToLayer("FPS_Hands");
+                if (fpsHandsLayer != -1) SetLayerRecursively(beamObj, fpsHandsLayer);
+            }
+
             var beamEffect = beamObj.GetComponent<LaserBeamEffect>();
-            if (beamEffect != null)
-            {
-                beamEffect.SetContinuousMode(true);
-                Debug.Log($"[NetworkLaserBehaviour] *** BEAM EFFECT SET TO CONTINUOUS MODE ***");
-            }
-            else
-            {
-                Debug.LogWarning($"[NetworkLaserBehaviour] *** LaserBeamEffect component not found on beam prefab! ***");
-            }
-            
+            if (beamEffect != null) beamEffect.SetContinuousMode(true);
+            else Debug.LogWarning("[NetworkLaserBehaviour] LaserBeamEffect not found on beam prefab!");
+
             if (continuousBeam != null)
             {
+                // Always world space — positions updated every pre-render via RenderPipelineManager
+                continuousBeam.useWorldSpace = true;
                 continuousBeam.positionCount = 2;
-                continuousBeam.SetPosition(0, origin);
-                continuousBeam.SetPosition(1, origin + direction * 100f);
+                continuousBeam.SetPosition(0, beamStart);
+                continuousBeam.SetPosition(1, beamStart + direction * 100f);
                 continuousBeam.enabled = true;
-                Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS BEAM CREATED SUCCESSFULLY *** #{++beamDestructionCount} | Enabled: {continuousBeam.enabled} | Positions: {origin} -> {origin + direction * 100f}");
+                Debug.Log($"[NetworkLaserBehaviour] *** BEAM CREATED *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")}");
             }
             else
             {
-                Debug.LogError("[NetworkLaserBehaviour] *** BEAM CREATION FAILED *** LineRenderer component not found!");
+                Debug.LogError("[NetworkLaserBehaviour] LineRenderer not found on beam prefab!");
                 Destroy(beamObj);
                 return;
             }
@@ -405,7 +477,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         
         // Hit logic now dynamically calculated in Render
         RaycastHit visualHit;
-        bool didHit = Physics.Raycast(origin, direction, out visualHit, 100f, hitLayers);
+        bool didHit = Physics.Raycast(beamStart, direction, out visualHit, 100f, hitLayers);
 
         // Create continuous impact
         if (didHit && laserImpactPrefab != null)
@@ -462,53 +534,38 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
         }
         
-        if (laserShootSound != null) AudioSource.PlayClipAtPoint(laserShootSound, origin, soundVolume);
+        if (laserShootSound != null) AudioSource.PlayClipAtPoint(laserShootSound, beamStart, soundVolume);
     }
     
     private void UpdateContinuousBeam()
     {
-        // Only update positions if beam is already active
+        // Local player beam positions are updated via OnBeginCameraRendering (pre-render hook).
+        // This method handles remote players only (world-space, no Cinemachine concern).
+        if (isLocalPlayer) return;
+
         if (continuousBeam != null && playerCamera != null)
         {
             Transform fp = ActiveFirePoint;
-            Vector3 visualOrigin = fp != null ? fp.position : transform.position;
             Vector3 direction = playerCamera.transform.forward;
-            float maxDistance = 100f;
-            
-            // Raycast from camera position for accurate hit detection
             Vector3 cameraOrigin = playerCamera.transform.position;
             RaycastHit hit;
-            Vector3 endPoint = cameraOrigin + direction * maxDistance;
-            bool didHit = Physics.Raycast(cameraOrigin, direction, out hit, maxDistance, hitLayers);
-            
-            Vector3 hitPoint = didHit ? hit.point : endPoint;
-            Vector3 hitNormal = didHit ? hit.normal : Vector3.zero;
+            bool didHit = Physics.Raycast(cameraOrigin, direction, out hit, range, hitLayers);
+            Vector3 hitPoint = didHit ? hit.point : cameraOrigin + direction * range;
+            Vector3 beamStart = fp != null ? fp.position : transform.position;
 
-            // Update beam positions (visual starts from firePoint, ends at camera raycast hit)
-            continuousBeam.SetPosition(0, visualOrigin);
+            continuousBeam.SetPosition(0, beamStart);
             continuousBeam.SetPosition(1, hitPoint);
-            
-            // Ensure beam is enabled
-            if (!continuousBeam.enabled)
-            {
-                continuousBeam.enabled = true;
-            }
-            
-            // Update continuous impact position
+
+            if (!continuousBeam.enabled) continuousBeam.enabled = true;
+
             if (continuousImpact != null && didHit)
             {
                 continuousImpact.transform.position = hitPoint;
-                continuousImpact.transform.rotation = Quaternion.LookRotation(hitNormal);
-                
-                // Make sure particles are still playing
+                continuousImpact.transform.rotation = Quaternion.LookRotation(hit.normal);
                 var impactParticles = continuousImpact.GetComponent<ParticleSystem>();
-                if (impactParticles != null && !impactParticles.isPlaying)
-                {
-                    impactParticles.Play();
-                }
+                if (impactParticles != null && !impactParticles.isPlaying) impactParticles.Play();
             }
-            
-            // Update continuous muzzle flash position
+
             Transform fp2 = ActiveFirePoint;
             if (continuousMuzzleFlash != null && fp2 != null)
             {
@@ -518,7 +575,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         }
         else if (continuousBeam == null)
         {
-            // Beam was destroyed unexpectedly - recreate it
             StartContinuousBeam();
         }
     }
@@ -582,5 +638,15 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         }
 
         _lastIsFiringLaser = IsFiringLaser;
+    }
+
+    private void LateUpdate()
+    {
+        // Remote players: update beam in LateUpdate (no Cinemachine concern on remote).
+        // Local player beam is handled by OnBeginCameraRendering pre-render hook instead.
+        if (!isLocalPlayer && IsFiringLaser && continuousBeam != null)
+        {
+            UpdateContinuousBeam();
+        }
     }
 }

@@ -120,10 +120,6 @@ namespace StarterAssets
         private int _animIDThrowGranade;
         
         // NEW: Animation parameters for backward movement
-        private int _animIDIsMovingBackward;
-        private int _animIDHasPistol;
-        private int _animIDPistolWalkBackward;
-        private int _animIDPistolRunBackward;
         private int _animIDDirection;
 
         private Animator _animator;
@@ -430,33 +426,7 @@ namespace StarterAssets
                 if (_latestInput.isShooting) _fullBodyAnimator.SetTrigger(_animIDFire);
                 if (_latestInput.equipBomb) _fullBodyAnimator.SetTrigger(_animIDEquipGranade);
                 
-                // NEW: Pistol backward movement animations with 2D blend tree support
-                bool hasPistol = _cachedEquipSystem != null && _cachedEquipSystem.CurrentWeapon == NetworkWeaponEquipSystem.WeaponType.Pistol;
-                _fullBodyAnimator.SetBool(_animIDHasPistol, hasPistol);
-                _fullBodyAnimator.SetBool(_animIDIsMovingBackward, isMovingBackward);
-                
-                // Optional: Keep backward bool parameters for compatibility with existing systems
-                if (hasPistol && isMovingBackward && _latestInput.move.sqrMagnitude > 0.01f)
-                {
-                    bool isRunning = _latestInput.sprint && NetworkedAnimationBlend > 0.5f;
-                    
-                    if (isRunning)
-                    {
-                        _fullBodyAnimator.SetBool(_animIDPistolRunBackward, true);
-                        _fullBodyAnimator.SetBool(_animIDPistolWalkBackward, false);
-                    }
-                    else
-                    {
-                        _fullBodyAnimator.SetBool(_animIDPistolWalkBackward, true);
-                        _fullBodyAnimator.SetBool(_animIDPistolRunBackward, false);
-                    }
-                }
-                else
-                {
-                    // Reset pistol backward animations when not applicable
-                    _fullBodyAnimator.SetBool(_animIDPistolWalkBackward, false);
-                    _fullBodyAnimator.SetBool(_animIDPistolRunBackward, false);
-                }
+
             }
             
             // Fallback: Update legacy single animator if dual animators not found
@@ -540,10 +510,6 @@ namespace StarterAssets
             _animIDThrowGranade = Animator.StringToHash("ThrowGrenade");
             
             // NEW: Animation parameters for backward movement
-            _animIDIsMovingBackward = Animator.StringToHash("isMovingBackward");
-            _animIDHasPistol = Animator.StringToHash("hasPistol");
-            _animIDPistolWalkBackward = Animator.StringToHash("pistolWalkBackward");
-            _animIDPistolRunBackward = Animator.StringToHash("pistolRunBackward");
             _animIDDirection = Animator.StringToHash("Direction");
         }
 
@@ -580,29 +546,30 @@ namespace StarterAssets
             // CRITICAL FIX: Complete stop on direction change - no movement until next frame
             bool shouldBlockMovement = false;
             
-            // ALWAYS ROTATE CHARACTER TO FACE CAMERA YAW
-            // This ensures the character aiming direction ALWAYS updates, even when standing still,
-            // and guarantees they face forward while moving backwards.
-            transform.rotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
-            
             if (input.move != Vector2.zero)
             {
-                // Get camera rotation for rotation calculation
+                // Calculate movement direction relative to camera
+                Vector3 inputDirection = new Vector3(input.move.x, 0f, input.move.y).normalized;
+                
+                // Get camera rotation
                 float cameraYawRad = _cinemachineTargetYaw * Mathf.Deg2Rad;
                 Vector3 forward = new Vector3(Mathf.Sin(cameraYawRad), 0f, Mathf.Cos(cameraYawRad));
                 Vector3 right = new Vector3(Mathf.Cos(cameraYawRad), 0f, -Mathf.Sin(cameraYawRad));
                 
-                // CENTER POINT ROTATION: Rotate based on input, not movement direction
-                Vector3 rotationInput = (forward * input.move.y + right * input.move.x).normalized;
-                if (rotationInput != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(rotationInput);
-                    transform.rotation = targetRotation; // Rotate in place from center
-                }
-                
-                // Calculate world-space movement direction for movement logic
                 // Calculate world-space movement direction
                 Vector3 worldDirection = (forward * input.move.y + right * input.move.x).normalized;
+                
+                // CENTER POINT ROTATION: Character rotates from center, not facing movement direction
+                if (worldDirection != Vector3.zero)
+                {
+                    // Calculate rotation based on input relative to camera, but rotate in place
+                    Vector3 movementInput = (forward * input.move.y + right * input.move.x).normalized;
+                    if (movementInput != Vector3.zero)
+                    {
+                        Quaternion targetRotation = Quaternion.LookRotation(movementInput);
+                        transform.rotation = targetRotation; // Rotate in place from center
+                    }
+                }
                 
                 // COMPLETE STOP: Check for direction change and block movement
                 Vector3 currentInputDirection = worldDirection;

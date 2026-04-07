@@ -580,29 +580,30 @@ namespace StarterAssets
             // CRITICAL FIX: Complete stop on direction change - no movement until next frame
             bool shouldBlockMovement = false;
             
-            // ALWAYS ROTATE CHARACTER TO FACE CAMERA YAW
-            // This ensures the character aiming direction ALWAYS updates, even when standing still,
-            // and guarantees they face forward while moving backwards.
-            transform.rotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
-            
             if (input.move != Vector2.zero)
             {
-                // Get camera rotation for rotation calculation
+                // Calculate movement direction relative to camera
+                Vector3 inputDirection = new Vector3(input.move.x, 0f, input.move.y).normalized;
+                
+                // Get camera rotation
                 float cameraYawRad = _cinemachineTargetYaw * Mathf.Deg2Rad;
                 Vector3 forward = new Vector3(Mathf.Sin(cameraYawRad), 0f, Mathf.Cos(cameraYawRad));
                 Vector3 right = new Vector3(Mathf.Cos(cameraYawRad), 0f, -Mathf.Sin(cameraYawRad));
                 
-                // CENTER POINT ROTATION: Rotate based on input, not movement direction
-                Vector3 rotationInput = (forward * input.move.y + right * input.move.x).normalized;
-                if (rotationInput != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(rotationInput);
-                    transform.rotation = targetRotation; // Rotate in place from center
-                }
-                
-                // Calculate world-space movement direction for movement logic
                 // Calculate world-space movement direction
                 Vector3 worldDirection = (forward * input.move.y + right * input.move.x).normalized;
+                
+                // CENTER POINT ROTATION: Character rotates from center, not facing movement direction
+                if (worldDirection != Vector3.zero)
+                {
+                    // Calculate rotation based on input relative to camera, but rotate in place
+                    Vector3 movementInput = (forward * input.move.y + right * input.move.x).normalized;
+                    if (movementInput != Vector3.zero)
+                    {
+                        Quaternion targetRotation = Quaternion.LookRotation(movementInput);
+                        transform.rotation = targetRotation; // Rotate in place from center
+                    }
+                }
                 
                 // COMPLETE STOP: Check for direction change and block movement
                 Vector3 currentInputDirection = worldDirection;

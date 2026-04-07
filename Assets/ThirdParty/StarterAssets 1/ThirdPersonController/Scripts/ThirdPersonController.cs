@@ -580,6 +580,11 @@ namespace StarterAssets
             // CRITICAL FIX: Complete stop on direction change - no movement until next frame
             bool shouldBlockMovement = false;
             
+            // ALWAYS ROTATE CHARACTER TO FACE CAMERA YAW
+            // This ensures the character aiming direction ALWAYS updates, even when standing still,
+            // and guarantees they face forward while moving backwards.
+            transform.rotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
+            
             if (input.move != Vector2.zero)
             {
                 // Get camera rotation for rotation calculation
@@ -596,6 +601,7 @@ namespace StarterAssets
                 }
                 
                 // Calculate world-space movement direction for movement logic
+                // Calculate world-space movement direction
                 Vector3 worldDirection = (forward * input.move.y + right * input.move.x).normalized;
                 
                 // COMPLETE STOP: Check for direction change and block movement

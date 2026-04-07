@@ -63,6 +63,32 @@ public class PlayerVisualManager : NetworkBehaviour
                 }
             }
         }
+        
+        // FOOLPROOF FALLBACK FOR REMOTE PLAYERS:
+        // If the user forgot to assign the FPS arms to the 'firstPersonArms' array in the inspector
+        // (e.g., on the Hero prefab), those arms will still render because they are likely on the "FPS_Hands" layer,
+        // and the local player's HandCamera will render them floating in the air.
+        // We do a sweep of the entire player hierarchy to forcefully disable any renderer on the FPS_Hands layer.
+        if (!isLocalPlayer)
+        {
+            int fpsLayer = LayerMask.NameToLayer("FPS_Hands");
+            if (fpsLayer != -1)
+            {
+                Renderer[] allRenderers = GetComponentsInChildren<Renderer>(true);
+                foreach (var renderer in allRenderers)
+                {
+                    if (renderer.gameObject.layer == fpsLayer)
+                    {
+                        renderer.enabled = false;
+                        
+                        // Also disable any animators on that specific game object
+                        var animator = renderer.GetComponent<Animator>();
+                        if (animator != null) animator.enabled = false;
+                    }
+                }
+                Debug.Log("[PlayerVisualManager] Performed foolproof FPS_Hands layer sweep to hide floating arms for remote player.");
+            }
+        }
 
         if (isLocalPlayer)
         {

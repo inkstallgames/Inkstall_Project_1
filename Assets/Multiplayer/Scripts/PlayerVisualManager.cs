@@ -51,10 +51,15 @@ public class PlayerVisualManager : NetworkBehaviour
             {
                 arms.SetActive(isLocalPlayer);
                 
-                // Force hands visible immediately if local player
+                // Force hands visible immediately if local player, 
+                // or force them completely hidden if remote player.
                 if (isLocalPlayer)
                 {
                     EnsureArmsVisible(arms);
+                }
+                else
+                {
+                    EnsureArmsHidden(arms);
                 }
             }
         }
@@ -142,6 +147,32 @@ public class PlayerVisualManager : NetworkBehaviour
 
         }
 
+    }
+    
+    private void EnsureArmsHidden(GameObject arms)
+    {
+        // Force GameObject inactive
+        if (arms.activeSelf)
+        {
+            arms.SetActive(false);
+        }
+        
+        // CRITICAL: Disable all Renderers so even if another script (like NetworkWeaponEquipSystem) 
+        // turns the GameObject back on, the meshes will stay invisible for remote players.
+        var renderers = arms.GetComponentsInChildren<Renderer>(true);
+        foreach (var renderer in renderers)
+        {
+            renderer.enabled = false;
+        }
+        
+        // Also disable animators to save performance
+        var animators = arms.GetComponentsInChildren<Animator>(true);
+        foreach (var animator in animators)
+        {
+            animator.enabled = false;
+        }
+        
+        Debug.Log($"[PlayerVisualManager] Forced arms '{arms.name}' to be completely hidden for remote player.");
     }
     
     private void EnsureArmsVisible(GameObject arms)

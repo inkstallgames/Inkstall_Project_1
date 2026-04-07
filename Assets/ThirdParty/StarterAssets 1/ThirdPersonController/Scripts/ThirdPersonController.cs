@@ -582,28 +582,21 @@ namespace StarterAssets
             
             if (input.move != Vector2.zero)
             {
-                // Calculate movement direction relative to camera
-                Vector3 inputDirection = new Vector3(input.move.x, 0f, input.move.y).normalized;
-                
-                // Get camera rotation
+                // Get camera rotation for rotation calculation
                 float cameraYawRad = _cinemachineTargetYaw * Mathf.Deg2Rad;
                 Vector3 forward = new Vector3(Mathf.Sin(cameraYawRad), 0f, Mathf.Cos(cameraYawRad));
                 Vector3 right = new Vector3(Mathf.Cos(cameraYawRad), 0f, -Mathf.Sin(cameraYawRad));
                 
-                // Calculate world-space movement direction
-                Vector3 worldDirection = (forward * input.move.y + right * input.move.x).normalized;
-                
-                // CENTER POINT ROTATION: Character rotates from center, not facing movement direction
-                if (worldDirection != Vector3.zero)
+                // CENTER POINT ROTATION: Rotate based on input, not movement direction
+                Vector3 rotationInput = (forward * input.move.y + right * input.move.x).normalized;
+                if (rotationInput != Vector3.zero)
                 {
-                    // Calculate rotation based on input relative to camera, but rotate in place
-                    Vector3 movementInput = (forward * input.move.y + right * input.move.x).normalized;
-                    if (movementInput != Vector3.zero)
-                    {
-                        Quaternion targetRotation = Quaternion.LookRotation(movementInput);
-                        transform.rotation = targetRotation; // Rotate in place from center
-                    }
+                    Quaternion targetRotation = Quaternion.LookRotation(rotationInput);
+                    transform.rotation = targetRotation; // Rotate in place from center
                 }
+                
+                // Calculate world-space movement direction for movement logic
+                Vector3 worldDirection = (forward * input.move.y + right * input.move.x).normalized;
                 
                 // COMPLETE STOP: Check for direction change and block movement
                 Vector3 currentInputDirection = worldDirection;

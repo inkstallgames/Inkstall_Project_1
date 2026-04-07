@@ -11,6 +11,7 @@ public class FPSHandsWobble : NetworkBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private bool enableWobble = true;
+    [SerializeField] private bool forceHandsVisible = true;  // NEW: Force hands visible even when disabled
     [SerializeField] private float walkSwingDistance = 0.025f;    // How far hands swing when walking (deadshot.io style)
     [SerializeField] private float runSwingDistance = 0.04f;     // How far hands swing when running
     [SerializeField] private float movementSmooth = 10f;       // Smoother transitions like deadshot.io
@@ -95,8 +96,55 @@ public class FPSHandsWobble : NetworkBehaviour
     private Vector3 _targetWobble;
     private Vector3 _wobbleVelocity;
     
+    private void Awake()
+    {
+        // ALWAYS ensure hands are visible immediately on awake, even if script is disabled
+        if (forceHandsVisible)
+        {
+            EnsureHandsVisible();
+        }
+    }
+    
+    private void OnEnable()
+    {
+        // Ensure hands are visible when script is enabled
+        if (forceHandsVisible)
+        {
+            EnsureHandsVisible();
+        }
+    }
+    
+    private void Start()
+    {
+        // Ensure hands are visible on start (backup initialization)
+        if (forceHandsVisible)
+        {
+            EnsureHandsVisible();
+        }
+        
+        if (_initialPosition == Vector3.zero)
+        {
+            _initialPosition = transform.localPosition;
+            _initialRotation = transform.localRotation;
+            _currentPosition = _initialPosition;
+            _currentRotation = _initialRotation;
+            _targetPosition = _initialPosition;
+            _targetRotation = _initialRotation;
+        }
+        
+        // Cache controller reference if not already cached
+        if (_controller == null)
+        {
+            _controller = GetComponentInParent<ThirdPersonController>();
+        }
+        
+        // Apply initial transform
+        ApplyInitialTransform();
+    }
+    
     public override void Spawned()
     {
+        // Store initial transform values
         _initialPosition = transform.localPosition;
         _initialRotation = transform.localRotation;
         _currentPosition = _initialPosition;
@@ -107,7 +155,53 @@ public class FPSHandsWobble : NetworkBehaviour
         // Cache controller reference
         _controller = GetComponentInParent<ThirdPersonController>();
         
+        // Ensure hands are visible immediately
+        EnsureHandsVisible();
+        
         ResetAllTracking();
+        
+        // Apply initial position to ensure hands are visible
+        ApplyInitialTransform();
+    }
+    
+    private void EnsureHandsVisible()
+    {
+        // Make sure the GameObject is active
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+        }
+        
+        // Check if renderer exists and enable it
+        var renderer = GetComponent<Renderer>();
+        if (renderer != null && !renderer.enabled)
+        {
+            renderer.enabled = true;
+        }
+        
+        // Check all child renderers
+        var childRenderers = GetComponentsInChildren<Renderer>();
+        foreach (var childRenderer in childRenderers)
+        {
+            if (!childRenderer.enabled)
+            {
+                childRenderer.enabled = true;
+            }
+        }
+    }
+    
+    private void ApplyInitialTransform()
+    {
+        // Force apply initial transform to ensure hands are visible
+        transform.localPosition = _initialPosition;
+        transform.localRotation = _initialRotation;
+        
+        // Apply to children as well
+        foreach (Transform child in transform)
+        {
+            child.localPosition = Vector3.zero;
+            child.localRotation = Quaternion.identity;
+        }
     }
     
     private void ResetAllTracking()
@@ -415,6 +509,15 @@ public class FPSHandsWobble : NetworkBehaviour
         fallAmount = Mathf.Max(0f, fallAmount);
         landingBounce = Mathf.Max(0f, landingBounce);
         jumpSmooth = Mathf.Max(0.1f, jumpSmooth);
+        
+        // ALWAYS force hands visible in editor, regardless of script state
+        #if UNITY_EDITOR
+        if (forceHandsVisible && gameObject != null && !gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+            Debug.Log("[FPSHandsWobble] Forced hands GameObject active in editor");
+        }
+        #endif
     }
     
     private void OnDrawGizmosSelected()

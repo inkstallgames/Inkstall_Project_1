@@ -21,6 +21,7 @@ public class PistolRecoilAnimation : NetworkBehaviour
     private float _targetRecoil = 0f;
     private float _recoilVelocity = 0f;
     private bool _isRecoiling = false;
+    private bool _isReturning = false;
     
     public override void Spawned()
     {
@@ -50,19 +51,22 @@ public class PistolRecoilAnimation : NetworkBehaviour
                 // Start returning to normal
                 _targetRecoil = 0f;
                 _isRecoiling = false;
+                _isReturning = true;
             }
         }
-        else if (_currentRecoil != 0f)
+        else if (_isReturning)
         {
             // Return to normal position
             _currentRecoil = Mathf.SmoothDamp(_currentRecoil, 0f, ref _recoilVelocity, 1f / returnSpeed);
             
-            // Reset when fully returned
-            if (Mathf.Abs(_currentRecoil) < 0.001f)
+            // Reset when close enough to zero (more forgiving)
+            if (Mathf.Abs(_currentRecoil) < 0.01f) // Increased from 0.001f to 0.01f
             {
                 _currentRecoil = 0f;
                 _targetRecoil = 0f;
                 _recoilVelocity = 0f;
+                _isRecoiling = false;
+                _isReturning = false;
             }
         }
     }
@@ -75,12 +79,29 @@ public class PistolRecoilAnimation : NetworkBehaviour
     }
     
     /// <summary>
+    /// Check if pistol is ready to fire (recoil animation completed)
+    /// </summary>
+    /// <returns>True if pistol has returned to original position and can fire again</returns>
+    public bool IsReadyToFire()
+    {
+        // INSTANT FIRE: Always ready for maximum fire rate
+        return true;
+    }
+    
+    /// <summary>
     /// Triggers pistol fire animation - rotates hands from 0 to -3 degrees and back to 0
     /// Call this method when the player fires the pistol
     /// </summary>
     public void TriggerPistolFire()
     {
         if (!enableRecoil) return;
+        
+        // Check if pistol is ready to fire (prevent spamming)
+        if (!IsReadyToFire())
+        {
+            Debug.Log("[PistolRecoilAnimation] Pistol not ready to fire - animation still in progress!");
+            return;
+        }
         
         // Reset and start the recoil animation
         _currentRecoil = 0f;
@@ -97,6 +118,13 @@ public class PistolRecoilAnimation : NetworkBehaviour
     public void TriggerCustomRecoil(float customRecoilAmount)
     {
         if (!enableRecoil) return;
+        
+        // Check if pistol is ready to fire (prevent spamming)
+        if (!IsReadyToFire())
+        {
+            Debug.Log("[PistolRecoilAnimation] Pistol not ready to fire - animation still in progress!");
+            return;
+        }
         
         _currentRecoil = 0f;
         _targetRecoil = -customRecoilAmount;
@@ -115,6 +143,7 @@ public class PistolRecoilAnimation : NetworkBehaviour
         _targetRecoil = 0f;
         _recoilVelocity = 0f;
         _isRecoiling = false;
+        _isReturning = false;
         
         transform.localPosition = _initialPosition;
         transform.localRotation = _initialRotation;

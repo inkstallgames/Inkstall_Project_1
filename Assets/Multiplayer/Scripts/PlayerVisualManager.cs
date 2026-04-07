@@ -44,14 +44,18 @@ public class PlayerVisualManager : NetworkBehaviour
     {
         bool isLocalPlayer = Object.HasInputAuthority;
 
-
-
-        // Handle First Person Arms (Local Only)
+        // Handle First Person Arms (Local Only) - ACTIVATE IMMEDIATELY
         foreach (var arms in firstPersonArms)
         {
             if (arms != null)
             {
                 arms.SetActive(isLocalPlayer);
+                
+                // Force hands visible immediately if local player
+                if (isLocalPlayer)
+                {
+                    EnsureArmsVisible(arms);
+                }
             }
         }
 
@@ -138,6 +142,47 @@ public class PlayerVisualManager : NetworkBehaviour
 
         }
 
+    }
+    
+    private void EnsureArmsVisible(GameObject arms)
+    {
+        // Force GameObject active
+        if (!arms.activeSelf)
+        {
+            arms.SetActive(true);
+        }
+        
+        // Enable all renderers
+        var renderers = arms.GetComponentsInChildren<Renderer>(true);
+        foreach (var renderer in renderers)
+        {
+            if (!renderer.enabled)
+            {
+                renderer.enabled = true;
+            }
+        }
+        
+        // Enable all SkinnedMeshRenderers
+        var skinnedRenderers = arms.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+        foreach (var skinnedRenderer in skinnedRenderers)
+        {
+            if (!skinnedRenderer.enabled)
+            {
+                skinnedRenderer.enabled = true;
+            }
+        }
+        
+        // Enable all animators
+        var animators = arms.GetComponentsInChildren<Animator>(true);
+        foreach (var animator in animators)
+        {
+            if (!animator.enabled)
+            {
+                animator.enabled = true;
+            }
+        }
+        
+        Debug.Log($"[PlayerVisualManager] Forced arms '{arms.name}' to be visible");
     }
 
     private System.Collections.IEnumerator ParentArmsToCameraRoutine()

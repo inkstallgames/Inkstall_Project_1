@@ -56,6 +56,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [Networked] public NetworkBool IsFiringLaser { get; set; }
     private bool _lastIsFiringLaser;
     
+    // Networked aim state so remote clients can draw the beam correctly.
+    // Set every FixedUpdateNetwork tick from the shooter's camera input.
+    [Networked] public Vector3 NetworkedAimOrigin { get; set; }
+    [Networked] public Vector3 NetworkedAimDirection { get; set; }
+    
     // Continuous beam visual references
     private LineRenderer continuousBeam;
     private GameObject continuousImpact;
@@ -280,13 +285,16 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (input.isShooting && CurrentEnergy > 0 && !IsReloading && equipSystem != null && equipSystem.IsLaserEquipped())
         {
             IsFiringLaser = true;
-            Debug.Log($"[NetworkLaserBehaviour] *** LASER FIRING *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | Energy: {CurrentEnergy}/{maxEnergy} | IsFiringLaser: TRUE");
 
-            // Only consume energy and deal damage on state authority
+            // Always keep networked aim in sync while firing (state authority writes, all clients read)
             if (Object.HasStateAuthority)
             {
+                NetworkedAimOrigin    = input.aimOrigin;
+                NetworkedAimDirection = input.aimDirection;
                 TryShootAuthority(input.aimOrigin, input.aimDirection);
             }
+
+            Debug.Log($"[NetworkLaserBehaviour] *** LASER FIRING *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | Energy: {CurrentEnergy}/{maxEnergy} | IsFiringLaser: TRUE");
         }
         else
         {
@@ -426,11 +434,16 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         }
 
         Transform fp = ActiveFirePoint;
-        Vector3 direction = playerCamera != null ? playerCamera.transform.forward : Vector3.forward;
+        // Local player uses camera forward for crosshair accuracy.
+        // Remote player reads the networked aim direction written by the shooter — the only reliable source.
+        Vector3 direction = isLocalPlayer
+            ? (playerCamera != null ? playerCamera.transform.forward : Vector3.forward)
+            : (NetworkedAimDirection != Vector3.zero ? NetworkedAimDirection : transform.forward);
+        Vector3 origin = isLocalPlayer
+            ? (playerCamera != null ? playerCamera.transform.position : transform.position)
+            : (NetworkedAimOrigin != Vector3.zero ? NetworkedAimOrigin : transform.position);
 
-        // Always start the beam at the gun barrel (armFirePoint) so it visually fires from the gun.
-        // For local player the beam end-point is driven by a camera-center raycast (crosshair accuracy).
-        // The slight angle from barrel → hit-point naturally hides the FPS parallax gap.
+        // Always start the beam at the gun barrel so it visually fires from the gun.
         Vector3 beamStart = fp != null ? fp.position : transform.position;
 
         Debug.Log($"[NetworkLaserBehaviour] *** CREATING BEAM *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | BeamStart: {beamStart} | Direction: {direction}");
@@ -475,9 +488,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             Debug.LogError($"[NetworkLaserBehaviour] *** BEAM CREATION FAILED *** laserBeamPrefab is NULL!");
         }
         
-        // Hit logic now dynamically calculated in Render
+        // Hit logic: raycast using the correct origin+direction for this player type
         RaycastHit visualHit;
-        bool didHit = Physics.Raycast(beamStart, direction, out visualHit, 100f, hitLayers);
+        bool didHit = Physics.Raycast(origin, direction, out visualHit, range, hitLayers);
 
         // Create continuous impact
         if (didHit && laserImpactPrefab != null)
@@ -543,39 +556,46 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         // This method handles remote players only (world-space, no Cinemachine concern).
         if (isLocalPlayer) return;
 
-        if (continuousBeam != null && playerCamera != null)
+        if (continuousBeam == null)
         {
-            Transform fp = ActiveFirePoint;
-            Vector3 direction = playerCamera.transform.forward;
-            Vector3 cameraOrigin = playerCamera.transform.position;
-            RaycastHit hit;
-            bool didHit = Physics.Raycast(cameraOrigin, direction, out hit, range, hitLayers);
-            Vector3 hitPoint = didHit ? hit.point : cameraOrigin + direction * range;
-            Vector3 beamStart = fp != null ? fp.position : transform.position;
+            StartContinuousBeam();
+            return;
+        }
 
-            continuousBeam.SetPosition(0, beamStart);
-            continuousBeam.SetPosition(1, hitPoint);
+        // Remote player: read the networked aim direction/origin set by the shooter on the server.
+        // bodyFirePoint.forward is NOT reliable — its orientation depends on the rig and is NOT the aim direction.
+        // playerCamera is null for remote players — we must NOT use it.
+        Transform fp = ActiveFirePoint;
+        Vector3 beamStart  = fp != null ? fp.position : transform.position;
+        Vector3 aimOrigin  = NetworkedAimOrigin    != Vector3.zero ? NetworkedAimOrigin    : beamStart;
+        Vector3 aimDir     = NetworkedAimDirection != Vector3.zero ? NetworkedAimDirection : transform.forward;
 
-            if (!continuousBeam.enabled) continuousBeam.enabled = true;
+        RaycastHit hit;
+        bool didHit = Physics.Raycast(aimOrigin, aimDir, out hit, range, hitLayers);
+        Vector3 hitPoint = didHit ? hit.point : aimOrigin + aimDir * range;
 
-            if (continuousImpact != null && didHit)
+        continuousBeam.SetPosition(0, beamStart);
+        continuousBeam.SetPosition(1, hitPoint);
+
+        if (!continuousBeam.enabled) continuousBeam.enabled = true;
+
+        if (continuousImpact != null)
+        {
+            continuousImpact.SetActive(didHit);
+            if (didHit)
             {
                 continuousImpact.transform.position = hitPoint;
                 continuousImpact.transform.rotation = Quaternion.LookRotation(hit.normal);
                 var impactParticles = continuousImpact.GetComponent<ParticleSystem>();
                 if (impactParticles != null && !impactParticles.isPlaying) impactParticles.Play();
             }
-
-            Transform fp2 = ActiveFirePoint;
-            if (continuousMuzzleFlash != null && fp2 != null)
-            {
-                continuousMuzzleFlash.transform.position = fp2.position;
-                continuousMuzzleFlash.transform.rotation = fp2.rotation;
-            }
         }
-        else if (continuousBeam == null)
+
+        Transform fp2 = ActiveFirePoint;
+        if (continuousMuzzleFlash != null && fp2 != null)
         {
-            StartContinuousBeam();
+            continuousMuzzleFlash.transform.position = fp2.position;
+            continuousMuzzleFlash.transform.rotation = fp2.rotation;
         }
     }
     

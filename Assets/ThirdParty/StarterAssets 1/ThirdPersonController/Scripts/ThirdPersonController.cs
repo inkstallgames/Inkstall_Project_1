@@ -560,9 +560,13 @@ namespace StarterAssets
             float normalizedSpeed = _animationBlend / SprintSpeed; // SprintSpeed is max speed
             normalizedSpeed = Mathf.Clamp01(normalizedSpeed);
             
-            // CRITICAL FIX: Complete stop on direction change - no movement until next frame
-            bool shouldBlockMovement = false;
-            
+            // REMOVED: Complete stop on direction change - now allows smooth direction changes
+            // Character can now change direction smoothly without stopping
+
+            // Calculate movement direction - character always faces camera, so move relative to camera
+            Vector3 targetDirection = Vector3.zero;
+            Vector3 movementInputDirection = Vector3.zero;
+
             if (input.move != Vector2.zero)
             {
                 // Calculate movement direction relative to camera
@@ -588,39 +592,8 @@ namespace StarterAssets
                     }
                 }
                 
-                // COMPLETE STOP: Check for direction change and block movement
-                Vector3 currentInputDirection = worldDirection;
-                bool directionChanged = Vector3.Dot(currentInputDirection, _lastInputDirection) < 0.95f;
-                if (directionChanged && _lastInputDirection != Vector3.zero)
-                {
-                    // BLOCK MOVEMENT: Don't allow movement this frame after direction change
-                    if (_networkController != null)
-                    {
-                        _networkController.Velocity = new Vector3(0f, _networkController.Velocity.y, 0f);
-                        _speed = 0f;
-                        _animationBlend = 0f;
-                        shouldBlockMovement = true; // Block movement for this frame
-                    }
-                }
-                _lastInputDirection = currentInputDirection;
-            }
-
-            // Calculate movement direction - character always faces camera, so move relative to camera
-            Vector3 targetDirection = Vector3.zero;
-            Vector3 movementInputDirection = Vector3.zero;
-
-            if (input.move != Vector2.zero && !shouldBlockMovement)
-            {
-                // Use camera yaw angle instead of camera transform to avoid diagonal issues
-                float cameraYawRad = _cinemachineTargetYaw * Mathf.Deg2Rad;
-                
-                // Calculate forward and right vectors from camera yaw only (no pitch influence)
-                Vector3 forward = new Vector3(Mathf.Sin(cameraYawRad), 0f, Mathf.Cos(cameraYawRad));
-                Vector3 right = new Vector3(Mathf.Cos(cameraYawRad), 0f, -Mathf.Sin(cameraYawRad));
-                
-                // Calculate movement direction based on input relative to camera yaw
-                targetDirection = (forward * input.move.y + right * input.move.x).normalized;
-                movementInputDirection = targetDirection;
+                // Calculate movement direction - character always faces camera, so move relative to camera
+                targetDirection = worldDirection;
             }
 
             // Sync Custom ThirdPersonController settings directly into the NetworkCharacterController

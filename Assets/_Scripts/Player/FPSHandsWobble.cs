@@ -96,32 +96,8 @@ public class FPSHandsWobble : NetworkBehaviour
     private Vector3 _targetWobble;
     private Vector3 _wobbleVelocity;
     
-    private void Awake()
-    {
-        // ALWAYS ensure hands are visible immediately on awake, even if script is disabled
-        if (forceHandsVisible)
-        {
-            EnsureHandsVisible();
-        }
-    }
-    
-    private void OnEnable()
-    {
-        // Ensure hands are visible when script is enabled
-        if (forceHandsVisible)
-        {
-            EnsureHandsVisible();
-        }
-    }
-    
     private void Start()
     {
-        // Ensure hands are visible on start (backup initialization)
-        if (forceHandsVisible)
-        {
-            EnsureHandsVisible();
-        }
-        
         if (_initialPosition == Vector3.zero)
         {
             _initialPosition = transform.localPosition;
@@ -155,13 +131,19 @@ public class FPSHandsWobble : NetworkBehaviour
         // Cache controller reference
         _controller = GetComponentInParent<ThirdPersonController>();
         
-        // Ensure hands are visible immediately
-        EnsureHandsVisible();
+        // Ensure hands are visible immediately ONLY for local player
+        if (forceHandsVisible && Object != null && Object.HasInputAuthority)
+        {
+            EnsureHandsVisible();
+        }
         
         ResetAllTracking();
         
         // Apply initial position to ensure hands are visible
-        ApplyInitialTransform();
+        if (Object != null && Object.HasInputAuthority)
+        {
+            ApplyInitialTransform();
+        }
     }
     
     private void EnsureHandsVisible()

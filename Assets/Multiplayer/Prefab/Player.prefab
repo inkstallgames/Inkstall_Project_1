@@ -323,8 +323,8 @@ MonoBehaviour:
   - {fileID: 3336852099050109295}
   - {fileID: 6567890570193737134}
   - {fileID: 6989195083982649758}
-  - {fileID: 5052869178604035527}
-  - {fileID: 6851036423633329471}
+  - {fileID: 6202819950019244109}
+  - {fileID: 3167968429604190826}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &918964218175342091
 MonoBehaviour:
@@ -1175,11 +1175,11 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8243209128910584115, guid: 26d40934eedd50944a95edfe7689a7a3,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5052869178604035527}
+      addedObject: {fileID: 6202819950019244109}
     - targetCorrespondingSourceObject: {fileID: 8243209128910584115, guid: 26d40934eedd50944a95edfe7689a7a3,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6851036423633329471}
+      addedObject: {fileID: 3167968429604190826}
   m_SourcePrefab: {fileID: 100100000, guid: 26d40934eedd50944a95edfe7689a7a3, type: 3}
 --- !u!4 &5275751693916508372 stripped
 Transform:
@@ -1199,7 +1199,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 936558689149242381}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &5052869178604035527
+--- !u!114 &6202819950019244109
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1212,20 +1212,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableWobble: 1
-  walkSwingDistance: 0.1
-  runSwingDistance: 0.1
-  movementSmooth: 8
-  speedMultiplier: 0.8
+  forceHandsVisible: 1
+  walkSwingDistance: 0.025
+  runSwingDistance: 0.04
+  movementSmooth: 10
+  speedMultiplier: 1.2
   walkFrequency: 2.2
   runFrequency: 3.8
   accelerationInfluence: 0.3
-  enableWeaponSway: 0
-  swayAmount: 0.015
-  swaySmooth: 15
-  maxSwayDistance: 0.08
+  enableWeaponSway: 1
+  swayAmount: 0.02
+  swaySmooth: 20
+  maxSwayDistance: 0.1
   swayRecoverySpeed: 8
   aimSwayMultiplier: 0.3
-  enableBreathing: 0
+  enableBreathing: 1
   breathingSpeed: 1.5
   breathingAmount: 0.002
   breathingSmooth: 8
@@ -1240,7 +1241,7 @@ MonoBehaviour:
   fallAmount: 0.04
   landingBounce: 0.025
   jumpSmooth: 18
---- !u!114 &6851036423633329471
+--- !u!114 &3167968429604190826
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1256,8 +1257,6 @@ MonoBehaviour:
   recoilAmount: 3
   recoilSpeed: 15
   returnSpeed: 8
-  enableTestMode: 1
-  testKey: 32
 --- !u!1001 &7121996584671567366
 PrefabInstance:
   m_ObjectHideFlags: 0

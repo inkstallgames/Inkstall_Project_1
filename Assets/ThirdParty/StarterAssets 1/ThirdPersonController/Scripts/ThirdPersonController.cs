@@ -141,6 +141,10 @@ namespace StarterAssets
         [Networked] public NetworkBool NetworkedGrounded { get; set; }
         [Networked] public float NetworkedVerticalVelocity { get; set; }
         
+        // Remote camera aim sync
+        [Networked] public float NetworkedCameraYaw { get; set; }
+        [Networked] public float NetworkedCameraPitch { get; set; }
+        
         // Networked movement state - authoritative position from server
         [Networked] public Vector3 NetworkedPosition { get; set; }
         [Networked] public float NetworkedSpeed { get; set; }
@@ -301,6 +305,12 @@ namespace StarterAssets
             {
                 _latestInput = data;
 
+                if (Object.HasStateAuthority)
+                {
+                    NetworkedCameraYaw = data.cameraYaw;
+                    NetworkedCameraPitch = data.cameraPitch;
+                }
+
                 // Only apply network camera rotation for proxies or the server.
                 // Doing this for the local player causes past ticks to overwrite the 
                 // butter-smooth LateUpdate rotation, causing severe 'resistance' and stuttering.
@@ -325,6 +335,10 @@ namespace StarterAssets
             }
             else
             {
+                // For proxies without input: DO NOT instantly snap the visual angles here!
+                // We keep NetworkedCameraYaw/Pitch updated from Server, but we smoothly Lerp 
+                // the visual variables (_cinemachineTargetYaw/Pitch) in LateUpdate instead.
+                
                 // If no input, still apply gravity and check grounded state
                 GroundedCheck();
                 JumpAndGravity(default);
@@ -855,12 +869,19 @@ namespace StarterAssets
 
         private void LateUpdate()
         {
-            // CRITICAL FIX: Force character to always face camera direction, overriding any unwanted rotation
-            if (Object.HasInputAuthority)
+            if (Object == null || !Object.IsValid) return;
+
+            // Smooth interpolation for remote players to avoid 60Hz tick snapping
+            if (!Object.HasInputAuthority)
             {
-                Quaternion cameraRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
-                transform.rotation = cameraRotation;
+                // Smoothly lerp the visual pitch/yaw towards the networked target values
+                _cinemachineTargetYaw = Mathf.LerpAngle(_cinemachineTargetYaw, NetworkedCameraYaw, Time.deltaTime * 15f);
+                _cinemachineTargetPitch = Mathf.LerpAngle(_cinemachineTargetPitch, NetworkedCameraPitch, Time.deltaTime * 15f);
             }
+
+            // CRITICAL FIX: Force character to always face camera direction for EVERYONE
+            Quaternion cameraRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
+            transform.rotation = cameraRotation;
             
             if (_mainCamera == null)
             {

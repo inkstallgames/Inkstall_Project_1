@@ -360,7 +360,9 @@ namespace StarterAssets
 
         public override void Render()
         {
-            // Update arm animator (for local player first-person view)
+            // COMPLETELY DISABLED: All FPS hands animator control - handled by PistolRecoilAnimation
+            // This prevents parameter errors and conflicts with PistolRecoilAnimation
+            /*
             if (_hasArmAnimator && _armAnimator != null)
             {
                 if (!_armAnimator.enabled) _armAnimator.enabled = true;
@@ -391,6 +393,7 @@ namespace StarterAssets
                 if (_latestInput.equipBomb) _armAnimator.SetTrigger(_animIDEquipGranade);
                 if (_latestInput.isThrowingBomb) _armAnimator.SetTrigger(_animIDThrowGranade);
             }
+            */
             
             // Update full body animator (for remote players and shadows)
             if (_hasFullBodyAnimator && _fullBodyAnimator != null)

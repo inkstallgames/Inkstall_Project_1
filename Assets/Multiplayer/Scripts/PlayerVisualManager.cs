@@ -229,11 +229,18 @@ public class PlayerVisualManager : NetworkBehaviour
             }
         }
         
-        // Enable all animators
+        // Enable all animators - EXCEPT those controlled by PistolRecoilAnimation
         var animators = arms.GetComponentsInChildren<Animator>(true);
         foreach (var animator in animators)
         {
-            if (!animator.enabled)
+            // Check if this animator is controlled by PistolRecoilAnimation
+            var recoilAnimation = animator.GetComponent<PistolRecoilAnimation>();
+            if (recoilAnimation != null)
+            {
+                // Don't enable this animator - let PistolRecoilAnimation control it
+                Debug.Log($"[PlayerVisualManager] Skipping animator controlled by PistolRecoilAnimation on {animator.gameObject.name}");
+            }
+            else if (!animator.enabled)
             {
                 animator.enabled = true;
             }
@@ -292,8 +299,20 @@ public class PlayerVisualManager : NetworkBehaviour
             {
                 if (arms != null)
                 {
-                    arms.transform.localPosition = armPositionOffset;
-                    arms.transform.localRotation = Quaternion.Euler(armRotationOffset);
+                    // Check if PistolRecoilAnimation is present and don't override rotation
+                    var recoilAnimation = arms.GetComponentInChildren<PistolRecoilAnimation>();
+                    if (recoilAnimation != null)
+                    {
+                        // Only set position, let PistolRecoilAnimation handle rotation
+                        arms.transform.localPosition = armPositionOffset;
+                        // Don't set localRotation - let PistolRecoilAnimation control it
+                    }
+                    else
+                    {
+                        // Normal behavior when no recoil animation
+                        arms.transform.localPosition = armPositionOffset;
+                        arms.transform.localRotation = Quaternion.Euler(armRotationOffset);
+                    }
                 }
             }
         }

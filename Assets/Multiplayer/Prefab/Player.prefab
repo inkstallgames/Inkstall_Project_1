@@ -158,6 +158,8 @@ MonoBehaviour:
   _NetworkedGrounded:
     _value: 0
   _NetworkedVerticalVelocity: 0
+  _NetworkedCameraYaw: 0
+  _NetworkedCameraPitch: 0
   _NetworkedPosition: {x: 0, y: 0, z: 0}
   _NetworkedSpeed: 0
 --- !u!114 &5841311861055146809
@@ -438,8 +440,8 @@ MonoBehaviour:
     type: 3}
   bulletTrailPrefab: {fileID: 0}
   hitEffectPrefab: {fileID: 0}
-  shootSound: {fileID: 0}
-  reloadSound: {fileID: 0}
+  shootSound: {fileID: 8300000, guid: 0a99bb048385ea144aa3a3b45d2871b3, type: 3}
+  reloadSound: {fileID: 8300000, guid: 27d6f4d651c64894d8d3d281d0d6ab56, type: 3}
   soundVolume: 1
   _CurrentAmmo: 0
   _ReserveAmmo: 0
@@ -1257,6 +1259,13 @@ MonoBehaviour:
   recoilAmount: 3
   recoilSpeed: 15
   returnSpeed: 8
+  enableReload: 1
+  reloadSpeed: 8
+  xRotationAmount: -3
+  positionY1: -1.8
+  positionY2: -1.73
+  waitAfterRotation: 0.3
+  reloadSound: {fileID: 8300000, guid: 27d6f4d651c64894d8d3d281d0d6ab56, type: 3}
 --- !u!1001 &7121996584671567366
 PrefabInstance:
   m_ObjectHideFlags: 0

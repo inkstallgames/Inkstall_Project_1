@@ -299,13 +299,18 @@ public class PlayerVisualManager : NetworkBehaviour
             {
                 if (arms != null)
                 {
-                    // Check if PistolRecoilAnimation is present and don't override rotation
+                    // Check if PistolRecoilAnimation is present and don't override transform
                     var recoilAnimation = arms.GetComponentInChildren<PistolRecoilAnimation>();
                     if (recoilAnimation != null)
                     {
-                        // Only set position, let PistolRecoilAnimation handle rotation
-                        arms.transform.localPosition = armPositionOffset;
-                        // Don't set localRotation - let PistolRecoilAnimation control it
+                        // Don't override transform during reload animation or recoil animation
+                        if (!recoilAnimation.IsReloading() && recoilAnimation.IsReadyToFire())
+                        {
+                            // Only set position when no animations are playing
+                            arms.transform.localPosition = armPositionOffset;
+                            // Don't set localRotation - let PistolRecoilAnimation control it
+                        }
+                        // If any animation is playing, don't touch the transform at all
                     }
                     else
                     {

@@ -275,7 +275,29 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         if (shootSound != null)
         {
-            AudioSource.PlayClipAtPoint(shootSound, origin, soundVolume);
+            if (isLocalPlayer)
+            {
+                // Local player: Use 2D sound for equal stereo balance (FPS hands)
+                GameObject tempAudioObject = new GameObject("TempShootSound");
+                AudioSource tempAudioSource = tempAudioObject.AddComponent<AudioSource>();
+                
+                // Configure for 2D sound (equal in both ears)
+                tempAudioSource.clip = shootSound;
+                tempAudioSource.volume = soundVolume;
+                tempAudioSource.spatialBlend = 0f; // 0 = 2D sound, 1 = 3D sound
+                tempAudioSource.playOnAwake = false;
+                
+                // Play the sound
+                tempAudioSource.Play();
+                
+                // Destroy the temporary object after sound finishes
+                Destroy(tempAudioObject, shootSound.length + 0.1f);
+            }
+            else
+            {
+                // Remote player: Use 3D positioned sound so others can hear where they're shooting from
+                AudioSource.PlayClipAtPoint(shootSound, origin, soundVolume);
+            }
         }
 
         if (bulletTrailPrefab != null)
@@ -300,10 +322,13 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnReloadStart()
     {
-        if (reloadSound != null)
+        // Trigger reload animation on FPS hands (only for local player)
+        if (isLocalPlayer && pistolRecoilAnimation != null)
         {
-            AudioSource.PlayClipAtPoint(reloadSound, transform.position, soundVolume);
+            pistolRecoilAnimation.TriggerReloadAnimation();
         }
+        
+        // Sound will be played by PistolRecoilAnimation when animation actually starts
     }
 
     /// <summary>

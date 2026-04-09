@@ -40,10 +40,16 @@ public class PlayerVisualManager : NetworkBehaviour
     private Camera _mainCam;
     private Camera _handsCamera; // Found at runtime by tag "HandCamera" (scene object, not prefab)
 
+    private bool _wasLocalPlayer;
+
     public override void Spawned()
     {
-        bool isLocalPlayer = Object.HasInputAuthority;
+        _wasLocalPlayer = Object.HasInputAuthority;
+        SetupVisuals(_wasLocalPlayer);
+    }
 
+    public void SetupVisuals(bool isLocalPlayer)
+    {
         // Handle First Person Arms (Local Only) - ACTIVATE IMMEDIATELY
         foreach (var arms in firstPersonArms)
         {
@@ -174,6 +180,23 @@ public class PlayerVisualManager : NetworkBehaviour
         }
 
     }
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        // Cleanup: Because we parented the FPS arms to the Main Camera (which lives outside the prefab),
+        // we MUST manually destroy them when the player dies/despawns, otherwise you'll get 
+        // infinitely stacking floating ghost arms with each respawn!
+        if (firstPersonArms != null)
+        {
+            foreach (var arms in firstPersonArms)
+            {
+                if (arms != null)
+                {
+                    Destroy(arms);
+                }
+            }
+        }
+    }
     
     private void EnsureArmsHidden(GameObject arms)
     {
@@ -291,6 +314,14 @@ public class PlayerVisualManager : NetworkBehaviour
     private void LateUpdate()
     {
         if (!Object.HasInputAuthority) return;
+
+        // CRITICAL FIX: If authority arrives late (after Spawned), trigger a visual reset
+        // so the local player does not get stuck rendering as a remote player (Full Body visible).
+        if (!_wasLocalPlayer)
+        {
+            _wasLocalPlayer = true;
+            SetupVisuals(true);
+        }
 
         // Allow real-time tweaking of arm offsets in the editor
         if (_armsParented && Application.isEditor)

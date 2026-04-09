@@ -293,16 +293,10 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 NetworkedAimDirection = input.aimDirection;
                 TryShootAuthority(input.aimOrigin, input.aimDirection);
             }
-
-            Debug.Log($"[NetworkLaserBehaviour] *** LASER FIRING *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | Energy: {CurrentEnergy}/{maxEnergy} | IsFiringLaser: TRUE");
         }
         else
         {
             IsFiringLaser = false;
-            if (input.isShooting)
-            {
-                Debug.LogWarning($"[NetworkLaserBehaviour] *** LASER NOT FIRING *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | Energy: {CurrentEnergy} | IsReloading: {IsReloading} | EquipSystem: {(equipSystem != null)} | IsLaserEquipped: {(equipSystem != null ? equipSystem.IsLaserEquipped() : false)}");
-            }
         }
     }
 

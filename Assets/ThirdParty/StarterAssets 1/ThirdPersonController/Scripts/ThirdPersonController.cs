@@ -572,8 +572,10 @@ namespace StarterAssets
                 // Calculate movement direction relative to camera
                 Vector3 inputDirection = new Vector3(input.move.x, 0f, input.move.y).normalized;
                 
-                // Get camera rotation
-                float cameraYawRad = _cinemachineTargetYaw * Mathf.Deg2Rad;
+                // CRITICAL FIX: Get camera rotation from networked input.cameraYaw.
+                // If we use _cinemachineTargetYaw, client prediction calculates current camera yaw instead of historical tick yaw,
+                // causing the Server and Client vectors to diverge and triggering rubberbanding!
+                float cameraYawRad = input.cameraYaw * Mathf.Deg2Rad;
                 Vector3 forward = new Vector3(Mathf.Sin(cameraYawRad), 0f, Mathf.Cos(cameraYawRad));
                 Vector3 right = new Vector3(Mathf.Cos(cameraYawRad), 0f, -Mathf.Sin(cameraYawRad));
                 
@@ -639,12 +641,8 @@ namespace StarterAssets
             {
                 _fallTimeoutDelta = FallTimeout;
                 
-                // CRITICAL: Force zero vertical velocity when grounded and no jump input
-                if (!_latestInput.jump && _networkController.Velocity.y > 0.1f)
-                {
-                                        _networkController.Velocity = new Vector3(_networkController.Velocity.x, 0f, _networkController.Velocity.z);
-                    _verticalVelocity = 0f;
-                }
+                // (REMOVED: Artificially zeroing vertical velocity when grounded breaks running up slopes.
+                // NetworkCharacterController must be allowed to have positive Velocity.y when traversing ramps!)
                 
                 _verticalVelocity = _networkController.Velocity.y;
 

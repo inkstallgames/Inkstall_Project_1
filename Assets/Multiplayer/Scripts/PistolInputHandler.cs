@@ -11,8 +11,6 @@ public class PistolInputHandler : MonoBehaviour
     [SerializeField] private KeyCode shootKey = KeyCode.Mouse0;
     [SerializeField] private KeyCode reloadKey = KeyCode.R;
     
-    [Header("UI Button References (Optional)")]
-    [SerializeField] private Button shootButton;
     [SerializeField] private Button reloadButton;
 
     private NetworkPistolBehaviour pistolBehaviour;
@@ -35,10 +33,7 @@ public class PistolInputHandler : MonoBehaviour
 
     private void SetupUIButtons()
     {
-        if (shootButton != null)
-        {
-            shootButton.onClick.AddListener(OnShootButtonPressed);
-        }
+        // UI shooting is entirely handled by NetworkUIManager (AKA throw button)
 
         if (reloadButton != null)
         {
@@ -54,9 +49,21 @@ public class PistolInputHandler : MonoBehaviour
         }
 
 #if UNITY_EDITOR || UNITY_STANDALONE
+        bool isPointerOverUI = false;
+        if (UnityEngine.EventSystems.EventSystem.current != null)
+        {
+            if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+                isPointerOverUI = true;
+            
+            for (int i = 0; i < Input.touchCount; i++)
+            {
+                if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject(Input.GetTouch(i).fingerId))
+                    isPointerOverUI = true;
+            }
+        }
+
         // For PC/Editor, allow shooting with a mouse click, but not if clicking on a UI element.
-        // Using GetMouseButtonDown for a single shot per click.
-        if (Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+        if (Input.GetMouseButtonDown(0) && !isPointerOverUI)
         {
             pistolBehaviour.RequestShoot();
         }
@@ -69,13 +76,7 @@ public class PistolInputHandler : MonoBehaviour
         }
     }
 
-    public void OnShootButtonPressed()
-    {
-        if (pistolBehaviour != null)
-        {
-            pistolBehaviour.RequestShoot();
-        }
-    }
+    // Shoot method from UI removed, relies on NetworkUIManager relaying to NetworkPistolBehaviour.RequestShoot()
 
     public void OnReloadButtonPressed()
     {
@@ -87,10 +88,6 @@ public class PistolInputHandler : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (shootButton != null)
-        {
-            shootButton.onClick.RemoveListener(OnShootButtonPressed);
-        }
 
         if (reloadButton != null)
         {

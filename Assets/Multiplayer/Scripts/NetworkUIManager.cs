@@ -273,22 +273,13 @@ public class NetworkUIManager : MonoBehaviour
     // Throw Button
     // ---------------------------------------------------------------
 
-    /// <summary>
-    /// Called when the throw button is pressed.
-    /// Fires the currently equipped weapon (bomb, pistol, or laser).
-    /// </summary>
     public void OnThrowButtonPressed()
     {
+        // Now acts exclusively as the main Attack/Shoot button (since Bomb is thrown directly by its own button)
         if (localEquipSystem != null)
         {
-            if (localEquipSystem.IsBombEquipped() && localBombBehaviour != null)
+            if (localEquipSystem.IsPistolEquipped() && localPistolBehaviour != null)
             {
-                // Debug.Log("[NetworkUIManager] Throw button pressed - Bomb is equipped, throwing bomb");
-                localBombBehaviour.RequestThrow();
-            }
-            else if (localEquipSystem.IsPistolEquipped() && localPistolBehaviour != null)
-            {
-                // Debug.Log("[NetworkUIManager] Throw button pressed - Pistol is equipped, shooting pistol");
                 localPistolBehaviour.RequestShoot();
             }
             else if (localEquipSystem.IsLaserEquipped() && localLaserBehaviour != null)
@@ -296,22 +287,13 @@ public class NetworkUIManager : MonoBehaviour
                 // We deliberately ignore single-taps for Laser because it's a Hold-weapon.
                 // The HoldableButton logic in Update() natively handles the Laser instead!
             }
-            else
-            {
-                // Debug.LogWarning("[NetworkUIManager] Throw button pressed but no weapon equipped or behaviour missing");
-            }
         }
         else
         {
-            // Fallback to old behavior if equip system not found
-            if (localBombBehaviour != null)
+            // Fallback if equip system is removed completely: default to standard pistol
+            if (localPistolBehaviour != null)
             {
-                localBombBehaviour.RequestThrow();
-            }
-            else
-            {
-                // Debug.LogWarning("[NetworkUIManager] Cannot throw — local player components not found.");
-                TryFindLocalPlayer(); // Try to re-find
+                localPistolBehaviour.RequestShoot();
             }
         }
     }
@@ -491,9 +473,10 @@ public class NetworkUIManager : MonoBehaviour
             else
             {
                 int currentEnergy = localLaserBehaviour.CurrentEnergy;
-                // For laser, show current energy with max energy as "reserve"
-                int maxEnergy = 100; // This should match the maxEnergy in NetworkLaserBehaviour
-                bulletAmmoText.text = $"{currentEnergy:D2}/{maxEnergy:D2}";
+                int reserveEnergy = localLaserBehaviour.ReserveEnergy;
+                
+                // Show 0 if reserve drops to 0, ensuring format is maintained
+                bulletAmmoText.text = $"{currentEnergy:D2}/{reserveEnergy:D2}";
             }
         }
     }
@@ -691,5 +674,29 @@ public class NetworkUIManager : MonoBehaviour
         // Re-lock the cursor when closing settings (assuming gameplay requires it)
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    public async void ExitToLobbyBtn()
+    {
+        // Close the settings panel
+        settingsPanel.SetActive(false);
+        
+        // Unlock cursor for the lobby scene
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (NetworkStarter.Instance != null)
+        {
+            await NetworkStarter.Instance.ShutdownRunner();
+        }
+        else if (runner != null)
+        {
+            await runner.Shutdown();
+        }
+        else
+        {
+            // Fallback
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Lobby");
+        }
     }
 }

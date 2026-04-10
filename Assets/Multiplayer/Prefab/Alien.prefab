@@ -189,6 +189,8 @@ MonoBehaviour:
   _NetworkedGrounded:
     _value: 0
   _NetworkedVerticalVelocity: 0
+  _NetworkedCameraYaw: 0
+  _NetworkedCameraPitch: 0
   _NetworkedPosition: {x: 0, y: 0, z: 0}
   _NetworkedSpeed: 0
 --- !u!114 &5841311861055146809
@@ -453,7 +455,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootKey: 323
   reloadKey: 114
-  shootButton: {fileID: 0}
   reloadButton: {fileID: 0}
 --- !u!114 &2695427475046890927
 MonoBehaviour:
@@ -569,16 +570,17 @@ MonoBehaviour:
   armFirePoint: {fileID: 3946423548770043457}
   bodyFirePoint: {fileID: 43759099640185263}
   fireRate: 0.5
-  range: 150
-  damage: 25
+  range: 50
+  damage: 10
   hitLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   beamWidth: 0.1
   laserColor: {r: 1, g: 0, b: 0, a: 1}
-  maxEnergy: 100
-  currentEnergy: 100
-  energyPerShot: 0
+  maxEnergy: 50
+  currentEnergy: 50
+  reserveEnergy: 150
+  energyPerShot: 2
   energyRegenRate: 20
   regenDelay: 2
   reloadTime: 2
@@ -586,15 +588,17 @@ MonoBehaviour:
     type: 3}
   laserImpactPrefab: {fileID: 8860100032571448353, guid: ca3243333e1f1e54b84482f3c7a2b1c7,
     type: 3}
-  muzzleFlashPrefab: {fileID: 4834526503407549940, guid: 2735bebe54c1f5a4096f5134a96f7e77,
-    type: 3}
+  muzzleFlashPrefab: {fileID: 0}
   laserShootSound: {fileID: 0}
   laserOverheatSound: {fileID: 0}
   soundVolume: 1
   _CurrentEnergy: 0
+  _ReserveEnergy: 0
   _IsReloading: 0
   _IsFiringLaser:
     _value: 0
+  _NetworkedAimOrigin: {x: 0, y: 0, z: 0}
+  _NetworkedAimDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &4750772492329756353
 GameObject:
   m_ObjectHideFlags: 0

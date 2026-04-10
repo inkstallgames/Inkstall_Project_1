@@ -114,8 +114,11 @@ public class WeaponEquipInputHandler : MonoBehaviour
 
         if (Input.GetKeyDown(bombKey))
         {
-            // Debug.Log("[WeaponEquipInputHandler] Key '2' pressed - Requesting to equip BOMB");
-            equipSystem.RequestEquipBomb();
+            var bombBehaviour = GetComponent<NetworkBombBehaviour>();
+            if (bombBehaviour != null)
+            {
+                bombBehaviour.RequestThrow();
+            }
         }
     }
 
@@ -131,10 +134,10 @@ public class WeaponEquipInputHandler : MonoBehaviour
 
     public void OnBombButtonPressed()
     {
-        if (equipSystem != null)
+        var bombBehaviour = GetComponent<NetworkBombBehaviour>();
+        if (bombBehaviour != null)
         {
-            // Debug.Log("[WeaponEquipInputHandler] Bomb button pressed - Requesting to equip BOMB");
-            equipSystem.RequestEquipBomb();
+            bombBehaviour.RequestThrow();
         }
     }
 

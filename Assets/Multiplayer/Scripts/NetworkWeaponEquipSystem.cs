@@ -76,7 +76,6 @@ public class NetworkWeaponEquipSystem : NetworkBehaviour
     public void CollectNetworkInput(ref StarterAssets.NetworkInputData inputData)
     {
         inputData.equipPrimary = wantsToEquipPrimary;
-        inputData.equipBomb = wantsToEquipBomb;
         
         wantsToEquipPrimary = false;
         wantsToEquipBomb = false;
@@ -91,14 +90,8 @@ public class NetworkWeaponEquipSystem : NetworkBehaviour
 
         if (Object.HasStateAuthority)
         {
-            if (input.equipPrimary)
-            {
-                EquipPrimaryWeapon();
-            }
-            else if (input.equipBomb && CurrentWeapon != WeaponType.Bomb)
-            {
-                EquipWeapon(WeaponType.Bomb);
-            }
+            // ALWAYS enforce primary weapon
+            EquipPrimaryWeapon();
         }
     }
 
@@ -188,7 +181,7 @@ public class NetworkWeaponEquipSystem : NetworkBehaviour
 
     public void RequestEquipBomb()
     {
-        wantsToEquipBomb = true;
-        // Debug.Log("[NetworkWeaponEquipSystem] RequestEquipBomb() called");
+        // NetworkWeaponEquipSystem no longer handles equip bomb.
+        // Handled directly by Input Handler/UI Manager
     }
 }

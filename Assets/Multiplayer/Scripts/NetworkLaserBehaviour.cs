@@ -23,8 +23,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [SerializeField] private Color laserColor = Color.red;
 
     [Header("Energy (Ammo System)")]
-    [SerializeField] private int maxEnergy = 100;
-    [SerializeField] private int currentEnergy = 100;
+    [SerializeField] private int maxEnergy = 50;
+    [SerializeField] private int currentEnergy = 50;
+    [SerializeField] private int reserveEnergy = 150;
     [SerializeField] private int energyPerShot = 0; // Test value - should consume no energy
     [SerializeField] private float energyRegenRate = 20f; // Energy per second
     [SerializeField] private float regenDelay = 2f; // Delay before regen starts
@@ -39,6 +40,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [SerializeField] private float soundVolume = 1.0f;
 
     [Networked] public int CurrentEnergy { get; set; }
+    [Networked] public int ReserveEnergy { get; set; }
     [Networked] private TickTimer FireCooldownTimer { get; set; }
     [Networked] private TickTimer EnergyRegenTimer { get; set; }
     [Networked] private TickTimer ReloadTimer { get; set; }
@@ -96,6 +98,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (Object.HasStateAuthority)
         {
             CurrentEnergy = currentEnergy;
+            ReserveEnergy = reserveEnergy;
         }
 
         isLocalPlayer = Object.HasInputAuthority;
@@ -239,11 +242,14 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 {
                     if (Object.HasStateAuthority)
                     {
-                        // Debug.Log($"[NetworkLaserBehaviour] *** RELOAD COMPLETE! *** Player {Object.InputAuthority.PlayerId} | Energy: {CurrentEnergy} → {maxEnergy} (FULL RELOAD)");
-                        CurrentEnergy = maxEnergy;
+                        int energyNeeded = maxEnergy - CurrentEnergy;
+                        int energyToReload = Mathf.Min(energyNeeded, ReserveEnergy);
+
+                        CurrentEnergy += energyToReload;
+                        ReserveEnergy -= energyToReload;
                         IsReloading = false;
                         ReloadTimer = TickTimer.None;
-                        RPC_UpdateEnergy(CurrentEnergy);
+                        RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
                     }
                 }
                 else
@@ -255,20 +261,18 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 }
             }
             
-            if (EnergyRegenTimer.ExpiredOrNotRunning(Runner))
+            if (EnergyRegenTimer.ExpiredOrNotRunning(Runner) && ReserveEnergy > 0)
             {
                 if (Object.HasStateAuthority)
                 {
                     int oldEnergy = CurrentEnergy;
-                    CurrentEnergy = Mathf.Min(maxEnergy, CurrentEnergy + Mathf.RoundToInt(energyRegenRate * Runner.DeltaTime));
-                    int energyGained = CurrentEnergy - oldEnergy;
+                    int maxRegen = Mathf.RoundToInt(energyRegenRate * Runner.DeltaTime);
+                    int actualRegen = Mathf.Min(maxEnergy - CurrentEnergy, Mathf.Min(maxRegen, ReserveEnergy));
+
+                    CurrentEnergy += actualRegen;
+                    ReserveEnergy -= actualRegen;
                     
-                    if (energyGained > 0)
-                    {
-                        // Debug.Log($"[NetworkLaserBehaviour] *** ENERGY RECHARGING *** Player {Object.InputAuthority.PlayerId} | Energy: {oldEnergy} → {CurrentEnergy}/{maxEnergy} (+{energyGained})");
-                    }
-                    
-                    RPC_UpdateEnergy(CurrentEnergy);
+                    RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
                 }
             }
         }
@@ -331,22 +335,23 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
         }
 
-        RPC_UpdateEnergy(CurrentEnergy);
+        RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
     }
 
 
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_UpdateEnergy(int newEnergy)
+    private void RPC_UpdateEnergy(int newEnergy, int newReserve)
     {
         CurrentEnergy = newEnergy;
+        ReserveEnergy = newReserve;
     }
 
     public void AddEnergy(int amount)
     {
         if (!Object.HasStateAuthority) return;
-        CurrentEnergy = Mathf.Min(maxEnergy, CurrentEnergy + amount);
-        RPC_UpdateEnergy(CurrentEnergy);
+        ReserveEnergy += amount;
+        RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
     }
 
     /// <summary>
@@ -358,11 +363,12 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         
         CurrentEnergy = maxEnergy;
+        ReserveEnergy = Mathf.Min(reserveEnergy, 150);
         IsReloading = false;
         ReloadTimer = TickTimer.None;
         
-        Debug.Log($"[NetworkLaserBehaviour] Energy reset on kill - Energy: {CurrentEnergy}/{maxEnergy}");
-        RPC_UpdateEnergy(CurrentEnergy);
+        Debug.Log($"[NetworkLaserBehaviour] Energy reset on kill - Energy: {CurrentEnergy}/{maxEnergy}, Reserve: {ReserveEnergy}");
+        RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
     }
 
     private System.Collections.IEnumerator ShowMuzzleFlash()

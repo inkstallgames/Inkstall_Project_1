@@ -164,12 +164,7 @@ public class NetworkBombBehaviour : NetworkBehaviour
             return;
         }
 
-        // Check if bomb is equipped
-        if (equipSystem != null && !equipSystem.IsBombEquipped())
-        {
-            // Debug.Log("[NetworkBombBehaviour] TryThrow — skipped, bomb not equipped.");
-            return;
-        }
+        // Check if bomb is equipped removed allowing instant throw.
 
         // Cooldown check
         if (!ThrowCooldownTimer.ExpiredOrNotRunning(Runner))

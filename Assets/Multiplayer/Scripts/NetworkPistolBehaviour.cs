@@ -359,11 +359,11 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         
         CurrentAmmo = maxAmmo;
-        // Set reserve ammo to maximum (30), capped to never exceed
-        ReserveAmmo = Mathf.Min(reserveAmmo, 30);
+        // Set reserve ammo to maximum (150), capped to never exceed
+        ReserveAmmo = Mathf.Min(reserveAmmo, 150);
         IsReloading = false;
         
-        Debug.Log($"[NetworkPistolBehaviour] Ammo reset on kill - Magazine: {CurrentAmmo}/{maxAmmo}, Reserve: {ReserveAmmo}/30");
+        Debug.Log($"[NetworkPistolBehaviour] Ammo reset on kill - Magazine: {CurrentAmmo}/{maxAmmo}, Reserve: {ReserveAmmo}/150");
     }
 }
 

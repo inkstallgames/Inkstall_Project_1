@@ -46,6 +46,12 @@ public class PlayerVisualManager : NetworkBehaviour
     {
         _wasLocalPlayer = Object.HasInputAuthority;
         SetupVisuals(_wasLocalPlayer);
+        
+        // Force idle animation immediately to prevent T-pose
+        ForceIdleAnimation();
+        
+        // Also try again after a short delay in case animators weren't ready
+        StartCoroutine(DelayedIdleAnimation());
     }
 
     public void SetupVisuals(bool isLocalPlayer)
@@ -364,6 +370,72 @@ public class PlayerVisualManager : NetworkBehaviour
                 _handsCamera.fieldOfView = _mainCam.fieldOfView;
             }
         }
+    }
+    
+    private System.Collections.IEnumerator DelayedIdleAnimation()
+    {
+        // Wait a few frames for all components to be fully initialized
+        yield return new WaitForSeconds(0.1f);
+        
+        ForceIdleAnimation();
+    }
+    
+    private void ForceIdleAnimation()
+    {
+        // For local player, focus specifically on FPS hands animators to prevent T-pose
+        if (Object.HasInputAuthority)
+        {
+            // Target FPS hands specifically
+            foreach (var arms in firstPersonArms)
+            {
+                if (arms != null && arms.activeInHierarchy)
+                {
+                    var armsAnimators = arms.GetComponentsInChildren<Animator>(true);
+                    foreach (var animator in armsAnimators)
+                    {
+                        if (animator != null && animator.enabled)
+                        {
+                            ForceAnimatorToIdle(animator);
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            // For remote players, handle full body animators
+            var animators = GetComponentsInChildren<Animator>(true);
+            foreach (var animator in animators)
+            {
+                if (animator != null && animator.enabled)
+                {
+                    ForceAnimatorToIdle(animator);
+                }
+            }
+        }
+    }
+    
+    private void ForceAnimatorToIdle(Animator animator)
+    {
+        // Try to set the animator to the default state (usually idle)
+        // This helps prevent the T-pose when spawning
+        animator.Play("Idle", 0, 0f);
+        animator.Update(0f); // Force immediate update
+        
+        // If "Idle" state doesn't exist, try other common idle animation names
+        if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash == 0)
+        {
+            animator.Play("Pistol Idle", 0, 0f);
+            animator.Update(0f);
+        }
+        
+        if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash == 0)
+        {
+            animator.Play("Base Layer.Idle", 0, 0f);
+            animator.Update(0f);
+        }
+        
+        Debug.Log($"[PlayerVisualManager] Forced idle animation on animator: {animator.gameObject.name}");
     }
 }
 

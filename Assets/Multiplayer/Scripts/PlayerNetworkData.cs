@@ -31,6 +31,15 @@ public class PlayerNetworkData : NetworkBehaviour
     public Slider healthBar;
 
     public GameObject[] teamIndicators;
+    
+    [Header("Hit Sound")]
+    [Tooltip("Sound to play when this player gets hit by a bullet")]
+    public AudioClip bulletBodyHitSound;
+    
+    [Tooltip("Sound to play when this player gets hit by a laser")]
+    public AudioClip laserBodyHitSound;
+    
+    [SerializeField] private float hitSoundVolume = 1.0f;
 
 
 
@@ -152,7 +161,7 @@ public class PlayerNetworkData : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_TakeDamage(int damage, PlayerRef sourcePlayer)
+    public void RPC_TakeDamage(int damage, PlayerRef sourcePlayer, bool isLaserDamage = false)
     {
         if (Health <= 0) return; // Already dead
 
@@ -161,6 +170,9 @@ public class PlayerNetworkData : NetworkBehaviour
         if (abilityController != null && abilityController.IsShielded) return;
 
         Health = Mathf.Max(0, Health - damage);
+        
+        // Play hit sound on all clients (each player will hear it from their perspective)
+        RPC_PlayHitSound(isLaserDamage);
         
         // Update visuals on all clients first, so the UI hits 0
         RPC_UpdateHealth(Health);
@@ -208,6 +220,38 @@ public class PlayerNetworkData : NetworkBehaviour
     {
         Health = newHealth;
         UpdateVisuals();
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_PlayHitSound(bool isLaserDamage = false)
+    {
+        // Only play hit sound for the local player (the one who got hit)
+        if (Object.HasInputAuthority)
+        {
+            // Select the appropriate hit sound based on weapon type
+            AudioClip hitSound = isLaserDamage ? laserBodyHitSound : bulletBodyHitSound;
+            
+            if (hitSound != null)
+            {
+                // Play 2D sound for local player so it's clear and centered
+                GameObject tempAudioObject = new GameObject(isLaserDamage ? "TempLaserHitSound" : "TempBulletHitSound");
+                AudioSource tempAudioSource = tempAudioObject.AddComponent<AudioSource>();
+                
+                // Configure for 2D sound (equal in both ears)
+                tempAudioSource.clip = hitSound;
+                tempAudioSource.volume = hitSoundVolume;
+                tempAudioSource.spatialBlend = 0f; // 0 = 2D sound, 1 = 3D sound
+                tempAudioSource.playOnAwake = false;
+                
+                // Play the sound
+                tempAudioSource.Play();
+                
+                // Destroy the temporary object after sound finishes
+                Destroy(tempAudioObject, hitSound.length + 0.1f);
+                
+                Debug.Log($"[PlayerNetworkData] *** {(isLaserDamage ? "LASER" : "BULLET")} HIT SOUND PLAYED *** for local player {PlayerName}");
+            }
+        }
     }
 
 

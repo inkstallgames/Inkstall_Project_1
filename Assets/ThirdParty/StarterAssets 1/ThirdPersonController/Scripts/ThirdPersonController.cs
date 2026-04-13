@@ -174,6 +174,12 @@ namespace StarterAssets
             // Initialize components for ALL players (needed for FixedUpdateNetwork)
             _networkController = GetComponent<NetworkCharacterController>();
             
+            // Set gravity once — avoid per-tick state writes that can cause sync churn
+            if (_networkController != null)
+            {
+                _networkController.gravity = Gravity;
+            }
+            
             // Get PlayerVisualManager to identify arm and full body models
             var visualManager = GetComponent<PlayerVisualManager>();
             
@@ -320,10 +326,21 @@ namespace StarterAssets
                     _cinemachineTargetPitch = data.cameraPitch;
                 }
 
-                // Check Grounded state using physics spheres manually
-                GroundedCheck();
+                // GroundedCheck() removed — its Physics.CheckSphere result was
+                // immediately overwritten by _networkController.Grounded inside
+                // JumpAndGravity, and the physics query can diverge between client
+                // and server, introducing misprediction.
                 JumpAndGravity(data);
                 Move(data);
+                
+                // RUBBERBANDING FIX: Set character rotation deterministically using the
+                // networked input's cameraYaw. This runs inside FixedUpdateNetwork which
+                // IS replayed during Fusion's client-side resimulation, ensuring the
+                // exact same rotation is applied on every re-prediction pass.
+                // Previously, LateUpdate was the sole writer of transform.rotation for
+                // the local player, but LateUpdate does NOT replay during resimulation
+                // — causing rotation state to diverge and triggering snap corrections.
+                transform.rotation = Quaternion.Euler(0f, data.cameraYaw, 0f);
                 
                 // Sync animation state to all clients via networked properties
                 float normalizedSpeed = SprintSpeed > 0 ? _animationBlend / SprintSpeed : 0f;
@@ -340,7 +357,6 @@ namespace StarterAssets
                 // the visual variables (_cinemachineTargetYaw/Pitch) in LateUpdate instead.
                 
                 // If no input, still apply gravity and check grounded state
-                GroundedCheck();
                 JumpAndGravity(default);
                 Move(default);
                 
@@ -582,18 +598,6 @@ namespace StarterAssets
                 // Calculate world-space movement direction
                 Vector3 worldDirection = (forward * input.move.y + right * input.move.x).normalized;
                 
-                // CENTER POINT ROTATION: Character rotates from center, not facing movement direction
-                if (worldDirection != Vector3.zero)
-                {
-                    // Calculate rotation based on input relative to camera, but rotate in place
-                    Vector3 movementInput = (forward * input.move.y + right * input.move.x).normalized;
-                    if (movementInput != Vector3.zero)
-                    {
-                        Quaternion targetRotation = Quaternion.LookRotation(movementInput);
-                        transform.rotation = targetRotation; // Rotate in place from center
-                    }
-                }
-                
                 // Calculate movement direction - character always faces camera, so move relative to camera
                 targetDirection = worldDirection;
             }
@@ -602,21 +606,18 @@ namespace StarterAssets
             if (_networkController != null)
             {
                 _networkController.maxSpeed = _speed;
-                _networkController.gravity = Gravity;
                 
-                // CRITICAL FIX: Complete stop when no input (direction changes already handled above)
-                if (input.move == Vector2.zero)
-                {
-                    // Complete stop when no input
-                    _networkController.Velocity = new Vector3(0f, _networkController.Velocity.y, 0f);
-                }
+                // RUBBERBANDING FIX: Removed direct Velocity zeroing.
+                // Directly setting _networkController.Velocity bypasses Fusion's internal
+                // state snapshot/rollback for NetworkCharacterController. During client-side
+                // prediction resimulation, Fusion restores velocity from the server snapshot,
+                // but our manual zero could cause the predicted velocity to differ from what
+                // the server computed, triggering snap corrections (rubberbanding).
+                // Move(Vector3.zero) already handles deceleration when no input is given.
                 
                 // NetworkCharacterController expects a raw normalized direction vector, NOT a pre-calculated delta!
                 // It internally scales by DeltaTime, Gravity, and maxSpeed.
                 _networkController.Move(targetDirection.normalized);
-                
-                // CRITICAL FIX: Don't override rotation - let it follow camera direction immediately
-                // transform.rotation = currentCameraRotation; // Already set above
             }
 
             if (Object.HasStateAuthority)
@@ -853,9 +854,14 @@ namespace StarterAssets
                 _cinemachineTargetPitch = Mathf.LerpAngle(_cinemachineTargetPitch, NetworkedCameraPitch, Time.deltaTime * 15f);
             }
 
-            // CRITICAL FIX: Force character to always face camera direction for EVERYONE
-            Quaternion cameraRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
-            transform.rotation = cameraRotation;
+            // Apply body rotation ONLY for remote players (smooth visual interpolation).
+            // For the local player, transform.rotation is set deterministically in
+            // FixedUpdateNetwork using input.cameraYaw. Setting it here would corrupt
+            // the rotation state between Fusion resimulation ticks, causing rubberbanding.
+            if (!Object.HasInputAuthority)
+            {
+                transform.rotation = Quaternion.Euler(0f, _cinemachineTargetYaw, 0f);
+            }
             
             if (_mainCamera == null)
             {

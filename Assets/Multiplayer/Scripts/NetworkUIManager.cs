@@ -36,6 +36,7 @@ public class NetworkUIManager : MonoBehaviour
     [Header("Game Info UI")]
     [SerializeField] private TextMeshProUGUI gameStateText;      // Shows current game state
     [SerializeField] private TextMeshProUGUI timerText;          // Round timer
+    [SerializeField] private TextMeshProUGUI pingText;           // Shows current ping in ms
 
     [Header("Team Score UI")]
     [SerializeField] private TextMeshProUGUI blueTeamScoreText;  // Blue team score display
@@ -79,6 +80,8 @@ public class NetworkUIManager : MonoBehaviour
     private PlayerAbilityController localAbilityController;
     private bool wasAbilityActive = false;
     private float abilityActiveEndTime = 0f;
+    private float pingUpdateTimer = 0f;
+    private const float PING_UPDATE_INTERVAL = 0.5f;
 
     private void Awake()
     {
@@ -553,6 +556,18 @@ public class NetworkUIManager : MonoBehaviour
         if (redTeamScoreText != null)
         {
             redTeamScoreText.text = $"{NetworkGameManager.Instance.RedTeamScore}";
+        }
+
+        // Ping — update every 0.5s to avoid per-frame overhead
+        if (pingText != null && runner != null && runner.IsRunning)
+        {
+            pingUpdateTimer -= Time.deltaTime;
+            if (pingUpdateTimer <= 0f)
+            {
+                pingUpdateTimer = PING_UPDATE_INTERVAL;
+                int pingMs = Mathf.RoundToInt((float)(runner.GetPlayerRtt(runner.LocalPlayer) * 1000));
+                pingText.text = $"Ping: {pingMs}ms";
+            }
         }
     }
 

@@ -12,7 +12,8 @@ public class NetworkUIManager : MonoBehaviour
     public static NetworkUIManager Instance { get; private set; }
 
     [Header("Bomb UI")]
-    [SerializeField] private Button throwButton;                // Throw bomb button
+    [SerializeField] private Button throwButton;                // Throw/Shoot button (right)
+    [SerializeField] private Button throwButtonLeft;            // Duplicate Throw/Shoot button (left)
     [SerializeField] private TextMeshProUGUI ammoText;          // Shows current bomb count
     [SerializeField] private GameObject[] bombUIElements;        // Individual bomb icons (like offline mode)
     [SerializeField] private Image throwCooldownOverlay;         // Optional overlay on throw button to show cooldown
@@ -32,6 +33,7 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI killsText;          // Kill count
     [SerializeField] private TextMeshProUGUI deathsText;         // Death count
     [SerializeField] private TextMeshProUGUI playerNameText;     // Local player name
+    [SerializeField] private GameObject damageIndicatorImage;    // Flashes on screen when taking damage
 
     [Header("Game Info UI")]
     [SerializeField] private TextMeshProUGUI gameStateText;      // Shows current game state
@@ -76,12 +78,16 @@ public class NetworkUIManager : MonoBehaviour
     private NetworkWeaponEquipSystem localEquipSystem;
     private PlayerNetworkData localPlayerData;
     private HoldableButton throwHoldable; // Tracks throw button hold state for continuous laser fire
+    private HoldableButton throwHoldableLeft; // Tracks left throw button hold state
     private bool wasThrowHeld = false; // Previous frame's held state for detecting release
     private PlayerAbilityController localAbilityController;
     private bool wasAbilityActive = false;
     private float abilityActiveEndTime = 0f;
     private float pingUpdateTimer = 0f;
     private const float PING_UPDATE_INTERVAL = 0.5f;
+    private int _lastKnownHealth = -1;
+    private float _damageIndicatorTimer = 0f;
+    private const float DAMAGE_INDICATOR_DURATION = 0.3f;
 
     private void Awake()
     {
@@ -107,6 +113,16 @@ public class NetworkUIManager : MonoBehaviour
             throwHoldable = throwButton.gameObject.GetComponent<HoldableButton>();
             if (throwHoldable == null)
                 throwHoldable = throwButton.gameObject.AddComponent<HoldableButton>();
+        }
+
+        // Wire up left throw button identically
+        if (throwButtonLeft != null)
+        {
+            throwButtonLeft.onClick.AddListener(OnThrowButtonPressed);
+            
+            throwHoldableLeft = throwButtonLeft.gameObject.GetComponent<HoldableButton>();
+            if (throwHoldableLeft == null)
+                throwHoldableLeft = throwButtonLeft.gameObject.AddComponent<HoldableButton>();
         }
 
         if (abilityButton != null)
@@ -159,8 +175,9 @@ public class NetworkUIManager : MonoBehaviour
                 OnThrowButtonPressed();
             }
             
-            // Continuous laser fire while throw button is held (via HoldableButton)
-            bool isThrowHeld = throwHoldable != null && throwHoldable.IsHeld;
+            // Continuous laser fire while EITHER throw button is held (via HoldableButton)
+            bool isThrowHeld = (throwHoldable != null && throwHoldable.IsHeld)
+                            || (throwHoldableLeft != null && throwHoldableLeft.IsHeld);
             if (isThrowHeld && isLaserEquipped && localLaserBehaviour != null)
             {
                 localLaserBehaviour.RequestShoot();
@@ -492,15 +509,34 @@ public class NetworkUIManager : MonoBehaviour
     {
         if (localPlayerData == null) return;
 
+        int currentHealth = localPlayerData.Health;
+
+        // Damage indicator — show when health drops
+        if (_lastKnownHealth >= 0 && currentHealth < _lastKnownHealth)
+        {
+            _damageIndicatorTimer = DAMAGE_INDICATOR_DURATION;
+            if (damageIndicatorImage != null && !damageIndicatorImage.activeSelf)
+                damageIndicatorImage.SetActive(true);
+        }
+        _lastKnownHealth = currentHealth;
+
+        // Count down and hide the indicator when no new damage arrives
+        if (_damageIndicatorTimer > 0f)
+        {
+            _damageIndicatorTimer -= Time.deltaTime;
+            if (_damageIndicatorTimer <= 0f && damageIndicatorImage != null)
+                damageIndicatorImage.SetActive(false);
+        }
+
         // Health
         if (healthBar != null)
         {
-            healthBar.value = localPlayerData.Health / 100f;
+            healthBar.value = currentHealth / 100f;
         }
 
         if (healthText != null)
         {
-            healthText.text = $"{localPlayerData.Health}";
+            healthText.text = $"{currentHealth}";
         }
 
         // Kills & Deaths
@@ -663,6 +699,9 @@ public class NetworkUIManager : MonoBehaviour
     {
         if (throwButton != null)
             throwButton.onClick.RemoveListener(OnThrowButtonPressed);
+
+        if (throwButtonLeft != null)
+            throwButtonLeft.onClick.RemoveListener(OnThrowButtonPressed);
 
         if (abilityButton != null)
             abilityButton.onClick.RemoveListener(OnAbilityButtonPressed);

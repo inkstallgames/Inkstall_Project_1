@@ -142,7 +142,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             // Stop reload sound if player is trying to fire (reload is complete but sound might still be playing)
             if (reloadAudioSource != null && reloadAudioSource.isPlaying)
             {
-                Debug.Log($"[PISTOL RELOAD] *** STOPPING RELOAD SOUND *** Fire button pressed while reload sound still playing");
                 reloadAudioSource.Stop();
                 Destroy(reloadAudioSource.gameObject);
                 reloadAudioSource = null;
@@ -249,8 +248,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         
         // Add a small cooldown after reload to prevent immediate firing
         PostReloadCooldown = TickTimer.CreateFromSeconds(Runner, 0.1f);
-        
-        Debug.Log($"[NetworkPistolBehaviour] *** RELOAD COMPLETE *** Ammo: {CurrentAmmo}/{maxAmmo} - Post-reload cooldown active");
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -366,8 +363,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             
             // Auto-destroy after sound finishes (if not stopped earlier)
             Destroy(reloadSoundObj, reloadSound.length + 0.1f);
-            
-            Debug.Log($"[PISTOL RELOAD] *** RELOAD SOUND STARTED *** Length: {reloadSound.length:F2}s");
         }
     }
 

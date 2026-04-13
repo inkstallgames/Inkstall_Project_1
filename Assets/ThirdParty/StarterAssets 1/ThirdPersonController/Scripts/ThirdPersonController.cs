@@ -445,8 +445,12 @@ namespace StarterAssets
                         direction = 0f; // Strafing (left/right)
                     }
                     
-                                                        }
-                _fullBodyAnimator.SetFloat(_animIDDirection, direction);
+                }
+                // Only set Direction parameter if it exists in the animator
+                if (HasParameter(_fullBodyAnimator, _animIDDirection))
+                {
+                    _fullBodyAnimator.SetFloat(_animIDDirection, direction);
+                }
                 
                 // Set animator speed to normal (no more reverse playback)
                 _fullBodyAnimator.speed = 1f;
@@ -456,8 +460,10 @@ namespace StarterAssets
                 _fullBodyAnimator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _fullBodyAnimator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
                 
-                if (_latestInput.isShooting) _fullBodyAnimator.SetTrigger(_animIDFire);
-                if (_latestInput.equipBomb) _fullBodyAnimator.SetTrigger(_animIDEquipGranade);
+                if (_latestInput.isShooting && HasParameter(_fullBodyAnimator, _animIDFire)) 
+                    _fullBodyAnimator.SetTrigger(_animIDFire);
+                if (_latestInput.equipBomb && HasParameter(_fullBodyAnimator, _animIDEquipGranade)) 
+                    _fullBodyAnimator.SetTrigger(_animIDEquipGranade);
                 
 
             }
@@ -494,8 +500,12 @@ namespace StarterAssets
                         direction = 0f; // Strafing (left/right)
                     }
                     
-                                                        }
-                _animator.SetFloat(_animIDDirection, direction);
+                }
+                // Only set Direction parameter if it exists in the animator
+                if (HasParameter(_animator, _animIDDirection))
+                {
+                    _animator.SetFloat(_animIDDirection, direction);
+                }
                 
                 // Set animator speed to normal (no more reverse playback)
                 _animator.speed = 1f;
@@ -505,10 +515,25 @@ namespace StarterAssets
                 _animator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _animator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
                 
-                if (_latestInput.isShooting) _animator.SetTrigger(_animIDFire);
-                if (_latestInput.equipBomb) _animator.SetTrigger(_animIDEquipGranade);
-                if (_latestInput.isThrowingBomb) _animator.SetTrigger(_animIDThrowGranade);
+                if (_latestInput.isShooting && HasParameter(_animator, _animIDFire)) 
+                    _animator.SetTrigger(_animIDFire);
+                if (_latestInput.equipBomb && HasParameter(_animator, _animIDEquipGranade)) 
+                    _animator.SetTrigger(_animIDEquipGranade);
+                if (_latestInput.isThrowingBomb && HasParameter(_animator, _animIDThrowGranade)) 
+                    _animator.SetTrigger(_animIDThrowGranade);
             }
+        }
+
+        private bool HasParameter(Animator animator, int parameterHash)
+        {
+            if (animator == null || animator.runtimeAnimatorController == null) return false;
+            
+            foreach (var param in animator.parameters)
+            {
+                if (param.nameHash == parameterHash)
+                    return true;
+            }
+            return false;
         }
 
         private void AssignAnimationIDs()

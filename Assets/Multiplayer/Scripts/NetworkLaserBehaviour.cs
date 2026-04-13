@@ -263,17 +263,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 PostReloadCooldown = TickTimer.CreateFromSeconds(Runner, 0.1f);
                 
                 RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
-                
-                Debug.Log($"[LASER RELOAD] *** RELOAD COMPLETE *** Time: {Time.time:F2}s | Energy: {CurrentEnergy}/{maxEnergy} | Post-reload cooldown: 0.1s");
             }
         }
         
-        // Debug reload status
-        if (IsReloading)
-        {
-            float remainingReload = ReloadTimer.RemainingTime(Runner) ?? 0f;
-            Debug.Log($"[LASER RELOAD] *** STILL RELOADING *** Time: {Time.time:F2}s | Remaining: {remainingReload:F2}s");
-        }
         
         // Regenerate energy when not shooting
         if (!input.isShooting && CurrentEnergy < maxEnergy)
@@ -314,26 +306,17 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         // Check if we can fire - player must NOT be reloading and post-reload cooldown must be expired
         bool canFire = input.isShooting && CurrentEnergy > 0 && !IsReloading && PostReloadCooldown.ExpiredOrNotRunning(Runner) && equipSystem != null && equipSystem.IsLaserEquipped();
         
-        // Debug firing attempts
-        if (input.isShooting)
+        // Stop reload sound if player is trying to fire (reload is complete but sound might still be playing)
+        if (input.isShooting && !IsReloading && reloadAudioSource != null && reloadAudioSource.isPlaying)
         {
-            float postReloadRemaining = PostReloadCooldown.RemainingTime(Runner) ?? 0f;
-            Debug.Log($"[LASER FIRE] *** FIRE ATTEMPT *** Time: {Time.time:F2}s | CanFire: {canFire} | Energy: {CurrentEnergy} | IsReloading: {IsReloading} | PostReloadCooldown: {postReloadRemaining:F3}s");
-            
-            // Stop reload sound if player is trying to fire (reload is complete but sound might still be playing)
-            if (!IsReloading && reloadAudioSource != null && reloadAudioSource.isPlaying)
-            {
-                Debug.Log($"[LASER RELOAD] *** STOPPING RELOAD SOUND *** Fire button pressed while reload sound still playing");
-                reloadAudioSource.Stop();
-                Destroy(reloadAudioSource.gameObject);
-                reloadAudioSource = null;
-            }
+            reloadAudioSource.Stop();
+            Destroy(reloadAudioSource.gameObject);
+            reloadAudioSource = null;
         }
 
         if (canFire)
         {
             IsFiringLaser = true;
-            Debug.Log($"[LASER FIRE] *** FIRING LASER *** Time: {Time.time:F2}s");
 
             // Always keep networked aim in sync while firing (state authority writes, all clients read)
             if (Object.HasStateAuthority)
@@ -364,8 +347,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             CurrentEnergy = 0;
             IsReloading = true;
             ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
-            
-            Debug.Log($"[LASER RELOAD] *** RELOAD STARTED *** Time: {Time.time:F2}s | ReloadTime: {reloadTime}s | Sound Length: {(laserReloadSound != null ? laserReloadSound.length : 0f):F2}s");
             
             // Play reload start sound using a GameObject so we can stop it later
             if (laserReloadSound != null)
@@ -425,8 +406,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             
             // Auto-destroy after sound finishes (if not stopped earlier)
             Destroy(reloadSoundObj, laserReloadSound.length + 0.1f);
-            
-            Debug.Log($"[LASER RELOAD] *** RELOAD SOUND STARTED *** Length: {laserReloadSound.length:F2}s");
         }
     }
 

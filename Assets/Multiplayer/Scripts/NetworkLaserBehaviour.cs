@@ -23,9 +23,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [SerializeField] private Color laserColor = Color.red;
 
     [Header("Energy (Ammo System)")]
-    [SerializeField] private int maxEnergy = 50;
-    [SerializeField] private int currentEnergy = 50;
-    [SerializeField] private int reserveEnergy = 150;
+    [SerializeField] private int maxEnergy = 30;
+    [SerializeField] private int currentEnergy = 30;
+    [SerializeField] private int reserveEnergy = 90;
     [SerializeField] private int energyPerShot = 0; // Test value - should consume no energy
     [SerializeField] private float energyRegenRate = 20f; // Energy per second
     [SerializeField] private float regenDelay = 2f; // Delay before regen starts
@@ -37,6 +37,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [SerializeField] private GameObject muzzleFlashPrefab;
     [SerializeField] private AudioClip laserShootSound;
     [SerializeField] private AudioClip laserOverheatSound;
+    [SerializeField] private AudioClip laserReloadSound;
     [SerializeField] private float soundVolume = 1.0f;
 
     [Networked] public int CurrentEnergy { get; set; }
@@ -73,6 +74,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     
     // HandsCamera reference for pre-render position update
     private Camera _handsCamera;
+    
+    // Continuous sound management
+    private AudioSource continuousLaserAudio;
 
     /// <summary>
     /// Returns the correct fire point based on whether this is the local or remote player.
@@ -113,6 +117,12 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         
         // Force energy per shot to override Inspector values
         energyPerShot = 1;
+
+        // Initialize continuous audio source
+        continuousLaserAudio = gameObject.AddComponent<AudioSource>();
+        continuousLaserAudio.loop = true;
+        continuousLaserAudio.volume = soundVolume;
+        continuousLaserAudio.playOnAwake = false;
 
         // Ensure muzzle flash is disabled on start
         if (muzzleFlashPrefab != null)
@@ -319,6 +329,12 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             CurrentEnergy = 0;
             IsReloading = true;
             ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
+            
+            // Play reload start sound
+            if (laserReloadSound != null)
+            {
+                AudioSource.PlayClipAtPoint(laserReloadSound, transform.position, soundVolume);
+            }
         }
 
         // Raycast from camera position for accurate shooting (origin = camera position from input)
@@ -547,7 +563,12 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
         }
         
-        if (laserShootSound != null) AudioSource.PlayClipAtPoint(laserShootSound, beamStart, soundVolume);
+        // Start continuous laser sound
+        if (laserShootSound != null && continuousLaserAudio != null)
+        {
+            continuousLaserAudio.clip = laserShootSound;
+            continuousLaserAudio.Play();
+        }
     }
     
     private void UpdateContinuousBeam()
@@ -635,6 +656,12 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         {
             Destroy(continuousImpact);
             continuousImpact = null;
+        }
+        
+        // Stop continuous laser sound
+        if (continuousLaserAudio != null && continuousLaserAudio.isPlaying)
+        {
+            continuousLaserAudio.Stop();
         }
     }
     

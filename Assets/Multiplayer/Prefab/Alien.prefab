@@ -582,7 +582,7 @@ MonoBehaviour:
   reserveEnergy: 90
   energyPerShot: 2
   energyRegenRate: 20
-  regenDelay: 0
+  regenDelay: 2
   reloadTime: 2
   laserBeamPrefab: {fileID: 4792249407261658504, guid: 9a16209519b43ca4b98fe8e6b74ba57b,
     type: 3}

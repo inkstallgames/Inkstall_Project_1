@@ -242,33 +242,34 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             return;
         }
 
+        // Check if reload just completed and player is still holding fire button
+        bool wasReloading = IsReloading;
+        if (IsReloading && ReloadTimer.ExpiredOrNotRunning(Runner))
+        {
+            if (Object.HasStateAuthority)
+            {
+                int energyNeeded = maxEnergy - CurrentEnergy;
+                int energyToReload = Mathf.Min(energyNeeded, ReserveEnergy);
+
+                CurrentEnergy += energyToReload;
+                ReserveEnergy -= energyToReload;
+                IsReloading = false;
+                ReloadTimer = TickTimer.None;
+                RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
+                
+                // Debug.Log($"[NetworkLaserBehaviour] *** RELOAD COMPLETE *** Player {Object.InputAuthority.PlayerId} - Energy: {CurrentEnergy}/{maxEnergy}");
+            }
+        }
+        
         // Regenerate energy when not shooting
         if (!input.isShooting && CurrentEnergy < maxEnergy)
         {
-            // Check if reload is in progress
             if (IsReloading)
             {
-                if (ReloadTimer.ExpiredOrNotRunning(Runner))
-                {
-                    if (Object.HasStateAuthority)
-                    {
-                        int energyNeeded = maxEnergy - CurrentEnergy;
-                        int energyToReload = Mathf.Min(energyNeeded, ReserveEnergy);
-
-                        CurrentEnergy += energyToReload;
-                        ReserveEnergy -= energyToReload;
-                        IsReloading = false;
-                        ReloadTimer = TickTimer.None;
-                        RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
-                    }
-                }
-                else
-                {
-                    // Still reloading - don't allow normal regen
-                    float remainingTime = ReloadTimer.RemainingTime(Runner) ?? 0f;
-                    // Debug.Log($"[NetworkLaserBehaviour] *** RELOADING... *** Player {Object.InputAuthority.PlayerId} | {remainingTime:F1}s remaining");
-                    return;
-                }
+                // Still reloading - don't allow normal regen
+                float remainingTime = ReloadTimer.RemainingTime(Runner) ?? 0f;
+                // Debug.Log($"[NetworkLaserBehaviour] *** RELOADING... *** Player {Object.InputAuthority.PlayerId} | {remainingTime:F1}s remaining");
+                return;
             }
             
             if (EnergyRegenTimer.ExpiredOrNotRunning(Runner) && ReserveEnergy > 0)
@@ -296,7 +297,18 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
         }
 
-        if (input.isShooting && CurrentEnergy > 0 && !IsReloading && equipSystem != null && equipSystem.IsLaserEquipped())
+        // Check if we can fire - include reload completion check
+        bool canFire = input.isShooting && CurrentEnergy > 0 && !IsReloading && equipSystem != null && equipSystem.IsLaserEquipped();
+        
+        // Special case: reload just completed and player is still holding fire button
+        if (wasReloading && !IsReloading && wantsToShoot && CurrentEnergy > 0 && equipSystem != null && equipSystem.IsLaserEquipped())
+        {
+            // Force resume firing immediately after reload if player is still holding fire button
+            canFire = true;
+            // Debug.Log($"[NetworkLaserBehaviour] *** RESUMING FIRE AFTER RELOAD *** Player {Object.InputAuthority.PlayerId} - wantsToShoot: {wantsToShoot}");
+        }
+
+        if (canFire)
         {
             IsFiringLaser = true;
 

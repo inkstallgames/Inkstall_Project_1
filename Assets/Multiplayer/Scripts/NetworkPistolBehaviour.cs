@@ -38,6 +38,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [Networked] private TickTimer FireCooldownTimer { get; set; }
     [Networked] private TickTimer ReloadTimer { get; set; }
     [Networked] public bool IsReloading { get; set; }
+    [Networked] private TickTimer PostReloadCooldown { get; set; }
 
     private Camera playerCamera;
     private bool wantsToShoot;
@@ -46,6 +47,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     private PlayerNetworkData playerData;
     private bool isLocalPlayer;
     private PistolRecoilAnimation pistolRecoilAnimation; // Reference to pistol recoil script
+    private AudioSource reloadAudioSource; // Track reload sound so we can stop it
 
     /// <summary>
     /// Returns the correct fire point based on whether this is the local or remote player.
@@ -135,8 +137,17 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             TryReload();
         }
 
-        if (input.isShooting && !IsReloading)
+        if (input.isShooting && !IsReloading && PostReloadCooldown.ExpiredOrNotRunning(Runner))
         {
+            // Stop reload sound if player is trying to fire (reload is complete but sound might still be playing)
+            if (reloadAudioSource != null && reloadAudioSource.isPlaying)
+            {
+                Debug.Log($"[PISTOL RELOAD] *** STOPPING RELOAD SOUND *** Fire button pressed while reload sound still playing");
+                reloadAudioSource.Stop();
+                Destroy(reloadAudioSource.gameObject);
+                reloadAudioSource = null;
+            }
+            
             TryShoot(input.aimOrigin, input.aimDirection);
         }
 
@@ -235,6 +246,11 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         CurrentAmmo += ammoToReload;
         ReserveAmmo -= ammoToReload;
         IsReloading = false;
+        
+        // Add a small cooldown after reload to prevent immediate firing
+        PostReloadCooldown = TickTimer.CreateFromSeconds(Runner, 0.1f);
+        
+        Debug.Log($"[NetworkPistolBehaviour] *** RELOAD COMPLETE *** Ammo: {CurrentAmmo}/{maxAmmo} - Post-reload cooldown active");
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -328,7 +344,31 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             pistolRecoilAnimation.TriggerReloadAnimation();
         }
         
-        // Sound will be played by PistolRecoilAnimation when animation actually starts
+        // Play reload sound with controllable AudioSource
+        if (reloadSound != null)
+        {
+            // Clean up any existing reload sound
+            if (reloadAudioSource != null)
+            {
+                Destroy(reloadAudioSource.gameObject);
+                reloadAudioSource = null;
+            }
+            
+            // Create a GameObject with AudioSource so we can stop it later if needed
+            GameObject reloadSoundObj = new GameObject("PistolReloadSound");
+            reloadAudioSource = reloadSoundObj.AddComponent<AudioSource>();
+            
+            reloadAudioSource.clip = reloadSound;
+            reloadAudioSource.volume = soundVolume;
+            reloadAudioSource.spatialBlend = 0f; // 2D sound
+            reloadAudioSource.playOnAwake = false;
+            reloadAudioSource.Play();
+            
+            // Auto-destroy after sound finishes (if not stopped earlier)
+            Destroy(reloadSoundObj, reloadSound.length + 0.1f);
+            
+            Debug.Log($"[PISTOL RELOAD] *** RELOAD SOUND STARTED *** Length: {reloadSound.length:F2}s");
+        }
     }
 
     /// <summary>

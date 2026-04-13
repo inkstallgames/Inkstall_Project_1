@@ -46,6 +46,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [Networked] private TickTimer EnergyRegenTimer { get; set; }
     [Networked] private TickTimer ReloadTimer { get; set; }
     [Networked] public bool IsReloading { get; set; }
+    [Networked] private TickTimer PostReloadCooldown { get; set; }
 
     private Camera playerCamera;
     private bool wantsToShoot;
@@ -77,6 +78,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     
     // Continuous sound management
     private AudioSource continuousLaserAudio;
+    
+    // Reload sound management
+    private AudioSource reloadAudioSource;
 
     /// <summary>
     /// Returns the correct fire point based on whether this is the local or remote player.
@@ -242,8 +246,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             return;
         }
 
-        // Check if reload just completed and player is still holding fire button
-        bool wasReloading = IsReloading;
+        // Check if reload just completed
         if (IsReloading && ReloadTimer.ExpiredOrNotRunning(Runner))
         {
             if (Object.HasStateAuthority)
@@ -255,10 +258,21 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 ReserveEnergy -= energyToReload;
                 IsReloading = false;
                 ReloadTimer = TickTimer.None;
+                
+                // Add a small cooldown after reload to prevent immediate firing
+                PostReloadCooldown = TickTimer.CreateFromSeconds(Runner, 0.1f);
+                
                 RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
                 
-                // Debug.Log($"[NetworkLaserBehaviour] *** RELOAD COMPLETE *** Player {Object.InputAuthority.PlayerId} - Energy: {CurrentEnergy}/{maxEnergy}");
+                Debug.Log($"[LASER RELOAD] *** RELOAD COMPLETE *** Time: {Time.time:F2}s | Energy: {CurrentEnergy}/{maxEnergy} | Post-reload cooldown: 0.1s");
             }
+        }
+        
+        // Debug reload status
+        if (IsReloading)
+        {
+            float remainingReload = ReloadTimer.RemainingTime(Runner) ?? 0f;
+            Debug.Log($"[LASER RELOAD] *** STILL RELOADING *** Time: {Time.time:F2}s | Remaining: {remainingReload:F2}s");
         }
         
         // Regenerate energy when not shooting
@@ -297,20 +311,29 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
         }
 
-        // Check if we can fire - include reload completion check
-        bool canFire = input.isShooting && CurrentEnergy > 0 && !IsReloading && equipSystem != null && equipSystem.IsLaserEquipped();
+        // Check if we can fire - player must NOT be reloading and post-reload cooldown must be expired
+        bool canFire = input.isShooting && CurrentEnergy > 0 && !IsReloading && PostReloadCooldown.ExpiredOrNotRunning(Runner) && equipSystem != null && equipSystem.IsLaserEquipped();
         
-        // Special case: reload just completed and player is still holding fire button
-        if (wasReloading && !IsReloading && wantsToShoot && CurrentEnergy > 0 && equipSystem != null && equipSystem.IsLaserEquipped())
+        // Debug firing attempts
+        if (input.isShooting)
         {
-            // Force resume firing immediately after reload if player is still holding fire button
-            canFire = true;
-            // Debug.Log($"[NetworkLaserBehaviour] *** RESUMING FIRE AFTER RELOAD *** Player {Object.InputAuthority.PlayerId} - wantsToShoot: {wantsToShoot}");
+            float postReloadRemaining = PostReloadCooldown.RemainingTime(Runner) ?? 0f;
+            Debug.Log($"[LASER FIRE] *** FIRE ATTEMPT *** Time: {Time.time:F2}s | CanFire: {canFire} | Energy: {CurrentEnergy} | IsReloading: {IsReloading} | PostReloadCooldown: {postReloadRemaining:F3}s");
+            
+            // Stop reload sound if player is trying to fire (reload is complete but sound might still be playing)
+            if (!IsReloading && reloadAudioSource != null && reloadAudioSource.isPlaying)
+            {
+                Debug.Log($"[LASER RELOAD] *** STOPPING RELOAD SOUND *** Fire button pressed while reload sound still playing");
+                reloadAudioSource.Stop();
+                Destroy(reloadAudioSource.gameObject);
+                reloadAudioSource = null;
+            }
         }
 
         if (canFire)
         {
             IsFiringLaser = true;
+            Debug.Log($"[LASER FIRE] *** FIRING LASER *** Time: {Time.time:F2}s");
 
             // Always keep networked aim in sync while firing (state authority writes, all clients read)
             if (Object.HasStateAuthority)
@@ -342,10 +365,12 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             IsReloading = true;
             ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
             
-            // Play reload start sound
+            Debug.Log($"[LASER RELOAD] *** RELOAD STARTED *** Time: {Time.time:F2}s | ReloadTime: {reloadTime}s | Sound Length: {(laserReloadSound != null ? laserReloadSound.length : 0f):F2}s");
+            
+            // Play reload start sound using a GameObject so we can stop it later
             if (laserReloadSound != null)
             {
-                AudioSource.PlayClipAtPoint(laserReloadSound, transform.position, soundVolume);
+                RPC_PlayReloadSound();
             }
         }
 
@@ -358,7 +383,8 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             {
                 if (targetPlayerData.Object.InputAuthority != Object.InputAuthority)
                 {
-                    targetPlayerData.RPC_TakeDamage(damage, Object.InputAuthority);
+                    // Pass true for isLaserDamage to play laser hit sound
+                    targetPlayerData.RPC_TakeDamage(damage, Object.InputAuthority, true);
                 }
             }
         }
@@ -373,6 +399,35 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     {
         CurrentEnergy = newEnergy;
         ReserveEnergy = newReserve;
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_PlayReloadSound()
+    {
+        // Clean up any existing reload sound
+        if (reloadAudioSource != null)
+        {
+            Destroy(reloadAudioSource.gameObject);
+            reloadAudioSource = null;
+        }
+        
+        if (laserReloadSound != null)
+        {
+            // Create a GameObject with AudioSource so we can stop it later if needed
+            GameObject reloadSoundObj = new GameObject("LaserReloadSound");
+            reloadAudioSource = reloadSoundObj.AddComponent<AudioSource>();
+            
+            reloadAudioSource.clip = laserReloadSound;
+            reloadAudioSource.volume = soundVolume;
+            reloadAudioSource.spatialBlend = 0f; // 2D sound
+            reloadAudioSource.playOnAwake = false;
+            reloadAudioSource.Play();
+            
+            // Auto-destroy after sound finishes (if not stopped earlier)
+            Destroy(reloadSoundObj, laserReloadSound.length + 0.1f);
+            
+            Debug.Log($"[LASER RELOAD] *** RELOAD SOUND STARTED *** Length: {laserReloadSound.length:F2}s");
+        }
     }
 
     public void AddEnergy(int amount)
@@ -526,31 +581,51 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             continuousImpact = Instantiate(laserImpactPrefab, visualHit.point, Quaternion.LookRotation(visualHit.normal));
             continuousImpact.transform.SetParent(transform);
             
-            // Set continuous mode for impact particles
+            // CRITICAL: Ensure the impact GameObject is active
+            continuousImpact.SetActive(true);
+            
+            // Local player: put impact on FPS_Hands layer so HandsCamera renders it
+            if (isLocalPlayer)
+            {
+                int fpsHandsLayer = LayerMask.NameToLayer("FPS_Hands");
+                if (fpsHandsLayer != -1)
+                {
+                    SetLayerRecursively(continuousImpact, fpsHandsLayer);
+                    Debug.Log($"[NetworkLaserBehaviour] *** IMPACT SET TO FPS_Hands LAYER *** Layer: {fpsHandsLayer}");
+                }
+            }
+            
+            // Set continuous mode for impact particles (if LaserImpactEffect component exists)
             var impactEffect = continuousImpact.GetComponent<LaserImpactEffect>();
             if (impactEffect != null)
             {
                 impactEffect.SetContinuousMode(true);
-                // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT MODE SET ***");
-            }
-            else
-            {
-                // Debug.Log("[NetworkLaserBehaviour] *** WARNING: LaserImpactEffect component not found on impact prefab ***");
+                Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT MODE SET ***");
             }
             
             // Get the particle system and make sure it plays
             var impactParticles = continuousImpact.GetComponent<ParticleSystem>();
             if (impactParticles != null)
             {
+                var main = impactParticles.main;
+                main.loop = true; // Ensure looping for continuous mode
                 impactParticles.Play();
-                // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT PARTICLES STARTED ***");
+                Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS IMPACT PARTICLES STARTED *** IsPlaying: {impactParticles.isPlaying}");
             }
             else
             {
-                // Debug.Log("[NetworkLaserBehaviour] *** WARNING: ParticleSystem component not found on impact prefab ***");
+                Debug.LogWarning("[NetworkLaserBehaviour] *** WARNING: ParticleSystem component not found on impact prefab ***");
             }
             
-            // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT CREATED ***");
+            Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS IMPACT CREATED *** Position: {visualHit.point} | Active: {continuousImpact.activeInHierarchy} | Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")}");
+        }
+        else if (!didHit)
+        {
+            Debug.Log("[NetworkLaserBehaviour] *** NO HIT DETECTED - Impact effect not created ***");
+        }
+        else if (laserImpactPrefab == null)
+        {
+            Debug.LogError("[NetworkLaserBehaviour] *** LASER IMPACT PREFAB IS NULL - Assign it in Inspector! ***");
         }
         
         // Create continuous muzzle flash
@@ -701,6 +776,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
     private void LateUpdate()
     {
+        // Safety check: don't access networked properties before Spawned() is called
+        if (Object == null || !Object.IsValid) return;
+        
         // Remote players: update beam in LateUpdate (no Cinemachine concern on remote).
         // Local player beam is handled by OnBeginCameraRendering pre-render hook instead.
         if (!isLocalPlayer && IsFiringLaser && continuousBeam != null)

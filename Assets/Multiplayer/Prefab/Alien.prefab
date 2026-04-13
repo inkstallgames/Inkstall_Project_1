@@ -378,6 +378,9 @@ MonoBehaviour:
   nameTag: {fileID: 0}
   healthBar: {fileID: 0}
   teamIndicators: []
+  bulletBodyHitSound: {fileID: 0}
+  laserBodyHitSound: {fileID: 0}
+  hitSoundVolume: 1
 --- !u!114 &2671153054746154757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -543,7 +546,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3928277030421997894}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b8dc0c741b67d647b96634efca00e2e, type: 3}
   m_Name: 
@@ -589,7 +592,7 @@ MonoBehaviour:
   laserImpactPrefab: {fileID: 8860100032571448353, guid: ca3243333e1f1e54b84482f3c7a2b1c7,
     type: 3}
   muzzleFlashPrefab: {fileID: 0}
-  laserShootSound: {fileID: 8300000, guid: 51f4ea5c381c18f4e853bf2b45fd72bb, type: 3}
+  laserShootSound: {fileID: 8300000, guid: 11cf95a3b0dd4004b96255785c403936, type: 3}
   laserOverheatSound: {fileID: 0}
   laserReloadSound: {fileID: 8300000, guid: 0dcdc5714f8d89f4dad9b379ad6f918b, type: 3}
   soundVolume: 1

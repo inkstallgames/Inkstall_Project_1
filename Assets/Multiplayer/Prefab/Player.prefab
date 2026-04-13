@@ -349,6 +349,9 @@ MonoBehaviour:
   nameTag: {fileID: 0}
   healthBar: {fileID: 0}
   teamIndicators: []
+  bulletBodyHitSound: {fileID: 0}
+  laserBodyHitSound: {fileID: 0}
+  hitSoundVolume: 1
 --- !u!114 &2671153054746154757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -436,7 +439,7 @@ MonoBehaviour:
   currentAmmo: 15
   reserveAmmo: 30
   reloadTime: 1.5
-  muzzleFlashPrefab: {fileID: 4834526503407549940, guid: 2735bebe54c1f5a4096f5134a96f7e77,
+  muzzleFlashPrefab: {fileID: 6093627466791319318, guid: cd60837d9807ad44ba929273ca0d3da8,
     type: 3}
   bulletTrailPrefab: {fileID: 0}
   hitEffectPrefab: {fileID: 0}
@@ -460,7 +463,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootKey: 323
   reloadKey: 114
-  shootButton: {fileID: 0}
   reloadButton: {fileID: 0}
 --- !u!114 &2695427475046890927
 MonoBehaviour:
@@ -1266,6 +1268,7 @@ MonoBehaviour:
   positionY2: -1.73
   waitAfterRotation: 0.3
   reloadSound: {fileID: 8300000, guid: 27d6f4d651c64894d8d3d281d0d6ab56, type: 3}
+  soundDelay: 0.2
 --- !u!1001 &7121996584671567366
 PrefabInstance:
   m_ObjectHideFlags: 0

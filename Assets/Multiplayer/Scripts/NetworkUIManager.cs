@@ -404,7 +404,7 @@ public class NetworkUIManager : MonoBehaviour
         // Update ammo text
         if (ammoText != null)
         {
-            ammoText.text = $"{currentBombs} / {maxBombs}";
+            ammoText.text = $"{currentBombs}";
         }
 
         // Update individual bomb icons (like the offline ChemicalBombManager)

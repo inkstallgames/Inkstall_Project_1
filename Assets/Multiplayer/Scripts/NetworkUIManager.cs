@@ -20,6 +20,7 @@ public class NetworkUIManager : MonoBehaviour
     
     [Header("Bullet UI")]
     [SerializeField] private TextMeshProUGUI bulletAmmoText;    // Shows current bullets in 00:00 format or RELOADING text
+    [SerializeField] private Button reloadButton;               // Manual reload button
     
     [Header("Movement UI")]
     [Tooltip("UI Button that players hold down to jump.")]
@@ -127,6 +128,9 @@ public class NetworkUIManager : MonoBehaviour
 
         if (abilityButton != null)
             abilityButton.onClick.AddListener(OnAbilityButtonPressed);
+
+        if (reloadButton != null)
+            reloadButton.onClick.AddListener(OnReloadButtonPressed);
     }
 
     private void Update()
@@ -188,6 +192,10 @@ public class NetworkUIManager : MonoBehaviour
                 localLaserBehaviour.StopShooting();
             }
             wasThrowHeld = isThrowHeld;
+
+            // --- Reload (R key) ---
+            if (Input.GetKeyDown(KeyCode.R))
+                OnReloadButtonPressed();
 
             // --- Ability (Q key) ---
             if (Input.GetKeyDown(KeyCode.Q))
@@ -315,6 +323,30 @@ public class NetworkUIManager : MonoBehaviour
             {
                 localPistolBehaviour.RequestShoot();
             }
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Reload Button
+    // ---------------------------------------------------------------
+
+    /// <summary>Called when the reload button is pressed (UI button or R key).</summary>
+    public void OnReloadButtonPressed()
+    {
+        if (localEquipSystem != null)
+        {
+            if (localEquipSystem.IsPistolEquipped() && localPistolBehaviour != null && !localPistolBehaviour.IsReloading)
+            {
+                localPistolBehaviour.RequestReload();
+            }
+            else if (localEquipSystem.IsLaserEquipped() && localLaserBehaviour != null && !localLaserBehaviour.IsReloading)
+            {
+                localLaserBehaviour.RequestReload();
+            }
+        }
+        else if (localPistolBehaviour != null && !localPistolBehaviour.IsReloading)
+        {
+            localPistolBehaviour.RequestReload();
         }
     }
 
@@ -709,6 +741,9 @@ public class NetworkUIManager : MonoBehaviour
 
         if (abilityButton != null)
             abilityButton.onClick.RemoveListener(OnAbilityButtonPressed);
+
+        if (reloadButton != null)
+            reloadButton.onClick.RemoveListener(OnReloadButtonPressed);
 
         if (Instance == this)
         {

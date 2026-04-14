@@ -165,6 +165,21 @@ public class PlayerNetworkData : NetworkBehaviour
     {
         if (Health <= 0) return; // Already dead
 
+        // --- Friendly fire protection ---
+        // Ignore damage from players on the same team
+        if (sourcePlayer != default && sourcePlayer != Object.InputAuthority)
+        {
+            var sourceObject = Runner.GetPlayerObject(sourcePlayer);
+            if (sourceObject != null)
+            {
+                var sourceData = sourceObject.GetComponent<PlayerNetworkData>();
+                if (sourceData != null && sourceData.TeamId >= 0 && sourceData.TeamId == TeamId)
+                {
+                    return; // Same team — no friendly fire
+                }
+            }
+        }
+
         // Shield ability — Hero players are immune to damage while shielded
         var abilityController = GetComponent<PlayerAbilityController>();
         if (abilityController != null && abilityController.IsShielded) return;

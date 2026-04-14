@@ -50,6 +50,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
     private Camera playerCamera;
     private bool wantsToShoot;
+    private bool wantsToReload;
     private bool isShootingContinuously; // Track continuous firing state
     private NetworkWeaponEquipSystem equipSystem;
     private PlayerNetworkData playerData;
@@ -208,6 +209,15 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         wantsToShoot = false;
     }
 
+    /// <summary>
+    /// Manually request a reload (e.g. from the UI reload button or R key).
+    /// Only starts a reload if the laser is not already reloading, has room in the magazine, and has reserve energy.
+    /// </summary>
+    public void RequestReload()
+    {
+        wantsToReload = true;
+    }
+
     public void CollectNetworkInput(ref StarterAssets.NetworkInputData inputData)
     {
         // Debug.Log($"[NetworkLaserBehaviour] *** CollectNetworkInput *** wantsToShoot: {wantsToShoot} | isShootingContinuously: {isShootingContinuously} | inputData.isShooting: {inputData.isShooting}");
@@ -226,6 +236,8 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         }
         
         inputData.isShooting = isShootingContinuously;
+        inputData.isReloading = wantsToReload;
+        wantsToReload = false;
         
         if (playerCamera != null)
         {
@@ -244,6 +256,21 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (!GetInput<StarterAssets.NetworkInputData>(out var input))
         {
             return;
+        }
+
+        // Manual reload request (from UI button or R key)
+        if (input.isReloading && !IsReloading && CurrentEnergy < maxEnergy && ReserveEnergy > 0)
+        {
+            if (Object.HasStateAuthority)
+            {
+                IsReloading = true;
+                ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
+
+                if (laserReloadSound != null)
+                {
+                    RPC_PlayReloadSound();
+                }
+            }
         }
 
         // Check if reload just completed

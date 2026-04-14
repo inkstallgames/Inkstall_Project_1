@@ -261,16 +261,14 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             var muzzleEffect = tempMuzzleFlash.GetComponent<MuzzleFlashEffect>();
             if (muzzleEffect != null)
             {
-                muzzleEffect.SetContinuousMode(false); // Single burst mode for pistol
-                muzzleEffect.Play();
-                
-                // Auto-destroy after effect
-                Destroy(tempMuzzleFlash, 0.3f);
+                // Use EmitBurst() which calls ParticleSystem.Emit() directly.
+                // This guarantees particles spawn on this exact frame and never
+                // misses a trigger, unlike Play() which can fail on rapid calls.
+                muzzleEffect.EmitBurst();
             }
-            else
-            {
-                Destroy(tempMuzzleFlash, 0.3f);
-            }
+            
+            // Auto-destroy after effect finishes
+            Destroy(tempMuzzleFlash, 0.3f);
         }
 
         if (shootSound != null)

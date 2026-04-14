@@ -94,41 +94,31 @@ public class MuzzleFlashEffect : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// Number of particles to emit per burst when using Emit mode.
+    /// </summary>
+    [SerializeField] private int burstParticleCount = 15;
+    
     public void Play()
     {
-        Debug.Log("[MuzzleFlashEffect] Play() called!");
-        
         // Force initialization if not done (handles cases where Awake() wasn't called)
         if (!isInitialized)
         {
-            Debug.Log("[MuzzleFlashEffect] Not initialized, forcing initialization now...");
             ForceInitialize();
         }
         
         if (particleSystem != null)
         {
-            Debug.Log("[MuzzleFlashEffect] Playing particle system from prefab");
-            
-            // Debug particle system state before playing
-            var main = particleSystem.main;
-            Debug.Log($"[MuzzleFlashEffect] ParticleSystem config - Duration: {main.duration}, Loop: {main.loop}, PlayOnAwake: {main.playOnAwake}");
-            
-            var emission = particleSystem.emission;
-            Debug.Log($"[MuzzleFlashEffect] Emission config - RateOverTime: {emission.rateOverTime.constant}, BurstCount: {emission.burstCount}");
-            
-            Debug.Log($"[MuzzleFlashEffect] Particle count before play: {particleSystem.particleCount}");
-            
-            particleSystem.Play();
-            
-            Debug.Log($"[MuzzleFlashEffect] ParticleSystem is now playing: {particleSystem.isPlaying}");
-            Debug.Log($"[MuzzleFlashEffect] Particle count after play: {particleSystem.particleCount}");
-            
-            // Force play again if not playing
-            if (!particleSystem.isPlaying)
+            if (isContinuous)
             {
-                Debug.LogWarning("[MuzzleFlashEffect] ParticleSystem not playing after Play() call, trying Simulate()...");
-                particleSystem.Simulate(0.01f, true, true);
-                Debug.Log($"[MuzzleFlashEffect] After Simulate - Playing: {particleSystem.isPlaying}, Count: {particleSystem.particleCount}");
+                // Continuous mode: use Play() so the system keeps emitting
+                particleSystem.Play();
+            }
+            else
+            {
+                // Single burst mode: use Emit() to guarantee particles spawn this frame.
+                // Play() can miss if the system hasn't reset or calls come in rapid succession.
+                EmitBurst();
             }
         }
         else
@@ -139,7 +129,37 @@ public class MuzzleFlashEffect : MonoBehaviour
         if (flashLight != null)
         {
             flashLight.enabled = true;
-            Debug.Log("[MuzzleFlashEffect] Flash light enabled");
+            // Reset intensity for the fade
+            flashLight.intensity = isContinuous ? 1.5f : 3f;
+        }
+    }
+    
+    /// <summary>
+    /// Immediately emits a burst of particles using ParticleSystem.Emit().
+    /// This is guaranteed to produce particles on the current frame,
+    /// unlike Play() which can miss if called in rapid succession.
+    /// </summary>
+    public void EmitBurst()
+    {
+        if (!isInitialized)
+        {
+            ForceInitialize();
+        }
+        
+        if (particleSystem != null)
+        {
+            // Emit() is instant and cannot be "missed" - particles are created this frame
+            particleSystem.Emit(burstParticleCount);
+        }
+        else
+        {
+            Debug.LogError("[MuzzleFlashEffect] ParticleSystem is null, cannot emit burst!");
+        }
+        
+        if (flashLight != null)
+        {
+            flashLight.enabled = true;
+            flashLight.intensity = 3f;
         }
     }
     

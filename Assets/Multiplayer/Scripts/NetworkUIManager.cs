@@ -419,10 +419,14 @@ public class NetworkUIManager : MonoBehaviour
             }
         }
 
-        // Disable throw button when out of ammo
+        // Disable throw buttons when out of ammo
         if (throwButton != null)
         {
             throwButton.interactable = currentBombs > 0;
+        }
+        if (throwButtonLeft != null)
+        {
+            throwButtonLeft.interactable = currentBombs > 0;
         }
     }
 

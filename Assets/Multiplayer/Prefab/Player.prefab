@@ -442,7 +442,10 @@ MonoBehaviour:
   muzzleFlashPrefab: {fileID: 6093627466791319318, guid: cd60837d9807ad44ba929273ca0d3da8,
     type: 3}
   bulletTrailPrefab: {fileID: 0}
-  hitEffectPrefab: {fileID: 0}
+  hitEffectPrefab: {fileID: 7629000292770066261, guid: 31e1e03b03ac40b42ada13178bc82b2d,
+    type: 3}
+  playerHitEffectPrefab: {fileID: 7629000292770066261, guid: b47f376535cea9445a151a0ba773479d,
+    type: 3}
   shootSound: {fileID: 8300000, guid: 0a99bb048385ea144aa3a3b45d2871b3, type: 3}
   reloadSound: {fileID: 8300000, guid: 27d6f4d651c64894d8d3d281d0d6ab56, type: 3}
   soundVolume: 1

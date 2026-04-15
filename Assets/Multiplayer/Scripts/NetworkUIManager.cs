@@ -451,15 +451,8 @@ public class NetworkUIManager : MonoBehaviour
             }
         }
 
-        // Disable throw buttons when out of ammo
-        if (throwButton != null)
-        {
-            throwButton.interactable = currentBombs > 0;
-        }
-        if (throwButtonLeft != null)
-        {
-            throwButtonLeft.interactable = currentBombs > 0;
-        }
+        // NOTE: throwButton and throwButtonLeft are the primary attack/shoot buttons.
+        // They must NEVER be disabled — they are used for pistol/laser fire, not just bombs.
     }
 
     // ---------------------------------------------------------------

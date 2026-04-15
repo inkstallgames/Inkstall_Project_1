@@ -163,18 +163,15 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 // UnityEngine.Debug.Log($"[NetworkStarter] Attempting to connect to Photon Cloud...");
             }
             
-            // Basic network settings - using only standard Fusion properties
+            // Optimized network settings for better client performance
             var startGameArgs = new StartGameArgs()
             {
                 GameMode = gameMode,
                 SessionName = CurrentJoinCode,
-                PlayerCount = _maxPlayers,
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager,
-                // Ensure proper prefab loading
-                ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>(),
-                // Added new property
-                // Removed the extra line here
+                // Ensure proper prefab loading for clients
+                ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>()
             };
             
             // Apply any Photon settings from the NetworkRunner prefab

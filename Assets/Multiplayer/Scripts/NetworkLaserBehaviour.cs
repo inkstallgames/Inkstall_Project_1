@@ -590,16 +590,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             // CRITICAL: Ensure the impact GameObject is active
             continuousImpact.SetActive(true);
             
-            // Local player: put impact on FPS_Hands layer so HandsCamera renders it
-            if (isLocalPlayer)
-            {
-                int fpsHandsLayer = LayerMask.NameToLayer("FPS_Hands");
-                if (fpsHandsLayer != -1)
-                {
-                    SetLayerRecursively(continuousImpact, fpsHandsLayer);
-                    Debug.Log($"[NetworkLaserBehaviour] *** IMPACT SET TO FPS_Hands LAYER *** Layer: {fpsHandsLayer}");
-                }
-            }
+            // NOTE: Impact stays on Default layer for ALL players.
+            // Unlike the beam/muzzle flash (which are near the gun barrel and need FPS_Hands
+            // layer for the HandsCamera), the impact spawns at a distant world-space hit point.
+            // Putting it on FPS_Hands would make it invisible — the HandsCamera's near/far clip
+            // can't reach it, and the main camera culls FPS_Hands.
             
             // Set continuous mode for impact particles (if LaserImpactEffect component exists)
             var impactEffect = continuousImpact.GetComponent<LaserImpactEffect>();
@@ -666,33 +661,52 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     
     private void UpdateContinuousBeam()
     {
-        // Local player beam positions are updated via OnBeginCameraRendering (pre-render hook).
-        // This method handles remote players only (world-space, no Cinemachine concern).
-        if (isLocalPlayer) return;
-
         if (continuousBeam == null)
         {
-            StartContinuousBeam();
+            if (!isLocalPlayer)
+            {
+                StartContinuousBeam();
+            }
             return;
         }
 
-        // Remote player: read the networked aim direction/origin set by the shooter on the server.
-        // bodyFirePoint.forward is NOT reliable — its orientation depends on the rig and is NOT the aim direction.
-        // playerCamera is null for remote players — we must NOT use it.
+        // --- Determine aim origin & direction ---
         Transform fp = ActiveFirePoint;
-        Vector3 beamStart  = fp != null ? fp.position : transform.position;
-        Vector3 aimOrigin  = NetworkedAimOrigin    != Vector3.zero ? NetworkedAimOrigin    : beamStart;
-        Vector3 aimDir     = NetworkedAimDirection != Vector3.zero ? NetworkedAimDirection : transform.forward;
+        Vector3 beamStart = fp != null ? fp.position : transform.position;
+        Vector3 aimOrigin;
+        Vector3 aimDir;
+
+        if (isLocalPlayer)
+        {
+            // Local player: use camera for aim direction
+            aimOrigin = playerCamera != null ? playerCamera.transform.position : transform.position;
+            aimDir    = playerCamera != null ? playerCamera.transform.forward  : transform.forward;
+        }
+        else
+        {
+            // Remote player: read the networked aim direction/origin set by the shooter.
+            // bodyFirePoint.forward is NOT reliable — its orientation depends on the rig.
+            // playerCamera is null for remote players — we must NOT use it.
+            aimOrigin = NetworkedAimOrigin    != Vector3.zero ? NetworkedAimOrigin    : beamStart;
+            aimDir    = NetworkedAimDirection != Vector3.zero ? NetworkedAimDirection : transform.forward;
+        }
 
         RaycastHit hit;
         bool didHit = Physics.Raycast(aimOrigin, aimDir, out hit, range, hitLayers);
         Vector3 hitPoint = didHit ? hit.point : aimOrigin + aimDir * range;
 
-        continuousBeam.SetPosition(0, beamStart);
-        continuousBeam.SetPosition(1, hitPoint);
+        // --- Update beam positions (remote only; local beam handled by pre-render hook) ---
+        if (!isLocalPlayer)
+        {
+            continuousBeam.SetPosition(0, beamStart);
+            continuousBeam.SetPosition(1, hitPoint);
+            if (!continuousBeam.enabled) continuousBeam.enabled = true;
+        }
 
-        if (!continuousBeam.enabled) continuousBeam.enabled = true;
-
+        // --- Update impact (BOTH local and remote) ---
+        // The impact is on Default layer so the main camera renders it.
+        // It MUST be updated here (not just in the pre-render hook) because in URP
+        // stacking the base camera renders BEFORE the HandsCamera overlay.
         if (continuousImpact != null)
         {
             continuousImpact.SetActive(didHit);
@@ -704,12 +718,35 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 if (impactParticles != null && !impactParticles.isPlaying) impactParticles.Play();
             }
         }
-
-        Transform fp2 = ActiveFirePoint;
-        if (continuousMuzzleFlash != null && fp2 != null)
+        else if (didHit && laserImpactPrefab != null)
         {
-            continuousMuzzleFlash.transform.position = fp2.position;
-            continuousMuzzleFlash.transform.rotation = fp2.rotation;
+            // Lazily create impact if it wasn't created during StartContinuousBeam
+            // (e.g. initial raycast missed because player was looking at the sky)
+            continuousImpact = Instantiate(laserImpactPrefab, hitPoint, Quaternion.LookRotation(hit.normal));
+            continuousImpact.transform.SetParent(transform);
+            continuousImpact.SetActive(true);
+
+            var impactEffect = continuousImpact.GetComponent<LaserImpactEffect>();
+            if (impactEffect != null) impactEffect.SetContinuousMode(true);
+
+            var impactParticles = continuousImpact.GetComponent<ParticleSystem>();
+            if (impactParticles != null)
+            {
+                var main = impactParticles.main;
+                main.loop = true;
+                impactParticles.Play();
+            }
+        }
+
+        // --- Update muzzle flash position (remote only; local flash parented to fp) ---
+        if (!isLocalPlayer)
+        {
+            Transform fp2 = ActiveFirePoint;
+            if (continuousMuzzleFlash != null && fp2 != null)
+            {
+                continuousMuzzleFlash.transform.position = fp2.position;
+                continuousMuzzleFlash.transform.rotation = fp2.rotation;
+            }
         }
     }
     
@@ -785,9 +822,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         // Safety check: don't access networked properties before Spawned() is called
         if (Object == null || !Object.IsValid) return;
         
-        // Remote players: update beam in LateUpdate (no Cinemachine concern on remote).
-        // Local player beam is handled by OnBeginCameraRendering pre-render hook instead.
-        if (!isLocalPlayer && IsFiringLaser && continuousBeam != null)
+        // Update beam/impact in LateUpdate — runs AFTER Cinemachine positions the camera,
+        // so the local player impact will use the most accurate camera direction.
+        // Local player: only impact is updated here (beam is on FPS_Hands, handled by pre-render hook).
+        // Remote player: both beam and impact are updated here.
+        if (IsFiringLaser && continuousBeam != null)
         {
             UpdateContinuousBeam();
         }

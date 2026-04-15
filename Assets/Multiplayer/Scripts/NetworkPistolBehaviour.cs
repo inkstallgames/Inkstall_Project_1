@@ -29,6 +29,8 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [SerializeField] private GameObject muzzleFlashPrefab; // Particle system muzzle flash
     [SerializeField] private GameObject bulletTrailPrefab;
     [SerializeField] private GameObject hitEffectPrefab;
+    [Tooltip("Particle effect spawned at the hit point when a player is hit")]
+    [SerializeField] private GameObject playerHitEffectPrefab;
     [SerializeField] private AudioClip shootSound;
     [SerializeField] private AudioClip reloadSound;
     [SerializeField] private float soundVolume = 1.0f;
@@ -177,21 +179,23 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         
         if (Physics.Raycast(origin, direction, out RaycastHit hit, range, hitLayers))
         {
+            bool hitPlayer = false;
             var hitPlayerData = hit.collider.GetComponentInParent<PlayerNetworkData>();
             if (hitPlayerData != null)
             {
                 if (hitPlayerData.Object.InputAuthority != Object.InputAuthority)
                 {
                     hitPlayerData.RPC_TakeDamage(damage, Object.InputAuthority);
+                    hitPlayer = true;
                 }
             }
 
-            RPC_OnShot(effectsOrigin, hit.point, true, hit.point, hit.normal);
+            RPC_OnShot(effectsOrigin, hit.point, true, hit.point, hit.normal, hitPlayer);
         }
         else
         {
             Vector3 endPoint = origin + direction * range;
-            RPC_OnShot(effectsOrigin, endPoint, false, Vector3.zero, Vector3.zero);
+            RPC_OnShot(effectsOrigin, endPoint, false, Vector3.zero, Vector3.zero, false);
         }
     }
 
@@ -238,7 +242,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_OnShot(Vector3 origin, Vector3 endPoint, bool didHit, Vector3 hitPoint, Vector3 hitNormal)
+    private void RPC_OnShot(Vector3 origin, Vector3 endPoint, bool didHit, Vector3 hitPoint, Vector3 hitNormal, bool hitPlayer)
     {
         // Trigger pistol fire animation on FPS hands (only for local player)
         if (isLocalPlayer && pistolRecoilAnimation != null)
@@ -310,10 +314,20 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             }
         }
 
-        if (didHit && hitEffectPrefab != null)
+        if (didHit)
         {
-            GameObject hitEffect = Instantiate(hitEffectPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
-            Destroy(hitEffect, 2f);
+            if (hitPlayer && playerHitEffectPrefab != null)
+            {
+                // Player hit: spawn player-hit particle effect at the impact point
+                GameObject playerHitEffect = Instantiate(playerHitEffectPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
+                Destroy(playerHitEffect, 2f);
+            }
+            else if (!hitPlayer && hitEffectPrefab != null)
+            {
+                // Surface hit: spawn generic hit effect (sparks, dust, etc.)
+                GameObject hitEffect = Instantiate(hitEffectPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
+                Destroy(hitEffect, 2f);
+            }
         }
     }
 

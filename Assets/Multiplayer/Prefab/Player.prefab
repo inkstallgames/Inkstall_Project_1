@@ -123,7 +123,7 @@ MonoBehaviour:
   MoveSpeed: 3
   SprintSpeed: 5
   RotationSmoothTime: 0
-  SpeedChangeRate: 10
+  SpeedChangeRate: 999
   LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
   FootstepAudioClips:
   - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
@@ -148,8 +148,8 @@ MonoBehaviour:
   sprintThresholdSound: 0.8
   JumpHeight: 1.2
   Gravity: -15
-  JumpTimeout: 0.3
-  FallTimeout: 0.15
+  JumpTimeout: 0.05
+  FallTimeout: 0.05
   Grounded: 1
   GroundedOffset: -0.14
   GroundedRadius: 0.28
@@ -161,7 +161,7 @@ MonoBehaviour:
   BottomClamp: -30
   CameraAngleOverride: 0
   LockCameraPosition: 0
-  mpCameraSensitivity: 0.2
+  mpCameraSensitivity: 0.8
   _NetworkedAnimationBlend: 0
   _NetworkedMotionSpeed: 0
   _NetworkedGrounded:
@@ -523,9 +523,9 @@ MonoBehaviour:
   _stateAuthorityChangeErrorCorrectionDelta: 0
   gravity: -20
   jumpImpulse: 8
-  acceleration: 10
+  acceleration: 999
   braking: 10
-  maxSpeed: 2
+  maxSpeed: 5
   rotationSpeed: 15
 --- !u!114 &6567890570193737134
 MonoBehaviour:
@@ -1125,7 +1125,7 @@ PrefabInstance:
     - target: {fileID: 8731938356357276553, guid: 26d40934eedd50944a95edfe7689a7a3,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.04
+      value: -0.09
       objectReference: {fileID: 0}
     - target: {fileID: 8731938356357276553, guid: 26d40934eedd50944a95edfe7689a7a3,
         type: 3}

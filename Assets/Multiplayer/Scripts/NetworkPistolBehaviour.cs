@@ -40,6 +40,8 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [Networked] private TickTimer FireCooldownTimer { get; set; }
     [Networked] private TickTimer ReloadTimer { get; set; }
     [Networked] public bool IsReloading { get; set; }
+    
+    public int MaxAmmo => maxAmmo;
 
     private Camera playerCamera;
     private bool wantsToShoot;
@@ -132,19 +134,22 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             return;
         }
 
+        // Process reload completion first
+        if (IsReloading && ReloadTimer.ExpiredOrNotRunning(Runner))
+        {
+            FinishReload();
+        }
+
+        // Process reload request
         if (input.isReloading && !IsReloading)
         {
             TryReload();
         }
 
+        // Process shooting - only if not reloading
         if (input.isShooting && !IsReloading)
         {
             TryShoot(input.aimOrigin, input.aimDirection);
-        }
-
-        if (IsReloading && ReloadTimer.ExpiredOrNotRunning(Runner))
-        {
-            FinishReload();
         }
     }
 
@@ -156,6 +161,12 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         }
 
         if (equipSystem != null && !equipSystem.IsPistolEquipped())
+        {
+            return;
+        }
+
+        // Additional safety check - prevent firing during reload
+        if (IsReloading)
         {
             return;
         }

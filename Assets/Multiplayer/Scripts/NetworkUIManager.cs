@@ -337,16 +337,28 @@ public class NetworkUIManager : MonoBehaviour
         {
             if (localEquipSystem.IsPistolEquipped() && localPistolBehaviour != null && !localPistolBehaviour.IsReloading)
             {
-                localPistolBehaviour.RequestReload();
+                // Check if we have reserve ammo before allowing reload
+                if (localPistolBehaviour.ReserveAmmo > 0)
+                {
+                    localPistolBehaviour.RequestReload();
+                }
             }
             else if (localEquipSystem.IsLaserEquipped() && localLaserBehaviour != null && !localLaserBehaviour.IsReloading)
             {
-                localLaserBehaviour.RequestReload();
+                // Check if we have reserve energy before allowing reload
+                if (localLaserBehaviour.ReserveEnergy > 0)
+                {
+                    localLaserBehaviour.RequestReload();
+                }
             }
         }
         else if (localPistolBehaviour != null && !localPistolBehaviour.IsReloading)
         {
-            localPistolBehaviour.RequestReload();
+            // Check if we have reserve ammo before allowing reload
+            if (localPistolBehaviour.ReserveAmmo > 0)
+            {
+                localPistolBehaviour.RequestReload();
+            }
         }
     }
 
@@ -488,19 +500,24 @@ public class NetworkUIManager : MonoBehaviour
             localPistolBehaviour.RequestReload();
         }
 
-        // Update bullet ammo text in 00/00 format or show reload dots
+        // Update bullet ammo text - keep showing current ammo during reload
         if (bulletAmmoText != null)
         {
-            if (localPistolBehaviour.IsReloading)
-            {
-                bulletAmmoText.text = "...";
-            }
-            else
-            {
-                int currentBullets = localPistolBehaviour.CurrentAmmo;
-                int reserveBullets = localPistolBehaviour.ReserveAmmo;
-                bulletAmmoText.text = $"{currentBullets:D2}/{reserveBullets:D2}";
-            }
+            int currentBullets = localPistolBehaviour.CurrentAmmo;
+            int reserveBullets = localPistolBehaviour.ReserveAmmo;
+            
+            // Always show ammo count, even during reload
+            // The ammo count will automatically update when reload completes
+            bulletAmmoText.text = $"{currentBullets:D2}/{reserveBullets:D2}";
+        }
+        
+        // Update reload button visual feedback
+        if (reloadButton != null)
+        {
+            bool canReload = !localPistolBehaviour.IsReloading && 
+                            localPistolBehaviour.ReserveAmmo > 0 && 
+                            localPistolBehaviour.CurrentAmmo < localPistolBehaviour.MaxAmmo;
+            reloadButton.interactable = canReload;
         }
     }
 
@@ -512,21 +529,24 @@ public class NetworkUIManager : MonoBehaviour
             // Laser auto-reloads when energy reaches zero (handled in NetworkLaserBehaviour)
         }
 
-        // Update laser energy text in 00/00 format or show reload dots
+        // Update laser energy text - keep showing current energy during reload
         if (bulletAmmoText != null)
         {
-            if (localLaserBehaviour.IsReloading)
-            {
-                bulletAmmoText.text = "...";
-            }
-            else
-            {
-                int currentEnergy = localLaserBehaviour.CurrentEnergy;
-                int reserveEnergy = localLaserBehaviour.ReserveEnergy;
-                
-                // Show 0 if reserve drops to 0, ensuring format is maintained
-                bulletAmmoText.text = $"{currentEnergy:D2}/{reserveEnergy:D2}";
-            }
+            int currentEnergy = localLaserBehaviour.CurrentEnergy;
+            int reserveEnergy = localLaserBehaviour.ReserveEnergy;
+            
+            // Always show energy count, even during reload
+            // The energy count will automatically update when reload completes
+            bulletAmmoText.text = $"{currentEnergy:D2}/{reserveEnergy:D2}";
+        }
+        
+        // Update reload button visual feedback
+        if (reloadButton != null)
+        {
+            bool canReload = !localLaserBehaviour.IsReloading && 
+                            localLaserBehaviour.ReserveEnergy > 0 && 
+                            localLaserBehaviour.CurrentEnergy < localLaserBehaviour.MaxEnergy;
+            reloadButton.interactable = canReload;
         }
     }
 

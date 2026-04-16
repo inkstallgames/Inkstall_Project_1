@@ -9,6 +9,14 @@ using Fusion.Sockets;
 
 namespace StarterAssets
 {
+    public enum FootstepType
+    {
+        None,
+        Walking,
+        Running,
+        Sprinting
+    }
+
     public struct NetworkInputData : INetworkInput
     {
         public Vector2 move;
@@ -41,7 +49,7 @@ namespace StarterAssets
         public float MoveSpeed = 4.0f;
 
         [Tooltip("Sprint speed of the character in m/s")]
-        public float SprintSpeed = 3.64f;
+        public float SprintSpeed = 6.0f;
 
         [Tooltip("How fast the character turns to face movement direction")]
         [Range(0.0f, 0.3f)]
@@ -53,6 +61,26 @@ namespace StarterAssets
         public AudioClip LandingAudioClip;
         public AudioClip[] FootstepAudioClips;
         [Range(0, 1)] public float FootstepAudioVolume = 0.5f;
+
+        [Header("Footstep Audio - Industry Standard")]
+        [Tooltip("Audio source for footstep sounds")]
+        public AudioSource footstepAudioSource;
+        [Tooltip("Walking footstep sounds (randomly selected)")]
+        public AudioClip[] walkingFootsteps;
+        [Tooltip("Running footstep sounds (randomly selected)")]
+        public AudioClip[] runningFootsteps;
+        [Tooltip("Sprinting footstep sounds (randomly selected)")]
+        public AudioClip[] sprintingFootsteps;
+        [Tooltip("Time between footsteps when walking")]
+        public float walkingFootstepInterval = 0.5f;
+        [Tooltip("Time between footsteps when running")]
+        public float runningFootstepInterval = 0.35f;
+        [Tooltip("Time between footsteps when sprinting")]
+        public float sprintingFootstepInterval = 0.25f;
+        [Tooltip("Threshold for joystick magnitude to trigger running")]
+        public float runThresholdSound = 0.5f;
+        [Tooltip("Threshold for joystick magnitude to trigger sprinting")]
+        public float sprintThresholdSound = 0.8f;
 
         [Space(10)]
         [Tooltip("The height the player can jump")]
@@ -134,6 +162,10 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
         private Vector3 _lastInputDirection = Vector3.zero;
         private NetworkInputData _latestInput;
+        
+        // Industry-standard footstep system
+        private float _nextFootstepTime;
+        private FootstepType _currentFootstepType = FootstepType.None;
 
         // Networked animation state - synced from state authority to all clients
         [Networked] public float NetworkedAnimationBlend { get; set; }
@@ -167,6 +199,12 @@ namespace StarterAssets
         private void Start()
         {
             // Cursor is left unlocked so players can interact with UI (throw button, etc.)
+        }
+
+        private void Update()
+        {
+            // Handle movement sounds for all players
+            HandleMovementSounds();
         }
 
         public override void Spawned()
@@ -262,6 +300,9 @@ namespace StarterAssets
             _cinemachineTargetYaw = transform.eulerAngles.y;
             _cinemachineTargetPitch = 0f;
 
+            // Setup footstep audio system
+            SetupFootstepAudio();
+
             if (Object.HasInputAuthority)
             {
                 Runner.AddCallbacks(this);
@@ -279,6 +320,136 @@ namespace StarterAssets
             }
         }
 
+        private void SetupFootstepAudio()
+        {
+            // Setup footstep audio source for industry-standard system
+            if (footstepAudioSource == null)
+            {
+                footstepAudioSource = gameObject.AddComponent<AudioSource>();
+                footstepAudioSource.playOnAwake = false;
+                footstepAudioSource.loop = false; // Individual footstep sounds
+                footstepAudioSource.spatialBlend = 1.0f; // 3D sound
+                footstepAudioSource.volume = 0.7f;
+            }
+        }
+
+        private void HandleMovementSounds()
+        {
+            // Industry-standard footstep system
+            if (footstepAudioSource == null)
+            {
+                return;
+            }
+            
+            // Only play footsteps when grounded
+            if (!Grounded)
+            {
+                _currentFootstepType = FootstepType.None;
+                return;
+            }
+            
+            // Get current input for local player
+            Vector2 currentMove = Vector2.zero;
+            bool isSprinting = false;
+            
+            if (Object.HasInputAuthority && _nativeInput != null)
+            {
+                currentMove = _nativeInput.move;
+                isSprinting = _nativeInput.sprint;
+            }
+            else if (!Object.HasInputAuthority)
+            {
+                // For remote players, use networked input
+                currentMove = _latestInput.move;
+                isSprinting = _latestInput.sprint;
+            }
+            
+            // Determine footstep type based on movement
+            FootstepType newFootstepType = FootstepType.None;
+            
+            if (currentMove != Vector2.zero)
+            {
+                float magnitude = currentMove.magnitude;
+                
+                if (isSprinting || magnitude > sprintThresholdSound)
+                {
+                    newFootstepType = FootstepType.Sprinting;
+                }
+                else if (magnitude > runThresholdSound)
+                {
+                    newFootstepType = FootstepType.Running;
+                }
+                else
+                {
+                    newFootstepType = FootstepType.Walking;
+                }
+            }
+            
+            
+            // Handle footstep timing and playback
+            if (newFootstepType != FootstepType.None)
+            {
+                if (newFootstepType != _currentFootstepType)
+                {
+                    // Footstep type changed, reset timing
+                    _currentFootstepType = newFootstepType;
+                    _nextFootstepTime = Time.time;
+                }
+                
+                // Check if it's time for next footstep
+                if (Time.time >= _nextFootstepTime)
+                {
+                    PlayFootstep(newFootstepType);
+                    
+                    // Set next footstep time based on type
+                    switch (newFootstepType)
+                    {
+                        case FootstepType.Walking:
+                            _nextFootstepTime = Time.time + walkingFootstepInterval;
+                            break;
+                        case FootstepType.Running:
+                            _nextFootstepTime = Time.time + runningFootstepInterval;
+                            break;
+                        case FootstepType.Sprinting:
+                            _nextFootstepTime = Time.time + sprintingFootstepInterval;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                _currentFootstepType = FootstepType.None;
+            }
+        }
+        
+        private void PlayFootstep(FootstepType footstepType)
+        {
+            AudioClip[] footstepClips = null;
+            
+            switch (footstepType)
+            {
+                case FootstepType.Walking:
+                    footstepClips = walkingFootsteps;
+                    break;
+                case FootstepType.Running:
+                    footstepClips = runningFootsteps;
+                    break;
+                case FootstepType.Sprinting:
+                    footstepClips = sprintingFootsteps;
+                    break;
+            }
+            
+            if (footstepClips != null && footstepClips.Length > 0)
+            {
+                // Select random footstep from array
+                AudioClip randomFootstep = footstepClips[UnityEngine.Random.Range(0, footstepClips.Length)];
+                footstepAudioSource.PlayOneShot(randomFootstep);
+            }
+            else
+            {
+            }
+        }
+        
         public override void Despawned(NetworkRunner runner, bool hasState)
         {
             if (Object.HasInputAuthority)
@@ -346,6 +517,7 @@ namespace StarterAssets
                 float normalizedSpeed = SprintSpeed > 0 ? _animationBlend / SprintSpeed : 0f;
                 normalizedSpeed = Mathf.Clamp01(normalizedSpeed);
                 NetworkedAnimationBlend = normalizedSpeed;
+                
                 NetworkedMotionSpeed = data.move.magnitude;
                 NetworkedGrounded = Grounded;
                 NetworkedVerticalVelocity = _verticalVelocity;
@@ -367,50 +539,14 @@ namespace StarterAssets
                 NetworkedVerticalVelocity = _verticalVelocity;
             }
             
-            // Removed the if statement here
             // CRITICAL: Log any jump execution without input
             if (_jumpTimeoutDelta <= 0f && Grounded && _latestInput.jump == false && _verticalVelocity > 0f)
             {
-                                            }
-        }
+            }
+        } // Added missing closing brace here
 
         public override void Render()
         {
-            // COMPLETELY DISABLED: All FPS hands animator control - handled by PistolRecoilAnimation
-            // This prevents parameter errors and conflicts with PistolRecoilAnimation
-            /*
-            if (_hasArmAnimator && _armAnimator != null)
-            {
-                if (!_armAnimator.enabled) _armAnimator.enabled = true;
-                
-                // Detect if moving backward relative to facing direction
-                bool isMovingBackward = false;
-                if (_latestInput.move.sqrMagnitude > 0.01f)
-                {
-                    // Calculate actual movement direction in world space
-                    Vector3 inputDirection = new Vector3(_latestInput.move.x, 0f, _latestInput.move.y).normalized;
-                    Quaternion desiredRotation = Quaternion.Euler(0.0f, _cinemachineTargetYaw, 0.0f);
-                    Vector3 worldMoveDirection = desiredRotation * inputDirection;
-                    
-                    // Check if world movement is opposite to character's forward
-                    float dotProduct = Vector3.Dot(worldMoveDirection, transform.forward);
-                    isMovingBackward = dotProduct < -0.5f;
-                }
-                
-                // Set global animator speed for reverse playback
-                float animatorSpeed = isMovingBackward ? -1f : 1f;
-                _armAnimator.speed = animatorSpeed;
-                
-                _armAnimator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
-                _armAnimator.SetBool(_animIDGrounded, NetworkedGrounded);
-                _armAnimator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
-                
-                if (_latestInput.isShooting) _armAnimator.SetTrigger(_animIDFire);
-                if (_latestInput.equipBomb) _armAnimator.SetTrigger(_animIDEquipGranade);
-                if (_latestInput.isThrowingBomb) _armAnimator.SetTrigger(_animIDThrowGranade);
-            }
-            */
-            
             // Update full body animator (for remote players and shadows)
             if (_hasFullBodyAnimator && _fullBodyAnimator != null)
             {
@@ -584,46 +720,77 @@ namespace StarterAssets
                 _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
 
-            float targetSpeed = input.sprint ? SprintSpeed : MoveSpeed;
-            if (input.move == Vector2.zero) targetSpeed = 0.0f;
-
             float inputMagnitude = input.move.magnitude;
-
-            // CRITICAL FIX: Instant speed changes - eliminate momentum for immediate direction response
-            // When direction changes, speed changes instantly without acceleration/deceleration
-            _speed = targetSpeed; // Direct assignment instead of Lerp
-
-            // round speed to 3 decimal places
-            // CRITICAL FIX: Instant animation blend changes - eliminate momentum
-            _animationBlend = targetSpeed; // Direct assignment instead of Lerp
+            
+            // Gradual walk-to-run transition based on joystick magnitude
+            float targetSpeed = 0f;
+            
+            if (inputMagnitude > 0.01f)  // Player is moving
+            {
+                if (input.sprint)
+                {
+                    // Sprint button pressed: Use full sprint speed
+                    targetSpeed = SprintSpeed;  // 6.0 m/s
+                }
+                else
+                {
+                    // No sprint: Gradual transition from walk to run based on joystick
+                    // 0.0 - 0.5 magnitude = Walk speed (4.0 m/s)
+                    // 0.5 - 1.0 magnitude = Gradual increase to run speed (6.0 m/s)
+                    float walkThreshold = 0.5f;
+                    
+                    if (inputMagnitude <= walkThreshold)
+                    {
+                        // Pure walking zone
+                        targetSpeed = MoveSpeed;  // 4.0 m/s
+                    }
+                    else
+                    {
+                        // Transition zone: Gradually increase from walk to run speed
+                        float transitionFactor = (inputMagnitude - walkThreshold) / (1.0f - walkThreshold);  // 0 to 1
+                        targetSpeed = Mathf.Lerp(MoveSpeed, SprintSpeed, transitionFactor);  
+                    }
+                }
+            }
+            
+            // Smooth acceleration/deceleration for natural movement
+            float accelerationRate = 10.0f;  // Configurable acceleration
+            float decelerationRate = 15.0f;  // Faster deceleration for responsiveness
+            
+            if (targetSpeed > _speed)
+            {
+                // Accelerating: Use acceleration rate
+                _speed = Mathf.MoveTowards(_speed, targetSpeed, accelerationRate * Runner.DeltaTime);
+            }
+            else
+            {
+                // Decelerating: Use deceleration rate for snappy stops
+                _speed = Mathf.MoveTowards(_speed, targetSpeed, decelerationRate * Runner.DeltaTime);
+            }
+            
+            // Smooth animation blending
+            float animationAcceleration = 8.0f;  // Slightly faster for responsive animation
+            _animationBlend = Mathf.MoveTowards(_animationBlend, targetSpeed, animationAcceleration * Runner.DeltaTime);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
             // Normalize animation blend to 0-1 range for Animator
             float normalizedSpeed = _animationBlend / SprintSpeed; // SprintSpeed is max speed
             normalizedSpeed = Mathf.Clamp01(normalizedSpeed);
             
-            // REMOVED: Complete stop on direction change - now allows smooth direction changes
-            // Character can now change direction smoothly without stopping
-
             // Calculate movement direction - character always faces camera, so move relative to camera
             Vector3 targetDirection = Vector3.zero;
-            Vector3 movementInputDirection = Vector3.zero;
 
             if (input.move != Vector2.zero)
             {
                 // Calculate movement direction relative to camera
                 Vector3 inputDirection = new Vector3(input.move.x, 0f, input.move.y).normalized;
                 
-                // CRITICAL FIX: Get camera rotation from networked input.cameraYaw.
-                // If we use _cinemachineTargetYaw, client prediction calculates current camera yaw instead of historical tick yaw,
-                // causing the Server and Client vectors to diverge and triggering rubberbanding!
+                // Use networked camera yaw to prevent rubberbanding
                 float cameraYawRad = input.cameraYaw * Mathf.Deg2Rad;
                 Vector3 forward = new Vector3(Mathf.Sin(cameraYawRad), 0f, Mathf.Cos(cameraYawRad));
                 Vector3 right = new Vector3(Mathf.Cos(cameraYawRad), 0f, -Mathf.Sin(cameraYawRad));
                 
                 // Calculate world-space movement direction
                 Vector3 worldDirection = (forward * input.move.y + right * input.move.x).normalized;
-                
-                // Calculate movement direction - character always faces camera, so move relative to camera
                 targetDirection = worldDirection;
             }
 
@@ -632,16 +799,7 @@ namespace StarterAssets
             {
                 _networkController.maxSpeed = _speed;
                 
-                // RUBBERBANDING FIX: Removed direct Velocity zeroing.
-                // Directly setting _networkController.Velocity bypasses Fusion's internal
-                // state snapshot/rollback for NetworkCharacterController. During client-side
-                // prediction resimulation, Fusion restores velocity from the server snapshot,
-                // but our manual zero could cause the predicted velocity to differ from what
-                // the server computed, triggering snap corrections (rubberbanding).
-                // Move(Vector3.zero) already handles deceleration when no input is given.
-                
-                // NetworkCharacterController expects a raw normalized direction vector, NOT a pre-calculated delta!
-                // It internally scales by DeltaTime, Gravity, and maxSpeed.
+                // NetworkCharacterController handles scaling internally
                 _networkController.Move(targetDirection.normalized);
             }
 
@@ -659,60 +817,31 @@ namespace StarterAssets
             // Use the Native Grounded state from the controller
             Grounded = _networkController.Grounded;
 
-            if (input.jump && (int)Time.frameCount % 10 == 0)
-            {
-            }
-
             if (Grounded)
             {
                 _fallTimeoutDelta = FallTimeout;
-                
-                // (REMOVED: Artificially zeroing vertical velocity when grounded breaks running up slopes.
-                // NetworkCharacterController must be allowed to have positive Velocity.y when traversing ramps!)
-                
                 _verticalVelocity = _networkController.Velocity.y;
 
                 if (input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
-                    // CRITICAL: Triple-check that we actually have jump input to prevent auto-jumps
-                    if (!_latestInput.jump)
+                    // Simple jump validation
+                    if (_networkController.Velocity.y <= 0.1f)
                     {
-                                                return;
+                        // Sync impulse height and trigger native jump
+                        float jumpImpulse = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+                        _networkController.jumpImpulse = jumpImpulse;
+                        _networkController.Jump();
+                        _verticalVelocity = jumpImpulse;
+                        
+                        // Reset jump timeout
+                        _jumpTimeoutDelta = JumpTimeout;
                     }
-                    
-                    // CRITICAL: Additional check - ensure we're not getting velocity from elsewhere
-                    if (_networkController.Velocity.y > 0.1f && !input.jump)
-                    {
-                                                return;
-                    }
-                    
-                    // CRITICAL FIX: Force allow jump while sprinting - bypass timeout check when sprinting
-                    if (input.sprint && _jumpTimeoutDelta <= 0.1f) // Allow jump with small timeout when sprinting
-                    {
-                                            }
-                    else if (_jumpTimeoutDelta > 0.0f)
-                    {
-                                                return; // Block jump if timeout and not sprinting
-                    }
-                    
-                    // Sync impulse height and trigger native jump
-                    float jumpImpulse = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-                    _networkController.jumpImpulse = jumpImpulse;
-                    _networkController.Jump();
-                    _verticalVelocity = jumpImpulse;
-                    
-                    // Reset jump timeout immediately after successful jump
-                    _jumpTimeoutDelta = JumpTimeout;
-                    
-                                    }
-                else if (input.jump && _jumpTimeoutDelta > 0.0f)
-                {
-                                    }
+                }
 
                 if (_jumpTimeoutDelta > 0.0f)
                 {
                     _jumpTimeoutDelta -= Runner.DeltaTime;
-                    _jumpTimeoutDelta = Mathf.Max(0f, _jumpTimeoutDelta); // Never go below 0
+                    _jumpTimeoutDelta = Mathf.Max(0f, _jumpTimeoutDelta);
                 }
             }
             else  
@@ -800,7 +929,8 @@ namespace StarterAssets
             }
             else
             {
-                            }
+                // No input available
+            }
             
             // Collect weapon equip input
             if (_cachedEquipSystem == null)

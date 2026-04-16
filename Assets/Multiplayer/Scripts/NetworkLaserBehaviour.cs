@@ -47,6 +47,8 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [Networked] private TickTimer ReloadTimer { get; set; }
     [Networked] public bool IsReloading { get; set; }
     [Networked] private TickTimer PostReloadCooldown { get; set; }
+    
+    public int MaxEnergy => maxEnergy;
 
     private Camera playerCamera;
     private bool wantsToShoot;
@@ -258,22 +260,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             return;
         }
 
-        // Manual reload request (from UI button or R key)
-        if (input.isReloading && !IsReloading && CurrentEnergy < maxEnergy && ReserveEnergy > 0)
-        {
-            if (Object.HasStateAuthority)
-            {
-                IsReloading = true;
-                ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
-
-                if (laserReloadSound != null)
-                {
-                    RPC_PlayReloadSound();
-                }
-            }
-        }
-
-        // Check if reload just completed
+        // Process reload completion first
         if (IsReloading && ReloadTimer.ExpiredOrNotRunning(Runner))
         {
             if (Object.HasStateAuthority)
@@ -290,6 +277,21 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 PostReloadCooldown = TickTimer.CreateFromSeconds(Runner, 0.1f);
                 
                 RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
+            }
+        }
+
+        // Process manual reload request (from UI button or R key)
+        if (input.isReloading && !IsReloading && CurrentEnergy < maxEnergy && ReserveEnergy > 0)
+        {
+            if (Object.HasStateAuthority)
+            {
+                IsReloading = true;
+                ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
+
+                if (laserReloadSound != null)
+                {
+                    RPC_PlayReloadSound();
+                }
             }
         }
         
@@ -372,13 +374,18 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (CurrentEnergy <= 0)
         {
             CurrentEnergy = 0;
-            IsReloading = true;
-            ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
             
-            // Play reload start sound using a GameObject so we can stop it later
-            if (laserReloadSound != null)
+            // Only start reload if we have reserve energy
+            if (ReserveEnergy > 0)
             {
-                RPC_PlayReloadSound();
+                IsReloading = true;
+                ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
+                
+                // Play reload start sound using a GameObject so we can stop it later
+                if (laserReloadSound != null)
+                {
+                    RPC_PlayReloadSound();
+                }
             }
         }
 

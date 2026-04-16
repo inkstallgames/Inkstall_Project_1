@@ -337,16 +337,28 @@ public class NetworkUIManager : MonoBehaviour
         {
             if (localEquipSystem.IsPistolEquipped() && localPistolBehaviour != null && !localPistolBehaviour.IsReloading)
             {
-                localPistolBehaviour.RequestReload();
+                // Check if we have reserve ammo before allowing reload
+                if (localPistolBehaviour.ReserveAmmo > 0)
+                {
+                    localPistolBehaviour.RequestReload();
+                }
             }
             else if (localEquipSystem.IsLaserEquipped() && localLaserBehaviour != null && !localLaserBehaviour.IsReloading)
             {
-                localLaserBehaviour.RequestReload();
+                // Check if we have reserve energy before allowing reload
+                if (localLaserBehaviour.ReserveEnergy > 0)
+                {
+                    localLaserBehaviour.RequestReload();
+                }
             }
         }
         else if (localPistolBehaviour != null && !localPistolBehaviour.IsReloading)
         {
-            localPistolBehaviour.RequestReload();
+            // Check if we have reserve ammo before allowing reload
+            if (localPistolBehaviour.ReserveAmmo > 0)
+            {
+                localPistolBehaviour.RequestReload();
+            }
         }
     }
 
@@ -502,7 +514,10 @@ public class NetworkUIManager : MonoBehaviour
         // Update reload button visual feedback
         if (reloadButton != null)
         {
-            reloadButton.interactable = !localPistolBehaviour.IsReloading;
+            bool canReload = !localPistolBehaviour.IsReloading && 
+                            localPistolBehaviour.ReserveAmmo > 0 && 
+                            localPistolBehaviour.CurrentAmmo < localPistolBehaviour.MaxAmmo;
+            reloadButton.interactable = canReload;
         }
     }
 
@@ -528,7 +543,10 @@ public class NetworkUIManager : MonoBehaviour
         // Update reload button visual feedback
         if (reloadButton != null)
         {
-            reloadButton.interactable = !localLaserBehaviour.IsReloading;
+            bool canReload = !localLaserBehaviour.IsReloading && 
+                            localLaserBehaviour.ReserveEnergy > 0 && 
+                            localLaserBehaviour.CurrentEnergy < localLaserBehaviour.MaxEnergy;
+            reloadButton.interactable = canReload;
         }
     }
 

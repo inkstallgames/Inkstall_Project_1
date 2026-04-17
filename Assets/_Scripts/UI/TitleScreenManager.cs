@@ -7,4 +7,9 @@ public class TitleScreenManager : MonoBehaviour
     {
         SceneManager.LoadScene("MainScene");
     }
+
+    public void PlayMultiplayer()
+    {
+        SceneManager.LoadScene("Lobby");
+    }
 }

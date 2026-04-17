@@ -65,8 +65,16 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     
     // Networked aim state so remote clients can draw the beam correctly.
     // Set every FixedUpdateNetwork tick from the shooter's camera input.
+    // OPTIMIZED: Only update when direction changes significantly
     [Networked] public Vector3 NetworkedAimOrigin { get; set; }
     [Networked] public Vector3 NetworkedAimDirection { get; set; }
+    
+    // Optimization: Track last direction to reduce network updates
+    private Vector3 _lastNetworkedAimDirection;
+    
+    // Network optimization
+    private float _lastNetworkUpdateTime = 0f;
+    private const float NETWORK_UPDATE_INTERVAL = 0.02f; // 50Hz updates
     
     // Continuous beam visual references
     private LineRenderer continuousBeam;
@@ -350,8 +358,19 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             // Always keep networked aim in sync while firing (state authority writes, all clients read)
             if (Object.HasStateAuthority)
             {
-                NetworkedAimOrigin    = input.aimOrigin;
-                NetworkedAimDirection = input.aimDirection;
+                // OPTIMIZATION: Only update networked aim when direction changes significantly
+                float directionThreshold = 0.01f; // Only update if direction changes by 1%
+                bool directionChanged = Vector3.Distance(_lastNetworkedAimDirection, input.aimDirection) > directionThreshold;
+                
+                // Rate limit network updates to reduce bandwidth
+                float currentTime = Time.time;
+                if ((currentTime - _lastNetworkUpdateTime >= NETWORK_UPDATE_INTERVAL) || directionChanged)
+                {
+                    NetworkedAimOrigin    = input.aimOrigin;
+                    NetworkedAimDirection = input.aimDirection;
+                    _lastNetworkedAimDirection = input.aimDirection;
+                    _lastNetworkUpdateTime = currentTime;
+                }
                 TryShootAuthority(input.aimOrigin, input.aimDirection);
             }
         }

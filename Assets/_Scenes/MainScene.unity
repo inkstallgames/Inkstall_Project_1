@@ -32976,7 +32976,7 @@ PrefabInstance:
     - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
       propertyPath: targetSceneIndex
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4347093295648580978, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
@@ -60419,7 +60419,7 @@ PrefabInstance:
     - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
       propertyPath: targetSceneIndex
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4347093295648580978, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
@@ -73355,10 +73355,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 133355dd6c148fc499db0662e22654e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSceneIndex: 1
+  targetSceneIndex: 2
   isEntrance: 1
   loadDelay: 0.5
-  mainCitySceneIndex: 0
+  mainCitySceneIndex: 1
   portalEnterSound: {fileID: 8300000, guid: a0e6b0b42a16dc748b123c04d4d09b85, type: 3}
   animator: {fileID: 785277274040348057}
 --- !u!65 &1047201167
@@ -142741,7 +142741,7 @@ PrefabInstance:
     - target: {fileID: 2058566421474579511, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
       propertyPath: targetSceneIndex
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4347093295648580978, guid: 107fa3d92c897f5449055027e7664f03,
         type: 3}
@@ -163778,6 +163778,7 @@ MonoBehaviour:
   analogMovement: 0
   cursorLocked: 0
   cursorInputForLook: 0
+  isTouchLook: 0
 --- !u!33 &1934004836346221036
 MeshFilter:
   m_ObjectHideFlags: 0

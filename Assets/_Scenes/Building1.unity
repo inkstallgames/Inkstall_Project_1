@@ -18487,12 +18487,12 @@ PrefabInstance:
     - target: {fileID: 3106082846965335042, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: targetSceneIndex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3106082846965335042, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
       propertyPath: mainCitySceneIndex
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3218370127332946291, guid: f32bf1ba4d85a9544b5aefadcc2ef03e,
         type: 3}
@@ -20778,6 +20778,7 @@ MonoBehaviour:
   analogMovement: 0
   cursorLocked: 0
   cursorInputForLook: 1
+  isTouchLook: 0
 --- !u!222 &5429520221757204661
 CanvasRenderer:
   m_ObjectHideFlags: 0

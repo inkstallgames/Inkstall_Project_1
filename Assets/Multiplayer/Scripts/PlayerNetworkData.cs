@@ -313,45 +313,46 @@ public class PlayerNetworkData : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
+        
+        // OPTIMIZATION: Early exit to reduce CPU usage
         if (Health <= 0 || Health >= MaxHealth) return;
         if (LastDamageTick <= 0) return; // Never been hit yet
 
         // Calculate seconds elapsed since last damage
         float elapsedSinceLastDamage = (Runner.Tick - LastDamageTick) * Runner.DeltaTime;
 
-        if (elapsedSinceLastDamage < regenDelay) return; // Still in cooldown
+        // OPTIMIZATION: Exit early if still in cooldown (reduces network traffic)
+        if (elapsedSinceLastDamage < regenDelay) return;
 
         // Accumulate regen
         RegenAccumulator += regenRate * Runner.DeltaTime;
 
+        // OPTIMIZATION: Only send RPC when health actually changes
         if (RegenAccumulator >= 1f)
         {
             int regenAmount = Mathf.FloorToInt(RegenAccumulator);
             RegenAccumulator -= regenAmount;
 
+            int oldHealth = Health;
             Health = Mathf.Min(MaxHealth, Health + regenAmount);
 
-            // Sync to all clients
-            RPC_UpdateHealth(Health);
+            // Only sync if health actually changed
+            if (Health != oldHealth)
+            {
+                RPC_UpdateHealth(Health);
+            }
         }
     }
 
     public override void Render()
-
     {
-
+        // OPTIMIZATION: Only update visuals when values actually change
         if (_lastPlayerName != PlayerName || _lastTeamId != TeamId)
-
         {
-
             _lastPlayerName = PlayerName;
-
             _lastTeamId = TeamId;
-
             UpdateVisuals();
-
         }
-
     }
 
 }

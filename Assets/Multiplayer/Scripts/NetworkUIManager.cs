@@ -35,6 +35,7 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI deathsText;         // Death count
     [SerializeField] private TextMeshProUGUI playerNameText;     // Local player name
     [SerializeField] private GameObject damageIndicatorImage;    // Flashes on screen when taking damage
+    [SerializeField] private GameObject healIndicatorImage;      // Flashes on screen when healing/regenerating
 
     [Header("Game Info UI")]
     [SerializeField] private TextMeshProUGUI gameStateText;      // Shows current game state
@@ -89,6 +90,8 @@ public class NetworkUIManager : MonoBehaviour
     private int _lastKnownHealth = -1;
     private float _damageIndicatorTimer = 0f;
     private const float DAMAGE_INDICATOR_DURATION = 0.3f;
+    private float _healIndicatorTimer = 0f;
+    private const float HEAL_INDICATOR_DURATION = 0.3f;
 
     private void Awake()
     {
@@ -567,14 +570,31 @@ public class NetworkUIManager : MonoBehaviour
             if (damageIndicatorImage != null && !damageIndicatorImage.activeSelf)
                 damageIndicatorImage.SetActive(true);
         }
+
+        // Heal indicator — show when health increases (regenerating)
+        if (_lastKnownHealth > 0 && currentHealth > _lastKnownHealth)
+        {
+            _healIndicatorTimer = HEAL_INDICATOR_DURATION;
+            if (healIndicatorImage != null && !healIndicatorImage.activeSelf)
+                healIndicatorImage.SetActive(true);
+        }
+
         _lastKnownHealth = currentHealth;
 
-        // Count down and hide the indicator when no new damage arrives
+        // Count down and hide the damage indicator
         if (_damageIndicatorTimer > 0f)
         {
             _damageIndicatorTimer -= Time.deltaTime;
             if (_damageIndicatorTimer <= 0f && damageIndicatorImage != null)
                 damageIndicatorImage.SetActive(false);
+        }
+
+        // Count down and hide the heal indicator
+        if (_healIndicatorTimer > 0f)
+        {
+            _healIndicatorTimer -= Time.deltaTime;
+            if (_healIndicatorTimer <= 0f && healIndicatorImage != null)
+                healIndicatorImage.SetActive(false);
         }
 
         // Health

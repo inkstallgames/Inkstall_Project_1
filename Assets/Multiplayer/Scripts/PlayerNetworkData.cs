@@ -12,6 +12,22 @@ public class PlayerNetworkData : NetworkBehaviour
 
     [Networked] public int Health { get; set; } = 100;
 
+    // --- Health Regen ---
+    [Header("Health Regen")]
+    [Tooltip("Seconds after last damage before health regen begins")]
+    [SerializeField] private float regenDelay = 10f;
+    
+    [Tooltip("Health points regenerated per second")]
+    [SerializeField] private float regenRate = 5f;
+    
+    private const int MaxHealth = 100;
+    
+    /// <summary>The tick at which the player last took damage. Used to calculate regen delay.</summary>
+    [Networked] private int LastDamageTick { get; set; }
+    
+    /// <summary>Accumulated fractional regen (since Health is int, we accumulate sub-integer amounts).</summary>
+    [Networked] private float RegenAccumulator { get; set; }
+
     [Networked] public int TeamId { get; set; } = -1; // -1 means no team
 
     [Networked] public string PlayerName { get; set; }
@@ -186,6 +202,10 @@ public class PlayerNetworkData : NetworkBehaviour
 
         Health = Mathf.Max(0, Health - damage);
         
+        // Reset regen timer — any damage resets the countdown
+        LastDamageTick = Runner.Tick;
+        RegenAccumulator = 0f;
+        
         // Play hit sound on all clients (each player will hear it from their perspective)
         RPC_PlayHitSound(isLaserDamage);
         
@@ -288,6 +308,33 @@ public class PlayerNetworkData : NetworkBehaviour
     }
 
 
+
+    // --- Health Regen Logic (runs on State Authority only) ---
+    public override void FixedUpdateNetwork()
+    {
+        if (!Object.HasStateAuthority) return;
+        if (Health <= 0 || Health >= MaxHealth) return;
+        if (LastDamageTick <= 0) return; // Never been hit yet
+
+        // Calculate seconds elapsed since last damage
+        float elapsedSinceLastDamage = (Runner.Tick - LastDamageTick) * Runner.DeltaTime;
+
+        if (elapsedSinceLastDamage < regenDelay) return; // Still in cooldown
+
+        // Accumulate regen
+        RegenAccumulator += regenRate * Runner.DeltaTime;
+
+        if (RegenAccumulator >= 1f)
+        {
+            int regenAmount = Mathf.FloorToInt(RegenAccumulator);
+            RegenAccumulator -= regenAmount;
+
+            Health = Mathf.Min(MaxHealth, Health + regenAmount);
+
+            // Sync to all clients
+            RPC_UpdateHealth(Health);
+        }
+    }
 
     public override void Render()
 

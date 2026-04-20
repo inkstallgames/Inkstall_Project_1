@@ -10,22 +10,22 @@ namespace StarterAssets
 
         public void VirtualMoveInput(Vector2 virtualMoveDirection)
         {
-            starterAssetsInputs.MoveInput(virtualMoveDirection);
+            starterAssetsInputs.virtualMoveInput = virtualMoveDirection;
         }
 
         public void VirtualLookInput(Vector2 virtualLookDirection)
         {
-            starterAssetsInputs.LookInput(virtualLookDirection);
+            starterAssetsInputs.virtualLookInput = virtualLookDirection;
         }
 
         public void VirtualJumpInput(bool virtualJumpState)
         {
-            starterAssetsInputs.JumpInput(virtualJumpState);
+            starterAssetsInputs.virtualJumpInput = virtualJumpState;
         }
 
         public void VirtualSprintInput(bool virtualSprintState)
         {
-            starterAssetsInputs.SprintInput(virtualSprintState);
+            starterAssetsInputs.virtualSprintInput = virtualSprintState;
         }
         
     }

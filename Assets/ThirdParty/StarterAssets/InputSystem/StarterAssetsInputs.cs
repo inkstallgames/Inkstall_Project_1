@@ -41,7 +41,11 @@ namespace StarterAssets
 		[Header("Touch Tracking")]
 		[HideInInspector] public bool isTouchLook = false;
 
-
+		[Header("Virtual Inputs")]
+		[HideInInspector] public Vector2 virtualMoveInput;
+		[HideInInspector] public Vector2 virtualLookInput;
+		[HideInInspector] public bool virtualJumpInput;
+		[HideInInspector] public bool virtualSprintInput;
 
 #if ENABLE_INPUT_SYSTEM
 
@@ -194,17 +198,19 @@ namespace StarterAssets
 			}
 
 			else
-
 			{
-
-				// Fall back to keyboard input
-
-				newMove = moveAction.ReadValue<Vector2>();
-
+				// Fall back to keyboard input or UI canvas virtual joystick
+				Vector2 kbMove = moveAction.ReadValue<Vector2>();
+				if (virtualMoveInput != Vector2.zero)
+				{
+					newMove = virtualMoveInput;
+				}
+				else
+				{
+					newMove = kbMove;
+				}
 			}
-
 			
-
 			MoveInput(newMove);
 
 			if (newMove.sqrMagnitude > 0.01f && newMove != move)
@@ -249,6 +255,11 @@ namespace StarterAssets
 					}
 				}
 
+				if (virtualLookInput != Vector2.zero)
+				{
+					newLook = virtualLookInput;
+				}
+
 				LookInput(newLook);
 
 			}
@@ -256,21 +267,17 @@ namespace StarterAssets
 			
 
 			bool newJump = jumpAction.IsPressed();
-
 			
-
 			// Fallback to UI Button for mobile
-
 			if (NetworkUIManager.Instance != null && NetworkUIManager.Instance.IsJumpHeld)
-
 			{
-
 				newJump = true;
-
 			}
-
+			if (virtualJumpInput)
+			{
+				newJump = true;
+			}
 			
-
 			JumpInput(newJump);
 
 			
@@ -290,11 +297,8 @@ namespace StarterAssets
 			else
 
 			{
-
-				newSprint = sprintAction.IsPressed();
-
+				newSprint = sprintAction.IsPressed() || virtualSprintInput;
 			}
-
 			SprintInput(newSprint);
 
 #endif

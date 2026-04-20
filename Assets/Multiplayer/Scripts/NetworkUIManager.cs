@@ -93,6 +93,7 @@ public class NetworkUIManager : MonoBehaviour
     private float _healIndicatorTimer = 0f;
     private const float HEAL_INDICATOR_DURATION = 0.3f;
 
+    //awake
     private void Awake()
     {
         if (Instance == null)

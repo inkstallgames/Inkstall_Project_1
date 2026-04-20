@@ -198,4 +198,7 @@ public class OptionsMenuManager : MonoBehaviour
     {
         SaveSettings();
     }
+    public void ExitToHome(){
+        SceneManager.LoadScene(0);
+    }
 }

@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class LobbyUIManager : MonoBehaviour
 {
@@ -352,5 +353,9 @@ public class LobbyUIManager : MonoBehaviour
             if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
             if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
         }
+    }
+
+    public void ExitToHome(){
+        SceneManager.LoadScene(0);
     }
 }

@@ -350,6 +350,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Health: 100
+  regenDelay: 10
+  regenRate: 5
   _TeamId: -1
   _PlayerName: 
   _Kills: 0
@@ -1086,6 +1088,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8243209128910584115, guid: 26d40934eedd50944a95edfe7689a7a3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8255245023044956227, guid: 26d40934eedd50944a95edfe7689a7a3,
         type: 3}

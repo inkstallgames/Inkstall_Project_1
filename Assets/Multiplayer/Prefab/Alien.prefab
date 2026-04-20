@@ -168,6 +168,15 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
   - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
   FootstepAudioVolume: 0.3
+  footstepAudioSource: {fileID: 0}
+  walkingFootsteps: []
+  runningFootsteps: []
+  sprintingFootsteps: []
+  walkingFootstepInterval: 0.5
+  runningFootstepInterval: 0.35
+  sprintingFootstepInterval: 0.25
+  runThresholdSound: 0.5
+  sprintThresholdSound: 0.8
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.3
@@ -370,6 +379,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Health: 100
+  regenDelay: 10
+  regenRate: 5
   _TeamId: -1
   _PlayerName: 
   _Kills: 0
@@ -1044,6 +1055,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4274013936778210291, guid: 0af6344958e3c6e42851e68d72769b03,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4597817033486475164, guid: 0af6344958e3c6e42851e68d72769b03,
         type: 3}

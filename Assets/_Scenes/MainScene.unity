@@ -41877,7 +41877,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -222.2002, y: -33.899902}
+  m_AnchoredPosition: {x: -364, y: -33.899902}
   m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &602099107
@@ -102733,7 +102733,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -233, y: -37}
+  m_AnchoredPosition: {x: -360, y: -37}
   m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1466147728
@@ -187226,9 +187226,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 8046756040115735086}
         m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
-        m_MethodName: OnMenuButtonClicked
+        m_MethodName: ExitToHome
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

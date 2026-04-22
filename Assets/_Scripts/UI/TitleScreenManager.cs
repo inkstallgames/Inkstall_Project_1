@@ -3,13 +3,17 @@ using UnityEngine.SceneManagement;
 
 public class TitleScreenManager : MonoBehaviour
 {
-    public void PlayGame()
+    [Header("Scene Names")]
+    public string storyLobbyScene = "StoryLobby";
+    public string multiplayerLobbyScene = "MultiplayerLobby";
+    
+    public void PlayStoryMode()
     {
-        SceneManager.LoadScene("MainScene");
+        SceneManager.LoadScene(storyLobbyScene);
     }
 
     public void PlayMultiplayer()
     {
-        SceneManager.LoadScene("Lobby");
+        SceneManager.LoadScene(multiplayerLobbyScene);
     }
 }

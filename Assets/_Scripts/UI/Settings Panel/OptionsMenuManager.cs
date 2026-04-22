@@ -98,7 +98,7 @@ public class OptionsMenuManager : MonoBehaviour
 
     public void OnMenuButtonClicked()
     {
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene(0);
     }
     
     // Apply screen sensitivity
@@ -197,8 +197,5 @@ public class OptionsMenuManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         SaveSettings();
-    }
-    public void ExitToHome(){
-        SceneManager.LoadScene(0);
     }
 }

@@ -187088,7 +187088,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8046756040115735086}
         m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
-        m_MethodName: ExitToHome
+        m_MethodName: OnMenuButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -2040,6 +2040,7 @@ MonoBehaviour:
   chatContent: {fileID: 0}
   chatInput: {fileID: 0}
   sendChatButton: {fileID: 0}
+  ExitBtn: {fileID: 1634257070}
 --- !u!1 &389538491
 GameObject:
   m_ObjectHideFlags: 0

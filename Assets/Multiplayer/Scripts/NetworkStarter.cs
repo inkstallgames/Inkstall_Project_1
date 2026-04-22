@@ -539,10 +539,10 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             
             // If we're not in the Lobby scene, we need to load it first
-            if (currentScene.name != "Lobby")
+            if (currentScene.name != "MultiplayerLobby")
             {
-                // UnityEngine.Debug.Log($"[NetworkStarter] Client disconnected from {currentScene.name}, loading Lobby scene");
-                SceneManager.LoadScene("Lobby");
+                // UnityEngine.Debug.Log($"[NetworkStarter] Client disconnected from {currentScene.name}, loading MultiplayerLobby scene");
+                SceneManager.LoadScene("MultiplayerLobby");
                 
                 // After loading lobby, show the error message
                 StartCoroutine(ShowErrorAfterSceneLoad(shutdownReason));
@@ -605,10 +605,10 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
                 
                 // If we're not in the Lobby scene, we need to load it first
-                if (currentScene.name != "Lobby")
+                if (currentScene.name != "MultiplayerLobby")
                 {
-                    // UnityEngine.Debug.Log($"[NetworkStarter] Client disconnected from {currentScene.name}, loading Lobby scene");
-                    SceneManager.LoadScene("Lobby");
+                    // UnityEngine.Debug.Log($"[NetworkStarter] Client disconnected from {currentScene.name}, loading MultiplayerLobby scene");
+                    SceneManager.LoadScene("MultiplayerLobby");
                     
                     // After loading lobby, show the error message
                     StartCoroutine(ShowDisconnectErrorAfterSceneLoad());
@@ -666,7 +666,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         // UnityEngine.Debug.Log($"[NetworkStarter] Scene loaded: {currentScene.name}");
 
         // Client-side check: if we're not in the active players list, we were kicked/timed out
-        if (!runner.IsServer && currentScene.name != "Lobby")
+        if (!runner.IsServer && currentScene.name != "MultiplayerLobby")
         {
             bool isInActivePlayersList = false;
             foreach (var player in runner.ActivePlayers)
@@ -683,7 +683,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 // UnityEngine.Debug.LogWarning($"[NetworkStarter] Client is not in active players list after scene load. Returning to lobby.");
                 UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
-                    SceneManager.LoadScene("Lobby");
+                    SceneManager.LoadScene("MultiplayerLobby");
                     StartCoroutine(ShowDisconnectErrorAfterSceneLoad());
                 });
                 return;

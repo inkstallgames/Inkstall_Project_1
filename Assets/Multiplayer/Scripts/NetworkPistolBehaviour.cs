@@ -1,3 +1,4 @@
+using System.Collections;
 using Fusion;
 using UnityEngine;
 
@@ -34,6 +35,8 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [SerializeField] private AudioClip shootSound;
     [SerializeField] private AudioClip reloadSound;
     [SerializeField] private float soundVolume = 1.0f;
+    [Tooltip("Speed at which the bullet trail travels toward the hit point")]
+    [SerializeField] private float bulletTrailSpeed = 300f;
 
     [Networked] public int CurrentAmmo { get; set; }
     [Networked] public int ReserveAmmo { get; set; }
@@ -313,16 +316,11 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             }
         }
 
-        if (bulletTrailPrefab != null)
+        // Bullet trail: spawn at fire point (same as muzzle flash) and move toward endPoint
+        if (bulletTrailPrefab != null && fp != null)
         {
-            GameObject trail = Instantiate(bulletTrailPrefab, origin, Quaternion.identity);
-            LineRenderer lineRenderer = trail.GetComponent<LineRenderer>();
-            if (lineRenderer != null)
-            {
-                lineRenderer.SetPosition(0, origin);
-                lineRenderer.SetPosition(1, endPoint);
-                Destroy(trail, 0.1f);
-            }
+            GameObject trail = Instantiate(bulletTrailPrefab, fp.position, Quaternion.identity);
+            StartCoroutine(SpawnBulletTrail(trail, fp.position, endPoint));
         }
 
         if (didHit)
@@ -388,6 +386,65 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         IsReloading = false;
         
         Debug.Log($"[NetworkPistolBehaviour] Ammo reset on kill - Magazine: {CurrentAmmo}/{maxAmmo}, Reserve: {ReserveAmmo}/150");
+    }
+
+    /// <summary>
+    /// Moves the bullet trail object from the fire point toward the end point.
+    /// The TrailRenderer on the prefab draws the trail as the object moves.
+    /// Enforces a minimum travel time so the TrailRenderer has enough frames to draw.
+    /// After reaching the destination, waits for the trail to fade before destroying.
+    /// </summary>
+    private IEnumerator SpawnBulletTrail(GameObject trailObject, Vector3 startPosition, Vector3 endPosition)
+    {
+        TrailRenderer trailRenderer = trailObject.GetComponent<TrailRenderer>();
+        float trailTime = trailRenderer != null ? trailRenderer.time : 0.5f;
+
+        // Clear any inherited trail data and anchor the first point at the fire point.
+        // Without this, the TrailRenderer has no recorded start position and the
+        // trail only becomes visible after the object has already moved away.
+        if (trailRenderer != null)
+        {
+            trailRenderer.Clear();
+        }
+
+        // Wait one frame at the fire point so the TrailRenderer records this
+        // as its starting position — the trail will now begin right at the muzzle.
+        yield return null;
+
+        float distance = Vector3.Distance(startPosition, endPosition);
+        float duration = distance / bulletTrailSpeed;
+
+        // Enforce a minimum travel time so the TrailRenderer has enough frames
+        // to actually draw visible segments (at 60fps, 0.06s = ~4 frames)
+        float minDuration = 0.06f;
+        duration = Mathf.Max(duration, minDuration);
+
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            // Safety: trail may have been destroyed externally
+            if (trailObject == null) yield break;
+
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            trailObject.transform.position = Vector3.Lerp(startPosition, endPosition, t);
+            yield return null;
+        }
+
+        // Snap to final position
+        if (trailObject != null)
+        {
+            trailObject.transform.position = endPosition;
+        }
+
+        // Wait for the trail to fully fade out before destroying
+        yield return new WaitForSeconds(trailTime);
+
+        if (trailObject != null)
+        {
+            Destroy(trailObject);
+        }
     }
 }
 

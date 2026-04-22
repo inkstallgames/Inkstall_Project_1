@@ -823,7 +823,7 @@ public class NetworkUIManager : MonoBehaviour
         else
         {
             // Fallback
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Lobby");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MultiplayerLobby");
         }
     }
 }

@@ -1020,7 +1020,7 @@ public class NetworkGameManager : NetworkBehaviour
 
 
 
-        // Return to lobby after a delay
+        // Return to lobby after a delay — notify ALL clients to shut down
 
         StartCoroutine(ReturnToLobbyAfterDelay(10f));
 
@@ -1038,7 +1038,71 @@ public class NetworkGameManager : NetworkBehaviour
 
         {
 
-            Runner.LoadScene(SceneRef.FromIndex(0), UnityEngine.SceneManagement.LoadSceneMode.Single);
+            // Tell every client (and ourselves) to properly shut down
+
+            RPC_ShutdownAndReturnToLobby();
+
+        }
+
+    }
+
+
+
+    /// <summary>
+
+    /// Sent to ALL clients when the game over delay finishes.
+
+    /// Each client shuts down its NetworkRunner (same path as ExitToLobbyBtn),
+
+    /// and the OnShutdown callback in NetworkStarter loads the Lobby scene.
+
+    /// </summary>
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+
+    private void RPC_ShutdownAndReturnToLobby()
+
+    {
+
+        // Unlock cursor for the lobby scene
+
+        Cursor.lockState = CursorLockMode.None;
+
+        Cursor.visible = true;
+
+        ShutdownAndLoadLobby();
+
+    }
+
+
+
+    private async void ShutdownAndLoadLobby()
+
+    {
+
+        if (NetworkStarter.Instance != null)
+
+        {
+
+            await NetworkStarter.Instance.ShutdownRunner();
+
+        }
+
+        else if (Runner != null)
+
+        {
+
+            await Runner.Shutdown();
+
+        }
+
+        else
+
+        {
+
+            // Fallback — no runner available, just load the scene directly
+
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MultiplayerLobby");
 
         }
 

@@ -46,6 +46,9 @@ public class LobbyUIManager : MonoBehaviour
     public TMP_InputField chatInput;
     public Button sendChatButton;
 
+    [Header("NormalUI")]
+    public Button ExitBtn;
+
     private bool isHost = false;
     private bool isWaitingScreenActive = false;
     
@@ -119,6 +122,15 @@ public class LobbyUIManager : MonoBehaviour
         {
             ShowWaitingForPlayersScreen(false);
             isWaitingScreenActive = false; // Ensure this only runs once
+        }
+
+        if(lobbyPanel.activeSelf)
+        {
+            ExitBtn.gameObject.SetActive(false);
+        }
+        else
+        {
+            ExitBtn.gameObject.SetActive(true);
         }
     }
 

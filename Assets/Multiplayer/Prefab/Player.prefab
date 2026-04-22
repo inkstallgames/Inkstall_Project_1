@@ -208,6 +208,10 @@ MonoBehaviour:
   cursorLocked: 1
   cursorInputForLook: 1
   isTouchLook: 0
+  virtualMoveInput: {x: 0, y: 0}
+  virtualLookInput: {x: 0, y: 0}
+  virtualJumpInput: 0
+  virtualSprintInput: 0
 --- !u!114 &7097533242563867028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -452,7 +456,8 @@ MonoBehaviour:
   reloadTime: 2
   muzzleFlashPrefab: {fileID: 6093627466791319318, guid: cd60837d9807ad44ba929273ca0d3da8,
     type: 3}
-  bulletTrailPrefab: {fileID: 0}
+  bulletTrailPrefab: {fileID: 8234430459042248339, guid: 20901b445011ece49b4b7a0ca9d0b6ef,
+    type: 3}
   hitEffectPrefab: {fileID: 7629000292770066261, guid: 31e1e03b03ac40b42ada13178bc82b2d,
     type: 3}
   playerHitEffectPrefab: {fileID: 7629000292770066261, guid: b47f376535cea9445a151a0ba773479d,
@@ -460,6 +465,7 @@ MonoBehaviour:
   shootSound: {fileID: 8300000, guid: 0a99bb048385ea144aa3a3b45d2871b3, type: 3}
   reloadSound: {fileID: 8300000, guid: 27d6f4d651c64894d8d3d281d0d6ab56, type: 3}
   soundVolume: 1
+  bulletTrailSpeed: 300
   _CurrentAmmo: 0
   _ReserveAmmo: 0
   _IsReloading: 0

@@ -68,6 +68,10 @@ public class NetworkUIManager : MonoBehaviour
     [Header("Settings Panel")]
     [SerializeField] private GameObject settingsPanel;            // Panel shown when settings button is clicked
     
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip killSoundEffect;
+
     public bool IsSettingsPanelActive => settingsPanel != null && settingsPanel.activeSelf;
 
     // Cached references
@@ -88,6 +92,7 @@ public class NetworkUIManager : MonoBehaviour
     private float pingUpdateTimer = 0f;
     private const float PING_UPDATE_INTERVAL = 0.5f;
     private int _lastKnownHealth = -1;
+    private int _lastKnownKills = -1;
     private float _damageIndicatorTimer = 0f;
     private const float DAMAGE_INDICATOR_DURATION = 0.3f;
     private float _healIndicatorTimer = 0f;
@@ -563,6 +568,7 @@ public class NetworkUIManager : MonoBehaviour
         if (localPlayerData == null) return;
 
         int currentHealth = localPlayerData.Health;
+        int currentKills = localPlayerData.Kills;
 
         // Damage indicator — show when health drops
         if (_lastKnownHealth >= 0 && currentHealth < _lastKnownHealth)
@@ -612,8 +618,18 @@ public class NetworkUIManager : MonoBehaviour
         // Kills & Deaths
         if (killsText != null)
         {
-            killsText.text = $"Kills: {localPlayerData.Kills}";
+            killsText.text = $"Kills: {currentKills}";
         }
+
+        if (_lastKnownKills >= 0 && currentKills > _lastKnownKills)
+        {
+            if (audioSource != null && killSoundEffect != null)
+            {
+                audioSource.PlayOneShot(killSoundEffect);
+            }
+        }
+        
+        _lastKnownKills = currentKills;
 
         if (deathsText != null)
         {

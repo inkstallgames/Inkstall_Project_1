@@ -29,6 +29,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [Header("Effects")]
     [SerializeField] private GameObject muzzleFlashPrefab; // Particle system muzzle flash
     [SerializeField] private GameObject bulletTrailPrefab;
+    [Tooltip("This is not a particle system anymore. Instead a quad will spawn where the bullet hits.")]
     [SerializeField] private GameObject hitEffectPrefab;
     [Tooltip("Particle effect spawned at the hit point when a player is hit")]
     [SerializeField] private GameObject playerHitEffectPrefab;
@@ -333,8 +334,8 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             }
             else if (!hitPlayer && hitEffectPrefab != null)
             {
-                // Surface hit: spawn generic hit effect (sparks, dust, etc.)
-                GameObject hitEffect = Instantiate(hitEffectPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
+                // Surface hit: spawn bullet hole decal (quad) slightly offset from the surface to prevent z-fighting
+                GameObject hitEffect = Instantiate(hitEffectPrefab, hitPoint + hitNormal * 0.01f, hitEffectPrefab.transform.rotation);
                 Destroy(hitEffect, 2f);
             }
         }

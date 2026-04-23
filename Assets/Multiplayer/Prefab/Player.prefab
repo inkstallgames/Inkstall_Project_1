@@ -458,9 +458,9 @@ MonoBehaviour:
     type: 3}
   bulletTrailPrefab: {fileID: 8234430459042248339, guid: 20901b445011ece49b4b7a0ca9d0b6ef,
     type: 3}
-  hitEffectPrefab: {fileID: 1000013355911406, guid: f7c4b8dfc13d9cf4a98a2698c981ac1f,
+  hitEffectPrefab: {fileID: 5601642282774297088, guid: 794952e35b4d0894793d0447cf77861f,
     type: 3}
-  playerHitEffectPrefab: {fileID: 7629000292770066261, guid: b47f376535cea9445a151a0ba773479d,
+  playerHitEffectPrefab: {fileID: 8782009059513614302, guid: 275413d7077384b43a7653f394e708d5,
     type: 3}
   shootSound: {fileID: 8300000, guid: 0a99bb048385ea144aa3a3b45d2871b3, type: 3}
   reloadSound: {fileID: 8300000, guid: 27d6f4d651c64894d8d3d281d0d6ab56, type: 3}

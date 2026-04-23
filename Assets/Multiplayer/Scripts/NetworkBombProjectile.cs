@@ -118,10 +118,18 @@ public class NetworkBombProjectile : NetworkBehaviour
             Instantiate(hitEffect, position, Quaternion.identity);
         }
 
-        // Play hit sound
+        // Industry-standard audio: 3D spatial sound for explosions
         if (hitSound != null)
         {
-            AudioSource.PlayClipAtPoint(hitSound, position, hitSoundVolume);
+            if (NetworkAudioManager.Instance != null)
+            {
+                NetworkAudioManager.Instance.PlaySound(hitSound, position, hitSoundVolume, false);
+            }
+            else
+            {
+                // Fallback: 3D positioned sound
+                AudioSource.PlayClipAtPoint(hitSound, position, hitSoundVolume);
+            }
         }
     }
 }

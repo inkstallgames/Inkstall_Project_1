@@ -1,8 +1,7 @@
 using Fusion;
-
 using UnityEngine;
-
 using UnityEngine.UI;
+using TMPro;
 
 
 
@@ -42,7 +41,7 @@ public class PlayerNetworkData : NetworkBehaviour
 
     [Header("References")]
 
-    public TextMesh nameTag;
+    public TextMeshProUGUI nameTag;
 
     public Slider healthBar;
 
@@ -268,21 +267,16 @@ public class PlayerNetworkData : NetworkBehaviour
             
             if (hitSound != null)
             {
-                // Play 2D sound for local player so it's clear and centered
-                GameObject tempAudioObject = new GameObject(isLaserDamage ? "TempLaserHitSound" : "TempBulletHitSound");
-                AudioSource tempAudioSource = tempAudioObject.AddComponent<AudioSource>();
-                
-                // Configure for 2D sound (equal in both ears)
-                tempAudioSource.clip = hitSound;
-                tempAudioSource.volume = hitSoundVolume;
-                tempAudioSource.spatialBlend = 0f; // 0 = 2D sound, 1 = 3D sound
-                tempAudioSource.playOnAwake = false;
-                
-                // Play the sound
-                tempAudioSource.Play();
-                
-                // Destroy the temporary object after sound finishes
-                Destroy(tempAudioObject, hitSound.length + 0.1f);
+                if (NetworkAudioManager.Instance != null)
+                {
+                    // Industry-standard: Hit sounds are 2D for the player being hit
+                    NetworkAudioManager.Instance.PlaySound(hitSound, transform.position, hitSoundVolume, true);
+                }
+                else
+                {
+                    // Fallback: 2D centered sound
+                    AudioSource.PlayClipAtPoint(hitSound, Camera.main.transform.position, hitSoundVolume);
+                }
                 
                 Debug.Log($"[PlayerNetworkData] *** {(isLaserDamage ? "LASER" : "BULLET")} HIT SOUND PLAYED *** for local player {PlayerName}");
             }

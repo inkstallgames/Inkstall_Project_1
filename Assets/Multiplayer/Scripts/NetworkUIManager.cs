@@ -36,6 +36,10 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerNameText;     // Local player name
     [SerializeField] private GameObject damageIndicatorImage;    // Flashes on screen when taking damage
     [SerializeField] private GameObject healIndicatorImage;      // Flashes on screen when healing/regenerating
+    
+    [Header("Kill Notification UI")]
+    [SerializeField] private TextMeshProUGUI killNotificationText; // Shows "You killed [PlayerName]" message
+    [SerializeField] private float killNotificationDuration = 3f;     // How long to show kill message
 
     [Header("Game Info UI")]
     [SerializeField] private TextMeshProUGUI gameStateText;      // Shows current game state
@@ -98,17 +102,22 @@ public class NetworkUIManager : MonoBehaviour
     private float _healIndicatorTimer = 0f;
     private const float HEAL_INDICATOR_DURATION = 0.3f;
 
+    // Kill notification system
+    private float killNotificationTimer = 0f;
+    private Coroutine killNotificationCoroutine;
+
     //awake
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            Debug.Log("[NetworkUIManager] Instance assigned successfully!");
         }
         else
         {
+            Debug.Log("[NetworkUIManager] Duplicate instance found, destroying this one!");
             Destroy(gameObject);
-            return;
         }
     }
 
@@ -140,6 +149,16 @@ public class NetworkUIManager : MonoBehaviour
 
         if (reloadButton != null)
             reloadButton.onClick.AddListener(OnReloadButtonPressed);
+        
+        // Debug check for kill notification text
+        if (killNotificationText != null)
+        {
+            Debug.Log("[NetworkUIManager] Kill notification text assigned successfully!");
+        }
+        else
+        {
+            Debug.LogError("[NetworkUIManager] Kill notification text is NOT assigned! Please assign it in the Inspector!");
+        }
     }
 
     private void Update()
@@ -778,6 +797,178 @@ public class NetworkUIManager : MonoBehaviour
             if (winningTeam == 0)       gameOverImage.color = new Color(0.18f, 0.47f, 1f);   // Blue
             else if (winningTeam == 1)  gameOverImage.color = new Color(1f, 0.22f, 0.22f);   // Red
             else                        gameOverImage.color = new Color(0.55f, 0.55f, 0.55f); // Grey
+        }
+    }
+
+    /// <summary>
+    /// Called when local player kills another player
+    /// Shows kill notification to local player only
+    /// </summary>
+    public void OnPlayerKilled(string victimName)
+    {
+        Debug.Log($"[NetworkUIManager] OnPlayerKilled START - Victim: {victimName}");
+        Debug.Log($"[NetworkUIManager] KillNotificationText: {(killNotificationText != null ? "EXISTS" : "NULL")}");
+        Debug.Log($"[NetworkUIManager] ExistingCoroutine: {(killNotificationCoroutine != null ? "RUNNING" : "NONE")}");
+        
+        if (killNotificationText != null)
+        {
+            Debug.Log($"[NetworkUIManager] Kill notification text found, showing notification");
+            
+            // Stop any existing kill notification
+            if (killNotificationCoroutine != null)
+            {
+                Debug.Log("[NetworkUIManager] Stopping existing kill notification coroutine");
+                StopCoroutine(killNotificationCoroutine);
+            }
+            
+            // Show new kill notification
+            Debug.Log($"[NetworkUIManager] Starting new kill notification coroutine for: {victimName}");
+            killNotificationCoroutine = StartCoroutine(ShowKillNotification(victimName));
+        }
+        else
+        {
+            Debug.LogError("[NetworkUIManager] Kill notification text is NULL! Assign it in the Inspector!");
+        }
+        
+        Debug.Log("[NetworkUIManager] OnPlayerKilled END");
+    }
+    
+    /// <summary>
+    /// Shows kill notification for specified duration
+    /// </summary>
+    private System.Collections.IEnumerator ShowKillNotification(string victimName)
+    {
+        Debug.Log($"[NetworkUIManager] ShowKillNotification START - Victim: {victimName}");
+        
+        if (killNotificationText != null)
+        {
+            killNotificationText.text = $"You killed {victimName}";
+            Debug.Log($"[NetworkUIManager] Text set to: '{killNotificationText.text}'");
+            
+            // Force activate multiple times to ensure it stays active
+            killNotificationText.gameObject.SetActive(true);
+            killNotificationText.enabled = true;
+            
+            // Check if parent Canvas is active
+            Canvas parentCanvas = killNotificationText.GetComponentInParent<Canvas>();
+            if (parentCanvas != null)
+            {
+                parentCanvas.gameObject.SetActive(true);
+                Debug.Log($"[NetworkUIManager] Parent Canvas activated: {parentCanvas.gameObject.name}");
+            }
+            
+            // Force activate again after a frame
+            yield return null;
+            killNotificationText.gameObject.SetActive(true);
+            killNotificationText.enabled = true;
+            
+            Debug.Log($"[NetworkUIManager] GameObject.SetActive(true) called");
+            Debug.Log($"[NetworkUIManager] GameObject active state: {killNotificationText.gameObject.activeInHierarchy}");
+            Debug.Log($"[NetworkUIManager] TextMeshPro enabled: {killNotificationText.enabled}");
+            
+            // Check Canvas and RectTransform
+            Canvas canvas = killNotificationText.GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                Debug.Log($"[NetworkUIManager] Canvas found: {canvas.gameObject.name}, Active: {canvas.gameObject.activeInHierarchy}");
+            }
+            
+            Debug.Log($"[NetworkUIManager] Showing kill notification: 'You killed {victimName}' for {killNotificationDuration} seconds");
+            
+            // COMPREHENSIVE UI DEBUGGING: Check entire hierarchy before forcing activation
+            Debug.Log("[NetworkUIManager] === COMPREHENSIVE UI DEBUGGING START ===");
+            
+            // Check GameObject hierarchy
+            Transform currentTransform = killNotificationText.transform;
+            int hierarchyLevel = 0;
+            while (currentTransform != null && hierarchyLevel < 10)
+            {
+                GameObject go = currentTransform.gameObject;
+                Debug.Log($"[UI HIERARCHY L{hierarchyLevel}] {go.name} | Active: {go.activeInHierarchy} | Layer: {go.layer}");
+                currentTransform = currentTransform.parent;
+                hierarchyLevel++;
+            }
+            
+            // Check Canvas settings
+            Canvas canvasDebug = killNotificationText.GetComponentInParent<Canvas>();
+            if (canvasDebug != null)
+            {
+                Debug.Log($"[CANVAS] Name: {canvasDebug.name} | Active: {canvasDebug.gameObject.activeInHierarchy} | RenderMode: {canvasDebug.renderMode} | SortOrder: {canvasDebug.sortingOrder}");
+                Debug.Log($"[CANVAS] PixelPerfect: {canvasDebug.pixelPerfect} | OverridePixelPerfect: {canvasDebug.overridePixelPerfect}");
+            }
+            
+            // Check TextMeshPro settings
+            Debug.Log($"[TEXTMESH] Text: '{killNotificationText.text}' | Font: {killNotificationText.font?.name} | Color: {killNotificationText.color}");
+            Debug.Log($"[TEXTMESH] FontSize: {killNotificationText.fontSize} | Alignment: {killNotificationText.alignment}");
+            Debug.Log($"[TEXTMESH] Enabled: {killNotificationText.enabled} | RaycastTarget: {killNotificationText.raycastTarget}");
+            
+            // Check RectTransform
+            RectTransform rectTransform = killNotificationText.GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                Debug.Log($"[RECTTRANSFORM] Anchors: {rectTransform.anchorMin} -> {rectTransform.anchorMax}");
+                Debug.Log($"[RECTTRANSFORM] Position: {rectTransform.anchoredPosition} | Size: {rectTransform.sizeDelta}");
+                Debug.Log($"[RECTTRANSFORM] Pivot: {rectTransform.pivot} | Rotation: {rectTransform.rotation}");
+            }
+            
+            Debug.Log("[NetworkUIManager] === COMPREHENSIVE UI DEBUGGING END ===");
+            
+            // AGGRESSIVE FIX: Continuously force activation during display duration
+            float elapsed = 0f;
+            while (elapsed < killNotificationDuration)
+            {
+                // Force activate every frame to fight whatever is deactivating it
+                killNotificationText.gameObject.SetActive(true);
+                killNotificationText.enabled = true;
+                
+                // Debug every 0.5 seconds to monitor
+                if (elapsed % 0.5f < Time.deltaTime)
+                {
+                    Debug.Log($"[NetworkUIManager] AGGRESSIVE FIX - Forcing active at {elapsed:F1}s | GameObject: {killNotificationText.gameObject.activeInHierarchy} | TextMeshPro: {killNotificationText.enabled} | Text: '{killNotificationText.text}'");
+                }
+                
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+            
+            Debug.Log("[NetworkUIManager] Wait completed, hiding notification");
+            
+            // Hide notification
+            killNotificationText.gameObject.SetActive(false);
+            killNotificationText.text = "";
+            
+            Debug.Log("[NetworkUIManager] Kill notification hidden");
+        }
+        else
+        {
+            Debug.LogError("[NetworkUIManager] ShowKillNotification - KillNotificationText is NULL!");
+        }
+        
+        Debug.Log("[NetworkUIManager] ShowKillNotification END");
+    }
+
+    /// <summary>
+    /// Test method to manually trigger kill notification
+    /// Call this from Unity Inspector or another script for testing
+    /// </summary>
+    [ContextMenu("Test Kill Notification")]
+    public void TestKillNotification()
+    {
+        Debug.Log("[NetworkUIManager] === MANUAL TEST TRIGGERED ===");
+        OnPlayerKilled("TestPlayer");
+    }
+
+    /// <summary>
+    /// Update method to check for manual test input
+    /// Press K key to test kill notification
+    /// </summary>
+    void Update()
+    {
+        // Manual test: Press K key to trigger kill notification
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            Debug.Log("[NetworkUIManager] === KEYBOARD TEST TRIGGERED (K key) ===");
+            OnPlayerKilled("KeyboardTest");
         }
     }
 

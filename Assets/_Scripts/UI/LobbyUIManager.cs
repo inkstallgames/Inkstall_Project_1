@@ -291,7 +291,7 @@ public class LobbyUIManager : MonoBehaviour
 
         public void SetReadyButtonState(bool isReady)
     {
-        readyButtonText.text = isReady ? "Ready" : "Not Ready";
+        readyButtonText.text = isReady ? "Not Ready" : "Ready";
     }
 
     public void ShowMessage(string message)

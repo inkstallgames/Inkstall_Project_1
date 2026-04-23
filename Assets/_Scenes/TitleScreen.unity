@@ -1095,7 +1095,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneMusicMappings:
   - sceneName: TitleScreen
-    musicClip: {fileID: 0}
+    musicClip: {fileID: 8300000, guid: 99b242c221aad994db2599a78d8d45b0, type: 3}
   - sceneName: StoryLobby
     musicClip: {fileID: 8300000, guid: 99b242c221aad994db2599a78d8d45b0, type: 3}
   - sceneName: Building1

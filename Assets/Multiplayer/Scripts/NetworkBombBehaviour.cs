@@ -266,10 +266,18 @@ public class NetworkBombBehaviour : NetworkBehaviour
             throwEffect.Play();
         }
 
-        // Sound effect
+        // Industry-standard audio: 3D spatial sound for grenade throws
         if (throwSound != null)
         {
-            AudioSource.PlayClipAtPoint(throwSound, position, throwSoundVolume);
+            if (NetworkAudioManager.Instance != null)
+            {
+                NetworkAudioManager.Instance.PlaySound(throwSound, position, throwSoundVolume, false);
+            }
+            else
+            {
+                // Fallback: 3D positioned sound
+                AudioSource.PlayClipAtPoint(throwSound, position, throwSoundVolume);
+            }
         }
     }
 

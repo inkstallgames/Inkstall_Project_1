@@ -746,158 +746,114 @@ public class NetworkGameManager : NetworkBehaviour
 
         }
 
-    }
-
-    
+        }
 
     public void OnPlayerKilled(PlayerRef victim, PlayerRef killer)
-
     {
+        Debug.Log($"[NetworkGameManager] OnPlayerKilled START - Victim: {victim}, Killer: {killer}, HasStateAuthority: {Object.HasStateAuthority}");
 
-        if (!Object.HasStateAuthority) return;
+        if (!Object.HasStateAuthority) 
+        {
+            Debug.Log("[NetworkGameManager] OnPlayerKilled EARLY EXIT - No State Authority");
+            return;
+        }
 
-        
+        Debug.Log($"[NetworkGameManager] OnPlayerKilled CONTINUING - Updating stats for {killer} and {victim}");
 
         // Update individual player stats
-
         if (PlayerKills.ContainsKey(killer))
-
         {
-
             PlayerKills.Set(killer, PlayerKills[killer] + 1);
-
+            Debug.Log($"[NetworkGameManager] Updated kills for {killer}: {PlayerKills[killer]}");
         }
-
-        
+        else
+        {
+            Debug.Log($"[NetworkGameManager] WARNING - PlayerKills does not contain killer {killer}");
+        }
 
         if (PlayerDeaths.ContainsKey(victim))
-
         {
-
             PlayerDeaths.Set(victim, PlayerDeaths[victim] + 1);
-
+            Debug.Log($"[NetworkGameManager] Updated deaths for {victim}: {PlayerDeaths[victim]}");
+        }
+        else
+        {
+            Debug.Log($"[NetworkGameManager] WARNING - PlayerDeaths does not contain victim {victim}");
         }
 
-        
-
         // Remove from alive players
-
         AlivePlayers.Remove(victim);
-
         PlayersAlive = AlivePlayers.Count;
 
-        
-
         var killerData = Runner.GetPlayerObject(killer)?.GetComponent<PlayerNetworkData>();
-
         var victimData = Runner.GetPlayerObject(victim)?.GetComponent<PlayerNetworkData>();
 
-
-
         string killerName = killerData != null ? killerData.PlayerName : $"Player {killer.PlayerId}";
-
         string victimName = victimData != null ? victimData.PlayerName : $"Player {victim.PlayerId}";
-
-
 
         Debug.Log($"[NetworkGameManager] *** KILL LOG *** {victimName} was eliminated by {killerName}!");
 
-        
-
         // Restore ability charge and ammo for the killer
-
         var killerObject = Runner.GetPlayerObject(killer);
-
         if (killerObject != null)
-
         {
-
             var abilityController = killerObject.GetComponent<PlayerAbilityController>();
-
             if (abilityController != null)
-
             {
-
                 abilityController.GrantAbilityCharge();
-
                 Debug.Log($"[NetworkGameManager] Ability charge restored for {killerName} after kill");
-
             }
-
-            
 
             // Reset pistol ammo to full on kill
-
             var pistolBehaviour = killerObject.GetComponent<NetworkPistolBehaviour>();
-
             if (pistolBehaviour != null)
-
             {
-
                 pistolBehaviour.ResetAmmoOnKill();
-
                 Debug.Log($"[NetworkGameManager] Pistol ammo reset for {killerName} after kill");
-
             }
-
-            
 
             // Reset laser energy to full on kill
-
             var laserBehaviour = killerObject.GetComponent<NetworkLaserBehaviour>();
-
             if (laserBehaviour != null)
-
             {
-
                 laserBehaviour.ResetEnergyOnKill();
-
                 Debug.Log($"[NetworkGameManager] Laser energy reset for {killerName} after kill");
-
             }
-
         }
-
-        
 
         // Update scores - always award points if players have valid, distinct teams 
-
-        // regardless of whether the mode was explicitly set to TeamDeathmatch in the Lobby
-
         if (killerData != null && victimData != null && 
-
             killerData.TeamId >= 0 && victimData.TeamId >= 0 && 
-
             killerData.TeamId != victimData.TeamId)
-
         {
-
             // Award point to killer's team
-
             if (killerData.TeamId == 0) BlueTeamScore++;
-
             else RedTeamScore++;
 
-            
-
             string winningTeamName = killerData.TeamId == 0 ? "Blue" : "Red";
-
             Debug.Log($"[NetworkGameManager] Point awarded to {winningTeamName} Team! New Score - Blue: {BlueTeamScore}, Red: {RedTeamScore}");
-
         }
 
-
+        // Notify local UI manager for kill notification (only for killer)
+        Debug.Log($"[NetworkGameManager] Kill notification check - NetworkUIManager.Instance: {NetworkUIManager.Instance != null}, Killer: {killer}, LocalPlayer: {Runner.LocalPlayer}, IsLocal: {killer == Runner.LocalPlayer}");
+        
+        if (NetworkUIManager.Instance != null && killer == Runner.LocalPlayer)
+        {
+            // Get victim name for notification (use existing victimName variable)
+            string notificationVictimName = victimName != "Unknown" ? victimName : $"Player {victim.PlayerId}";
+            Debug.Log($"[NetworkGameManager] Calling OnPlayerKilled with victim: {notificationVictimName}");
+            NetworkUIManager.Instance.OnPlayerKilled(notificationVictimName);
+        }
+        else
+        {
+            Debug.Log($"[NetworkGameManager] Kill notification NOT shown - NetworkUIManager.Instance: {NetworkUIManager.Instance != null}, IsLocalPlayer: {killer == Runner.LocalPlayer}");
+        }
 
         if (CurrentGameMode == GameMode.TeamDeathmatch)
-
         {
-
             // Check for round/game end
-
             CheckGameEndConditions();
-
         }
-
     }
 
     

@@ -438,28 +438,23 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_PlayReloadSound()
     {
-        // Clean up any existing reload sound
-        if (reloadAudioSource != null)
+        // Only play reload sound for the local player who is reloading
+        // Remote players should NOT hear reload sounds (private action)
+        if (laserReloadSound != null && Object.HasInputAuthority)
         {
-            Destroy(reloadAudioSource.gameObject);
-            reloadAudioSource = null;
-        }
-        
-        if (laserReloadSound != null)
-        {
-            // Create a GameObject with AudioSource so we can stop it later if needed
-            GameObject reloadSoundObj = new GameObject("LaserReloadSound");
-            reloadAudioSource = reloadSoundObj.AddComponent<AudioSource>();
+            // Local player only: 2D centered sound for immediate feedback
+            GameObject tempAudioObject = new GameObject("TempReloadSound");
+            AudioSource tempAudioSource = tempAudioObject.AddComponent<AudioSource>();
             
-            reloadAudioSource.clip = laserReloadSound;
-            reloadAudioSource.volume = soundVolume;
-            reloadAudioSource.spatialBlend = 0f; // 2D sound
-            reloadAudioSource.playOnAwake = false;
-            reloadAudioSource.Play();
+            tempAudioSource.clip = laserReloadSound;
+            tempAudioSource.volume = soundVolume;
+            tempAudioSource.spatialBlend = 0f; // 2D sound
+            tempAudioSource.playOnAwake = false;
+            tempAudioSource.Play();
             
-            // Auto-destroy after sound finishes (if not stopped earlier)
-            Destroy(reloadSoundObj, laserReloadSound.length + 0.1f);
+            Destroy(tempAudioObject, laserReloadSound.length + 0.1f);
         }
+        // Remote players: NO SOUND - reload is private
     }
 
     public void AddEnergy(int amount)
@@ -677,10 +672,32 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
         }
         
-        // Start continuous laser sound
+        // Industry-standard continuous laser sound with 3D spatial audio
         if (laserShootSound != null && continuousLaserAudio != null)
         {
             continuousLaserAudio.clip = laserShootSound;
+            
+            // Configure based on player type (industry standard)
+            if (isLocalPlayer)
+            {
+                // Local player: 2D centered sound for own weapon
+                continuousLaserAudio.spatialBlend = 0f;
+                continuousLaserAudio.volume = soundVolume;
+                continuousLaserAudio.rolloffMode = AudioRolloffMode.Linear;
+                continuousLaserAudio.minDistance = 0f;
+                continuousLaserAudio.maxDistance = 0f;
+            }
+            else
+            {
+                // Remote player: Full 3D spatial audio
+                continuousLaserAudio.spatialBlend = 1f;
+                continuousLaserAudio.volume = soundVolume;
+                continuousLaserAudio.rolloffMode = AudioRolloffMode.Logarithmic;
+                continuousLaserAudio.minDistance = 1f;
+                continuousLaserAudio.maxDistance = 50f;
+                continuousLaserAudio.dopplerLevel = 0f;
+            }
+            
             continuousLaserAudio.Play();
         }
     }

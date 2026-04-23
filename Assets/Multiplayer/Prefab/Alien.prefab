@@ -239,6 +239,10 @@ MonoBehaviour:
   cursorLocked: 1
   cursorInputForLook: 1
   isTouchLook: 0
+  virtualMoveInput: {x: 0, y: 0}
+  virtualLookInput: {x: 0, y: 0}
+  virtualJumpInput: 0
+  virtualSprintInput: 0
 --- !u!114 &7097533242563867028
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -585,7 +589,7 @@ MonoBehaviour:
   bodyFirePoint: {fileID: 43759099640185263}
   fireRate: 0.5
   range: 50
-  damage: 10
+  damage: 30
   hitLayers:
     serializedVersion: 2
     m_Bits: 4294967295

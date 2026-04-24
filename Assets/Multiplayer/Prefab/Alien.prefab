@@ -521,9 +521,9 @@ MonoBehaviour:
   _stateAuthorityChangeErrorCorrectionDelta: 0
   gravity: -20
   jumpImpulse: 8
-  acceleration: 10
+  acceleration: 999
   braking: 10
-  maxSpeed: 2
+  maxSpeed: 5
   rotationSpeed: 15
 --- !u!114 &6567890570193737134
 MonoBehaviour:
@@ -554,6 +554,12 @@ MonoBehaviour:
   shieldMaterial: {fileID: 2100000, guid: e2002a38a660a584db60c728562929a1, type: 2}
   invisibilityMaterial: {fileID: 2100000, guid: fc8eaee3c6ab82a4eb6a4ecf319f42a9,
     type: 2}
+  shieldStartSound: {fileID: 0}
+  invisibilityStartSound: {fileID: 0}
+  shieldLoopSound: {fileID: 8300000, guid: 6b72fd9cfe198984f8540a0ea326c784, type: 3}
+  invisibilityLoopSound: {fileID: 8300000, guid: 6b72fd9cfe198984f8540a0ea326c784,
+    type: 3}
+  abilityEndSound: {fileID: 8300000, guid: fd79fb9d4a93fab4a8d0203f479de528, type: 3}
 --- !u!114 &794800702146022241
 MonoBehaviour:
   m_ObjectHideFlags: 0

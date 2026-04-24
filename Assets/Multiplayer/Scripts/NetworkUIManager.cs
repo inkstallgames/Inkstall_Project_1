@@ -707,7 +707,18 @@ public class NetworkUIManager : MonoBehaviour
             {
                 pingUpdateTimer = PING_UPDATE_INTERVAL;
                 int pingMs = Mathf.RoundToInt((float)(runner.GetPlayerRtt(runner.LocalPlayer) * 1000));
-                pingText.text = $"Ping: {pingMs}ms";
+                
+                // Update ping text with color coding
+                string quality = GetPingQuality(pingMs);
+                Color pingColor = GetPingColor(pingMs);
+                pingText.text = $"Ping: {pingMs}ms ({quality})";
+                pingText.color = pingColor;
+                
+                // Show warnings for high ping
+                if (pingMs > 200)
+                {
+                    Debug.LogWarning($"[NetworkUIManager] HIGH PING DETECTED: {pingMs}ms - Gameplay may be affected!");
+                }
             }
         }
     }
@@ -806,31 +817,34 @@ public class NetworkUIManager : MonoBehaviour
     /// </summary>
     public void OnPlayerKilled(string victimName)
     {
-        Debug.Log($"[NetworkUIManager] OnPlayerKilled START - Victim: {victimName}");
+        Debug.Log($"[NetworkUIManager] OnPlayerKilled called with victim: {victimName}");
         Debug.Log($"[NetworkUIManager] KillNotificationText: {(killNotificationText != null ? "EXISTS" : "NULL")}");
-        Debug.Log($"[NetworkUIManager] ExistingCoroutine: {(killNotificationCoroutine != null ? "RUNNING" : "NONE")}");
         
         if (killNotificationText != null)
         {
-            Debug.Log($"[NetworkUIManager] Kill notification text found, showing notification");
+            Debug.Log("[NetworkUIManager] Setting up kill notification...");
             
             // Stop any existing kill notification
             if (killNotificationCoroutine != null)
             {
-                Debug.Log("[NetworkUIManager] Stopping existing kill notification coroutine");
                 StopCoroutine(killNotificationCoroutine);
+                Debug.Log("[NetworkUIManager] Stopped existing notification");
             }
             
             // Show new kill notification
-            Debug.Log($"[NetworkUIManager] Starting new kill notification coroutine for: {victimName}");
+            killNotificationText.text = $"You killed {victimName}";
+            Debug.Log($"[NetworkUIManager] Text set to: '{killNotificationText.text}'");
+            
+            killNotificationText.gameObject.SetActive(true);
+            Debug.Log($"[NetworkUIManager] GameObject activated: {killNotificationText.gameObject.activeInHierarchy}");
+            
             killNotificationCoroutine = StartCoroutine(ShowKillNotification(victimName));
+            Debug.Log("[NetworkUIManager] Kill notification coroutine started");
         }
         else
         {
-            Debug.LogError("[NetworkUIManager] Kill notification text is NULL! Assign it in the Inspector!");
+            Debug.LogError("[NetworkUIManager] KillNotificationText is NULL! Cannot show notification!");
         }
-        
-        Debug.Log("[NetworkUIManager] OnPlayerKilled END");
     }
     
     /// <summary>
@@ -838,138 +852,37 @@ public class NetworkUIManager : MonoBehaviour
     /// </summary>
     private System.Collections.IEnumerator ShowKillNotification(string victimName)
     {
-        Debug.Log($"[NetworkUIManager] ShowKillNotification START - Victim: {victimName}");
+        // Show for specified duration
+        yield return new WaitForSeconds(killNotificationDuration);
         
-        if (killNotificationText != null)
-        {
-            killNotificationText.text = $"You killed {victimName}";
-            Debug.Log($"[NetworkUIManager] Text set to: '{killNotificationText.text}'");
-            
-            // Force activate multiple times to ensure it stays active
-            killNotificationText.gameObject.SetActive(true);
-            killNotificationText.enabled = true;
-            
-            // Check if parent Canvas is active
-            Canvas parentCanvas = killNotificationText.GetComponentInParent<Canvas>();
-            if (parentCanvas != null)
-            {
-                parentCanvas.gameObject.SetActive(true);
-                Debug.Log($"[NetworkUIManager] Parent Canvas activated: {parentCanvas.gameObject.name}");
-            }
-            
-            // Force activate again after a frame
-            yield return null;
-            killNotificationText.gameObject.SetActive(true);
-            killNotificationText.enabled = true;
-            
-            Debug.Log($"[NetworkUIManager] GameObject.SetActive(true) called");
-            Debug.Log($"[NetworkUIManager] GameObject active state: {killNotificationText.gameObject.activeInHierarchy}");
-            Debug.Log($"[NetworkUIManager] TextMeshPro enabled: {killNotificationText.enabled}");
-            
-            // Check Canvas and RectTransform
-            Canvas canvas = killNotificationText.GetComponentInParent<Canvas>();
-            if (canvas != null)
-            {
-                Debug.Log($"[NetworkUIManager] Canvas found: {canvas.gameObject.name}, Active: {canvas.gameObject.activeInHierarchy}");
-            }
-            
-            Debug.Log($"[NetworkUIManager] Showing kill notification: 'You killed {victimName}' for {killNotificationDuration} seconds");
-            
-            // COMPREHENSIVE UI DEBUGGING: Check entire hierarchy before forcing activation
-            Debug.Log("[NetworkUIManager] === COMPREHENSIVE UI DEBUGGING START ===");
-            
-            // Check GameObject hierarchy
-            Transform currentTransform = killNotificationText.transform;
-            int hierarchyLevel = 0;
-            while (currentTransform != null && hierarchyLevel < 10)
-            {
-                GameObject go = currentTransform.gameObject;
-                Debug.Log($"[UI HIERARCHY L{hierarchyLevel}] {go.name} | Active: {go.activeInHierarchy} | Layer: {go.layer}");
-                currentTransform = currentTransform.parent;
-                hierarchyLevel++;
-            }
-            
-            // Check Canvas settings
-            Canvas canvasDebug = killNotificationText.GetComponentInParent<Canvas>();
-            if (canvasDebug != null)
-            {
-                Debug.Log($"[CANVAS] Name: {canvasDebug.name} | Active: {canvasDebug.gameObject.activeInHierarchy} | RenderMode: {canvasDebug.renderMode} | SortOrder: {canvasDebug.sortingOrder}");
-                Debug.Log($"[CANVAS] PixelPerfect: {canvasDebug.pixelPerfect} | OverridePixelPerfect: {canvasDebug.overridePixelPerfect}");
-            }
-            
-            // Check TextMeshPro settings
-            Debug.Log($"[TEXTMESH] Text: '{killNotificationText.text}' | Font: {killNotificationText.font?.name} | Color: {killNotificationText.color}");
-            Debug.Log($"[TEXTMESH] FontSize: {killNotificationText.fontSize} | Alignment: {killNotificationText.alignment}");
-            Debug.Log($"[TEXTMESH] Enabled: {killNotificationText.enabled} | RaycastTarget: {killNotificationText.raycastTarget}");
-            
-            // Check RectTransform
-            RectTransform rectTransform = killNotificationText.GetComponent<RectTransform>();
-            if (rectTransform != null)
-            {
-                Debug.Log($"[RECTTRANSFORM] Anchors: {rectTransform.anchorMin} -> {rectTransform.anchorMax}");
-                Debug.Log($"[RECTTRANSFORM] Position: {rectTransform.anchoredPosition} | Size: {rectTransform.sizeDelta}");
-                Debug.Log($"[RECTTRANSFORM] Pivot: {rectTransform.pivot} | Rotation: {rectTransform.rotation}");
-            }
-            
-            Debug.Log("[NetworkUIManager] === COMPREHENSIVE UI DEBUGGING END ===");
-            
-            // AGGRESSIVE FIX: Continuously force activation during display duration
-            float elapsed = 0f;
-            while (elapsed < killNotificationDuration)
-            {
-                // Force activate every frame to fight whatever is deactivating it
-                killNotificationText.gameObject.SetActive(true);
-                killNotificationText.enabled = true;
-                
-                // Debug every 0.5 seconds to monitor
-                if (elapsed % 0.5f < Time.deltaTime)
-                {
-                    Debug.Log($"[NetworkUIManager] AGGRESSIVE FIX - Forcing active at {elapsed:F1}s | GameObject: {killNotificationText.gameObject.activeInHierarchy} | TextMeshPro: {killNotificationText.enabled} | Text: '{killNotificationText.text}'");
-                }
-                
-                elapsed += Time.deltaTime;
-                yield return null;
-            }
-            
-            Debug.Log("[NetworkUIManager] Wait completed, hiding notification");
-            
-            // Hide notification
-            killNotificationText.gameObject.SetActive(false);
-            killNotificationText.text = "";
-            
-            Debug.Log("[NetworkUIManager] Kill notification hidden");
-        }
-        else
-        {
-            Debug.LogError("[NetworkUIManager] ShowKillNotification - KillNotificationText is NULL!");
-        }
-        
-        Debug.Log("[NetworkUIManager] ShowKillNotification END");
+        // Hide notification
+        killNotificationText.gameObject.SetActive(false);
+        killNotificationText.text = "";
     }
 
+    
     /// <summary>
-    /// Test method to manually trigger kill notification
-    /// Call this from Unity Inspector or another script for testing
+    /// Get ping quality description
     /// </summary>
-    [ContextMenu("Test Kill Notification")]
-    public void TestKillNotification()
+    private string GetPingQuality(int pingMs)
     {
-        Debug.Log("[NetworkUIManager] === MANUAL TEST TRIGGERED ===");
-        OnPlayerKilled("TestPlayer");
+        if (pingMs < 50) return "Excellent";
+        if (pingMs < 100) return "Good";
+        if (pingMs < 150) return "Fair";
+        if (pingMs < 200) return "Poor";
+        return "Very Poor";
     }
-
+    
     /// <summary>
-    /// Update method to check for manual test input
-    /// Press K key to test kill notification
+    /// Get color based on ping quality
     /// </summary>
-    void Update()
+    private Color GetPingColor(int pingMs)
     {
-        // Manual test: Press K key to trigger kill notification
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            Debug.Log("[NetworkUIManager] === KEYBOARD TEST TRIGGERED (K key) ===");
-            OnPlayerKilled("KeyboardTest");
-        }
+        if (pingMs < 50) return Color.green;      // Excellent
+        if (pingMs < 100) return Color.yellow;    // Good  
+        if (pingMs < 150) return new Color(1f, 0.5f, 0f); // Orange - Fair
+        if (pingMs < 200) return Color.red;       // Poor
+        return new Color(0.5f, 0f, 0f);          // Dark Red - Very Poor
     }
 
     private void OnDestroy()
@@ -1005,7 +918,7 @@ public class NetworkUIManager : MonoBehaviour
     {
         settingsPanel.SetActive(false);
         
-        // Re-lock the cursor when closing settings (assuming gameplay requires it)
+        // Re-lock cursor when closing settings (assuming gameplay requires it)
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }

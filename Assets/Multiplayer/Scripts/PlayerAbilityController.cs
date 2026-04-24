@@ -44,6 +44,22 @@ public class PlayerAbilityController : NetworkBehaviour
     [Tooltip("Assign a ghostly transparent material here to be used when invisible.")]
     [SerializeField] private Material invisibilityMaterial;
 
+    [Header("Ability Sound Effects")]
+    [Tooltip("Sound played when shield ability is activated")]
+    [SerializeField] private AudioClip shieldStartSound;
+    
+    [Tooltip("Sound played when invisibility ability is activated")]
+    [SerializeField] private AudioClip invisibilityStartSound;
+    
+    [Tooltip("Looping sound played while shield is active")]
+    [SerializeField] private AudioClip shieldLoopSound;
+    
+    [Tooltip("Looping sound played while invisibility is active")]
+    [SerializeField] private AudioClip invisibilityLoopSound;
+    
+    [Tooltip("Sound played when ability ends")]
+    [SerializeField] private AudioClip abilityEndSound;
+
     // ---------------------------------------------------------------
     // Private
     // ---------------------------------------------------------------
@@ -51,6 +67,11 @@ public class PlayerAbilityController : NetworkBehaviour
     private PlayerNetworkData _playerData;
     private Coroutine _abilityCoroutine;
     private System.Collections.Generic.Dictionary<Renderer, Material[]> _originalMaterials = new System.Collections.Generic.Dictionary<Renderer, Material[]>();
+    
+    // Audio components
+    private AudioSource _abilityAudioSource;
+    private AudioSource _loopingAudioSource;
+    private bool _isLocalPlayer;
 
     // ---------------------------------------------------------------
     // Lifecycle
@@ -91,6 +112,9 @@ public class PlayerAbilityController : NetworkBehaviour
         // Give charge on spawn
         if (Object.HasStateAuthority)
             AbilityReady = true;
+            
+        // Setup audio components for local player only
+        SetupAudio();
     }
 
     public override void Render()
@@ -148,6 +172,10 @@ public class PlayerAbilityController : NetworkBehaviour
         RPC_SyncAbilityState(true, false);
         if (_abilityCoroutine != null) StopCoroutine(_abilityCoroutine);
         _abilityCoroutine = StartCoroutine(DeactivateAfterDelay(abilityDuration));
+        
+        // Play shield sounds
+        PlayAbilityStartSound(true);
+        StartAbilityLoopSound(true);
     }
 
     private void ActivateInvisibility()
@@ -157,6 +185,10 @@ public class PlayerAbilityController : NetworkBehaviour
         RPC_SyncAbilityState(false, true);
         if (_abilityCoroutine != null) StopCoroutine(_abilityCoroutine);
         _abilityCoroutine = StartCoroutine(DeactivateAfterDelay(abilityDuration));
+        
+        // Play invisibility sounds
+        PlayAbilityStartSound(false);
+        StartAbilityLoopSound(false);
     }
 
     private IEnumerator DeactivateAfterDelay(float delay)
@@ -165,6 +197,10 @@ public class PlayerAbilityController : NetworkBehaviour
         IsShielded  = false;
         IsInvisible = false;
         RPC_SyncAbilityState(false, false);
+        
+        // Stop looping sound and play end sound
+        StopAbilityLoopSound();
+        PlayAbilityEndSound();
     }
 
     // ---------------------------------------------------------------
@@ -251,6 +287,107 @@ public class PlayerAbilityController : NetworkBehaviour
                     }
                 }
             }
+        }
+    }
+    
+    // ---------------------------------------------------------------
+    // Audio System
+    // ---------------------------------------------------------------
+    
+    /// <summary>
+    /// Setup audio components for local player only
+    /// </summary>
+    private void SetupAudio()
+    {
+        // Only setup audio for local player
+        _isLocalPlayer = Object.HasInputAuthority;
+        
+        if (!_isLocalPlayer) return;
+        
+        Debug.Log("[PlayerAbilityController] Setting up audio for local player");
+        
+        // Create AudioSource for one-shot sounds (ability start/end)
+        _abilityAudioSource = gameObject.AddComponent<AudioSource>();
+        _abilityAudioSource.playOnAwake = false;
+        _abilityAudioSource.spatialBlend = 0f; // 2D sound for local player
+        
+        // Create AudioSource for looping sounds (ability duration)
+        _loopingAudioSource = gameObject.AddComponent<AudioSource>();
+        _loopingAudioSource.playOnAwake = false;
+        _loopingAudioSource.spatialBlend = 0f; // 2D sound for local player
+        _loopingAudioSource.loop = true; // Loop for duration sounds
+    }
+    
+    /// <summary>
+    /// Play ability start sound
+    /// </summary>
+    private void PlayAbilityStartSound(bool isShield)
+    {
+        if (!_isLocalPlayer || _abilityAudioSource == null) return;
+        
+        AudioClip clipToPlay = isShield ? shieldStartSound : invisibilityStartSound;
+        
+        if (clipToPlay != null)
+        {
+            _abilityAudioSource.PlayOneShot(clipToPlay);
+            Debug.Log($"[PlayerAbilityController] Playing {(isShield ? "shield" : "invisibility")} start sound");
+        }
+        else
+        {
+            Debug.LogWarning($"[PlayerAbilityController] {(isShield ? "shield" : "invisibility")} start sound is not assigned!");
+        }
+    }
+    
+    /// <summary>
+    /// Start looping ability sound
+    /// </summary>
+    private void StartAbilityLoopSound(bool isShield)
+    {
+        if (!_isLocalPlayer || _loopingAudioSource == null) return;
+        
+        AudioClip clipToPlay = isShield ? shieldLoopSound : invisibilityLoopSound;
+        
+        if (clipToPlay != null)
+        {
+            _loopingAudioSource.clip = clipToPlay;
+            _loopingAudioSource.Play();
+            Debug.Log($"[PlayerAbilityController] Starting {(isShield ? "shield" : "invisibility")} loop sound");
+        }
+        else
+        {
+            Debug.LogWarning($"[PlayerAbilityController] {(isShield ? "shield" : "invisibility")} loop sound is not assigned!");
+        }
+    }
+    
+    /// <summary>
+    /// Stop looping ability sound
+    /// </summary>
+    private void StopAbilityLoopSound()
+    {
+        if (!_isLocalPlayer || _loopingAudioSource == null) return;
+        
+        if (_loopingAudioSource.isPlaying)
+        {
+            _loopingAudioSource.Stop();
+            Debug.Log("[PlayerAbilityController] Stopped ability loop sound");
+        }
+    }
+    
+    /// <summary>
+    /// Play ability end sound
+    /// </summary>
+    private void PlayAbilityEndSound()
+    {
+        if (!_isLocalPlayer || _abilityAudioSource == null) return;
+        
+        if (abilityEndSound != null)
+        {
+            _abilityAudioSource.PlayOneShot(abilityEndSound);
+            Debug.Log("[PlayerAbilityController] Playing ability end sound");
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerAbilityController] Ability end sound is not assigned!");
         }
     }
 }

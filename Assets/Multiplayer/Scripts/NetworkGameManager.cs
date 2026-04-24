@@ -834,19 +834,30 @@ public class NetworkGameManager : NetworkBehaviour
             Debug.Log($"[NetworkGameManager] Point awarded to {winningTeamName} Team! New Score - Blue: {BlueTeamScore}, Red: {RedTeamScore}");
         }
 
-        // Notify local UI manager for kill notification (only for killer)
-        Debug.Log($"[NetworkGameManager] Kill notification check - NetworkUIManager.Instance: {NetworkUIManager.Instance != null}, Killer: {killer}, LocalPlayer: {Runner.LocalPlayer}, IsLocal: {killer == Runner.LocalPlayer}");
+        // Send kill notification to the player who made the kill
+        string notificationVictimName = victimName != "Unknown" ? victimName : $"Player {victim.PlayerId}";
+        Debug.Log($"[NetworkGameManager] Sending kill notification to killer: {killer}, Victim: {notificationVictimName}");
         
-        if (NetworkUIManager.Instance != null && killer == Runner.LocalPlayer)
+        // Check if killer is the host (server) or a client
+        if (killer == Runner.LocalPlayer)
         {
-            // Get victim name for notification (use existing victimName variable)
-            string notificationVictimName = victimName != "Unknown" ? victimName : $"Player {victim.PlayerId}";
-            Debug.Log($"[NetworkGameManager] Calling OnPlayerKilled with victim: {notificationVictimName}");
-            NetworkUIManager.Instance.OnPlayerKilled(notificationVictimName);
+            // Host/Server killed someone - show notification directly
+            Debug.Log($"[NetworkGameManager] Host killed someone - showing notification directly: {notificationVictimName}");
+            if (NetworkUIManager.Instance != null)
+            {
+                NetworkUIManager.Instance.OnPlayerKilled(notificationVictimName);
+                Debug.Log("[NetworkGameManager] Host notification sent successfully");
+            }
+            else
+            {
+                Debug.LogError("[NetworkGameManager] NetworkUIManager.Instance is null on host!");
+            }
         }
         else
         {
-            Debug.Log($"[NetworkGameManager] Kill notification NOT shown - NetworkUIManager.Instance: {NetworkUIManager.Instance != null}, IsLocalPlayer: {killer == Runner.LocalPlayer}");
+            // Client killed someone - send RPC to that client
+            Debug.Log($"[NetworkGameManager] Client killed someone - sending RPC to: {killer}");
+            RPC_ShowKillNotification(killer, killer, notificationVictimName);
         }
 
         if (CurrentGameMode == GameMode.TeamDeathmatch)
@@ -856,7 +867,33 @@ public class NetworkGameManager : NetworkBehaviour
         }
     }
 
-    
+    /// <summary>
+    /// RPC to send kill notification to the client who made the kill
+    /// </summary>
+    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
+    private void RPC_ShowKillNotification(PlayerRef killerPlayer, [RpcTarget] PlayerRef target, string victimName)
+    {
+        Debug.Log($"[NetworkGameManager] RPC_ShowKillNotification received - Killer: {killerPlayer}, Target: {target}, LocalPlayer: {Runner.LocalPlayer}, Victim: {victimName}");
+        
+        // Only show notification if this client is the killer
+        if (target == Runner.LocalPlayer)
+        {
+            Debug.Log($"[NetworkGameManager] MATCH! This client ({Runner.LocalPlayer}) is the killer ({killerPlayer}) - Showing kill notification: {victimName}");
+            if (NetworkUIManager.Instance != null)
+            {
+                NetworkUIManager.Instance.OnPlayerKilled(victimName);
+                Debug.Log("[NetworkGameManager] NetworkUIManager.Instance.OnPlayerKilled called successfully");
+            }
+            else
+            {
+                Debug.LogError("[NetworkGameManager] NetworkUIManager.Instance is null!");
+            }
+        }
+        else
+        {
+            Debug.Log($"[NetworkGameManager] NO MATCH - This client ({Runner.LocalPlayer}) is not the killer ({killerPlayer}) - No notification shown");
+        }
+    }
 
     private void CheckGameEndConditions()
 

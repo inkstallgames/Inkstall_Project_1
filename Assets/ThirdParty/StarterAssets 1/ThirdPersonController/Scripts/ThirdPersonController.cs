@@ -41,7 +41,7 @@ namespace StarterAssets
         public bool equipBomb;
     }
 
-    [RequireComponent(typeof(NetworkCharacterController))]
+    [RequireComponent(typeof(NetworkCharacterController), typeof(NetworkTransform))]
     public class ThirdPersonController : NetworkBehaviour, INetworkRunnerCallbacks
     {
         [Header("Player")]

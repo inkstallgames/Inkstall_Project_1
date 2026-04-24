@@ -144,8 +144,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         {
             muzzleFlashPrefab.SetActive(false);
         }
-        
-        Debug.Log($"[NetworkLaserBehaviour] Spawned | Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | ArmFirePoint: {(armFirePoint != null ? armFirePoint.name : "NULL")} | BodyFirePoint: {(bodyFirePoint != null ? bodyFirePoint.name : "NULL")}");
     }
 
     private void OnEnable()
@@ -209,13 +207,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
     public void RequestShoot()
     {
-        // Debug.Log("[NetworkLaserBehaviour] RequestShoot() called!");
         wantsToShoot = true;
     }
 
     public void StopShooting()
     {
-        // Debug.Log("[NetworkLaserBehaviour] StopShooting() called!");
         wantsToShoot = false;
     }
 
@@ -230,19 +226,15 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
     public void CollectNetworkInput(ref StarterAssets.NetworkInputData inputData)
     {
-        // Debug.Log($"[NetworkLaserBehaviour] *** CollectNetworkInput *** wantsToShoot: {wantsToShoot} | isShootingContinuously: {isShootingContinuously} | inputData.isShooting: {inputData.isShooting}");
-        
         // Set shooting state based on wantsToShoot (frame-persistent)
         if (wantsToShoot)
         {
             isShootingContinuously = true;
-            // Debug.Log("[NetworkLaserBehaviour] *** INPUT: wantsToShoot true -> isShootingContinuously true");
         }
         // Only reset if wantsToShoot is false AND we were previously shooting
         else if (!wantsToShoot && isShootingContinuously)
         {
             isShootingContinuously = false;
-            // Debug.Log("[NetworkLaserBehaviour] *** INPUT: wantsToShoot false & was shooting -> isShootingContinuously false");
         }
         
         inputData.isShooting = isShootingContinuously;
@@ -257,8 +249,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         
         // DON'T reset wantsToShoot here - let it persist until explicitly cleared
         // wantsToShoot = false; // REMOVED THIS LINE
-        
-        // Debug.Log($"[NetworkLaserBehaviour] *** CollectNetworkInput END *** inputData.isShooting: {inputData.isShooting} | isShootingContinuously: {isShootingContinuously}");
     }
 
     public override void FixedUpdateNetwork()
@@ -477,13 +467,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         IsReloading = false;
         ReloadTimer = TickTimer.None;
         
-        Debug.Log($"[NetworkLaserBehaviour] Energy reset on kill - Energy: {CurrentEnergy}/{maxEnergy}, Reserve: {ReserveEnergy}");
         RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
     }
 
     private System.Collections.IEnumerator ShowMuzzleFlash()
     {
-        // Debug.Log($"[NetworkLaserBehaviour] *** LASER MUZZLE FLASH *** Player {Object.InputAuthority.PlayerId} - Muzzle flash visible");
         
         Transform fp = ActiveFirePoint;
         if (muzzleFlashPrefab != null && fp != null)
@@ -494,7 +482,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             
             // CRITICAL: Ensure the GameObject is active!
             tempMuzzleFlash.SetActive(true);
-            // Debug.Log($"[NetworkLaserBehaviour] Muzzle flash GameObject activated: {tempMuzzleFlash.activeInHierarchy}");
             
             // Use particle system
             var muzzleEffect = tempMuzzleFlash.GetComponent<MuzzleFlashEffect>();
@@ -556,7 +543,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         // Always start the beam at the gun barrel so it visually fires from the gun.
         Vector3 beamStart = fp != null ? fp.position : transform.position;
 
-        Debug.Log($"[NetworkLaserBehaviour] *** CREATING BEAM *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | BeamStart: {beamStart} | Direction: {direction}");
         
         // Create continuous beam
         if (laserBeamPrefab != null)
@@ -574,7 +560,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
             var beamEffect = beamObj.GetComponent<LaserBeamEffect>();
             if (beamEffect != null) beamEffect.SetContinuousMode(true);
-            else Debug.LogWarning("[NetworkLaserBehaviour] LaserBeamEffect not found on beam prefab!");
+            else // LaserBeamEffect not found on beam prefab!
 
             if (continuousBeam != null)
             {
@@ -584,7 +570,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 continuousBeam.SetPosition(0, beamStart);
                 continuousBeam.SetPosition(1, beamStart + direction * 100f);
                 continuousBeam.enabled = true;
-                Debug.Log($"[NetworkLaserBehaviour] *** BEAM CREATED *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")}");
             }
             else
             {
@@ -622,7 +607,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             if (impactEffect != null)
             {
                 impactEffect.SetContinuousMode(true);
-                Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS IMPACT MODE SET ***");
             }
             
             // Get the particle system and make sure it plays
@@ -632,22 +616,20 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 var main = impactParticles.main;
                 main.loop = true; // Ensure looping for continuous mode
                 impactParticles.Play();
-                Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS IMPACT PARTICLES STARTED *** IsPlaying: {impactParticles.isPlaying}");
             }
             else
             {
-                Debug.LogWarning("[NetworkLaserBehaviour] *** WARNING: ParticleSystem component not found on impact prefab ***");
+                // ParticleSystem component not found on impact prefab
             }
             
-            Debug.Log($"[NetworkLaserBehaviour] *** CONTINUOUS IMPACT CREATED *** Position: {visualHit.point} | Active: {continuousImpact.activeInHierarchy} | Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")}");
         }
         else if (!didHit)
         {
-            Debug.Log("[NetworkLaserBehaviour] *** NO HIT DETECTED - Impact effect not created ***");
+            // NO HIT DETECTED - Impact effect not created
         }
         else if (laserImpactPrefab == null)
         {
-            Debug.LogError("[NetworkLaserBehaviour] *** LASER IMPACT PREFAB IS NULL - Assign it in Inspector! ***");
+            // LASER IMPACT PREFAB IS NULL - Assign it in Inspector!
         }
         
         // Create continuous muzzle flash

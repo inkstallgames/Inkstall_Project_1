@@ -267,7 +267,6 @@ public class PlayerVisualManager : NetworkBehaviour
             if (recoilAnimation != null)
             {
                 // Don't enable this animator - let PistolRecoilAnimation control it
-                Debug.Log($"[PlayerVisualManager] Skipping animator controlled by PistolRecoilAnimation on {animator.gameObject.name}");
             }
             else if (!animator.enabled)
             {
@@ -275,7 +274,6 @@ public class PlayerVisualManager : NetworkBehaviour
             }
         }
         
-        Debug.Log($"[PlayerVisualManager] Forced arms '{arms.name}' to be visible");
     }
 
     private System.Collections.IEnumerator ParentArmsToCameraRoutine()
@@ -435,7 +433,6 @@ public class PlayerVisualManager : NetworkBehaviour
             animator.Update(0f);
         }
         
-        Debug.Log($"[PlayerVisualManager] Forced idle animation on animator: {animator.gameObject.name}");
     }
 }
 

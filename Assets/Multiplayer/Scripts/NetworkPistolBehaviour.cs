@@ -48,8 +48,18 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     public int MaxAmmo => maxAmmo;
 
     private Camera playerCamera;
+    
+    // Client-side prediction for instant shooting
+    private bool hasPredictedShot;
+    private Vector3 predictedShotOrigin;
+    private Vector3 predictedShotDirection;
+    private float predictedShotTime;
     private bool wantsToShoot;
     private bool wantsToReload;
+    
+    // Client-side prediction for instant reloading
+    private bool hasPredictedReload;
+    private float predictedReloadTime;
     private NetworkWeaponEquipSystem equipSystem;
     private PlayerNetworkData playerData;
     private bool isLocalPlayer;
@@ -101,19 +111,143 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         {
             muzzleFlashPrefab.SetActive(false);
         }
-        
-        // Log which fire points are assigned
-        Debug.Log($"[NetworkPistolBehaviour] Spawned | Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | ArmFirePoint: {(armFirePoint != null ? armFirePoint.name : "NULL")} | BodyFirePoint: {(bodyFirePoint != null ? bodyFirePoint.name : "NULL")}");
     }
 
     public void RequestShoot()
     {
         wantsToShoot = true;
+        
+        // Client-side prediction for instant shooting feedback
+        if (Object.HasInputAuthority && !hasPredictedShot)
+        {
+            PredictShoot();
+        }
+    }
+    
+    /// <summary>
+    /// Predict shooting locally for instant feedback (Among Us style)
+    /// </summary>
+    private void PredictShoot()
+    {
+        if (CurrentAmmo <= 0) return;
+        if (!FireCooldownTimer.ExpiredOrNotRunning(Runner)) return;
+        if (IsReloading) return;
+        
+        // Store prediction data
+        hasPredictedShot = true;
+        predictedShotTime = Time.time;
+        
+        if (playerCamera != null)
+        {
+            predictedShotOrigin = playerCamera.transform.position;
+            predictedShotDirection = playerCamera.transform.forward;
+        }
+        else
+        {
+            var fp = ActiveFirePoint;
+            predictedShotOrigin = fp != null ? fp.position : transform.position;
+            predictedShotDirection = transform.forward;
+        }
+        
+        // Play instant shooting effects
+        PlayPredictedShootEffects();
+    }
+    
+    /// <summary>
+    /// Play predicted shooting effects instantly
+    /// </summary>
+    private void PlayPredictedShootEffects()
+    {
+        // Instant muzzle flash
+        var fp = ActiveFirePoint;
+        if (muzzleFlashPrefab != null && fp != null)
+        {
+            GameObject tempMuzzleFlash = Instantiate(muzzleFlashPrefab, fp.position, fp.rotation);
+            tempMuzzleFlash.transform.SetParent(fp); // Parent to fire point
+            Destroy(tempMuzzleFlash, 0.1f); // Shorter duration for predicted effect
+        }
+        
+        // Instant shooting sound
+        if (shootSound != null && isLocalPlayer)
+        {
+            GameObject tempAudioObject = new GameObject("PredictedShootSound");
+            AudioSource tempAudioSource = tempAudioObject.AddComponent<AudioSource>();
+            
+            tempAudioSource.clip = shootSound;
+            tempAudioSource.volume = soundVolume * 0.7f; // Slightly quieter for predicted
+            tempAudioSource.spatialBlend = 0f; // 2D sound
+            tempAudioSource.playOnAwake = false;
+            tempAudioSource.Play();
+            
+            Destroy(tempAudioObject, shootSound.length + 0.1f);
+        }
+        
+        // Instant recoil animation
+        if (pistolRecoilAnimation != null)
+        {
+            pistolRecoilAnimation.TriggerPistolFire();
+        }
+        
+        // Predict ammo decrease
+        CurrentAmmo--;
     }
 
     public void RequestReload()
     {
         wantsToReload = true;
+        
+        // Client-side prediction for instant reload feedback
+        if (Object.HasInputAuthority && !hasPredictedReload && !IsReloading)
+        {
+            PredictReload();
+        }
+    }
+    
+    /// <summary>
+    /// Predict reloading locally for instant feedback
+    /// </summary>
+    private void PredictReload()
+    {
+        if (CurrentAmmo >= maxAmmo) return;
+        if (ReserveAmmo <= 0) return;
+        if (IsReloading) return;
+        
+        // Store prediction data
+        hasPredictedReload = true;
+        predictedReloadTime = Time.time;
+        
+        // Play instant reload effects
+        PlayPredictedReloadEffects();
+    }
+    
+    /// <summary>
+    /// Play predicted reload effects instantly
+    /// </summary>
+    private void PlayPredictedReloadEffects()
+    {
+        // Instant reload animation
+        if (pistolRecoilAnimation != null)
+        {
+            pistolRecoilAnimation.TriggerReloadAnimation();
+        }
+        
+        // Instant reload sound
+        if (reloadSound != null && isLocalPlayer)
+        {
+            GameObject tempAudioObject = new GameObject("PredictedReloadSound");
+            AudioSource tempAudioSource = tempAudioObject.AddComponent<AudioSource>();
+            
+            tempAudioSource.clip = reloadSound;
+            tempAudioSource.volume = soundVolume * 0.7f; // Slightly quieter for predicted
+            tempAudioSource.spatialBlend = 0f; // 2D sound
+            tempAudioSource.playOnAwake = false;
+            tempAudioSource.Play();
+            
+            Destroy(tempAudioObject, reloadSound.length + 0.1f);
+        }
+        
+        // Predict reload state
+        IsReloading = true;
     }
 
     public void CollectNetworkInput(ref StarterAssets.NetworkInputData inputData)
@@ -150,7 +284,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             TryReload();
         }
 
-        // Process shooting - only if not reloading
         if (input.isShooting && !IsReloading)
         {
             TryShoot(input.aimOrigin, input.aimDirection);
@@ -166,23 +299,37 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         if (equipSystem != null && !equipSystem.IsPistolEquipped())
         {
+            // Clear prediction if pistol not equipped
+            if (Object.HasInputAuthority) ClearShootPrediction();
             return;
         }
 
         // Additional safety check - prevent firing during reload
         if (IsReloading)
         {
+            // Clear prediction if reloading
+            if (Object.HasInputAuthority) ClearShootPrediction();
             return;
         }
 
         if (!FireCooldownTimer.ExpiredOrNotRunning(Runner))
         {
+            // Clear prediction if on cooldown
+            if (Object.HasInputAuthority) ClearShootPrediction();
             return;
         }
 
         if (CurrentAmmo <= 0)
         {
+            // Clear prediction if no ammo
+            if (Object.HasInputAuthority) ClearShootPrediction();
             return;
+        }
+        
+        // Clear client-side prediction when server processes the shot
+        if (Object.HasInputAuthority)
+        {
+            ClearShootPrediction();
         }
 
         CurrentAmmo--;
@@ -223,17 +370,29 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         if (IsReloading)
         {
+            // Clear prediction if already reloading
+            if (Object.HasInputAuthority) ClearReloadPrediction();
             return;
         }
 
         if (CurrentAmmo >= maxAmmo)
         {
+            // Clear prediction if full ammo
+            if (Object.HasInputAuthority) ClearReloadPrediction();
             return;
         }
 
         if (ReserveAmmo <= 0)
         {
+            // Clear prediction if no reserve ammo
+            if (Object.HasInputAuthority) ClearReloadPrediction();
             return;
+        }
+        
+        // Clear client-side prediction when server processes the reload
+        if (Object.HasInputAuthority)
+        {
+            ClearReloadPrediction();
         }
 
         IsReloading = true;
@@ -385,8 +544,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         // Set reserve ammo to maximum (150), capped to never exceed
         ReserveAmmo = Mathf.Min(reserveAmmo, 150);
         IsReloading = false;
-        
-        Debug.Log($"[NetworkPistolBehaviour] Ammo reset on kill - Magazine: {CurrentAmmo}/{maxAmmo}, Reserve: {ReserveAmmo}/150");
     }
 
     /// <summary>
@@ -447,5 +604,30 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             Destroy(trailObject);
         }
     }
+    
+    /// <summary>
+    /// Clear client-side shooting prediction
+    /// </summary>
+    private void ClearShootPrediction()
+    {
+        if (hasPredictedShot)
+        {
+            hasPredictedShot = false;
+            predictedShotOrigin = Vector3.zero;
+            predictedShotDirection = Vector3.zero;
+            predictedShotTime = 0f;
+        }
+    }
+    
+    /// <summary>
+    /// Clear client-side reload prediction
+    /// </summary>
+    private void ClearReloadPrediction()
+    {
+        if (hasPredictedReload)
+        {
+            hasPredictedReload = false;
+            predictedReloadTime = 0f;
+        }
+    }
 }
-

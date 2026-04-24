@@ -750,35 +750,29 @@ public class NetworkGameManager : NetworkBehaviour
 
     public void OnPlayerKilled(PlayerRef victim, PlayerRef killer)
     {
-        Debug.Log($"[NetworkGameManager] OnPlayerKilled START - Victim: {victim}, Killer: {killer}, HasStateAuthority: {Object.HasStateAuthority}");
-
         if (!Object.HasStateAuthority) 
         {
-            Debug.Log("[NetworkGameManager] OnPlayerKilled EARLY EXIT - No State Authority");
             return;
         }
 
-        Debug.Log($"[NetworkGameManager] OnPlayerKilled CONTINUING - Updating stats for {killer} and {victim}");
 
         // Update individual player stats
         if (PlayerKills.ContainsKey(killer))
         {
             PlayerKills.Set(killer, PlayerKills[killer] + 1);
-            Debug.Log($"[NetworkGameManager] Updated kills for {killer}: {PlayerKills[killer]}");
         }
         else
         {
-            Debug.Log($"[NetworkGameManager] WARNING - PlayerKills does not contain killer {killer}");
+            // PlayerKills does not contain killer
         }
 
         if (PlayerDeaths.ContainsKey(victim))
         {
             PlayerDeaths.Set(victim, PlayerDeaths[victim] + 1);
-            Debug.Log($"[NetworkGameManager] Updated deaths for {victim}: {PlayerDeaths[victim]}");
         }
         else
         {
-            Debug.Log($"[NetworkGameManager] WARNING - PlayerDeaths does not contain victim {victim}");
+            // PlayerDeaths does not contain victim
         }
 
         // Remove from alive players
@@ -791,7 +785,6 @@ public class NetworkGameManager : NetworkBehaviour
         string killerName = killerData != null ? killerData.PlayerName : $"Player {killer.PlayerId}";
         string victimName = victimData != null ? victimData.PlayerName : $"Player {victim.PlayerId}";
 
-        Debug.Log($"[NetworkGameManager] *** KILL LOG *** {victimName} was eliminated by {killerName}!");
 
         // Restore ability charge and ammo for the killer
         var killerObject = Runner.GetPlayerObject(killer);
@@ -801,7 +794,6 @@ public class NetworkGameManager : NetworkBehaviour
             if (abilityController != null)
             {
                 abilityController.GrantAbilityCharge();
-                Debug.Log($"[NetworkGameManager] Ability charge restored for {killerName} after kill");
             }
 
             // Reset pistol ammo to full on kill
@@ -809,7 +801,6 @@ public class NetworkGameManager : NetworkBehaviour
             if (pistolBehaviour != null)
             {
                 pistolBehaviour.ResetAmmoOnKill();
-                Debug.Log($"[NetworkGameManager] Pistol ammo reset for {killerName} after kill");
             }
 
             // Reset laser energy to full on kill
@@ -817,7 +808,6 @@ public class NetworkGameManager : NetworkBehaviour
             if (laserBehaviour != null)
             {
                 laserBehaviour.ResetEnergyOnKill();
-                Debug.Log($"[NetworkGameManager] Laser energy reset for {killerName} after kill");
             }
         }
 
@@ -831,32 +821,27 @@ public class NetworkGameManager : NetworkBehaviour
             else RedTeamScore++;
 
             string winningTeamName = killerData.TeamId == 0 ? "Blue" : "Red";
-            Debug.Log($"[NetworkGameManager] Point awarded to {winningTeamName} Team! New Score - Blue: {BlueTeamScore}, Red: {RedTeamScore}");
         }
 
         // Send kill notification to the player who made the kill
         string notificationVictimName = victimName != "Unknown" ? victimName : $"Player {victim.PlayerId}";
-        Debug.Log($"[NetworkGameManager] Sending kill notification to killer: {killer}, Victim: {notificationVictimName}");
         
         // Check if killer is the host (server) or a client
         if (killer == Runner.LocalPlayer)
         {
-            // Host/Server killed someone - show notification directly
-            Debug.Log($"[NetworkGameManager] Host killed someone - showing notification directly: {notificationVictimName}");
+            // Host killed someone - show notification directly
             if (NetworkUIManager.Instance != null)
             {
                 NetworkUIManager.Instance.OnPlayerKilled(notificationVictimName);
-                Debug.Log("[NetworkGameManager] Host notification sent successfully");
             }
             else
             {
-                Debug.LogError("[NetworkGameManager] NetworkUIManager.Instance is null on host!");
+                // NetworkUIManager.Instance is null on host!
             }
         }
         else
         {
             // Client killed someone - send RPC to that client
-            Debug.Log($"[NetworkGameManager] Client killed someone - sending RPC to: {killer}");
             RPC_ShowKillNotification(killer, killer, notificationVictimName);
         }
 
@@ -873,25 +858,13 @@ public class NetworkGameManager : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
     private void RPC_ShowKillNotification(PlayerRef killerPlayer, [RpcTarget] PlayerRef target, string victimName)
     {
-        Debug.Log($"[NetworkGameManager] RPC_ShowKillNotification received - Killer: {killerPlayer}, Target: {target}, LocalPlayer: {Runner.LocalPlayer}, Victim: {victimName}");
-        
         // Only show notification if this client is the killer
         if (target == Runner.LocalPlayer)
         {
-            Debug.Log($"[NetworkGameManager] MATCH! This client ({Runner.LocalPlayer}) is the killer ({killerPlayer}) - Showing kill notification: {victimName}");
             if (NetworkUIManager.Instance != null)
             {
                 NetworkUIManager.Instance.OnPlayerKilled(victimName);
-                Debug.Log("[NetworkGameManager] NetworkUIManager.Instance.OnPlayerKilled called successfully");
             }
-            else
-            {
-                Debug.LogError("[NetworkGameManager] NetworkUIManager.Instance is null!");
-            }
-        }
-        else
-        {
-            Debug.Log($"[NetworkGameManager] NO MATCH - This client ({Runner.LocalPlayer}) is not the killer ({killerPlayer}) - No notification shown");
         }
     }
 

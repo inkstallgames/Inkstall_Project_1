@@ -54,11 +54,11 @@ public class PistolRecoilAnimation : NetworkBehaviour
         // Check if reload sound is assigned
         if (reloadSound != null)
         {
-            Debug.Log($"[RELOAD] Reload sound assigned: {reloadSound.name}");
+            // Reload sound assigned
         }
         else
         {
-            Debug.LogWarning("[RELOAD] Reload sound is NOT assigned! Please assign it in the Inspector.");
+            // Reload sound is NOT assigned! Please assign it in the Inspector.
         }
     }
     

@@ -112,11 +112,9 @@ public class NetworkUIManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            Debug.Log("[NetworkUIManager] Instance assigned successfully!");
         }
         else
         {
-            Debug.Log("[NetworkUIManager] Duplicate instance found, destroying this one!");
             Destroy(gameObject);
         }
     }
@@ -151,13 +149,9 @@ public class NetworkUIManager : MonoBehaviour
             reloadButton.onClick.AddListener(OnReloadButtonPressed);
         
         // Debug check for kill notification text
-        if (killNotificationText != null)
+        if (killNotificationText == null)
         {
-            Debug.Log("[NetworkUIManager] Kill notification text assigned successfully!");
-        }
-        else
-        {
-            Debug.LogError("[NetworkUIManager] Kill notification text is NOT assigned! Please assign it in the Inspector!");
+            // Kill notification text not assigned - will be handled in editor
         }
     }
 
@@ -167,10 +161,6 @@ public class NetworkUIManager : MonoBehaviour
         if (runner == null)
         {
             runner = FindObjectOfType<NetworkRunner>();
-            if (runner != null)
-            {
-                // Debug.Log("[NetworkUIManager] NetworkRunner found.");
-            }
         }
 
         if (runner != null && localPlayerObject == null)
@@ -235,11 +225,7 @@ public class NetworkUIManager : MonoBehaviour
         }
         else
         {
-            // Log periodically to show we're still looking (every 2 seconds)
-            if (Time.frameCount % 120 == 0)
-            {
-                // Debug.LogWarning($"[NetworkUIManager] Local player NOT found yet. Runner: {(runner != null ? "exists" : "null")}, Runner.IsRunning: {(runner != null ? runner.IsRunning.ToString() : "N/A")}");
-            }
+            // Local player not found yet
         }
 
         UpdateGameInfoUI();
@@ -301,7 +287,6 @@ public class NetworkUIManager : MonoBehaviour
                 if (bomb.Object != null && bomb.Object.HasInputAuthority)
                 {
                     localPlayerObject = bomb.Object;
-                    // Debug.Log($"[NetworkUIManager] Found local player via fallback scan: {localPlayerObject.name}");
                     break;
                 }
             }
@@ -315,13 +300,6 @@ public class NetworkUIManager : MonoBehaviour
             localEquipSystem = localPlayerObject.GetComponent<NetworkWeaponEquipSystem>();
             localPlayerData = localPlayerObject.GetComponent<PlayerNetworkData>();
             localAbilityController = localPlayerObject.GetComponent<PlayerAbilityController>();
-
-            // Debug.Log($"[NetworkUIManager] Local player found! Object: {localPlayerObject.name}");
-            // Debug.Log($"[NetworkUIManager]   - NetworkBombBehaviour: {(localBombBehaviour != null ? "FOUND" : "MISSING")}");
-            // Debug.Log($"[NetworkUIManager]   - NetworkPistolBehaviour: {(localPistolBehaviour != null ? "FOUND" : "MISSING")}");
-            // Debug.Log($"[NetworkUIManager]   - NetworkLaserBehaviour: {(localLaserBehaviour != null ? "FOUND" : "MISSING")}");
-            // Debug.Log($"[NetworkUIManager]   - NetworkWeaponEquipSystem: {(localEquipSystem != null ? "FOUND" : "MISSING")}");
-            // Debug.Log($"[NetworkUIManager]   - PlayerNetworkData: {(localPlayerData != null ? "FOUND" : "MISSING")}");
         }
     }
 
@@ -395,11 +373,11 @@ public class NetworkUIManager : MonoBehaviour
     // ---------------------------------------------------------------
 
     /// <summary>Called when the ability button is pressed (UI button or Q key).</summary>
-    public void OnAbilityButtonPressed()
+    private void OnAbilityButtonPressed()
     {
         if (localAbilityController == null) return;
         if (localAbilityController.IsOnCooldown()) return;
-        localAbilityController.RPC_UseAbility();
+        localAbilityController.RequestAbility();
     }
 
     private void UpdateAbilityCooldownUI()
@@ -717,7 +695,7 @@ public class NetworkUIManager : MonoBehaviour
                 // Show warnings for high ping
                 if (pingMs > 200)
                 {
-                    Debug.LogWarning($"[NetworkUIManager] HIGH PING DETECTED: {pingMs}ms - Gameplay may be affected!");
+                    // High ping detected - gameplay may be affected
                 }
             }
         }
@@ -817,33 +795,19 @@ public class NetworkUIManager : MonoBehaviour
     /// </summary>
     public void OnPlayerKilled(string victimName)
     {
-        Debug.Log($"[NetworkUIManager] OnPlayerKilled called with victim: {victimName}");
-        Debug.Log($"[NetworkUIManager] KillNotificationText: {(killNotificationText != null ? "EXISTS" : "NULL")}");
-        
         if (killNotificationText != null)
         {
-            Debug.Log("[NetworkUIManager] Setting up kill notification...");
-            
             // Stop any existing kill notification
             if (killNotificationCoroutine != null)
             {
                 StopCoroutine(killNotificationCoroutine);
-                Debug.Log("[NetworkUIManager] Stopped existing notification");
             }
             
             // Show new kill notification
             killNotificationText.text = $"You killed {victimName}";
-            Debug.Log($"[NetworkUIManager] Text set to: '{killNotificationText.text}'");
-            
             killNotificationText.gameObject.SetActive(true);
-            Debug.Log($"[NetworkUIManager] GameObject activated: {killNotificationText.gameObject.activeInHierarchy}");
             
             killNotificationCoroutine = StartCoroutine(ShowKillNotification(victimName));
-            Debug.Log("[NetworkUIManager] Kill notification coroutine started");
-        }
-        else
-        {
-            Debug.LogError("[NetworkUIManager] KillNotificationText is NULL! Cannot show notification!");
         }
     }
     

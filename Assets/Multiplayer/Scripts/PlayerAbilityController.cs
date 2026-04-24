@@ -24,6 +24,11 @@ public class PlayerAbilityController : NetworkBehaviour
     /// Starts true, set false on use, set true again on kill/respawn.
     /// </summary>
     [Networked] public NetworkBool AbilityReady { get; set; }
+    
+    // Client-side prediction for instant ability feedback
+    private bool hasPredictedAbility;
+    private bool predictedShield;
+    private float predictedAbilityTime;
 
     // ---------------------------------------------------------------
     // Inspector Settings
@@ -128,6 +133,22 @@ public class PlayerAbilityController : NetworkBehaviour
     // ---------------------------------------------------------------
 
     /// <summary>Called via UI button or Q key. Sends to server to activate ability.</summary>
+    public void RequestAbility()
+    {
+        if (_playerData == null) return;
+        if (!AbilityReady) return;       // no charge available
+        
+        // Client-side prediction for instant ability feedback
+        if (Object.HasInputAuthority && !hasPredictedAbility)
+        {
+            PredictAbility();
+        }
+        
+        // Send to server
+        RPC_UseAbility();
+    }
+    
+    /// <summary>Called via UI button or Q key. Sends to server to activate ability.</summary>
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RPC_UseAbility()
     {
@@ -135,9 +156,65 @@ public class PlayerAbilityController : NetworkBehaviour
         if (!AbilityReady) return;       // no charge available
 
         AbilityReady = false;            // consume the charge
+        
+        // Clear client-side prediction when server processes
+        if (Object.HasInputAuthority)
+        {
+            ClearAbilityPrediction();
+        }
 
         if (_playerData.TeamId == 0)      ActivateShield();
         else if (_playerData.TeamId == 1) ActivateInvisibility();
+    }
+    
+    /// <summary>
+    /// Predict ability activation locally for instant feedback (Among Us style)
+    /// </summary>
+    private void PredictAbility()
+    {
+        if (!AbilityReady) return;
+        
+        // Store prediction data
+        hasPredictedAbility = true;
+        predictedAbilityTime = Time.time;
+        predictedShield = (_playerData.TeamId == 0);
+        
+        // Play instant ability effects
+        PlayPredictedAbilityEffects();
+    }
+    
+    /// <summary>
+    /// Play predicted ability effects instantly
+    /// </summary>
+    private void PlayPredictedAbilityEffects()
+    {
+        if (predictedShield)
+        {
+            // Predicted shield effects
+            PlayAbilityStartSound(true);
+            StartAbilityLoopSound(true);
+            SetShieldGlow(true);
+        }
+        else
+        {
+            // Predicted invisibility effects
+            PlayAbilityStartSound(false);
+            StartAbilityLoopSound(false);
+            ApplyInvisibilityVisuals();
+        }
+        
+        // Predict ability state
+        AbilityReady = false;
+        if (predictedShield)
+        {
+            IsShielded = true;
+            IsInvisible = false;
+        }
+        else
+        {
+            IsInvisible = true;
+            IsShielded = false;
+        }
     }
 
     /// <summary>
@@ -304,8 +381,6 @@ public class PlayerAbilityController : NetworkBehaviour
         
         if (!_isLocalPlayer) return;
         
-        Debug.Log("[PlayerAbilityController] Setting up audio for local player");
-        
         // Create AudioSource for one-shot sounds (ability start/end)
         _abilityAudioSource = gameObject.AddComponent<AudioSource>();
         _abilityAudioSource.playOnAwake = false;
@@ -330,11 +405,10 @@ public class PlayerAbilityController : NetworkBehaviour
         if (clipToPlay != null)
         {
             _abilityAudioSource.PlayOneShot(clipToPlay);
-            Debug.Log($"[PlayerAbilityController] Playing {(isShield ? "shield" : "invisibility")} start sound");
         }
         else
         {
-            Debug.LogWarning($"[PlayerAbilityController] {(isShield ? "shield" : "invisibility")} start sound is not assigned!");
+            // Sound not assigned
         }
     }
     
@@ -351,11 +425,10 @@ public class PlayerAbilityController : NetworkBehaviour
         {
             _loopingAudioSource.clip = clipToPlay;
             _loopingAudioSource.Play();
-            Debug.Log($"[PlayerAbilityController] Starting {(isShield ? "shield" : "invisibility")} loop sound");
         }
         else
         {
-            Debug.LogWarning($"[PlayerAbilityController] {(isShield ? "shield" : "invisibility")} loop sound is not assigned!");
+            // Sound not assigned
         }
     }
     
@@ -369,7 +442,6 @@ public class PlayerAbilityController : NetworkBehaviour
         if (_loopingAudioSource.isPlaying)
         {
             _loopingAudioSource.Stop();
-            Debug.Log("[PlayerAbilityController] Stopped ability loop sound");
         }
     }
     
@@ -383,11 +455,23 @@ public class PlayerAbilityController : NetworkBehaviour
         if (abilityEndSound != null)
         {
             _abilityAudioSource.PlayOneShot(abilityEndSound);
-            Debug.Log("[PlayerAbilityController] Playing ability end sound");
         }
         else
         {
-            Debug.LogWarning("[PlayerAbilityController] Ability end sound is not assigned!");
+            // Sound not assigned
+        }
+    }
+    
+    /// <summary>
+    /// Clear client-side ability prediction
+    /// </summary>
+    private void ClearAbilityPrediction()
+    {
+        if (hasPredictedAbility)
+        {
+            hasPredictedAbility = false;
+            predictedShield = false;
+            predictedAbilityTime = 0f;
         }
     }
 }

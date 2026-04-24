@@ -41,6 +41,11 @@ public class NetworkBombBehaviour : NetworkBehaviour
     private Vector3 targetPoint;
     private bool wantsToThrow;
     private NetworkWeaponEquipSystem equipSystem;
+    
+    // Client-side prediction for instant throwing
+    private bool hasPredictedThrow;
+    private Vector3 predictedThrowDirection;
+    private float predictedThrowTime;
 
     // --- Public accessors ---
     public int BombDamage => bombDamage;
@@ -76,7 +81,80 @@ public class NetworkBombBehaviour : NetworkBehaviour
     public void RequestThrow()
     {
         wantsToThrow = true;
-        // Debug.Log("[NetworkBombBehaviour] RequestThrow() called — throw queued.");
+        
+        // Client-side prediction for instant feedback
+        if (Object.HasInputAuthority && !hasPredictedThrow)
+        {
+            PredictThrow();
+        }
+    }
+    
+    /// <summary>
+    /// Predict grenade throwing locally for instant feedback (Among Us style)
+    /// </summary>
+    private void PredictThrow()
+    {
+        if (CurrentBombs <= 0) return;
+        if (!ThrowCooldownTimer.ExpiredOrNotRunning(Runner)) return;
+        
+        // Store prediction data
+        hasPredictedThrow = true;
+        predictedThrowDirection = (targetPoint - (throwPoint != null ? throwPoint.position : transform.position)).normalized;
+        predictedThrowTime = Time.time;
+        
+        // Create local predicted grenade
+        CreatePredictedGrenade();
+        
+        // Play local effects instantly
+        PlayThrowEffectsLocal();
+    }
+    
+    /// <summary>
+    /// Create a local predicted grenade for instant visual feedback
+    /// </summary>
+    private void CreatePredictedGrenade()
+    {
+        if (chemicalBallPrefab == null || throwPoint == null) return;
+        
+        // Instantiate local predicted grenade (not networked)
+        GameObject predictedGrenade = Instantiate(chemicalBallPrefab.gameObject, throwPoint.position, Quaternion.identity);
+        
+        // Add simple Rigidbody for physics
+        var rb = predictedGrenade.AddComponent<Rigidbody>();
+        rb.velocity = predictedThrowDirection * throwForce;
+        rb.useGravity = true;
+        rb.mass = 0.5f;
+        
+        // Set visual properties
+        var renderer = predictedGrenade.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            renderer.material.color = new Color(ballColor.r, ballColor.g, ballColor.b, 0.7f); // Semi-transparent
+        }
+        
+        // Scale
+        predictedGrenade.transform.localScale = Vector3.one * ballScale;
+        
+        // Auto-destroy after 2 seconds
+        Destroy(predictedGrenade, 2f);
+    }
+    
+    /// <summary>
+    /// Play throw effects instantly on client
+    /// </summary>
+    private void PlayThrowEffectsLocal()
+    {
+        // Play throw sound locally
+        if (throwSound != null)
+        {
+            AudioSource.PlayClipAtPoint(throwSound, throwPoint != null ? throwPoint.position : transform.position, throwSoundVolume);
+        }
+        
+        // Play throw effect
+        if (throwEffect != null)
+        {
+            throwEffect.Play();
+        }
     }
 
     private void Update()
@@ -115,10 +193,6 @@ public class NetworkBombBehaviour : NetworkBehaviour
     {
         inputData.isThrowingBomb = wantsToThrow;
         inputData.throwDirection = (targetPoint - (throwPoint != null ? throwPoint.position : transform.position)).normalized;
-        if (wantsToThrow)
-        {
-            // Debug.Log($"[NetworkBombBehaviour] CollectInput — sending throw input. Direction: {inputData.throwDirection}");
-        }
         wantsToThrow = false; // consumed
     }
 
@@ -130,10 +204,6 @@ public class NetworkBombBehaviour : NetworkBehaviour
     {
         inputData.isThrowingBomb = wantsToThrow;
         inputData.throwDirection = (targetPoint - (throwPoint != null ? throwPoint.position : transform.position)).normalized;
-        if (wantsToThrow)
-        {
-            // Debug.Log($"[NetworkBombBehaviour] CollectNetworkInput — sending throw input. Direction: {inputData.throwDirection}");
-        }
         wantsToThrow = false; // consumed
     }
 
@@ -150,7 +220,6 @@ public class NetworkBombBehaviour : NetworkBehaviour
 
         if (input.isThrowingBomb)
         {
-            // Debug.Log($"[NetworkBombBehaviour] FixedUpdateNetwork — throw input received on {(Object.HasStateAuthority ? "SERVER" : "CLIENT")}. Bombs: {CurrentBombs}");
             TryThrow(input.throwDirection);
         }
     }
@@ -160,8 +229,13 @@ public class NetworkBombBehaviour : NetworkBehaviour
         // Only the server actually spawns
         if (!Object.HasStateAuthority)
         {
-            // Debug.Log("[NetworkBombBehaviour] TryThrow — skipped, not state authority.");
             return;
+        }
+        
+        // Clear client-side prediction when server processes the throw
+        if (Object.HasInputAuthority)
+        {
+            ClearPrediction();
         }
 
         // Check if bomb is equipped removed allowing instant throw.
@@ -169,21 +243,22 @@ public class NetworkBombBehaviour : NetworkBehaviour
         // Cooldown check
         if (!ThrowCooldownTimer.ExpiredOrNotRunning(Runner))
         {
-            // Debug.Log("[NetworkBombBehaviour] TryThrow — skipped, cooldown active.");
+            // Clear prediction if cooldown failed
+            if (Object.HasInputAuthority) ClearPrediction();
             return;
         }
 
         // Ammo check
         if (CurrentBombs <= 0)
         {
-            // Debug.Log($"[NetworkBombBehaviour] TryThrow — FAILED, player {Object.InputAuthority} has no bombs left.");
+            // Clear prediction if no ammo
+            if (Object.HasInputAuthority) ClearPrediction();
             return;
         }
 
         // Consume ammo & start cooldown
         CurrentBombs--;
         ThrowCooldownTimer = TickTimer.CreateFromSeconds(Runner, throwCooldown);
-        // Debug.Log($"[NetworkBombBehaviour] TryThrow — ammo consumed. Bombs remaining: {CurrentBombs}/{MaxBombs}");
 
         // Determine spawn position
         Vector3 spawnPos = throwPoint != null ? throwPoint.position : transform.position + Vector3.up;
@@ -198,8 +273,6 @@ public class NetworkBombBehaviour : NetworkBehaviour
 
         if (bomb != null)
         {
-            // Debug.Log($"[NetworkBombBehaviour] BOMB SPAWNED successfully at {spawnPos}. Direction: {direction}, Force: {throwForce}");
-
             // Scale
             bomb.transform.localScale *= ballScale;
 
@@ -228,11 +301,6 @@ public class NetworkBombBehaviour : NetworkBehaviour
                 rb.isKinematic = false;
                 Vector3 velocity = CalculateThrowVelocity(spawnPos, direction);
                 rb.velocity = velocity;
-                // Debug.Log($"[NetworkBombBehaviour] Velocity set on bomb: {velocity} (magnitude: {velocity.magnitude})");
-            }
-            else
-            {
-                // Debug.LogError("[NetworkBombBehaviour] BOMB MISSING RIGIDBODY — no velocity applied!");
             }
 
             // Notify all clients about the throw for effects
@@ -240,7 +308,7 @@ public class NetworkBombBehaviour : NetworkBehaviour
         }
         else
         {
-            // Debug.LogError($"[NetworkBombBehaviour] BOMB SPAWN FAILED — Runner.Spawn returned null! Prefab: {chemicalBallPrefab}");
+            // Bomb spawn failed
         }
     }
 
@@ -278,6 +346,21 @@ public class NetworkBombBehaviour : NetworkBehaviour
                 // Fallback: 3D positioned sound
                 AudioSource.PlayClipAtPoint(throwSound, position, throwSoundVolume);
             }
+        }
+    }
+
+    /// <summary>
+    /// Clear client-side prediction when server confirms the throw
+    /// </summary>
+    private void ClearPrediction()
+    {
+        if (hasPredictedThrow)
+        {
+            hasPredictedThrow = false;
+            predictedThrowDirection = Vector3.zero;
+            predictedThrowTime = 0f;
+            
+            Debug.Log("[NetworkBombBehaviour] Client prediction cleared");
         }
     }
 

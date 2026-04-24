@@ -786,8 +786,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     /// </summary>
     private async Task<bool> CheckHostQuality()
     {
-        UnityEngine.Debug.Log("[NetworkStarter] Checking host internet quality...");
-        
         // Test ping to a reliable server (Google DNS as fallback)
         var pingTask = TestConnectionQuality();
         var timeoutTask = Task.Delay(5000); // 5 second timeout
@@ -796,20 +794,18 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         
         if (completedTask == timeoutTask)
         {
-            UnityEngine.Debug.LogError("[NetworkStarter] Host quality check timed out!");
+            // Host quality check timed out
             return false;
         }
         
         float ping = await pingTask;
-        UnityEngine.Debug.Log($"[NetworkStarter] Host ping test result: {ping}ms");
         
         if (ping > maxAcceptablePing)
         {
-            UnityEngine.Debug.LogError($"[NetworkStarter] Host ping too high: {ping}ms (max acceptable: {maxAcceptablePing}ms)");
+            // Host ping too high
             return false;
         }
         
-        UnityEngine.Debug.Log($"[NetworkStarter] Host quality check PASSED: {ping}ms");
         return true;
     }
     

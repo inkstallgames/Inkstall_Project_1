@@ -50,12 +50,6 @@ public class PlayerAbilityController : NetworkBehaviour
     [SerializeField] private Material invisibilityMaterial;
 
     [Header("Ability Sound Effects")]
-    [Tooltip("Sound played when shield ability is activated")]
-    [SerializeField] private AudioClip shieldStartSound;
-    
-    [Tooltip("Sound played when invisibility ability is activated")]
-    [SerializeField] private AudioClip invisibilityStartSound;
-    
     [Tooltip("Sound played once when shield ability is used")]
     [SerializeField] private AudioClip shieldUseSound;
     
@@ -167,7 +161,7 @@ public class PlayerAbilityController : NetworkBehaviour
     }
     
     /// <summary>
-    /// Predict ability activation locally for instant feedback (Among Us style)
+    /// Predict ability activation locally for instant feedback
     /// </summary>
     private void PredictAbility()
     {
@@ -190,20 +184,17 @@ public class PlayerAbilityController : NetworkBehaviour
         if (predictedShield)
         {
             // Predicted shield effects
-            PlayAbilityStartSound(true);
-            StartAbilityLoopSound(true);
+            PlayAbilityUseSound(true);
             SetShieldGlow(true);
         }
         else
         {
             // Predicted invisibility effects
-            PlayAbilityStartSound(false);
-            StartAbilityLoopSound(false);
+            PlayAbilityUseSound(false);
             ApplyInvisibilityVisuals();
         }
         
-        // Predict ability state
-        AbilityReady = false;
+        // Predict ability state locally until server overwrites
         if (predictedShield)
         {
             IsShielded = true;
@@ -245,26 +236,24 @@ public class PlayerAbilityController : NetworkBehaviour
     {
         IsShielded  = true;
         IsInvisible = false;
-        RPC_SyncAbilityState(true, false);
         if (_abilityCoroutine != null) StopCoroutine(_abilityCoroutine);
         _abilityCoroutine = StartCoroutine(DeactivateAfterDelay(abilityDuration));
         
-        // Play shield sounds
-        PlayAbilityStartSound(true);
-        PlayAbilityUseSound(true);
+        // Play shield sounds if not predicted or if server isn't local player
+        if (!hasPredictedAbility || !Object.HasInputAuthority)
+            PlayAbilityUseSound(true);
     }
 
     private void ActivateInvisibility()
     {
         IsInvisible = true;
         IsShielded  = false;
-        RPC_SyncAbilityState(false, true);
         if (_abilityCoroutine != null) StopCoroutine(_abilityCoroutine);
         _abilityCoroutine = StartCoroutine(DeactivateAfterDelay(abilityDuration));
         
-        // Play invisibility sounds
-        PlayAbilityStartSound(false);
-        PlayAbilityUseSound(false);
+        // Play invisibility sounds if not predicted or if server isn't local player
+        if (!hasPredictedAbility || !Object.HasInputAuthority)
+            PlayAbilityUseSound(false);
     }
 
     private IEnumerator DeactivateAfterDelay(float delay)
@@ -272,21 +261,17 @@ public class PlayerAbilityController : NetworkBehaviour
         yield return new WaitForSeconds(delay);
         IsShielded  = false;
         IsInvisible = false;
-        RPC_SyncAbilityState(false, false);
         
-        // Play end sound
-        PlayAbilityEndSound();
+        // The host will play the end sound. Clients play it via OnChange if we used an OnChange, 
+        // but since we rely on Render(), let's explicitly trigger an RPC for the end sound 
+        // so everyone hears their own ability ending.
+        RPC_PlayEndSound();
     }
 
-    // ---------------------------------------------------------------
-    // RPC — sync to all clients
-    // ---------------------------------------------------------------
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_SyncAbilityState(NetworkBool shielded, NetworkBool invisible)
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    private void RPC_PlayEndSound()
     {
-        IsShielded  = shielded;
-        IsInvisible = invisible;
+        PlayAbilityEndSound();
     }
 
     // ---------------------------------------------------------------
@@ -386,26 +371,7 @@ public class PlayerAbilityController : NetworkBehaviour
         
 
     }
-    
-    /// <summary>
-    /// Play ability start sound
-    /// </summary>
-    private void PlayAbilityStartSound(bool isShield)
-    {
-        if (!_isLocalPlayer || _abilityAudioSource == null) return;
-        
-        AudioClip clipToPlay = isShield ? shieldStartSound : invisibilityStartSound;
-        
-        if (clipToPlay != null)
-        {
-            _abilityAudioSource.PlayOneShot(clipToPlay);
-        }
-        else
-        {
-            // Sound not assigned
-        }
-    }
-    
+
     /// <summary>
     /// Play ability use sound (one-shot)
     /// </summary>

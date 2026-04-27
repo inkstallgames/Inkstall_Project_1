@@ -56,11 +56,11 @@ public class PlayerAbilityController : NetworkBehaviour
     [Tooltip("Sound played when invisibility ability is activated")]
     [SerializeField] private AudioClip invisibilityStartSound;
     
-    [Tooltip("Looping sound played while shield is active")]
-    [SerializeField] private AudioClip shieldLoopSound;
+    [Tooltip("Sound played once when shield ability is used")]
+    [SerializeField] private AudioClip shieldUseSound;
     
-    [Tooltip("Looping sound played while invisibility is active")]
-    [SerializeField] private AudioClip invisibilityLoopSound;
+    [Tooltip("Sound played once when invisibility ability is used")]
+    [SerializeField] private AudioClip invisibilityUseSound;
     
     [Tooltip("Sound played when ability ends")]
     [SerializeField] private AudioClip abilityEndSound;
@@ -75,7 +75,6 @@ public class PlayerAbilityController : NetworkBehaviour
     
     // Audio components
     private AudioSource _abilityAudioSource;
-    private AudioSource _loopingAudioSource;
     private bool _isLocalPlayer;
 
     // ---------------------------------------------------------------
@@ -252,7 +251,7 @@ public class PlayerAbilityController : NetworkBehaviour
         
         // Play shield sounds
         PlayAbilityStartSound(true);
-        StartAbilityLoopSound(true);
+        PlayAbilityUseSound(true);
     }
 
     private void ActivateInvisibility()
@@ -265,7 +264,7 @@ public class PlayerAbilityController : NetworkBehaviour
         
         // Play invisibility sounds
         PlayAbilityStartSound(false);
-        StartAbilityLoopSound(false);
+        PlayAbilityUseSound(false);
     }
 
     private IEnumerator DeactivateAfterDelay(float delay)
@@ -275,8 +274,7 @@ public class PlayerAbilityController : NetworkBehaviour
         IsInvisible = false;
         RPC_SyncAbilityState(false, false);
         
-        // Stop looping sound and play end sound
-        StopAbilityLoopSound();
+        // Play end sound
         PlayAbilityEndSound();
     }
 
@@ -386,11 +384,7 @@ public class PlayerAbilityController : NetworkBehaviour
         _abilityAudioSource.playOnAwake = false;
         _abilityAudioSource.spatialBlend = 0f; // 2D sound for local player
         
-        // Create AudioSource for looping sounds (ability duration)
-        _loopingAudioSource = gameObject.AddComponent<AudioSource>();
-        _loopingAudioSource.playOnAwake = false;
-        _loopingAudioSource.spatialBlend = 0f; // 2D sound for local player
-        _loopingAudioSource.loop = true; // Loop for duration sounds
+
     }
     
     /// <summary>
@@ -413,35 +407,22 @@ public class PlayerAbilityController : NetworkBehaviour
     }
     
     /// <summary>
-    /// Start looping ability sound
+    /// Play ability use sound (one-shot)
     /// </summary>
-    private void StartAbilityLoopSound(bool isShield)
+    private void PlayAbilityUseSound(bool isShield)
     {
-        if (!_isLocalPlayer || _loopingAudioSource == null) return;
+        if (!_isLocalPlayer || _abilityAudioSource == null) return;
         
-        AudioClip clipToPlay = isShield ? shieldLoopSound : invisibilityLoopSound;
+        AudioClip clipToPlay = isShield ? shieldUseSound : invisibilityUseSound;
         
         if (clipToPlay != null)
         {
-            _loopingAudioSource.clip = clipToPlay;
-            _loopingAudioSource.Play();
+            _abilityAudioSource.PlayOneShot(clipToPlay);
+            Debug.Log($"[PlayerAbilityController] Playing {(isShield ? "shield" : "invisibility")} use sound");
         }
         else
         {
-            // Sound not assigned
-        }
-    }
-    
-    /// <summary>
-    /// Stop looping ability sound
-    /// </summary>
-    private void StopAbilityLoopSound()
-    {
-        if (!_isLocalPlayer || _loopingAudioSource == null) return;
-        
-        if (_loopingAudioSource.isPlaying)
-        {
-            _loopingAudioSource.Stop();
+            Debug.LogWarning($"[PlayerAbilityController] {(isShield ? "shield" : "invisibility")} use sound is not assigned!");
         }
     }
     

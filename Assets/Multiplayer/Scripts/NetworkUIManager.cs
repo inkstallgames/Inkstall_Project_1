@@ -2,6 +2,8 @@ using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// Handles all network game UI interactions — throw button, ammo display,
@@ -63,6 +65,22 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI gameOverText;        // "Blue Team Wins!" / "Red Team Wins!" / "It's a Draw!"
     [SerializeField] private UnityEngine.UI.Image gameOverImage;  // Tinted Blue / Red / Grey based on winner
 
+    [Header("Leaderboard UI")]
+    [SerializeField] private GameObject leaderboardPanel;          // Separate panel for the leaderboard (shown after game over panel)
+    [SerializeField] private float gameOverDisplayTime = 5f;      // How long to show the game over panel before switching
+    [SerializeField] private float leaderboardDisplayTime = 10f;  // How long to show the leaderboard before exiting
+
+    [Tooltip("Row GameObjects — disabled for unused slots. Create 10 in the editor.")]
+    [SerializeField] private GameObject[] leaderboardRows = new GameObject[10];
+    [Tooltip("Player name texts — one per row.")]
+    [SerializeField] private TextMeshProUGUI[] leaderboardNameTexts = new TextMeshProUGUI[10];
+    [Tooltip("Kill count texts — one per row.")]
+    [SerializeField] private TextMeshProUGUI[] leaderboardKillTexts = new TextMeshProUGUI[10];
+    [Tooltip("Death count texts — one per row.")]
+    [SerializeField] private TextMeshProUGUI[] leaderboardDeathTexts = new TextMeshProUGUI[10];
+    [Tooltip("Countdown text showing seconds until exit.")]
+    [SerializeField] private TextMeshProUGUI leaderboardCountdownText;
+
     [Header("Ability UI")]
     [SerializeField] private UnityEngine.UI.Button abilityButton;          // On-screen ability button
     [SerializeField] private UnityEngine.UI.Image  abilityCooldownOverlay; // Radial/fill overlay (fill amount = cooldown %)
@@ -105,6 +123,17 @@ public class NetworkUIManager : MonoBehaviour
     // Kill notification system
     private float killNotificationTimer = 0f;
     private Coroutine killNotificationCoroutine;
+
+    // Cached leaderboard data (snapshotted at game-over so it survives despawns)
+    private struct LeaderboardEntry
+    {
+        public string PlayerName;
+        public int Kills;
+        public int Deaths;
+        public int TeamId;
+        public bool IsLocalPlayer;
+    }
+    private List<LeaderboardEntry> cachedLeaderboardData = new List<LeaderboardEntry>();
 
     //awake
     private void Awake()
@@ -786,6 +815,175 @@ public class NetworkUIManager : MonoBehaviour
             if (winningTeam == 0)       gameOverImage.color = new Color(0.18f, 0.47f, 1f);   // Blue
             else if (winningTeam == 1)  gameOverImage.color = new Color(1f, 0.22f, 0.22f);   // Red
             else                        gameOverImage.color = new Color(0.55f, 0.55f, 0.55f); // Grey
+        }
+
+        // Hide leaderboard initially — it will show after the game over panel
+        if (leaderboardPanel != null)
+        {
+            leaderboardPanel.SetActive(false);
+        }
+
+        // Snapshot player data NOW while objects still exist
+        CacheLeaderboardData();
+
+        // Start the transition: Game Over → Leaderboard → Exit
+        StartCoroutine(GameOverToLeaderboardSequence());
+    }
+
+    /// <summary>
+    /// Handles the timed transition:
+    ///   1. Show Game Over panel for gameOverDisplayTime seconds
+    ///   2. Hide Game Over panel, populate & show Leaderboard panel
+    ///   3. After leaderboardDisplayTime seconds, exit to lobby
+    /// </summary>
+    private System.Collections.IEnumerator GameOverToLeaderboardSequence()
+    {
+        // Phase 1: Game Over panel is already visible — wait
+        yield return new WaitForSeconds(gameOverDisplayTime);
+
+        // Phase 2: Hide game over, show leaderboard
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(false);
+
+        PopulateLeaderboard();
+
+        if (leaderboardPanel != null)
+            leaderboardPanel.SetActive(true);
+
+        // Unlock cursor so players can see the leaderboard comfortably
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // Phase 3: Countdown, then exit
+        float countdown = leaderboardDisplayTime;
+        while (countdown > 0f)
+        {
+            if (leaderboardCountdownText != null)
+                leaderboardCountdownText.text = Mathf.CeilToInt(countdown).ToString();
+
+            yield return null;
+            countdown -= Time.deltaTime;
+        }
+
+        if (leaderboardCountdownText != null)
+            leaderboardCountdownText.text = "0";
+
+        // Shut down and return to lobby
+        if (leaderboardPanel != null)
+            leaderboardPanel.SetActive(false);
+
+        ShutdownAndReturnToLobby();
+    }
+
+    /// <summary>
+    /// Async helper — called at the end of the leaderboard sequence to cleanly
+    /// shut down the NetworkRunner and return to the lobby scene.
+    /// </summary>
+    private async void ShutdownAndReturnToLobby()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (NetworkStarter.Instance != null)
+        {
+            await NetworkStarter.Instance.ShutdownRunner();
+        }
+        else if (runner != null)
+        {
+            await runner.Shutdown();
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MultiplayerLobby");
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Leaderboard
+    // ---------------------------------------------------------------
+
+    /// <summary>
+    /// Snapshots all PlayerNetworkData in the scene right now, before any despawns.
+    /// </summary>
+    private void CacheLeaderboardData()
+    {
+        cachedLeaderboardData.Clear();
+
+        var allPlayers = FindObjectsOfType<PlayerNetworkData>();
+        Debug.Log($"[NetworkUIManager] CacheLeaderboardData — found {allPlayers.Length} PlayerNetworkData objects");
+
+        foreach (var pData in allPlayers)
+        {
+            string pName = pData.PlayerName;
+            if (string.IsNullOrEmpty(pName))
+                pName = $"Player";
+
+            bool isLocal = pData.Object != null && pData.Object.HasInputAuthority;
+
+            cachedLeaderboardData.Add(new LeaderboardEntry
+            {
+                PlayerName = pName,
+                Kills = pData.Kills,
+                Deaths = pData.Deaths,
+                TeamId = pData.TeamId,
+                IsLocalPlayer = isLocal
+            });
+
+            Debug.Log($"[NetworkUIManager] Cached: {pName} | K:{pData.Kills} D:{pData.Deaths} Team:{pData.TeamId} Local:{isLocal}");
+        }
+
+        // Sort: most kills first, then fewest deaths
+        cachedLeaderboardData.Sort((a, b) =>
+        {
+            int cmp = b.Kills.CompareTo(a.Kills);
+            return cmp != 0 ? cmp : a.Deaths.CompareTo(b.Deaths);
+        });
+    }
+
+    /// <summary>
+    /// Updates the pre-made leaderboard row texts with cached player data.
+    /// Unused rows are hidden.
+    /// </summary>
+    private void PopulateLeaderboard()
+    {
+        int rowCount = Mathf.Min(leaderboardRows.Length, 10);
+
+        for (int i = 0; i < rowCount; i++)
+        {
+            if (i < cachedLeaderboardData.Count)
+            {
+                var entry = cachedLeaderboardData[i];
+
+                // Show the row
+                if (leaderboardRows[i] != null)
+                    leaderboardRows[i].SetActive(true);
+
+                // Update texts
+                if (leaderboardNameTexts[i] != null)
+                {
+                    leaderboardNameTexts[i].text = entry.PlayerName;
+                    leaderboardNameTexts[i].color = entry.IsLocalPlayer
+                        ? Color.yellow // Yellow for local player
+                        : Color.white;
+                }
+
+                if (leaderboardKillTexts[i] != null)
+                    leaderboardKillTexts[i].text = entry.Kills.ToString();
+
+                if (leaderboardDeathTexts[i] != null)
+                    leaderboardDeathTexts[i].text = entry.Deaths.ToString();
+            }
+            else
+            {
+                // Hide unused rows
+                if (leaderboardRows[i] != null)
+                    leaderboardRows[i].SetActive(false);
+            }
+        }
+
+        if (cachedLeaderboardData.Count == 0)
+        {
+            Debug.LogWarning("[NetworkUIManager] No cached player data for leaderboard.");
         }
     }
 

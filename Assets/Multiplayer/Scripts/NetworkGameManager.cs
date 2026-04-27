@@ -984,11 +984,7 @@ public class NetworkGameManager : NetworkBehaviour
 
         RPC_OnGameEnded(winningTeam, winnerName);
 
-
-
-        // Return to lobby after a delay — notify ALL clients to shut down
-
-        StartCoroutine(ReturnToLobbyAfterDelay(10f));
+        // The NetworkUIManager handles the Game Over → Leaderboard → Exit sequence on each client.
 
     }
 

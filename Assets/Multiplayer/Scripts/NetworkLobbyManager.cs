@@ -40,7 +40,7 @@ public class NetworkLobbyManager : NetworkBehaviour
     public TickTimer GameStartTimer { get; set; }
 
     private readonly List<string> mapOptions = new List<string> { "Rust" };
-    private readonly List<string> timeOptions = new List<string> { "10:00", "15:00" };
+    private readonly List<string> timeOptions = new List<string> { "5:00", "10:00", "15:00", "20:00" };
     private readonly List<Color> playerColors = new List<Color>
     {
         Color.blue,
@@ -52,7 +52,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         new Color(0.5f, 0f, 1f),  // Purple
         new Color(0f, 1f, 0.5f)   // Teal
     };
-    private readonly int[] timeInSeconds = { 600, 900 };
+    private readonly int[] timeInSeconds = { 300, 600, 900, 1200 };
 
     private LobbyUIManager uiManager;
 

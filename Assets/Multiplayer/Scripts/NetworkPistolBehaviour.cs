@@ -129,7 +129,15 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     /// </summary>
     private void PredictShoot()
     {
-        if (CurrentAmmo <= 0) return;
+        if (CurrentAmmo <= 0)
+        {
+            if (!IsReloading && ReserveAmmo > 0 && !hasPredictedReload)
+            {
+                PredictReload();
+            }
+            return;
+        }
+        
         if (!FireCooldownTimer.ExpiredOrNotRunning(Runner)) return;
         if (IsReloading) return;
         
@@ -188,8 +196,12 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             pistolRecoilAnimation.TriggerPistolFire();
         }
         
-        // Predict ammo decrease
-        CurrentAmmo--;
+        // Predict ammo decrease ONLY for clients without state authority.
+        // Host applies this in FixedUpdateNetwork to prevent double-consumption.
+        if (!Object.HasStateAuthority)
+        {
+            CurrentAmmo--;
+        }
     }
 
     public void RequestReload()
@@ -246,8 +258,12 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             Destroy(tempAudioObject, reloadSound.length + 0.1f);
         }
         
-        // Predict reload state
-        IsReloading = true;
+        // Predict reload state ONLY for clients without state authority.
+        // Host applies this in FixedUpdateNetwork to prevent skipping the reload timer.
+        if (!Object.HasStateAuthority)
+        {
+            IsReloading = true;
+        }
     }
 
     public void CollectNetworkInput(ref StarterAssets.NetworkInputData inputData)
@@ -323,6 +339,13 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         {
             // Clear prediction if no ammo
             if (Object.HasInputAuthority) ClearShootPrediction();
+            
+            // Auto reload when out of ammo and trying to shoot
+            if (!IsReloading && ReserveAmmo > 0)
+            {
+                TryReload();
+            }
+            
             return;
         }
         

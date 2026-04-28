@@ -6658,6 +6658,10 @@ MonoBehaviour:
     type: 3}
   maxAcceptablePing: 150
   enableHostQualityCheck: 1
+  enableFPSOptimizations: 1
+  targetFPS: 60
+  enableVSync: 0
+  optimizedUpdateFrequency: 30
 --- !u!1 &1327212377
 GameObject:
   m_ObjectHideFlags: 0

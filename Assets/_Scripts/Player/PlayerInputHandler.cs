@@ -90,10 +90,14 @@ public class PlayerInputHandler : NetworkBehaviour
             // Get shooting input
             isShooting = playerInput.actions["Fire"].ReadValue<float>() > 0.1f;
             
+            // Get jump input
+            bool isJumping = playerInput.actions["Jump"].ReadValue<float>() > 0.1f;
+            
             // Update network input
             input.movement = moveInput;
             input.aimDirection = aimInput;
             input.isShooting = isShooting;
+            input.isJumping = isJumping;
             
             // Debug logs for input (uncomment to see input values)
             // Debug.Log($"[PlayerInputHandler] Input - Move: {moveInput}, Aim: {aimInput}, Shoot: {isShooting}");
@@ -118,5 +122,13 @@ public class PlayerInputHandler : NetworkBehaviour
     public void OnFire(InputAction.CallbackContext context)
     {
         isShooting = context.ReadValueAsButton();
+    }
+    
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (Object != null && Object.HasInputAuthority)
+        {
+            Debug.Log($"[PlayerInputHandler] OnJump called for Player {Object.InputAuthority.PlayerId}");
+        }
     }
 }

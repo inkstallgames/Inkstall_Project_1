@@ -32,6 +32,12 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private float maxAcceptablePing = 150f; // ms
     [SerializeField] private bool enableHostQualityCheck = true;
     
+    [Header("FPS OPTIMIZATION - Fast-Paced Settings")]
+    [SerializeField] private bool enableFPSOptimizations = true;
+    [SerializeField] private int targetFPS = 60;
+    [SerializeField] private bool enableVSync = false;
+    [SerializeField] private int optimizedUpdateFrequency = 30;
+    
     // Store the current join code so it can be accessed by other scripts
     public string CurrentJoinCode { get; private set; }
 
@@ -51,12 +57,38 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         _instance = this;
         DontDestroyOnLoad(gameObject);
         
+        // Apply FPS optimizations for fast-paced gameplay
+        ApplyFPSOptimizations();
+        
         // Initialize FPS manager for consistent performance
         InitializeFPSManager();
         
         // Initialize runner and prewarm network resources
         InitializeRunner();
         await PrewarmNetworkResources();
+    }
+    
+    /// <summary>
+    /// Apply FPS-specific optimizations for fast-paced gameplay
+    /// </summary>
+    private void ApplyFPSOptimizations()
+    {
+        if (!enableFPSOptimizations) return;
+        
+        // Set target frame rate for consistent FPS
+        Application.targetFrameRate = targetFPS;
+        
+        // Configure VSync for optimal performance
+        QualitySettings.vSyncCount = enableVSync ? 1 : 0;
+        
+        // Optimize physics for FPS gameplay
+        Physics.defaultSolverIterations = 4; // Reduced from default 6
+        Physics.defaultSolverVelocityIterations = 1; // Reduced from default 1
+        
+        // Set time step to match target FPS
+        Time.fixedDeltaTime = 1f / targetFPS;
+        
+        UnityEngine.Debug.Log($"[NetworkStarter] FPS Optimizations Applied: {targetFPS} FPS, VSync: {enableVSync}");
     }
     
     private void InitializeFPSManager()
@@ -428,15 +460,24 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
     private System.Collections.IEnumerator PingLoggerCoroutine()
     {
+        // Optimized ping logging frequency for FPS games
+        float pingInterval = enableFPSOptimizations ? 10f : 5f; // Reduce frequency for FPS
+        
         while (_runner != null && _runner.IsRunning)
         {
             if (_runner.IsConnectedToServer || _runner.IsServer)
             {
                 int ping = Mathf.RoundToInt((float)(_runner.GetPlayerRtt(_runner.LocalPlayer) * 1000));
                 // UnityEngine.Debug.Log($"[PING] Current Ping: {ping}ms | Players: {_runner.ActivePlayers.Count()}/{_maxPlayers}");
+                
+                // Log ping warnings for FPS games
+                if (ping > 150)
+                {
+                    UnityEngine.Debug.LogWarning($"[PING] High ping detected: {ping}ms - FPS gameplay may be affected");
+                }
             }
             
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(pingInterval);
         }
     }
 

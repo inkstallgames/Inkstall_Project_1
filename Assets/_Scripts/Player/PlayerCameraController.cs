@@ -91,15 +91,23 @@ public class PlayerCameraController : NetworkBehaviour
                 if (thirdPersonFollow != null)
                 {
                     // Camera positioned to the right so arms appear on right side of screen
-                    thirdPersonFollow.CameraDistance = 0f;
+                    thirdPersonFollow.CameraDistance = 0.2f; // Small distance to reduce jitter
                     thirdPersonFollow.ShoulderOffset = new Vector3(0.15f, -0.1f, 0.1f);
+                    
+                    // Add damping to smooth out jump movements
+                    thirdPersonFollow.Damping = new Vector3(0.2f, 0.3f, 0.1f); // Smooth vertical movement
+                    thirdPersonFollow.VerticalArmLength = 0.1f; // Reduce vertical sensitivity
                 }
             }
             else
             {
                 // Update existing third-person follow settings
-                thirdPersonFollow.CameraDistance = 0f;
+                thirdPersonFollow.CameraDistance = 0.2f; // Small distance to reduce jitter
                 thirdPersonFollow.ShoulderOffset = new Vector3(0.15f, -0.1f, 0.1f);
+                
+                // Add damping to smooth out jump movements
+                thirdPersonFollow.Damping = new Vector3(0.2f, 0.3f, 0.1f); // Smooth vertical movement
+                thirdPersonFollow.VerticalArmLength = 0.1f; // Reduce vertical sensitivity
             }
         }
         else

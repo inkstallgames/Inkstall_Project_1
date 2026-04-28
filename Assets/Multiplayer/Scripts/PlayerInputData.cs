@@ -13,6 +13,7 @@ public struct PlayerInputData : INetworkInput
     public bool isShooting;
     public bool isReloading;
     public bool isAiming;  // For ADS (Aim Down Sights)
+    public bool isJumping; // Jump input
     
     // Bomb throw
     public bool isThrowingBomb;
@@ -32,6 +33,7 @@ public struct PlayerInputData : INetworkInput
         isShooting = false;
         isReloading = false;
         isAiming = false;
+        isJumping = false;
         isThrowingBomb = false;
         throwDirection = Vector3.zero;
         weaponSlot = 0;

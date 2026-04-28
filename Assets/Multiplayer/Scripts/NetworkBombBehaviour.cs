@@ -46,6 +46,7 @@ public class NetworkBombBehaviour : NetworkBehaviour
     private bool hasPredictedThrow;
     private Vector3 predictedThrowDirection;
     private float predictedThrowTime;
+    private GameObject _currentPredictedGrenade;
 
     // --- Public accessors ---
     public int BombDamage => bombDamage;
@@ -118,25 +119,52 @@ public class NetworkBombBehaviour : NetworkBehaviour
         
         // Instantiate local predicted grenade (not networked)
         GameObject predictedGrenade = Instantiate(chemicalBallPrefab.gameObject, throwPoint.position, Quaternion.identity);
+        predictedGrenade.name = "PredictedGrenade";
         
-        // Add simple Rigidbody for physics
-        var rb = predictedGrenade.AddComponent<Rigidbody>();
+        // Disable network components to prevent conflicts
+        var networkObj = predictedGrenade.GetComponent<NetworkObject>();
+        if (networkObj != null) Destroy(networkObj);
+        
+        var projectile = predictedGrenade.GetComponent<NetworkBombProjectile>();
+        if (projectile != null) Destroy(projectile);
+        
+        // Add simple Rigidbody for physics if not present
+        var rb = predictedGrenade.GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            rb = predictedGrenade.AddComponent<Rigidbody>();
+        }
         rb.velocity = predictedThrowDirection * throwForce;
         rb.useGravity = true;
         rb.mass = 0.5f;
         
-        // Set visual properties
+        // Set visual properties to indicate it's predicted
         var renderer = predictedGrenade.GetComponent<Renderer>();
         if (renderer != null)
         {
-            renderer.material.color = new Color(ballColor.r, ballColor.g, ballColor.b, 0.7f); // Semi-transparent
+            // Make it semi-transparent to indicate prediction
+            var material = renderer.material;
+            var color = material.color;
+            color.a = 0.7f; // Semi-transparent
+            material.color = color;
+            
+            // Disable NetworkBombProjectile to prevent network conflicts
+            var networkProjectile = predictedGrenade.GetComponent<NetworkBombProjectile>();
+            if (networkProjectile != null) Destroy(networkProjectile);
         }
         
         // Scale
         predictedGrenade.transform.localScale = Vector3.one * ballScale;
         
-        // Auto-destroy after 2 seconds
-        Destroy(predictedGrenade, 2f);
+        // Add collision detection for visual explosion
+        var collisionHandler = predictedGrenade.AddComponent<PredictedGrenadeCollision>();
+        collisionHandler.Initialize(this);
+        
+        // Auto-destroy after 3 seconds (enough time for server to spawn real one)
+        Destroy(predictedGrenade, 3f);
+        
+        // Store reference for cleanup
+        _currentPredictedGrenade = predictedGrenade;
     }
     
     /// <summary>
@@ -360,6 +388,13 @@ public class NetworkBombBehaviour : NetworkBehaviour
             predictedThrowDirection = Vector3.zero;
             predictedThrowTime = 0f;
             
+            // Clean up predicted grenade if it exists
+            if (_currentPredictedGrenade != null)
+            {
+                Destroy(_currentPredictedGrenade);
+                _currentPredictedGrenade = null;
+            }
+            
             Debug.Log("[NetworkBombBehaviour] Client prediction cleared");
         }
     }
@@ -376,6 +411,53 @@ public class NetworkBombBehaviour : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         CurrentBombs = Mathf.Min(CurrentBombs + amount, MaxBombs);
+    }
+    
+    /// <summary>
+    /// Play visual explosion effect for predicted grenade (client-side only)
+    /// </summary>
+    public void PlayPredictedExplosionEffect(Vector3 position)
+    {
+        // Play explosion sound locally
+        if (throwSound != null)
+        {
+            AudioSource.PlayClipAtPoint(throwSound, position, throwSoundVolume * 0.7f);
+        }
+        
+        // Create simple explosion effect
+        if (throwEffect != null)
+        {
+            // Instantiate effect at collision point
+            var effect = Instantiate(throwEffect, position, Quaternion.identity);
+            effect.Play();
+            Destroy(effect.gameObject, 2f);
+        }
+    }
+}
+
+/// <summary>
+/// Handles collision for predicted grenades to provide visual feedback
+/// </summary>
+public class PredictedGrenadeCollision : MonoBehaviour
+{
+    private NetworkBombBehaviour _bombBehaviour;
+    private bool _hasExploded = false;
+    
+    public void Initialize(NetworkBombBehaviour bombBehaviour)
+    {
+        _bombBehaviour = bombBehaviour;
+    }
+    
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (_hasExploded) return;
+        _hasExploded = true;
+        
+        // Play visual explosion effect
+        _bombBehaviour?.PlayPredictedExplosionEffect(transform.position);
+        
+        // Destroy the predicted grenade after collision
+        Destroy(gameObject, 0.1f);
     }
 }
 

@@ -103,6 +103,14 @@ namespace Fusion {
       _controller.Move(moveVelocity * deltaTime);
 
       Data.Velocity = (transform.position - previousPos) * Runner.TickRate;
+      
+      // FIX: Prevent artificial upward velocity (launch bug) when pushing against walls or slopes
+      if (Data.Velocity.y > 0f && Data.Velocity.y > moveVelocity.y) {
+          var vel = Data.Velocity;
+          vel.y = Mathf.Max(0f, moveVelocity.y);
+          Data.Velocity = vel;
+      }
+      
       Data.Grounded = _controller.isGrounded;
     }
 

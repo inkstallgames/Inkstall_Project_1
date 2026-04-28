@@ -172,6 +172,7 @@ namespace StarterAssets
         [Networked] public float NetworkedMotionSpeed { get; set; }
         [Networked] public NetworkBool NetworkedGrounded { get; set; }
         [Networked] public float NetworkedVerticalVelocity { get; set; }
+        [Networked] public NetworkBool NetworkedIsJumping { get; set; }
         
         // Remote camera aim sync
         [Networked] public float NetworkedCameraYaw { get; set; }
@@ -537,6 +538,8 @@ namespace StarterAssets
                 NetworkedMotionSpeed = 0f;
                 NetworkedGrounded = Grounded;
                 NetworkedVerticalVelocity = _verticalVelocity;
+                
+                if (Grounded) NetworkedIsJumping = false;
             }
             
             // CRITICAL: Log any jump execution without input
@@ -594,7 +597,7 @@ namespace StarterAssets
                 // Basic animation parameters
                 _fullBodyAnimator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
                 _fullBodyAnimator.SetBool(_animIDGrounded, NetworkedGrounded);
-                _fullBodyAnimator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
+                _fullBodyAnimator.SetBool(_animIDJump, NetworkedIsJumping && !NetworkedGrounded);
                 
                 if (_latestInput.isShooting && HasParameter(_fullBodyAnimator, _animIDFire)) 
                     _fullBodyAnimator.SetTrigger(_animIDFire);
@@ -649,7 +652,7 @@ namespace StarterAssets
                 // Set the blend value (always positive)
                 _animator.SetFloat(_animIDSpeed, NetworkedAnimationBlend);
                 _animator.SetBool(_animIDGrounded, NetworkedGrounded);
-                _animator.SetBool(_animIDJump, NetworkedVerticalVelocity > 0f && !NetworkedGrounded);
+                _animator.SetBool(_animIDJump, NetworkedIsJumping && !NetworkedGrounded);
                 
                 if (_latestInput.isShooting && HasParameter(_animator, _animIDFire)) 
                     _animator.SetTrigger(_animIDFire);
@@ -822,16 +825,22 @@ namespace StarterAssets
                 _fallTimeoutDelta = FallTimeout;
                 _verticalVelocity = _networkController.Velocity.y;
 
+                if (_verticalVelocity <= 0.1f)
+                {
+                    NetworkedIsJumping = false;
+                }
+
                 if (input.jump && _jumpTimeoutDelta <= 0.0f)
                 {
                     // Simple jump validation
                     if (_networkController.Velocity.y <= 0.1f)
                     {
-                        // Sync impulse height and trigger native jump
                         float jumpImpulse = Mathf.Sqrt(JumpHeight * -2f * Gravity);
                         _networkController.jumpImpulse = jumpImpulse;
                         _networkController.Jump();
                         _verticalVelocity = jumpImpulse;
+                        
+                        NetworkedIsJumping = true;
                         
                         // Reset jump timeout
                         _jumpTimeoutDelta = JumpTimeout;

@@ -564,11 +564,9 @@ MonoBehaviour:
   - {fileID: 0}
   shieldMaterial: {fileID: 2100000, guid: e2002a38a660a584db60c728562929a1, type: 2}
   invisibilityMaterial: {fileID: 0}
-  shieldStartSound: {fileID: 8300000, guid: d5627deb7a77d074da2a0e0f9e66e1f6, type: 3}
-  invisibilityStartSound: {fileID: 8300000, guid: b52d0395c85220748ac17703e88f0fb9,
+  shieldUseSound: {fileID: 8300000, guid: d5627deb7a77d074da2a0e0f9e66e1f6, type: 3}
+  invisibilityUseSound: {fileID: 8300000, guid: b52d0395c85220748ac17703e88f0fb9,
     type: 3}
-  shieldUseSound: {fileID: 0}
-  invisibilityUseSound: {fileID: 0}
   abilityEndSound: {fileID: 8300000, guid: fd79fb9d4a93fab4a8d0203f479de528, type: 3}
 --- !u!114 &6989195083982649758
 MonoBehaviour:

@@ -243,21 +243,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             pistolRecoilAnimation.TriggerReloadAnimation();
         }
         
-        // Instant reload sound
-        if (reloadSound != null && isLocalPlayer)
-        {
-            GameObject tempAudioObject = new GameObject("PredictedReloadSound");
-            AudioSource tempAudioSource = tempAudioObject.AddComponent<AudioSource>();
-            
-            tempAudioSource.clip = reloadSound;
-            tempAudioSource.volume = soundVolume * 0.7f; // Slightly quieter for predicted
-            tempAudioSource.spatialBlend = 0f; // 2D sound
-            tempAudioSource.playOnAwake = false;
-            tempAudioSource.Play();
-            
-            Destroy(tempAudioObject, reloadSound.length + 0.1f);
-        }
-        
         // Predict reload state ONLY for clients without state authority.
         // Host applies this in FixedUpdateNetwork to prevent skipping the reload timer.
         if (!Object.HasStateAuthority)

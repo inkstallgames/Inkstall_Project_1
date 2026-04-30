@@ -1093,7 +1093,7 @@ public class NetworkUIManager : MonoBehaviour
         
         // Unlock and show cursor so the player can interact with UI (PC only)
         // On mobile, cursor lock is not applicable and can cause touch input spikes
-#if !UNITY_ANDROID || UNITY_EDITOR
+#if (!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 #endif
@@ -1106,7 +1106,7 @@ public class NetworkUIManager : MonoBehaviour
         // Re-lock cursor when closing settings (PC only)
         // On mobile, changing cursor lock state causes touch delta spikes
         // that corrupt camera rotation and invert movement direction
-#if !UNITY_ANDROID || UNITY_EDITOR
+#if (!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 #endif

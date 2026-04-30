@@ -78,22 +78,30 @@ public class NetworkTransformInterpolation : NetworkBehaviour
         // Local player movement is already smooth via direct input in FixedUpdateNetwork
         if (_isLocalPlayer) return;
         
+        // PERFORMANCE: Only interpolate every other frame for remote players (FPS optimization)
+        if (Time.frameCount % 2 == 0) return;
+        
         // Store the current network position before we modify it
         Vector3 networkPosition = transform.position;
         Quaternion networkRotation = transform.rotation;
         
-        // Check if we received a new network update
-        bool positionChanged = Vector3.Distance(networkPosition, _lastNetworkPosition) > 0.001f;
-        bool rotationChanged = Quaternion.Angle(networkRotation, _lastNetworkRotation) > 0.1f;
+        // PERFORMANCE: Use larger thresholds to reduce interpolation frequency
+        bool positionChanged = Vector3.Distance(networkPosition, _lastNetworkPosition) > 0.01f; // Increased from 0.001f
+        bool rotationChanged = Quaternion.Angle(networkRotation, _lastNetworkRotation) > 1.0f; // Increased from 0.1f
         
         if (positionChanged || rotationChanged)
         {
             _lastNetworkPosition = networkPosition;
             _lastNetworkRotation = networkRotation;
         }
+        else
+        {
+            // PERFORMANCE: Skip interpolation if nothing changed
+            return;
+        }
         
         // Only interpolate for remote players
-        if (interpolatePosition)
+        if (interpolatePosition && positionChanged)
         {
             float distance = Vector3.Distance(_renderPosition, networkPosition);
             
@@ -104,29 +112,29 @@ public class NetworkTransformInterpolation : NetworkBehaviour
             }
             else
             {
-                // Smooth interpolation
+                // PERFORMANCE: Faster interpolation for FPS games
                 _renderPosition = Vector3.Lerp(_renderPosition, networkPosition, 
-                    positionLerpSpeed * Time.deltaTime);
+                    positionLerpSpeed * Time.deltaTime * 2f); // Doubled speed
             }
             
             transform.position = _renderPosition;
         }
         
-        // Interpolate rotation for remote players
-        if (interpolateRotation)
+        // Interpolate rotation for remote players (only if changed)
+        if (interpolateRotation && rotationChanged)
         {
             float angle = Quaternion.Angle(_renderRotation, networkRotation);
             
-            // Snap if rotation difference is too large
+            // Snap if too far (teleport/respawn)
             if (angle > snapAngleThreshold)
             {
                 _renderRotation = networkRotation;
             }
             else
             {
-                // Smooth interpolation
+                // PERFORMANCE: Faster interpolation for FPS games
                 _renderRotation = Quaternion.Slerp(_renderRotation, networkRotation, 
-                    rotationLerpSpeed * Time.deltaTime);
+                    rotationLerpSpeed * Time.deltaTime * 2f); // Doubled speed
             }
             
             transform.rotation = _renderRotation;

@@ -1,16 +1,11 @@
 using Fusion;
-
 using UnityEngine;
-
 using Fusion.Sockets;
-
+using System;
 using System.Collections.Generic;
-
 using System.Linq;
-
+using System.Collections;
 using StarterAssets;
-
-
 
 public class NetworkPlayerSpawner : NetworkBehaviour
 {
@@ -236,7 +231,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour
                 var availableSpawns = freeForAllSpawns.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
                 if (availableSpawns.Count == 0) availableSpawns = freeForAllSpawns; // Use any if all are occupied
 
-                var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
+                var spawnPoint = availableSpawns[UnityEngine.Random.Range(0, availableSpawns.Count)];
                 occupiedSpawnIndices.Add(spawnPoints.IndexOf(spawnPoint));
                 // Debug.Log($"[NetworkPlayerSpawner] Selected FreeForAll spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
                 return spawnPoint.transform.position;
@@ -250,7 +245,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour
             var availableSpawns = teamSpawnPoints.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
             if (availableSpawns.Count == 0) availableSpawns = teamSpawnPoints;
 
-            var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
+            var spawnPoint = availableSpawns[UnityEngine.Random.Range(0, availableSpawns.Count)];
             occupiedSpawnIndices.Add(spawnPoints.IndexOf(spawnPoint));
             // Debug.Log($"[NetworkPlayerSpawner] Selected team spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
             return spawnPoint.transform.position;
@@ -263,7 +258,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour
             var availableSpawns = spawnPoints.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
             if (availableSpawns.Count == 0) availableSpawns = spawnPoints;
 
-            var spawnPoint = availableSpawns[Random.Range(0, availableSpawns.Count)];
+            var spawnPoint = availableSpawns[UnityEngine.Random.Range(0, availableSpawns.Count)];
             occupiedSpawnIndices.Add(spawnPoints.IndexOf(spawnPoint));
             // Debug.Log($"[NetworkPlayerSpawner] Selected fallback spawn point at: {spawnPoint.transform.position} and marked it as occupied.");
             return spawnPoint.transform.position;
@@ -271,7 +266,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour
 
         // Fallback to random position if no spawn points are found at all
         // Debug.LogError("[NetworkPlayerSpawner] No spawn points found in scene. Using random position as fallback.");
-        return new Vector3(Random.Range(-spawnRadius, spawnRadius), 1, Random.Range(-spawnRadius, spawnRadius));
+        return new Vector3(UnityEngine.Random.Range(-spawnRadius, spawnRadius), 1, UnityEngine.Random.Range(-spawnRadius, spawnRadius));
     }
 
 
@@ -282,21 +277,45 @@ public class NetworkPlayerSpawner : NetworkBehaviour
 
     // Cached reference for bomb input collection
     private NetworkBombBehaviour _cachedLocalBombBehaviour;
+    
+    // PERFORMANCE: Jump optimization with cached reflection
+    private System.Reflection.FieldInfo _jumpFieldCache;
+    private System.Reflection.MethodInfo _jumpMethodCache;
+    private bool _reflectionCached = false;
+    
+    // PERFORMANCE: Input optimization
+    private bool _jumpRequested = false;
+    private float _lastJumpTime = 0f;
+    private float _jumpCooldown = 0.1f;
+    
+    // PERFORMANCE: Surface validation caching
+    private bool _lastValidationResult = true;
+    private float _lastValidationTime = 0f;
 
     public override void FixedUpdateNetwork()
     {
-        // Process jump input for all players
+        // PERFORMANCE: Only process input when necessary
         if (GetInput<PlayerInputData>(out var input))
         {
-            if (input.isJumping)
+            // PERFORMANCE: Only check jump when button is pressed (not held)
+            if (input.isJumping && !_jumpRequested)
             {
-                ExecuteJump();
+                _jumpRequested = true;
+                _lastJumpTime = Time.time;
+                ExecuteJumpOptimized();
+            }
+            else if (!input.isJumping && _jumpRequested)
+            {
+                _jumpRequested = false;
             }
         }
     }
     
     private void ExecuteJump()
     {
+        // PERFORMANCE: Use cached reflection to avoid expensive lookups
+        if (!_reflectionCached) CacheReflectionMethods();
+        
         // Get the local player object
         var localPlayerNetworkObj = Runner.GetPlayerObject(Runner.LocalPlayer);
         if (localPlayerNetworkObj == null) return;
@@ -313,40 +332,20 @@ public class NetworkPlayerSpawner : NetworkBehaviour
         var characterController = localPlayer.GetComponent<CharacterController>();
         if (characterController != null && characterController.isGrounded)
         {
-            // Additional validation to prevent jumps on unstable surfaces (stair edges)
-            if (IsValidJumpSurface(localPlayer.transform))
+            // PERFORMANCE: Simplified surface validation for FPS
+            if (IsValidJumpSurfaceFast(localPlayer.transform))
             {
-                // Try to access the jump field through reflection
-                var jumpField = thirdPersonController.GetType().GetField("jump", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    
-                if (jumpField != null)
+                // PERFORMANCE: Use cached reflection instead of runtime lookup
+                if (_jumpFieldCache != null)
                 {
-                    jumpField.SetValue(thirdPersonController, true);
-                    Debug.Log($"[NetworkPlayerSpawner] Jump executed for Player {Runner.LocalPlayer.PlayerId}");
-                    
-                    // Limit jump velocity to prevent excessive heights
-                    StartCoroutine(LimitJumpVelocity(localPlayer));
+                    _jumpFieldCache.SetValue(thirdPersonController, true);
+                    StartCoroutine(LimitJumpVelocityOptimized(localPlayer));
                 }
-                else
+                else if (_jumpMethodCache != null)
                 {
-                    // Fallback: try to call Jump method
-                    var jumpMethod = thirdPersonController.GetType().GetMethod("Jump", 
-                        System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                        
-                    if (jumpMethod != null)
-                    {
-                        jumpMethod.Invoke(thirdPersonController, null);
-                        Debug.Log($"[NetworkPlayerSpawner] Jump method called for Player {Runner.LocalPlayer.PlayerId}");
-                        
-                        // Limit jump velocity to prevent excessive heights
-                        StartCoroutine(LimitJumpVelocity(localPlayer));
-                    }
+                    _jumpMethodCache.Invoke(thirdPersonController, null);
+                    StartCoroutine(LimitJumpVelocityOptimized(localPlayer));
                 }
-            }
-            else
-            {
-                Debug.Log($"[NetworkPlayerSpawner] Jump blocked - unstable surface detected for Player {Runner.LocalPlayer.PlayerId}");
             }
         }
     }
@@ -465,60 +464,166 @@ public class NetworkPlayerSpawner : NetworkBehaviour
             }
         }
         
-        return false;
+        return false; // Added missing return statement
     }
     
     /// <summary>
-    /// Limits jump velocity to prevent excessive jump heights
-    /// Runs for a short duration after jump to cap upward velocity
+    /// PERFORMANCE: Cache reflection calls to avoid expensive runtime lookups
     /// </summary>
-    private System.Collections.IEnumerator LimitJumpVelocity(GameObject player)
+    private void CacheReflectionMethods()
     {
-        float maxJumpVelocity = 8f; // Maximum allowed upward velocity
-        float duration = 0.3f; // How long to enforce the limit
+        if (_reflectionCached) return;
+        
+        var type = typeof(ThirdPersonController);
+        _jumpFieldCache = type.GetField("jump", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        _jumpMethodCache = type.GetMethod("Jump", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        _reflectionCached = true;
+        
+        Debug.Log("[NetworkPlayerSpawner] Reflection methods cached for performance");
+    }
+    
+    /// <summary>
+    /// PERFORMANCE: Fast surface validation with minimal raycasts
+    /// </summary>
+    private bool IsValidJumpSurfaceFast(Transform playerTransform)
+    {
+        // PERFORMANCE: Cache validation for 0.1 seconds to avoid raycasts every frame
+        if (Time.time - _lastValidationTime < 0.1f) 
+            return _lastValidationResult;
+        
+        Vector3 playerPos = playerTransform.position;
+        RaycastHit hit;
+        
+        // PERFORMANCE: Single raycast instead of multiple
+        if (Physics.Raycast(playerPos + Vector3.up * 0.1f, Vector3.down, out hit, 1.0f))
+        {
+            // Quick stair edge detection for FPS
+            float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+            if (slopeAngle > 45f) 
+            {
+                _lastValidationTime = Time.time;
+                _lastValidationResult = false;
+                return false;
+            }
+            
+            // Quick ground distance check
+            if (hit.distance > 0.5f) 
+            {
+                _lastValidationTime = Time.time;
+                _lastValidationResult = false;
+                return false;
+            }
+        }
+        
+        _lastValidationTime = Time.time;
+        _lastValidationResult = true;
+        return true;
+    }
+    
+    /// <summary>
+    /// PERFORMANCE: Optimized velocity limiting with reduced checks
+    /// </summary>
+    private System.Collections.IEnumerator LimitJumpVelocityOptimized(GameObject player)
+    {
+        float maxJumpVelocity = 8f;
+        float duration = 0.2f; // Reduced duration for performance
         float elapsed = 0f;
         
         var characterController = player.GetComponent<CharacterController>();
-        var rb = player.GetComponent<Rigidbody>();
         
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             
-            // Method 1: If using CharacterController (no Rigidbody)
+            // PERFORMANCE: Only check CharacterController (most common case)
             if (characterController != null)
             {
-                // We can't directly limit CharacterController velocity, but we can detect excessive height
                 Vector3 pos = player.transform.position;
-                
-                // If player is too high above ground, apply downward force
                 RaycastHit hit;
-                if (Physics.Raycast(pos, Vector3.down, out hit, 10f))
+                
+                if (Physics.Raycast(pos, Vector3.down, out hit, 5f)) // Reduced range
                 {
                     float heightAboveGround = pos.y - hit.point.y;
-                    if (heightAboveGround > 4f) // Too high
+                    if (heightAboveGround > 3f) // Reduced threshold
                     {
-                        // Move player down gradually
-                        characterController.Move(Vector3.down * Time.deltaTime * 10f);
-                        Debug.Log($"[NetworkPlayerSpawner] Limiting excessive jump height: {heightAboveGround:F2}m");
+                        characterController.Move(Vector3.down * Time.deltaTime * 8f); // Reduced force
                     }
-                }
-            }
-            
-            // Method 2: If using Rigidbody
-            if (rb != null)
-            {
-                Vector3 velocity = rb.velocity;
-                if (velocity.y > maxJumpVelocity)
-                {
-                    velocity.y = maxJumpVelocity;
-                    rb.velocity = velocity;
-                    Debug.Log($"[NetworkPlayerSpawner] Capped jump velocity to {maxJumpVelocity:F2}");
                 }
             }
             
             yield return null;
         }
+    }
+    
+    /// <summary>
+    /// PERFORMANCE: Optimized jump execution with cached reflection
+    /// </summary>
+    private void ExecuteJumpOptimized()
+    {
+        // PERFORMANCE: Use cached reflection to avoid expensive lookups
+        if (!_reflectionCached) CacheReflectionMethods();
+        
+        // Get the local player object
+        var localPlayerNetworkObj = Runner.GetPlayerObject(Runner.LocalPlayer);
+        if (localPlayerNetworkObj == null) return;
+        
+        // Get the actual GameObject from NetworkObject
+        var localPlayer = localPlayerNetworkObj.gameObject;
+        if (localPlayer == null) return;
+        
+        // Get the ThirdPersonController
+        var thirdPersonController = localPlayer.GetComponent<ThirdPersonController>();
+        if (thirdPersonController == null) return;
+        
+        // Get CharacterController to check if grounded
+        var characterController = localPlayer.GetComponent<CharacterController>();
+        if (characterController != null && characterController.isGrounded)
+        {
+            // PERFORMANCE: Only validate surface when actually jumping
+            if (IsValidJumpSurfaceOptimized(localPlayer.transform))
+            {
+                // PERFORMANCE: Use cached reflection instead of runtime lookup
+                if (_jumpFieldCache != null)
+                {
+                    _jumpFieldCache.SetValue(thirdPersonController, true);
+                    StartCoroutine(LimitJumpVelocityOptimized(localPlayer));
+                }
+                else if (_jumpMethodCache != null)
+                {
+                    _jumpMethodCache.Invoke(thirdPersonController, null);
+                    StartCoroutine(LimitJumpVelocityOptimized(localPlayer));
+                }
+            }
+        }
+    }
+    
+    /// <summary>
+    /// PERFORMANCE: Optimized surface validation with caching
+    /// </summary>
+    private bool IsValidJumpSurfaceOptimized(Transform playerTransform)
+    {
+        // PERFORMANCE: Cache validation result to avoid raycasts every frame
+        if (Time.time - _lastValidationTime < 0.1f) 
+            return _lastValidationResult;
+        
+        // Simplified validation for FPS games - only check critical cases
+        Vector3 playerPos = playerTransform.position;
+        RaycastHit hit;
+        
+        // Single raycast for performance
+        if (Physics.Raycast(playerPos + Vector3.up * 0.1f, Vector3.down, out hit, 1.0f))
+        {
+            // Quick stair edge detection
+            float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
+            if (slopeAngle > 45f) return false;
+            
+            // Quick ground distance check
+            if (hit.distance > 0.5f) return false;
+        }
+        
+        _lastValidationTime = Time.time;
+        _lastValidationResult = true;
+        return true;
     }
     
     public void OnInput(NetworkRunner runner, NetworkInput input)

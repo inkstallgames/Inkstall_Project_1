@@ -24,6 +24,7 @@ public class NetworkTransformInterpolation : NetworkBehaviour
     
     [Header("Debug")]
     [SerializeField] private bool showDebugInfo = false;
+    [SerializeField] private bool showJumpDebug = true; // Debug jump interpolation
     
     private Vector3 _renderPosition;
     private Quaternion _renderRotation;
@@ -78,16 +79,22 @@ public class NetworkTransformInterpolation : NetworkBehaviour
         // Local player movement is already smooth via direct input in FixedUpdateNetwork
         if (_isLocalPlayer) return;
         
-        // PERFORMANCE: Only interpolate every other frame for remote players (FPS optimization)
-        if (Time.frameCount % 2 == 0) return;
-        
         // Store the current network position before we modify it
         Vector3 networkPosition = transform.position;
         Quaternion networkRotation = transform.rotation;
         
-        // PERFORMANCE: Use larger thresholds to reduce interpolation frequency
-        bool positionChanged = Vector3.Distance(networkPosition, _lastNetworkPosition) > 0.01f; // Increased from 0.001f
-        bool rotationChanged = Quaternion.Angle(networkRotation, _lastNetworkRotation) > 1.0f; // Increased from 0.1f
+        // PERFORMANCE: Use moderate thresholds to reduce unnecessary interpolation
+        bool positionChanged = Vector3.Distance(networkPosition, _lastNetworkPosition) > 0.005f; // Moderate threshold
+        bool rotationChanged = Quaternion.Angle(networkRotation, _lastNetworkRotation) > 0.5f; // Moderate threshold
+        
+        if (showJumpDebug)
+        {
+            float posDiff = Vector3.Distance(networkPosition, _lastNetworkPosition);
+            if (posDiff > 0.01f)
+            {
+                Debug.Log($"[NetworkTransformInterpolation] Frame: {Time.frameCount} | PosDiff: {posDiff:F4} | NetworkY: {networkPosition.y:F2} | RenderY: {_renderPosition.y:F2} | Changed: {positionChanged}");
+            }
+        }
         
         if (positionChanged || rotationChanged)
         {
@@ -108,13 +115,19 @@ public class NetworkTransformInterpolation : NetworkBehaviour
             // Snap if too far away (teleport/respawn)
             if (distance > snapDistanceThreshold)
             {
+                if (showJumpDebug) Debug.Log($"[NetworkTransformInterpolation] SNAP - Distance: {distance:F2} > Threshold: {snapDistanceThreshold}");
                 _renderPosition = networkPosition;
             }
             else
             {
-                // PERFORMANCE: Faster interpolation for FPS games
+                // Smooth interpolation for jumps - no frame skipping
                 _renderPosition = Vector3.Lerp(_renderPosition, networkPosition, 
-                    positionLerpSpeed * Time.deltaTime * 2f); // Doubled speed
+                    positionLerpSpeed * Time.deltaTime);
+                
+                if (showJumpDebug && distance > 0.05f)
+                {
+                    Debug.Log($"[NetworkTransformInterpolation] LERP - FromY: {_renderPosition.y:F2} ToY: {networkPosition.y:F2} Delta: {distance:F4} LerpFactor: {positionLerpSpeed * Time.deltaTime:F4}");
+                }
             }
             
             transform.position = _renderPosition;
@@ -132,9 +145,9 @@ public class NetworkTransformInterpolation : NetworkBehaviour
             }
             else
             {
-                // PERFORMANCE: Faster interpolation for FPS games
+                // Smooth interpolation for jumps - no frame skipping
                 _renderRotation = Quaternion.Slerp(_renderRotation, networkRotation, 
-                    rotationLerpSpeed * Time.deltaTime * 2f); // Doubled speed
+                    rotationLerpSpeed * Time.deltaTime);
             }
             
             transform.rotation = _renderRotation;

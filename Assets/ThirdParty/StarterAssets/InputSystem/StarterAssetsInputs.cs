@@ -15,6 +15,9 @@ namespace StarterAssets
 	public class StarterAssetsInputs : MonoBehaviour
 
 	{
+		// Frame-skip counter: when > 0 we suppress look input to absorb cursor-lock delta spikes
+		private int _skipLookFrames = 0;
+
 
 		[Header("Character Input Values")]
 
@@ -223,7 +226,24 @@ namespace StarterAssets
 
 			
 
-			if (cursorInputForLook)
+			// --- Settings panel guard: suppress look input while settings is open ---
+			bool settingsActive = NetworkUIManager.Instance != null && NetworkUIManager.Instance.IsSettingsPanelActive;
+			if (settingsActive)
+			{
+				// Zero-out look so the camera never rotates while the player is in settings
+				LookInput(Vector2.zero);
+				isTouchLook = false;
+				// Schedule a skip so the first frame after closing absorbs any delta spike
+				_skipLookFrames = 2;
+			}
+			else if (_skipLookFrames > 0)
+			{
+				// Absorb the cursor-lock / touch delta spike right after settings closes
+				_skipLookFrames--;
+				LookInput(Vector2.zero);
+				isTouchLook = false;
+			}
+			else if (cursorInputForLook)
 			{
 				Vector2 newLook = Vector2.zero;
 				isTouchLook = false;

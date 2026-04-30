@@ -191,6 +191,20 @@ public class NetworkPlayerSpawner : NetworkBehaviour
             if (playerNetworkData != null)
             {
                 playerNetworkData.TeamId = teamId;
+                
+                // Restore Kills and Deaths from GameManager so they persist across respawns
+                if (gameManager != null)
+                {
+                    if (gameManager.PlayerKills.ContainsKey(player))
+                    {
+                        playerNetworkData.Kills = gameManager.PlayerKills.Get(player);
+                    }
+                    if (gameManager.PlayerDeaths.ContainsKey(player))
+                    {
+                        playerNetworkData.Deaths = gameManager.PlayerDeaths.Get(player);
+                    }
+                }
+                
                 // Debug.Log($"[NetworkPlayerSpawner] Set TeamId {teamId} on PlayerNetworkData for player {player.PlayerId}");
             }
             else

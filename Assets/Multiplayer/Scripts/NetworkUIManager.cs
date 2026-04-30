@@ -134,6 +134,7 @@ public class NetworkUIManager : MonoBehaviour
         public bool IsLocalPlayer;
     }
     private List<LeaderboardEntry> cachedLeaderboardData = new List<LeaderboardEntry>();
+    private Dictionary<PlayerRef, LeaderboardEntry> allTimeLeaderboard = new Dictionary<PlayerRef, LeaderboardEntry>();
 
     //awake
     private void Awake()
@@ -203,6 +204,7 @@ public class NetworkUIManager : MonoBehaviour
             UpdateBombUI();
             UpdateBulletAmmoUI();
             UpdatePlayerStatsUI();
+            UpdateLeaderboardCache();
 
             // Keyboard shortcut: press T to throw/shoot
             // For laser: use GetKey (held) for continuous fire, GetKeyDown for others
@@ -872,6 +874,14 @@ public class NetworkUIManager : MonoBehaviour
         if (leaderboardPanel != null)
             leaderboardPanel.SetActive(false);
 
+        // If we are the server (host), wait a few extra seconds to ensure all clients have 
+        // finished their sequence and successfully disconnected themselves, to avoid 
+        // interrupting their leaderboard display with an abrupt server shutdown.
+        if (runner != null && runner.IsServer)
+        {
+            yield return new WaitForSeconds(3.0f);
+        }
+
         ShutdownAndReturnToLobby();
     }
 
@@ -902,35 +912,45 @@ public class NetworkUIManager : MonoBehaviour
     // Leaderboard
     // ---------------------------------------------------------------
 
-    /// <summary>
-    /// Snapshots all PlayerNetworkData in the scene right now, before any despawns.
-    /// </summary>
-    private void CacheLeaderboardData()
+    private void UpdateLeaderboardCache()
     {
-        cachedLeaderboardData.Clear();
-
         var allPlayers = FindObjectsOfType<PlayerNetworkData>();
-        Debug.Log($"[NetworkUIManager] CacheLeaderboardData — found {allPlayers.Length} PlayerNetworkData objects");
-
         foreach (var pData in allPlayers)
         {
+            if (pData.Object == null) continue;
+            
+            PlayerRef pref = pData.Object.InputAuthority;
             string pName = pData.PlayerName;
-            if (string.IsNullOrEmpty(pName))
-                pName = $"Player";
-
-            bool isLocal = pData.Object != null && pData.Object.HasInputAuthority;
-
-            cachedLeaderboardData.Add(new LeaderboardEntry
+            if (string.IsNullOrEmpty(pName)) pName = "Player";
+            
+            bool isLocal = pData.Object.HasInputAuthority;
+            
+            // Only update if we have meaningful data, avoiding resetting to 0 momentarily
+            // Though since we fixed NetworkPlayerSpawner, Kills should never be incorrectly 0.
+            allTimeLeaderboard[pref] = new LeaderboardEntry
             {
                 PlayerName = pName,
                 Kills = pData.Kills,
                 Deaths = pData.Deaths,
                 TeamId = pData.TeamId,
                 IsLocalPlayer = isLocal
-            });
-
-            Debug.Log($"[NetworkUIManager] Cached: {pName} | K:{pData.Kills} D:{pData.Deaths} Team:{pData.TeamId} Local:{isLocal}");
+            };
         }
+    }
+
+    /// <summary>
+    /// Snapshots all PlayerNetworkData in the scene right now, before any despawns.
+    /// Uses the continuously updated allTimeLeaderboard to include dead/despawned players.
+    /// </summary>
+    private void CacheLeaderboardData()
+    {
+        // Do one last update just in case
+        UpdateLeaderboardCache();
+        
+        cachedLeaderboardData.Clear();
+        cachedLeaderboardData.AddRange(allTimeLeaderboard.Values);
+
+        Debug.Log($"[NetworkUIManager] CacheLeaderboardData — preparing leaderboard with {cachedLeaderboardData.Count} entries");
 
         // Sort: most kills first, then fewest deaths
         cachedLeaderboardData.Sort((a, b) =>

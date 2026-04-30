@@ -16893,7 +16893,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2029419306885955393
 Transform:
   m_ObjectHideFlags: 0
@@ -20779,6 +20779,10 @@ MonoBehaviour:
   cursorLocked: 0
   cursorInputForLook: 1
   isTouchLook: 0
+  virtualMoveInput: {x: 0, y: 0}
+  virtualLookInput: {x: 0, y: 0}
+  virtualJumpInput: 0
+  virtualSprintInput: 0
 --- !u!222 &5429520221757204661
 CanvasRenderer:
   m_ObjectHideFlags: 0

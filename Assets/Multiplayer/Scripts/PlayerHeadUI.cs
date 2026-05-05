@@ -18,17 +18,18 @@ public class PlayerHeadUI : MonoBehaviour
     [Tooltip("Offset above player head")]
     public Vector3 headOffset = new Vector3(0, 2.2f, 0);
     
-    [Tooltip("Maximum distance where UI is visible")]
-    public float maxVisibleDistance = 50f;
-    
-    [Tooltip("Distance where health bar hides (name only)")]
-    public float nameOnlyDistance = 20f;
-    
     [Tooltip("Should UI always face camera (billboard effect)")]
     public bool faceCamera = true;
     
     [Tooltip("Show UI only for enemies (hide for local player)")]
     public bool showOnlyForEnemies = false;
+    
+    [Header("Occlusion Settings")]
+    [Tooltip("Layer mask for occlusion raycast")]
+    public LayerMask occlusionLayerMask = -1; // All layers
+    
+    [Tooltip("Raycast offset to avoid self-collision")]
+    public float raycastOffset = 0.1f;
     
     [Header("Performance")]
     [Tooltip("Update interval (0 = every frame)")]
@@ -51,8 +52,8 @@ public class PlayerHeadUI : MonoBehaviour
             uiCanvas.renderMode = RenderMode.WorldSpace;
             uiCanvas.worldCamera = mainCamera;
             
-            // Industry standard scale for world space UI
-            uiCanvas.transform.localScale = Vector3.one * 0.001f;
+            // User requested scale
+            uiCanvas.transform.localScale = Vector3.one * 0.1f;
         }
         
         // Validate components
@@ -72,9 +73,8 @@ public class PlayerHeadUI : MonoBehaviour
         
         if (playerData == null || mainCamera == null) return;
         
-        // Distance-based visibility (industry standard LOD)
-        float distance = Vector3.Distance(transform.position, mainCamera.transform.position);
-        UpdateVisibility(distance);
+        // Occlusion-based visibility
+        UpdateVisibility();
         
         // Position and rotation
         UpdateTransform();
@@ -95,73 +95,133 @@ public class PlayerHeadUI : MonoBehaviour
         }
     }
     
-    void UpdateVisibility(float distance)
+    void UpdateVisibility()
     {
-        // Hide if too far away (performance optimization)
-        if (distance > maxVisibleDistance)
+        // Show UI to ALL players (including local player)
+        // TEMPORARILY DISABLED OCCLUSION CULLING FOR TESTING
+        
+        Debug.Log($"[PlayerHeadUI] UpdateVisibility called - Player: {playerData?.PlayerName}, HasInputAuthority: {playerData?.Object.HasInputAuthority}");
+        
+        if (playerData == null)
         {
-            uiCanvas.gameObject.SetActive(false);
+            Debug.LogError("[PlayerHeadUI] PlayerData is null!");
             return;
         }
         
+        if (mainCamera == null)
+        {
+            Debug.LogError("[PlayerHeadUI] MainCamera is null!");
+            return;
+        }
+        
+        if (uiCanvas == null)
+        {
+            Debug.LogError("[PlayerHeadUI] UICanvas is null!");
+            return;
+        }
+        
+        Debug.Log($"[PlayerHeadUI] UI Canvas active before check: {uiCanvas.gameObject.activeSelf}");
+        Debug.Log($"[PlayerHeadUI] PlayerNameText active: {playerNameText?.gameObject.activeSelf}");
+        Debug.Log($"[PlayerHeadUI] HealthBar active: {healthBar?.gameObject.activeSelf}");
+        
+        // TEMPORARY FIX: Always show UI for all players (no occlusion culling)
+        Debug.Log("[PlayerHeadUI] Showing UI - occlusion culling disabled for testing");
         uiCanvas.gameObject.SetActive(true);
-        
-        // LOD system: hide health bar at distance
-        if (distance > nameOnlyDistance)
-        {
-            healthBar.gameObject.SetActive(false);
-        }
-        else
-        {
-            healthBar.gameObject.SetActive(true);
-        }
-        
-        // Hide for local player if specified
-        if (showOnlyForEnemies && playerData.Object.HasInputAuthority)
-        {
-            uiCanvas.gameObject.SetActive(false);
-        }
+        healthBar.gameObject.SetActive(true);
     }
     
     void UpdateUI()
     {
-        if (playerData == null) return;
+        if (playerData == null) 
+        {
+            Debug.LogError("[PlayerHeadUI] PlayerData is null in UpdateUI!");
+            return;
+        }
+        
+        Debug.Log($"[PlayerHeadUI] UpdateUI - Player: {playerData.PlayerName}, Health: {playerData.Health}");
         
         // Update player name
         if (playerNameText != null)
         {
             playerNameText.text = playerData.PlayerName;
             
-            // Team colors (industry standard)
-            playerNameText.color = GetTeamColor(playerData.TeamId);
+            // Team colors: Red for enemies, Sky Blue for teammates
+            playerNameText.color = GetPlayerColor(playerData.TeamId, playerData.Object.HasInputAuthority);
+            Debug.Log($"[PlayerHeadUI] Updated player name: {playerData.PlayerName}");
+        }
+        else
+        {
+            Debug.LogError("[PlayerHeadUI] PlayerNameText is null in UpdateUI!");
         }
         
         // Update health bar
         if (healthBar != null)
         {
             healthBar.value = playerData.Health / 100f;
+            Debug.Log($"[PlayerHeadUI] Updated health bar value: {playerData.Health}/100");
             
             // Health bar color based on health level (industry standard)
-            Image fillImage = healthBar.fillRect.GetComponent<Image>();
+            // SAFER: Try multiple ways to get the fill image
+            Image fillImage = null;
+            
+            // Method 1: Try fillRect (most common)
+            if (healthBar.fillRect != null)
+            {
+                fillImage = healthBar.fillRect.GetComponent<Image>();
+            }
+            
+            // Method 2: Try direct component on slider
+            if (fillImage == null)
+            {
+                fillImage = healthBar.GetComponent<Image>();
+            }
+            
+            // Method 3: Try to find child with Image component
+            if (fillImage == null)
+            {
+                fillImage = healthBar.GetComponentInChildren<Image>();
+            }
+            
             if (fillImage != null)
             {
+                // Get player color (red for enemies, sky blue for teammates)
+                Color playerColor = GetPlayerColor(playerData.TeamId, playerData.Object.HasInputAuthority);
+                
+                // Adjust health bar brightness based on health level
                 if (playerData.Health > 60f)
-                    fillImage.color = Color.green;
+                    fillImage.color = playerColor;  // Full health - normal team color
                 else if (playerData.Health > 30f)
-                    fillImage.color = Color.yellow;
+                    fillImage.color = Color.Lerp(playerColor, Color.yellow, 0.5f);  // Medium health - mix with yellow
                 else
-                    fillImage.color = Color.red;
+                    fillImage.color = Color.Lerp(playerColor, Color.red, 0.7f);  // Low health - mix with red
+                Debug.Log($"[PlayerHeadUI] Updated health bar color: {fillImage.color}");
             }
+            else
+            {
+                Debug.LogWarning("[PlayerHeadUI] Could not find health bar fill image - skipping color update");
+            }
+        }
+        else
+        {
+            Debug.LogError("[PlayerHeadUI] HealthBar is null in UpdateUI!");
         }
     }
     
-    Color GetTeamColor(int teamId)
+    Color GetPlayerColor(int teamId, bool isLocalPlayer)
     {
-        switch (teamId)
-        {
-            case 0: return Color.blue;    // Team A
-            case 1: return Color.red;     // Team B
-            default: return Color.white;  // No team
-        }
+        // If it's the local player, show as teammate (sky blue)
+        if (isLocalPlayer)
+            return new Color(0.53f, 0.81f, 0.98f, 1f); // Sky Blue
+        
+        // For remote players, check if they're on the same team as local player
+        // Note: You'll need to get local player's team ID for proper comparison
+        // For now, using team-based colors
+        
+        if (teamId == 0)
+            return new Color(0.53f, 0.81f, 0.98f, 1f); // Team 0 = Sky Blue (Teammates)
+        else if (teamId == 1)
+            return Color.red;  // Team 1 = Red (Enemies)
+        else
+            return Color.red;  // No team = Red (Enemies by default)
     }
 }

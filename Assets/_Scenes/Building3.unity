@@ -8147,8 +8147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0083120beac00fc44b402b64af05fda1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scene0Music: {fileID: 0}
-  otherScenesMusic: {fileID: 0}
+  sceneMusicMappings: []
   sfxVolume: 0.5
 --- !u!82 &1093428161
 AudioSource:
@@ -16571,7 +16570,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Menu
+  m_text: Exit
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8849cd943aa2be1439afb71081b4d465, type: 2}
   m_sharedMaterial: {fileID: 322113943614079793, guid: 8849cd943aa2be1439afb71081b4d465,
@@ -20971,6 +20970,10 @@ MonoBehaviour:
   cursorLocked: 0
   cursorInputForLook: 1
   isTouchLook: 0
+  virtualMoveInput: {x: 0, y: 0}
+  virtualLookInput: {x: 0, y: 0}
+  virtualJumpInput: 0
+  virtualSprintInput: 0
 --- !u!222 &5429520221757204661
 CanvasRenderer:
   m_ObjectHideFlags: 0

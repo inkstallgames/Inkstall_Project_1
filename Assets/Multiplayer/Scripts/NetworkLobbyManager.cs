@@ -12,7 +12,7 @@ public class NetworkLobbyManager : NetworkBehaviour
 
     [Header("Game Settings")]
     public int minPlayersToStart = 2;
-    [Networked, Capacity(8)] public NetworkDictionary<PlayerRef, PlayerLobbyData> LobbyPlayers { get; } 
+    [Networked, Capacity(10)] public NetworkDictionary<PlayerRef, PlayerLobbyData> LobbyPlayers { get; } 
 
     [Networked] public string JoinCode { get; set; }
     
@@ -27,7 +27,7 @@ public class NetworkLobbyManager : NetworkBehaviour
     [Networked] public int SelectedModeIndex { get; set; }
     [Networked] public int SelectedTimeIndex { get; set; }
 
-    [Networked, Capacity(8)]
+    [Networked, Capacity(10)]
     public NetworkDictionary<PlayerRef, bool> PlayersReadyToLoad { get; }
 
     [Networked]
@@ -50,7 +50,9 @@ public class NetworkLobbyManager : NetworkBehaviour
         new Color(1f, 0.5f, 0f),  // Orange
         Color.white,
         new Color(0.5f, 0f, 1f),  // Purple
-        new Color(0f, 1f, 0.5f)   // Teal
+        new Color(0f, 1f, 0.5f),  // Teal
+        new Color(1f, 0f, 0.5f),  // Pink
+        new Color(0.5f, 1f, 0f)   // Lime
     };
     private readonly int[] timeInSeconds = { 300, 600, 900, 1200 };
 

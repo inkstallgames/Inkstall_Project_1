@@ -214,6 +214,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             {
                 GameMode = gameMode,
                 SessionName = CurrentJoinCode,
+                PlayerCount = _maxPlayers,          // ← enforce 10-player cap
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager,
                 // Ensure proper prefab loading for clients
@@ -330,6 +331,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             {
                 GameMode = Fusion.GameMode.Client,
                 SessionName = normalizedCode,
+                PlayerCount = _maxPlayers,          // ← match host's 10-player cap
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager,
                 // Ensure proper prefab loading for clients

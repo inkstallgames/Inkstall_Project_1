@@ -31,8 +31,10 @@ public class LobbyUIManager : MonoBehaviour
 
     [Header("Join Info")]
     public TextMeshProUGUI joinCodeText;
-        public TextMeshProUGUI lobbyStatusText; // Used for 'Creating room...' message
+    public TextMeshProUGUI lobbyStatusText; // Used for 'Creating room...' message
     public TextMeshProUGUI notificationText; // Used for general notifications
+    [Tooltip("Button that copies the join code to the clipboard.")]
+    public Button copyCodeButton;
 
     [Header("Player Controls")]
     public Button readyButton;
@@ -48,9 +50,12 @@ public class LobbyUIManager : MonoBehaviour
 
     [Header("NormalUI")]
     public Button ExitBtn;
+    public Button HUDEditButton;
 
     private bool isHost = false;
     private bool isWaitingScreenActive = false;
+    private string _rawJoinCode = "";          // Stores the bare join code (no prefix)
+    private Coroutine _copyFeedbackCoroutine;  // Tracks the running feedback timer
     
     private void Awake()
     {
@@ -131,6 +136,17 @@ public class LobbyUIManager : MonoBehaviour
         else
         {
             ExitBtn.gameObject.SetActive(true);
+        }
+        if(HUDEditButton != null)
+        {
+            if(lobbyPanel.activeSelf)
+            {
+                HUDEditButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                HUDEditButton.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -263,16 +279,59 @@ public class LobbyUIManager : MonoBehaviour
 
     public void SetJoinCode(string joinCode)
     {
+        _rawJoinCode = joinCode; // Cache the bare code for clipboard use
+
         if (joinCodeText != null)
         {
             joinCodeText.text = $"Join Code: {joinCode}";
         }
+
+        // Show the copy button now that we have a code
+        if (copyCodeButton != null)
+            copyCodeButton.gameObject.SetActive(!string.IsNullOrEmpty(joinCode));
 
         // Once the join code is set, the room is ready, so we can clear the status text.
         if (lobbyStatusText != null)
         {
             lobbyStatusText.text = "";
         }
+    }
+
+    /// <summary>
+    /// Copies the current join code to the system clipboard.
+    /// The button's own label switches from "Copy" → "Copied!" for 2 seconds then reverts.
+    /// </summary>
+    public void CopyJoinCodeToClipboard()
+    {
+        if (string.IsNullOrEmpty(_rawJoinCode)) return;
+
+        // Copy to system clipboard
+        GUIUtility.systemCopyBuffer = _rawJoinCode;
+
+        // Animate the button label
+        if (copyCodeButton != null)
+        {
+            if (_copyFeedbackCoroutine != null)
+                StopCoroutine(_copyFeedbackCoroutine);
+            _copyFeedbackCoroutine = StartCoroutine(ShowCopyFeedback());
+        }
+    }
+
+    private System.Collections.IEnumerator ShowCopyFeedback()
+    {
+        // Get the TMP label that sits inside the button
+        var label = copyCodeButton.GetComponentInChildren<TextMeshProUGUI>();
+        if (label == null) yield break;
+
+        string original = label.text;   // remember "Copy" (or whatever the label says)
+        label.text = "Copied!";
+        copyCodeButton.interactable = false; // prevent double-press during feedback
+
+        yield return new WaitForSeconds(2f);
+
+        label.text = original;
+        copyCodeButton.interactable = true;
+        _copyFeedbackCoroutine = null;
     }
 
     public void SetLobbyStatusText(string status)

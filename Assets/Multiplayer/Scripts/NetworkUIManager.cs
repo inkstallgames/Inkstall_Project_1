@@ -183,6 +183,24 @@ public class NetworkUIManager : MonoBehaviour
         {
             // Kill notification text not assigned - will be handled in editor
         }
+
+        // Apply any saved HUD layout immediately at Start to prevent snapping later
+        if (throwButton != null)
+        {
+            Canvas rootCanvas = throwButton.GetComponentInParent<Canvas>(true);
+            if (rootCanvas != null)
+            {
+                HUDCustomizationManager.ApplySavedLayout(rootCanvas.gameObject);
+            }
+            else
+            {
+                HUDCustomizationManager.ApplySavedLayout(gameObject);
+            }
+        }
+        else
+        {
+            HUDCustomizationManager.ApplySavedLayout(gameObject);
+        }
     }
 
     private void Update()
@@ -196,6 +214,27 @@ public class NetworkUIManager : MonoBehaviour
         if (runner != null && localPlayerObject == null)
         {
             TryFindLocalPlayer();
+            
+            if (localPlayerObject != null)
+            {
+                // Re-apply layout now that the local player has spawned
+                if (throwButton != null)
+                {
+                    Canvas rootCanvas = throwButton.GetComponentInParent<Canvas>(true);
+                    if (rootCanvas != null)
+                    {
+                        HUDCustomizationManager.ApplySavedLayout(rootCanvas.gameObject);
+                    }
+                    else
+                    {
+                        HUDCustomizationManager.ApplySavedLayout(gameObject);
+                    }
+                }
+                else
+                {
+                    HUDCustomizationManager.ApplySavedLayout(gameObject);
+                }
+            }
         }
 
         // Update all UI elements

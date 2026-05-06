@@ -102,7 +102,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.8
+  m_Height: 2.2
   m_Radius: 0.28
   m_SlopeLimit: 90
   m_StepOffset: 0.25
@@ -158,8 +158,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   CinemachineCameraTarget: {fileID: 4750772492329756353}
-  TopClamp: 70
-  BottomClamp: -30
+  TopClamp: 80
+  BottomClamp: -80
   CameraAngleOverride: 0
   LockCameraPosition: 0
   mpCameraSensitivity: 0.8
@@ -473,6 +473,8 @@ MonoBehaviour:
   _CurrentAmmo: 0
   _ReserveAmmo: 0
   _IsReloading: 0
+  _HasAutoFirePowerup:
+    _value: 0
 --- !u!114 &1380529191341539094
 MonoBehaviour:
   m_ObjectHideFlags: 0

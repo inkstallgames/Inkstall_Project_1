@@ -250,6 +250,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifetime: 5
+  explosionRadius: 5
+  maxDamagePercent: 0.5
+  damageLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   hitEffect: {fileID: 5112403345868107899, guid: 6f34ef0d986e9db4199cf75805f79753,
     type: 3}
   hitSound: {fileID: 8300000, guid: 4ca71bc2671212242b32d796dc3862f5, type: 3}

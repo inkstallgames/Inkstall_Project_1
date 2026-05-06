@@ -166,7 +166,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour
         }
 
         Vector3 spawnPosition = GetSpawnPosition(teamId);
-        Quaternion spawnRotation = Quaternion.Euler(0f, 0f, 0f);
+        Quaternion spawnRotation = GetSpawnRotation(teamId);
 
         // Debug.Log($"[NetworkPlayerSpawner] Spawning player {player.PlayerId} with prefab '{prefabToSpawn.name}' at {spawnPosition}");
 
@@ -267,6 +267,52 @@ public class NetworkPlayerSpawner : NetworkBehaviour
         // Fallback to random position if no spawn points are found at all
         // Debug.LogError("[NetworkPlayerSpawner] No spawn points found in scene. Using random position as fallback.");
         return new Vector3(UnityEngine.Random.Range(-spawnRadius, spawnRadius), 1, UnityEngine.Random.Range(-spawnRadius, spawnRadius));
+    }
+    
+    /// <summary>
+    /// Get spawn point rotation for the specified team
+    /// </summary>
+    private Quaternion GetSpawnRotation(int teamId)
+    {
+        // For FreeForAll (teamId = -1), use any spawn point with teamId = -1
+        if (teamId == -1)
+        {
+            var freeForAllSpawns = spawnPoints.Where(p => p.teamId == -1).ToList();
+            if (freeForAllSpawns.Count > 0)
+            {
+                var availableSpawns = freeForAllSpawns.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
+                if (availableSpawns.Count == 0) availableSpawns = freeForAllSpawns;
+                var spawnPoint = availableSpawns[UnityEngine.Random.Range(0, availableSpawns.Count)];
+                Debug.Log($"[NetworkPlayerSpawner] Selected FreeForAll spawn rotation: {spawnPoint.transform.rotation}");
+                return spawnPoint.transform.rotation;
+            }
+        }
+        
+        // Try to find a team-specific spawn point
+        var teamSpawnPoints = spawnPoints.Where(p => p.teamId == teamId).ToList();
+        if (teamSpawnPoints.Count > 0)
+        {
+            var availableSpawns = teamSpawnPoints.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
+            if (availableSpawns.Count == 0) availableSpawns = teamSpawnPoints;
+            var spawnPoint = availableSpawns[UnityEngine.Random.Range(0, availableSpawns.Count)];
+            Debug.Log($"[NetworkPlayerSpawner] Selected team spawn rotation: {spawnPoint.transform.rotation}");
+            return spawnPoint.transform.rotation;
+        }
+        
+        // If no team-specific spawns, use any available spawn point as fallback
+        if (spawnPoints.Count > 0)
+        {
+            Debug.LogWarning($"[NetworkPlayerSpawner] No spawn points found for team {teamId}. Using any available spawn point rotation.");
+            var availableSpawns = spawnPoints.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
+            if (availableSpawns.Count == 0) availableSpawns = spawnPoints;
+            var spawnPoint = availableSpawns[UnityEngine.Random.Range(0, availableSpawns.Count)];
+            Debug.Log($"[NetworkPlayerSpawner] Selected fallback spawn rotation: {spawnPoint.transform.rotation}");
+            return spawnPoint.transform.rotation;
+        }
+        
+        // Fallback to identity rotation if no spawn points are found at all
+        Debug.LogError("[NetworkPlayerSpawner] No spawn points found in scene. Using identity rotation as fallback.");
+        return Quaternion.identity;
     }
 
 

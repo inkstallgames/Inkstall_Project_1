@@ -725,6 +725,15 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         // UnityEngine.Debug.Log($"[NetworkStarter] Scene loaded: {currentScene.name}");
 
+        // If returning to the lobby scene, spawn the LobbyManager so players can ready up again
+        if (runner.IsServer && currentScene.name == "MultiplayerLobby")
+        {
+            if (NetworkLobbyManager.Instance == null && _lobbyManagerPrefab != null)
+            {
+                runner.Spawn(_lobbyManagerPrefab);
+            }
+        }
+
         // Client-side check: if we're not in the active players list, we were kicked/timed out
         if (!runner.IsServer && currentScene.name != "MultiplayerLobby")
         {

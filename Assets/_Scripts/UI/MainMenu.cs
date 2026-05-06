@@ -62,6 +62,13 @@ public class MainMenu : MonoBehaviour
         // Ensure panels are in correct initial state
         if (joinCodeInputPanel != null)
             joinCodeInputPanel.SetActive(false);
+            
+        // If we are already connected (e.g. returning from a game), skip the main menu
+        var runner = FindObjectOfType<Fusion.NetworkRunner>();
+        if (runner != null && runner.IsRunning)
+        {
+            SwitchToLobby();
+        }
     }
 
     private System.Collections.IEnumerator HideStatusAfterDelay(float delay)

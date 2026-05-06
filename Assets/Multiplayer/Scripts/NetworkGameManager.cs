@@ -1021,53 +1021,17 @@ public class NetworkGameManager : NetworkBehaviour
     /// </summary>
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-
     private void RPC_ShutdownAndReturnToLobby()
-
     {
-
         // Unlock cursor for the lobby scene
-
         Cursor.lockState = CursorLockMode.None;
-
         Cursor.visible = true;
-
-        ShutdownAndLoadLobby();
-
-    }
-
-
-
-    private async void ShutdownAndLoadLobby()
-
-    {
-
-        if (NetworkStarter.Instance != null)
-
+        
+        // Return to lobby but keep the network runner alive
+        if (Object.HasStateAuthority)
         {
-
-            await NetworkStarter.Instance.ShutdownRunner();
-
+            Runner.LoadScene("MultiplayerLobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
-
-        else if (Runner != null)
-
-        {
-
-            await Runner.Shutdown();
-
-        }
-
-        else
-
-        {
-
-            // Fallback — no runner available, just load the scene directly
-
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MultiplayerLobby");
-
-        }
-
     }
 
 

@@ -112,9 +112,13 @@ public class NetworkLobbyManager : NetworkBehaviour
                 uiManager.SetJoinCode(JoinCode);
             }
             
-            // Add self to lobby
-            // Debug.Log("[NetworkLobbyManager] Adding host player to lobby");
-            AddPlayerToLobby(Runner.LocalPlayer, true);
+            // Add all active players to the lobby (handles returning to lobby after a game)
+            // Debug.Log("[NetworkLobbyManager] Adding connected players to lobby");
+            foreach (var player in Runner.ActivePlayers)
+            {
+                bool isHostPlayer = (player == Runner.LocalPlayer);
+                AddPlayerToLobby(player, isHostPlayer);
+            }
         }
         else
         {
@@ -428,21 +432,40 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         if (uiManager == null) return;
 
-        // Update player list
+        // Update player list continuously
         var playerDict = LobbyPlayers.ToDictionary(kvp => kvp.Key.PlayerId, kvp => kvp.Value);
         uiManager.UpdatePlayerList(playerDict);
 
-        // Update ready button state for local player
-        if (LobbyPlayers.ContainsKey(Runner.LocalPlayer))
+        // Update Join Code continuously
+        if (!string.IsNullOrEmpty(JoinCode))
         {
-            var localPlayerData = LobbyPlayers[Runner.LocalPlayer];
-            uiManager.SetReadyButtonState(localPlayerData.IsReady);
+            uiManager.SetJoinCode(JoinCode);
         }
 
-        // Update start button for host
-        if (Runner.IsServer)
+        // Update button visibility and state based on host status
+        bool isHost = Runner.IsServer;
+        
+        if (uiManager.startGameButton != null)
         {
-            bool allReady = LobbyPlayers.Count >= minPlayersToStart && LobbyPlayers.All(p => p.Value.IsReady);
+            uiManager.startGameButton.gameObject.SetActive(isHost);
+            if (isHost)
+            {
+                var networkStarter = NetworkStarter.Instance;
+                bool isTestingMode = networkStarter != null && networkStarter.IsHostOnlyTestingEnabled;
+                int requiredPlayers = isTestingMode ? 1 : minPlayersToStart;
+                bool allReady = LobbyPlayers.Count >= requiredPlayers && LobbyPlayers.All(p => p.Value.IsReady);
+                uiManager.startGameButton.interactable = allReady;
+            }
+        }
+
+        if (uiManager.readyButton != null)
+        {
+            uiManager.readyButton.gameObject.SetActive(!isHost);
+            if (LobbyPlayers.ContainsKey(Runner.LocalPlayer))
+            {
+                var localPlayerData = LobbyPlayers[Runner.LocalPlayer];
+                uiManager.SetReadyButtonState(localPlayerData.IsReady);
+            }
         }
     }
 
@@ -450,7 +473,6 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         if (uiManager == null) return;
 
-        // Update button interactability based on host status
         bool isHost = Runner.IsServer;
         
         if (uiManager.mapButton != null)
@@ -460,14 +482,23 @@ public class NetworkLobbyManager : NetworkBehaviour
         
         if (uiManager.modeDropdown != null)
         {
-            uiManager.modeDropdown.SetValueWithoutNotify(SelectedModeIndex);
             uiManager.modeDropdown.interactable = isHost;
+            if (uiManager.modeDropdown.options.Count == 0)
+            {
+                var modeOptions = System.Enum.GetNames(typeof(GameMode)).ToList();
+                uiManager.modeDropdown.AddOptions(modeOptions);
+            }
+            uiManager.modeDropdown.SetValueWithoutNotify(SelectedModeIndex);
         }
         
         if (uiManager.timeDropdown != null)
         {
-            uiManager.timeDropdown.SetValueWithoutNotify(SelectedTimeIndex);
             uiManager.timeDropdown.interactable = isHost;
+            if (uiManager.timeDropdown.options.Count == 0)
+            {
+                uiManager.timeDropdown.AddOptions(timeOptions);
+            }
+            uiManager.timeDropdown.SetValueWithoutNotify(SelectedTimeIndex);
         }
     }
 

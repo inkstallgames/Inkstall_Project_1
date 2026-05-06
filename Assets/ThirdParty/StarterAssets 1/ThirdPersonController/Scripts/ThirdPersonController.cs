@@ -456,6 +456,7 @@ namespace StarterAssets
             if (Object.HasInputAuthority)
             {
                 MultiplayerSettingsManager.OnSensitivityChangedEvent -= UpdateSensitivity;
+                runner.RemoveCallbacks(this);
             }
         }
 

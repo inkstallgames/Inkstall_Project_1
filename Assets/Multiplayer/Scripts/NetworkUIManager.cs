@@ -953,35 +953,23 @@ public class NetworkUIManager : MonoBehaviour
         if (leaderboardPanel != null)
             leaderboardPanel.SetActive(false);
 
-        // If we are the server (host), wait a few extra seconds to ensure all clients have 
-        // finished their sequence and successfully disconnected themselves, to avoid 
-        // interrupting their leaderboard display with an abrupt server shutdown.
-        if (runner != null && runner.IsServer)
-        {
-            yield return new WaitForSeconds(3.0f);
-        }
-
         ShutdownAndReturnToLobby();
     }
 
     /// <summary>
     /// Async helper — called at the end of the leaderboard sequence to cleanly
-    /// shut down the NetworkRunner and return to the lobby scene.
+    /// return to the lobby scene without shutting down the connection.
     /// </summary>
-    private async void ShutdownAndReturnToLobby()
+    private void ShutdownAndReturnToLobby()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        if (NetworkStarter.Instance != null)
+        if (runner != null && runner.IsServer)
         {
-            await NetworkStarter.Instance.ShutdownRunner();
+            runner.LoadScene("MultiplayerLobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
-        else if (runner != null)
-        {
-            await runner.Shutdown();
-        }
-        else
+        else if (runner == null)
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("MultiplayerLobby");
         }

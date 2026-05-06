@@ -43,6 +43,11 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI killNotificationText; // Shows "You killed [PlayerName]" message
     [SerializeField] private float killNotificationDuration = 3f;     // How long to show kill message
 
+    [Header("Powerup Notification UI")]
+    [SerializeField] private TextMeshProUGUI powerupNotificationText;
+    [SerializeField] private float powerupNotificationDuration = 3f;
+    private Coroutine powerupNotificationCoroutine;
+
     [Header("Game Info UI")]
     [SerializeField] private TextMeshProUGUI gameStateText;      // Shows current game state
     [SerializeField] private TextMeshProUGUI timerText;          // Round timer
@@ -248,17 +253,21 @@ public class NetworkUIManager : MonoBehaviour
             // Keyboard shortcut: press T to throw/shoot
             // For laser: use GetKey (held) for continuous fire, GetKeyDown for others
             bool isLaserEquipped = localEquipSystem != null && localEquipSystem.IsLaserEquipped();
+            bool isPistolEquipped = localEquipSystem != null && localEquipSystem.IsPistolEquipped();
+            bool hasPistolAutoFire = isPistolEquipped && localPistolBehaviour != null && localPistolBehaviour.HasAutoFirePowerup;
             
-            if (isLaserEquipped)
+            if (isLaserEquipped || hasPistolAutoFire)
             {
                 if (Input.GetKey(KeyCode.T))
                 {
-                    if (localLaserBehaviour != null)
+                    if (isLaserEquipped && localLaserBehaviour != null)
                         localLaserBehaviour.RequestShoot();
+                    else if (hasPistolAutoFire && localPistolBehaviour != null)
+                        localPistolBehaviour.RequestShoot();
                 }
                 else if (Input.GetKeyUp(KeyCode.T))
                 {
-                    if (localLaserBehaviour != null)
+                    if (isLaserEquipped && localLaserBehaviour != null)
                         localLaserBehaviour.StopShooting();
                 }
             }
@@ -267,12 +276,19 @@ public class NetworkUIManager : MonoBehaviour
                 OnThrowButtonPressed();
             }
             
-            // Continuous laser fire while EITHER throw button is held (via HoldableButton)
+            // Continuous fire while EITHER throw button is held (via HoldableButton)
             bool isThrowHeld = (throwHoldable != null && throwHoldable.IsHeld)
                             || (throwHoldableLeft != null && throwHoldableLeft.IsHeld);
-            if (isThrowHeld && isLaserEquipped && localLaserBehaviour != null)
+            if (isThrowHeld)
             {
-                localLaserBehaviour.RequestShoot();
+                if (isLaserEquipped && localLaserBehaviour != null)
+                {
+                    localLaserBehaviour.RequestShoot();
+                }
+                else if (hasPistolAutoFire && localPistolBehaviour != null)
+                {
+                    localPistolBehaviour.RequestShoot();
+                }
             }
             // Detect release: was held last frame, not held this frame -> stop laser
             else if (wasThrowHeld && !isThrowHeld && isLaserEquipped && localLaserBehaviour != null)
@@ -781,6 +797,30 @@ public class NetworkUIManager : MonoBehaviour
         {
             waitingForPlayersPanel.SetActive(show);
             isWaitingScreenActive = show;
+        }
+    }
+
+    public void ShowPowerupNotification(string powerupName)
+    {
+        if (powerupNotificationText != null)
+        {
+            powerupNotificationText.text = $"Power-Up Acquired: {powerupName}!";
+            powerupNotificationText.gameObject.SetActive(true);
+            
+            if (powerupNotificationCoroutine != null)
+            {
+                StopCoroutine(powerupNotificationCoroutine);
+            }
+            powerupNotificationCoroutine = StartCoroutine(HidePowerupNotificationAfterDelay());
+        }
+    }
+
+    private System.Collections.IEnumerator HidePowerupNotificationAfterDelay()
+    {
+        yield return new WaitForSeconds(powerupNotificationDuration);
+        if (powerupNotificationText != null)
+        {
+            powerupNotificationText.gameObject.SetActive(false);
         }
     }
 

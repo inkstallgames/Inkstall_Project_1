@@ -291,6 +291,15 @@ public class PlayerNetworkData : NetworkBehaviour
 
 
 
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void RPC_NotifyPowerupReceived(string powerupName)
+    {
+        if (NetworkUIManager.Instance != null)
+        {
+            NetworkUIManager.Instance.ShowPowerupNotification(powerupName);
+        }
+    }
+
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
 
     public void RPC_SetPlayerName(string name)

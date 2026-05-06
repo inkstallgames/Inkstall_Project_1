@@ -44,6 +44,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [Networked] private TickTimer FireCooldownTimer { get; set; }
     [Networked] private TickTimer ReloadTimer { get; set; }
     [Networked] public bool IsReloading { get; set; }
+    [Networked] public NetworkBool HasAutoFirePowerup { get; set; }
     
     public int MaxAmmo => maxAmmo;
 
@@ -357,6 +358,14 @@ public class NetworkPistolBehaviour : NetworkBehaviour
                 {
                     hitPlayerData.RPC_TakeDamage(damage, Object.InputAuthority);
                     hitPlayer = true;
+                }
+            }
+            else
+            {
+                var hitMysteryBox = hit.collider.GetComponentInParent<MysteryBox>();
+                if (hitMysteryBox != null)
+                {
+                    hitMysteryBox.RPC_OnShot(Object.InputAuthority);
                 }
             }
 

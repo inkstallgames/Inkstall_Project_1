@@ -63,9 +63,19 @@ public class PistolInputHandler : MonoBehaviour
         }
 
         // For PC/Editor, allow shooting with a mouse click, but not if clicking on a UI element.
-        if (Input.GetMouseButtonDown(0) && !isPointerOverUI)
+        if (pistolBehaviour.HasAutoFirePowerup)
         {
-            pistolBehaviour.RequestShoot();
+            if (Input.GetMouseButton(0) && !isPointerOverUI)
+            {
+                pistolBehaviour.RequestShoot();
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(0) && !isPointerOverUI)
+            {
+                pistolBehaviour.RequestShoot();
+            }
         }
 #endif
 

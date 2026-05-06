@@ -47,6 +47,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [Networked] private TickTimer ReloadTimer { get; set; }
     [Networked] public bool IsReloading { get; set; }
     [Networked] private TickTimer PostReloadCooldown { get; set; }
+    [Networked] public NetworkBool HasDamageIncreasePowerup { get; set; }
     
     public int MaxEnergy => maxEnergy;
 
@@ -408,7 +409,16 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 if (targetPlayerData.Object.InputAuthority != Object.InputAuthority)
                 {
                     // Pass true for isLaserDamage to play laser hit sound
-                    targetPlayerData.RPC_TakeDamage(damage, Object.InputAuthority, true);
+                    int actualDamage = HasDamageIncreasePowerup ? damage * 2 : damage;
+                    targetPlayerData.RPC_TakeDamage(actualDamage, Object.InputAuthority, true);
+                }
+            }
+            else
+            {
+                var hitMysteryBox = hit.collider.GetComponentInParent<MysteryBox>();
+                if (hitMysteryBox != null)
+                {
+                    hitMysteryBox.RPC_OnShot(Object.InputAuthority);
                 }
             }
         }

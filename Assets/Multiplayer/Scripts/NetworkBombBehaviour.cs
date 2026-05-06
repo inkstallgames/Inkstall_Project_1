@@ -414,6 +414,16 @@ public class NetworkBombBehaviour : NetworkBehaviour
     }
     
     /// <summary>
+    /// Grant Grenade Ammo Powerup
+    /// </summary>
+    public void GrantGrenadeAmmoPowerup()
+    {
+        if (!Object.HasStateAuthority) return;
+        MaxBombs += 3;
+        CurrentBombs = MaxBombs;
+    }
+    
+    /// <summary>
     /// Play visual explosion effect for predicted grenade (client-side only)
     /// </summary>
     public void PlayPredictedExplosionEffect(Vector3 position)

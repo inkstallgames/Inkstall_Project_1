@@ -99,5 +99,6 @@ public class PlayerHeadUI : MonoBehaviour
         {
             healthBar.value = playerData.Health / 100f;
         }
-    }
+
+  }
 }

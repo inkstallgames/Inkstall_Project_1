@@ -144,6 +144,12 @@ public class NetworkUIManager : MonoBehaviour
     //awake
     private void Awake()
     {
+        if (HUDCustomizationManager.IsCreatingPreview)
+        {
+            Destroy(this); // Just remove the script, don't destroy the Canvas!
+            return;
+        }
+
         if (Instance == null)
         {
             Instance = this;

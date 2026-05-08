@@ -24,8 +24,10 @@ public class HUDCustomizationManager : MonoBehaviour
 {
     public static HUDCustomizationManager Instance { get; private set; }
 
-    /// <summary>True while the HUD editor is open. DraggableHUDElement reads this.</summary>
     public static bool IsEditMode { get; private set; }
+
+    /// <summary>Set to true right before Instantiating the preview clone to prevent Singletons on the prefab from destroying it.</summary>
+    public static bool IsCreatingPreview = false;
 
     // ---------------------------------------------------------------
     // Inspector — assign in Lobby scene
@@ -73,14 +75,36 @@ public class HUDCustomizationManager : MonoBehaviour
 
     private void Awake()
     {
+        if (IsCreatingPreview)
+        {
+            Destroy(this); // Just remove the script, don't destroy the Canvas!
+            return;
+        }
+
         if (Instance == null) Instance = this;
         else { Destroy(gameObject); return; }
 
-        // Wire buttons
-        if (openEditorButton != null) openEditorButton.onClick.AddListener(OpenEditor);
-        if (saveButton       != null) saveButton.onClick.AddListener(SaveAndClose);
-        if (resetButton      != null) resetButton.onClick.AddListener(ResetToDefaults);
-        if (closeButton      != null) closeButton.onClick.AddListener(CloseWithoutSaving);
+        // Wire buttons robustly
+        if (openEditorButton != null) 
+        {
+            openEditorButton.onClick.RemoveAllListeners();
+            openEditorButton.onClick.AddListener(OpenEditor);
+        }
+        if (saveButton != null) 
+        {
+            saveButton.onClick.RemoveAllListeners();
+            saveButton.onClick.AddListener(SaveAndClose);
+        }
+        if (resetButton != null) 
+        {
+            resetButton.onClick.RemoveAllListeners();
+            resetButton.onClick.AddListener(ResetToDefaults);
+        }
+        if (closeButton != null) 
+        {
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(CloseWithoutSaving);
+        }
 
         // Start with panel hidden
         if (customizationPanel != null)
@@ -129,8 +153,10 @@ public class HUDCustomizationManager : MonoBehaviour
         // Instantiate preview if not already present
         if (_previewInstance == null && hudCanvasPrefab != null)
         {
+            IsCreatingPreview = true;
             _previewInstance = Instantiate(hudCanvasPrefab,
                 previewParent != null ? (Transform)previewParent : transform);
+            IsCreatingPreview = false;
 
             // CRITICAL: Use DestroyImmediate (not Destroy) so the Canvas components
             // are fully removed BEFORE we set RectTransform values below.
@@ -184,9 +210,16 @@ public class HUDCustomizationManager : MonoBehaviour
 
     public void SaveAndClose()
     {
-        // Snapshot current positions/scales from the preview into _workingProfile
-        BakeCurrentLayoutIntoProfile();
-        _workingProfile.Save();
+        try
+        {
+            // Snapshot current positions/scales from the preview into _workingProfile
+            BakeCurrentLayoutIntoProfile();
+            _workingProfile.Save();
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[HUDCustomizationManager] Error saving layout: {e}");
+        }
 
         IsEditMode = false;
         if (customizationPanel != null) customizationPanel.SetActive(false);
@@ -213,24 +246,33 @@ public class HUDCustomizationManager : MonoBehaviour
 
     public void ResetToDefaults()
     {
-        // Restore from the permanent factory defaults (saved once, never overwritten).
-        UILayoutProfile factory = UILayoutProfile.LoadFactory();
-        if (factory == null) factory = _defaultProfile; // fallback to session snapshot
-
-        _workingProfile = new UILayoutProfile();
-        UILayoutProfile.DeleteSaved(); // clear user saves so Rust scene also resets
-
-        if (factory != null)
+        try
         {
-            foreach (var elem in _editableElements)
-            {
-                UIElementLayout def = factory.GetElement(elem.ElementId);
-                if (def == null) continue;
+            // Restore from the permanent factory defaults (saved once, never overwritten).
+            UILayoutProfile factory = UILayoutProfile.LoadFactory();
+            if (factory == null) factory = _defaultProfile; // fallback to session snapshot
 
-                elem.RT.anchoredPosition = def.anchoredPosition;
-                elem.RT.localScale       = def.localScale;
-                elem.gameObject.SetActive(def.isVisible);
+            _workingProfile = new UILayoutProfile();
+            UILayoutProfile.DeleteSaved(); // clear user saves so Rust scene also resets
+
+            if (factory != null)
+            {
+                foreach (var elem in _editableElements)
+                {
+                    if (elem == null || elem.RT == null) continue;
+
+                    UIElementLayout def = factory.GetElement(elem.ElementId);
+                    if (def == null) continue;
+
+                    elem.RT.anchoredPosition = def.anchoredPosition;
+                    elem.RT.localScale       = def.localScale;
+                    elem.gameObject.SetActive(def.isVisible);
+                }
             }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[HUDCustomizationManager] Error resetting to defaults: {e}");
         }
     }
 
@@ -281,6 +323,9 @@ public class HUDCustomizationManager : MonoBehaviour
         var profile = new UILayoutProfile();
         foreach (var elem in elements)
         {
+            // Safely skip any elements that were destroyed while the editor was open
+            if (elem == null || elem.RT == null) continue;
+
             profile.SetElement(new UIElementLayout(
                 elem.ElementId,
                 elem.RT.anchoredPosition,

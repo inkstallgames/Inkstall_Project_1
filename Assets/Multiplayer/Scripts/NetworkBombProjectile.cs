@@ -238,6 +238,7 @@ public class NetworkBombProjectile : NetworkBehaviour
     
         
         
+#if UNITY_EDITOR
     /// <summary>
     /// Draw area damage zones with colors for debugging
     /// </summary>
@@ -291,4 +292,5 @@ public class NetworkBombProjectile : NetworkBehaviour
         Vector3 labelPos = center + Vector3.up * (innerRadius + 0.3f);
         UnityEditor.Handles.Label(labelPos, detailedLabel);
     }
+#endif
 }

@@ -483,10 +483,11 @@ public class NetworkLobbyManager : NetworkBehaviour
         if (uiManager.modeDropdown != null)
         {
             uiManager.modeDropdown.interactable = isHost;
-            if (uiManager.modeDropdown.options.Count == 0)
+            var modeOptionsList = System.Enum.GetNames(typeof(GameMode)).ToList();
+            if (uiManager.modeDropdown.options.Count != modeOptionsList.Count)
             {
-                var modeOptions = System.Enum.GetNames(typeof(GameMode)).ToList();
-                uiManager.modeDropdown.AddOptions(modeOptions);
+                uiManager.modeDropdown.ClearOptions();
+                uiManager.modeDropdown.AddOptions(modeOptionsList);
             }
             uiManager.modeDropdown.SetValueWithoutNotify(SelectedModeIndex);
         }
@@ -494,8 +495,9 @@ public class NetworkLobbyManager : NetworkBehaviour
         if (uiManager.timeDropdown != null)
         {
             uiManager.timeDropdown.interactable = isHost;
-            if (uiManager.timeDropdown.options.Count == 0)
+            if (uiManager.timeDropdown.options.Count != timeOptions.Count)
             {
+                uiManager.timeDropdown.ClearOptions();
                 uiManager.timeDropdown.AddOptions(timeOptions);
             }
             uiManager.timeDropdown.SetValueWithoutNotify(SelectedTimeIndex);

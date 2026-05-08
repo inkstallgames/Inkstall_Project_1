@@ -1121,13 +1121,12 @@ public class NetworkUIManager : MonoBehaviour
         // Clean up old entries if we exceed the limit
         if (killFeedContainer.childCount >= maxKillFeedItems)
         {
-            // Destroy the oldest entry (the last child, since we use SetAsFirstSibling)
-            Destroy(killFeedContainer.GetChild(killFeedContainer.childCount - 1).gameObject);
+            // Destroy the oldest entry (the first child)
+            Destroy(killFeedContainer.GetChild(0).gameObject);
         }
 
-        // Instantiate new kill feed item
+        // Instantiate new kill feed item (appears at the bottom by default)
         GameObject itemGO = Instantiate(killFeedItemPrefab, killFeedContainer);
-        itemGO.transform.SetAsFirstSibling(); // Make the newest kill appear at the top
         KillFeedItem feedItem = itemGO.GetComponent<KillFeedItem>();
 
         if (feedItem != null)

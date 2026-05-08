@@ -43,6 +43,19 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI killNotificationText; // Shows "You killed [PlayerName]" message
     [SerializeField] private float killNotificationDuration = 3f;     // How long to show kill message
 
+    [Header("Kill Feed UI (Global)")]
+    [SerializeField] private RectTransform killFeedContainer; // Container with VerticalLayoutGroup
+    [SerializeField] private GameObject killFeedItemPrefab; // Prefab with KillFeedItem script
+    [SerializeField] private int maxKillFeedItems = 5;
+    
+    [System.Serializable]
+    public struct WeaponIconEntry
+    {
+        public string weaponName;
+        public Sprite weaponIcon;
+    }
+    [SerializeField] private List<WeaponIconEntry> weaponIcons = new List<WeaponIconEntry>();
+
     [Header("Powerup Notification UI")]
     [SerializeField] private TextMeshProUGUI powerupNotificationText;
     [SerializeField] private float powerupNotificationDuration = 3f;
@@ -255,6 +268,20 @@ public class NetworkUIManager : MonoBehaviour
             UpdateBulletAmmoUI();
             UpdatePlayerStatsUI();
             UpdateLeaderboardCache();
+            
+            // TEST KILL FEED
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                // Randomly assign teams 0 and 1 for testing
+                int randomKillerTeam = Random.Range(0, 2);
+                int randomVictimTeam = randomKillerTeam == 0 ? 1 : 0;
+                
+                // Randomly pick a weapon name from the known list
+                string[] testWeapons = { "Pistol", "Laser", "Bomb" };
+                string randomWeapon = testWeapons[Random.Range(0, testWeapons.Length)];
+                
+                AddKillFeedEntry("Test Killer", randomKillerTeam, "Test Victim", randomVictimTeam, randomWeapon);
+            }
 
             // Keyboard shortcut: press T to throw/shoot
             // For laser: use GetKey (held) for continuous fire, GetKeyDown for others
@@ -1079,11 +1106,37 @@ public class NetworkUIManager : MonoBehaviour
             Debug.LogWarning("[NetworkUIManager] No cached player data for leaderboard.");
         }
     }
+    public void AddKillFeedEntry(string killerName, int killerTeam, string victimName, int victimTeam, string weaponName)
+    {
+        if (killFeedContainer == null || killFeedItemPrefab == null) return;
+        
+        // Find matching sprite for the weapon
+        Sprite weaponSprite = null;
+        if (!string.IsNullOrEmpty(weaponName))
+        {
+            var entry = weaponIcons.Find(x => x.weaponName.ToLower() == weaponName.ToLower());
+            weaponSprite = entry.weaponIcon;
+        }
 
-    /// <summary>
-    /// Called when local player kills another player
-    /// Shows kill notification to local player only
-    /// </summary>
+        // Clean up old entries if we exceed the limit
+        if (killFeedContainer.childCount >= maxKillFeedItems)
+        {
+            // Destroy the oldest entry (the last child, since we use SetAsFirstSibling)
+            Destroy(killFeedContainer.GetChild(killFeedContainer.childCount - 1).gameObject);
+        }
+
+        // Instantiate new kill feed item
+        GameObject itemGO = Instantiate(killFeedItemPrefab, killFeedContainer);
+        itemGO.transform.SetAsFirstSibling(); // Make the newest kill appear at the top
+        KillFeedItem feedItem = itemGO.GetComponent<KillFeedItem>();
+
+        if (feedItem != null)
+        {
+            // Pass the looked-up weapon sprite
+            feedItem.Setup(killerName, victimName, weaponSprite, killerTeam, victimTeam);
+        }
+    }
+
     public void OnPlayerKilled(string victimName)
     {
         if (killNotificationText != null)

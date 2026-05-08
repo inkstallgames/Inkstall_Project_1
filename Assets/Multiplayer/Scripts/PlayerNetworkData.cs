@@ -28,6 +28,7 @@ public class PlayerNetworkData : NetworkBehaviour
     [Networked] private float RegenAccumulator { get; set; }
 
     [Networked] public int TeamId { get; set; } = -1; // -1 means no team
+    [Networked] public string LastDamageWeapon { get; set; } = ""; // Tracks which weapon last hit this player
 
     [Networked] public string PlayerName { get; set; }
 
@@ -176,9 +177,11 @@ public class PlayerNetworkData : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_TakeDamage(int damage, PlayerRef sourcePlayer, bool isLaserDamage = false)
+    public void RPC_TakeDamage(int damage, PlayerRef sourcePlayer, bool isLaserDamage = false, string weaponName = "Unknown")
     {
         if (Health <= 0) return; // Already dead
+
+        LastDamageWeapon = weaponName;
 
         // --- Friendly fire protection ---
         // Ignore damage from players on the same team
@@ -229,8 +232,8 @@ public class PlayerNetworkData : NetworkBehaviour
                 }
             }
 
-            // Notify game manager to update team scores
-            NetworkGameManager.Instance?.OnPlayerKilled(Object.InputAuthority, sourcePlayer);
+            // Notify game manager to update team scores and kill feed
+            NetworkGameManager.Instance?.OnPlayerKilled(Object.InputAuthority, sourcePlayer, LastDamageWeapon);
 
             if (Object.HasStateAuthority)
             {

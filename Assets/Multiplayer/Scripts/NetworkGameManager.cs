@@ -748,7 +748,7 @@ public class NetworkGameManager : NetworkBehaviour
 
         }
 
-    public void OnPlayerKilled(PlayerRef victim, PlayerRef killer)
+    public void OnPlayerKilled(PlayerRef victim, PlayerRef killer, string weaponName = "Unknown")
     {
         if (!Object.HasStateAuthority) 
         {
@@ -826,24 +826,11 @@ public class NetworkGameManager : NetworkBehaviour
         // Send kill notification to the player who made the kill
         string notificationVictimName = victimName != "Unknown" ? victimName : $"Player {victim.PlayerId}";
         
-        // Check if killer is the host (server) or a client
-        if (killer == Runner.LocalPlayer)
-        {
-            // Host killed someone - show notification directly
-            if (NetworkUIManager.Instance != null)
-            {
-                NetworkUIManager.Instance.OnPlayerKilled(notificationVictimName);
-            }
-            else
-            {
-                // NetworkUIManager.Instance is null on host!
-            }
-        }
-        else
-        {
-            // Client killed someone - send RPC to that client
-            RPC_ShowKillNotification(killer, killer, notificationVictimName);
-        }
+        int killerTeam = killerData != null ? killerData.TeamId : -1;
+        int victimTeam = victimData != null ? victimData.TeamId : -1;
+
+        // Update global kill feed and personal notifications for all players via RPC
+        RPC_UpdateKillFeed(killer, killerName, killerTeam, notificationVictimName, victimTeam, weaponName);
 
         if (CurrentGameMode == GameMode.TeamDeathmatch)
         {
@@ -853,18 +840,21 @@ public class NetworkGameManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// RPC to send kill notification to the client who made the kill
+    /// RPC to send kill feed update to all clients
     /// </summary>
-    [Rpc(RpcSources.StateAuthority, RpcTargets.Proxies)]
-    private void RPC_ShowKillNotification(PlayerRef killerPlayer, [RpcTarget] PlayerRef target, string victimName)
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_UpdateKillFeed(PlayerRef killerPlayer, string killerName, int killerTeam, string victimName, int victimTeam, string weaponName)
     {
-        // Only show notification if this client is the killer
-        if (target == Runner.LocalPlayer)
+        if (NetworkUIManager.Instance != null)
         {
-            if (NetworkUIManager.Instance != null)
+            // Show big personal notification only if this client is the killer
+            if (killerPlayer == Runner.LocalPlayer)
             {
                 NetworkUIManager.Instance.OnPlayerKilled(victimName);
             }
+            
+            // Add entry to the global kill feed for everyone
+            NetworkUIManager.Instance.AddKillFeedEntry(killerName, killerTeam, victimName, victimTeam, weaponName);
         }
     }
 

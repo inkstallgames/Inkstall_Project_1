@@ -175,7 +175,7 @@ public class NetworkBombProjectile : NetworkBehaviour
                 Debug.Log($"[NetworkBombProjectile] Player {playerData.Object.InputAuthority} takes {finalDamage} damage {damageType}");
 
                 // Apply damage using existing RPC on PlayerNetworkData
-                playerData.RPC_TakeDamage(finalDamage, SourcePlayer);
+                playerData.RPC_TakeDamage(finalDamage, SourcePlayer, false, "Bomb");
             }
         }
     }

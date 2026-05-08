@@ -410,7 +410,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 {
                     // Pass true for isLaserDamage to play laser hit sound
                     int actualDamage = HasDamageIncreasePowerup ? damage * 2 : damage;
-                    targetPlayerData.RPC_TakeDamage(actualDamage, Object.InputAuthority, true);
+                    targetPlayerData.RPC_TakeDamage(actualDamage, Object.InputAuthority, true, "Laser");
                 }
             }
             else

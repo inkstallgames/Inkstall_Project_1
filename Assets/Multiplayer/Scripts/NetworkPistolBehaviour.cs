@@ -356,7 +356,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             {
                 if (hitPlayerData.Object.InputAuthority != Object.InputAuthority)
                 {
-                    hitPlayerData.RPC_TakeDamage(damage, Object.InputAuthority);
+                    hitPlayerData.RPC_TakeDamage(damage, Object.InputAuthority, false, "Pistol");
                     hitPlayer = true;
                 }
             }

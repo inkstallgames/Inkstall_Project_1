@@ -166,6 +166,7 @@ namespace StarterAssets
         // Industry-standard footstep system
         private float _nextFootstepTime;
         private FootstepType _currentFootstepType = FootstepType.None;
+        private bool _previouslyGrounded;
 
         // Networked animation state - synced from state authority to all clients
         [Networked] public float NetworkedAnimationBlend { get; set; }
@@ -303,6 +304,7 @@ namespace StarterAssets
 
             // Setup footstep audio system
             SetupFootstepAudio();
+            _previouslyGrounded = Grounded;
 
             if (Object.HasInputAuthority)
             {
@@ -331,6 +333,11 @@ namespace StarterAssets
                 footstepAudioSource.loop = false; // Individual footstep sounds
                 footstepAudioSource.spatialBlend = 1.0f; // 3D sound
                 footstepAudioSource.volume = 0.7f;
+                
+                // Standard 3D settings for multiplayer audibility
+                footstepAudioSource.minDistance = 2f;
+                footstepAudioSource.maxDistance = 25f;
+                footstepAudioSource.rolloffMode = AudioRolloffMode.Logarithmic;
             }
         }
 
@@ -342,36 +349,48 @@ namespace StarterAssets
                 return;
             }
             
+            // Use networked grounded state for proxies, local state for owner
+            bool currentGrounded = Object.HasInputAuthority ? Grounded : (bool)NetworkedGrounded;
+
+            // LANDING SOUND DETECTION: Triggered when transitioning from air to ground
+            if (currentGrounded && !_previouslyGrounded)
+            {
+                if (LandingAudioClip != null)
+                {
+                    footstepAudioSource.PlayOneShot(LandingAudioClip, FootstepAudioVolume);
+                }
+            }
+            _previouslyGrounded = currentGrounded;
+            
             // Only play footsteps when grounded
-            if (!Grounded)
+            if (!currentGrounded)
             {
                 _currentFootstepType = FootstepType.None;
                 return;
             }
             
-            // Get current input for local player
-            Vector2 currentMove = Vector2.zero;
+            // Get movement state (local input for owner, networked speed for proxies)
+            float magnitude = 0f;
             bool isSprinting = false;
             
             if (Object.HasInputAuthority && _nativeInput != null)
             {
-                currentMove = _nativeInput.move;
+                magnitude = _nativeInput.move.magnitude;
                 isSprinting = _nativeInput.sprint;
             }
             else if (!Object.HasInputAuthority)
             {
-                // For remote players, use networked input
-                currentMove = _latestInput.move;
-                isSprinting = _latestInput.sprint;
+                // For remote players, use networked properties (synced across network)
+                magnitude = NetworkedMotionSpeed;
+                // Infer sprinting from speed magnitude
+                isSprinting = magnitude > sprintThresholdSound;
             }
             
             // Determine footstep type based on movement
             FootstepType newFootstepType = FootstepType.None;
             
-            if (currentMove != Vector2.zero)
+            if (magnitude > 0.01f)
             {
-                float magnitude = currentMove.magnitude;
-                
                 if (isSprinting || magnitude > sprintThresholdSound)
                 {
                     newFootstepType = FootstepType.Sprinting;
@@ -896,11 +915,13 @@ namespace StarterAssets
             }
         }
 
+        /* 
         private void OnLand(AnimationEvent animationEvent)
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f && _networkController != null)
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.position, FootstepAudioVolume);
         }
+        */
 
         #region INetworkRunnerCallbacks
 

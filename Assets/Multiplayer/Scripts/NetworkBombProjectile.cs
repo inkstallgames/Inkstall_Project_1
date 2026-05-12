@@ -82,23 +82,14 @@ public class NetworkBombProjectile : NetworkBehaviour
         // Get explosion position
         Vector3 explosionPos = collision.contacts[0].point;
 
-        // Apply area damage with small delay to allow thrower to move away
-        StartCoroutine(DelayedAreaDamage(explosionPos));
+        // Apply area damage immediately (Coroutine would be killed by Despawn)
+        ApplyAreaDamage(explosionPos);
 
         // Play effects locally on server immediately
         PlayHitEffects(explosionPos);
 
         // Despawn bomb — clients will play effects in Despawned()
         Runner.Despawn(Object);
-    }
-
-    /// <summary>
-    /// Apply area damage after small delay to allow thrower to move away
-    /// </summary>
-    private IEnumerator DelayedAreaDamage(Vector3 explosionPos)
-    {
-        yield return new WaitForSeconds(0.1f); // Small delay
-        ApplyAreaDamage(explosionPos);
     }
 
     /// <summary>

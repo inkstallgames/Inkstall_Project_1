@@ -233,7 +233,7 @@ public class PlayerNetworkData : NetworkBehaviour
             }
 
             // Notify game manager to update team scores and kill feed
-            NetworkGameManager.Instance?.OnPlayerKilled(Object.InputAuthority, sourcePlayer, LastDamageWeapon);
+            NetworkGameManager.Instance?.OnPlayerKilled(Object, sourcePlayer, LastDamageWeapon);
 
             if (Object.HasStateAuthority)
             {
@@ -244,7 +244,7 @@ public class PlayerNetworkData : NetworkBehaviour
                 // Let the Game Manager handle a delayed despawn and the respawn UI notification
                 if (NetworkGameManager.Instance != null)
                 {
-                    NetworkGameManager.Instance.ScheduleDeathSequence(playerRef, teamId, playerName, 7f);
+                    NetworkGameManager.Instance.ScheduleDeathSequence(Object, playerRef, teamId, playerName, 7f);
                 }
             }
 

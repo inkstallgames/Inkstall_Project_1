@@ -230,9 +230,25 @@ public class NetworkUIManager : MonoBehaviour
     private void Update()
     {
         // Try to find runner and local player if not cached yet
-        if (runner == null)
+        // Also invalidate stale runner (destroyed or no longer running)
+        if (runner == null || !runner)
         {
             runner = FindObjectOfType<NetworkRunner>();
+        }
+        else if (!runner.IsRunning)
+        {
+            // Runner exists but stopped running (e.g. after shutdown)
+            runner = null;
+            ClearCachedPlayerReferences();
+            return; // Skip this frame, re-find runner next frame
+        }
+
+        // Invalidate cached references if the underlying object was destroyed
+        // (happens when a player disconnects and reconnects — old object is despawned)
+        if (localPlayerObject != null && (!localPlayerObject || !localPlayerObject.IsValid))
+        {
+            Debug.Log("[NetworkUIManager] Cached local player object is no longer valid — clearing references for re-discovery.");
+            ClearCachedPlayerReferences();
         }
 
         if (runner != null && localPlayerObject == null)
@@ -393,19 +409,37 @@ public class NetworkUIManager : MonoBehaviour
 
     private void TryFindLocalPlayer()
     {
-        if (runner == null || !runner.IsRunning) return;
+        if (runner == null || !runner || !runner.IsRunning) return;
 
         localPlayerObject = runner.GetPlayerObject(runner.LocalPlayer);
 
-        // Fallback: if SetPlayerObject was never called, find the local player manually
+        // Fallback: if SetPlayerObject was never called or hasn't synced yet,
+        // find the local player manually by scanning multiple component types.
+        // The Alien (Team B) prefab may not have NetworkBombBehaviour, so we
+        // also check NetworkLaserBehaviour and PlayerNetworkData.
         if (localPlayerObject == null)
         {
+            // Try NetworkBombBehaviour first
             var allBombs = FindObjectsOfType<NetworkBombBehaviour>();
             foreach (var bomb in allBombs)
             {
                 if (bomb.Object != null && bomb.Object.HasInputAuthority)
                 {
                     localPlayerObject = bomb.Object;
+                    break;
+                }
+            }
+        }
+
+        if (localPlayerObject == null)
+        {
+            // Try PlayerNetworkData as a universal fallback (all prefabs have this)
+            var allPlayers = FindObjectsOfType<PlayerNetworkData>();
+            foreach (var pnd in allPlayers)
+            {
+                if (pnd.Object != null && pnd.Object.HasInputAuthority)
+                {
+                    localPlayerObject = pnd.Object;
                     break;
                 }
             }
@@ -419,7 +453,25 @@ public class NetworkUIManager : MonoBehaviour
             localEquipSystem = localPlayerObject.GetComponent<NetworkWeaponEquipSystem>();
             localPlayerData = localPlayerObject.GetComponent<PlayerNetworkData>();
             localAbilityController = localPlayerObject.GetComponent<PlayerAbilityController>();
+            Debug.Log($"[NetworkUIManager] Local player found. Pistol: {localPistolBehaviour != null}, Laser: {localLaserBehaviour != null}, Equip: {localEquipSystem != null}");
         }
+    }
+
+    /// <summary>
+    /// Clears all cached player references so TryFindLocalPlayer can re-discover them.
+    /// Called when the cached object is destroyed (e.g. player disconnect/reconnect).
+    /// </summary>
+    private void ClearCachedPlayerReferences()
+    {
+        localPlayerObject = null;
+        localBombBehaviour = null;
+        localPistolBehaviour = null;
+        localLaserBehaviour = null;
+        localEquipSystem = null;
+        localPlayerData = null;
+        localAbilityController = null;
+        _lastKnownHealth = -1;
+        _lastKnownKills = -1;
     }
 
     // ---------------------------------------------------------------
@@ -766,18 +818,24 @@ public class NetworkUIManager : MonoBehaviour
     private void UpdateGameInfoUI()
     {
         if (NetworkGameManager.Instance == null) return;
+        
+        // Guard against accessing networked properties on a despawned object
+        // (NetworkGameManager uses DontDestroyOnLoad so Instance persists,
+        //  but its NetworkObject may be invalid after runner shutdown)
+        var gm = NetworkGameManager.Instance;
+        if (gm.Object == null || !gm.Object.IsValid) return;
 
         // Game state
         if (gameStateText != null)
         {
-            gameStateText.text = NetworkGameManager.Instance.CurrentGameState.ToString();
+            gameStateText.text = gm.CurrentGameState.ToString();
         }
 
         // Timer
-        if (timerText != null && runner != null && runner.IsRunning && NetworkGameManager.Instance.CurrentGameState == GameState.InProgress)
+        if (timerText != null && runner != null && runner.IsRunning && gm.CurrentGameState == GameState.InProgress)
         {
-            float elapsed = runner.SimulationTime - NetworkGameManager.Instance.RoundStartTime;
-            float remaining = NetworkGameManager.Instance.RoundTime - elapsed;
+            float elapsed = runner.SimulationTime - gm.RoundStartTime;
+            float remaining = gm.RoundTime - elapsed;
             remaining = Mathf.Max(0, remaining);
 
             int minutes = Mathf.FloorToInt(remaining / 60f);
@@ -788,12 +846,12 @@ public class NetworkUIManager : MonoBehaviour
         // Team scores
         if (blueTeamScoreText != null)
         {
-            blueTeamScoreText.text = $"{NetworkGameManager.Instance.BlueTeamScore}";
+            blueTeamScoreText.text = $"{gm.BlueTeamScore}";
         }
 
         if (redTeamScoreText != null)
         {
-            redTeamScoreText.text = $"{NetworkGameManager.Instance.RedTeamScore}";
+            redTeamScoreText.text = $"{gm.RedTeamScore}";
         }
 
         // Ping — update every 0.5s to avoid per-frame overhead
@@ -1000,6 +1058,13 @@ public class NetworkUIManager : MonoBehaviour
 
         if (runner != null && runner.IsServer)
         {
+            // Reopen the session so new players can join for the next match
+            if (runner.SessionInfo != null)
+            {
+                runner.SessionInfo.IsOpen = true;
+                Debug.Log("[NetworkUIManager] Session reopened — players can join again.");
+            }
+            
             runner.LoadScene("MultiplayerLobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
         else if (runner == null)
@@ -1025,6 +1090,20 @@ public class NetworkUIManager : MonoBehaviour
             
             bool isLocal = pData.Object.HasInputAuthority;
             
+            // Clean up any old duplicate entries for this player name that had a different PlayerRef (due to reconnecting)
+            System.Collections.Generic.List<PlayerRef> keysToRemove = new System.Collections.Generic.List<PlayerRef>();
+            foreach (var kvp in allTimeLeaderboard)
+            {
+                if (kvp.Value.PlayerName == pName && kvp.Key != pref)
+                {
+                    keysToRemove.Add(kvp.Key);
+                }
+            }
+            foreach (var key in keysToRemove)
+            {
+                allTimeLeaderboard.Remove(key);
+            }
+            
             // Only update if we have meaningful data, avoiding resetting to 0 momentarily
             // Though since we fixed NetworkPlayerSpawner, Kills should never be incorrectly 0.
             allTimeLeaderboard[pref] = new LeaderboardEntry
@@ -1048,7 +1127,28 @@ public class NetworkUIManager : MonoBehaviour
         UpdateLeaderboardCache();
         
         cachedLeaderboardData.Clear();
-        cachedLeaderboardData.AddRange(allTimeLeaderboard.Values);
+        
+        // Final fallback: filter out duplicate names to prevent showing reconnected players multiple times
+        System.Collections.Generic.Dictionary<string, LeaderboardEntry> uniqueEntries = new System.Collections.Generic.Dictionary<string, LeaderboardEntry>();
+        foreach (var entry in allTimeLeaderboard.Values)
+        {
+            if (string.IsNullOrEmpty(entry.PlayerName)) continue;
+            
+            if (uniqueEntries.TryGetValue(entry.PlayerName, out var existing))
+            {
+                // Keep the one with more kills/deaths or the active one
+                if (entry.Kills > existing.Kills || (entry.Kills == existing.Kills && entry.Deaths > existing.Deaths))
+                {
+                    uniqueEntries[entry.PlayerName] = entry;
+                }
+            }
+            else
+            {
+                uniqueEntries[entry.PlayerName] = entry;
+            }
+        }
+        
+        cachedLeaderboardData.AddRange(uniqueEntries.Values);
 
         Debug.Log($"[NetworkUIManager] CacheLeaderboardData — preparing leaderboard with {cachedLeaderboardData.Count} entries");
 

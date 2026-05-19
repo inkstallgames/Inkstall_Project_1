@@ -172,15 +172,18 @@ MonoBehaviour:
   footstepAudioSource: {fileID: 0}
   walkingFootsteps:
   - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
+  walkingFootstepVolume: 0.075
   runningFootsteps:
   - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
+  runningFootstepVolume: 0.075
   sprintingFootsteps:
   - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
-  walkingFootstepInterval: 0.8
-  runningFootstepInterval: 0.8
-  sprintingFootstepInterval: 0.8
+  sprintingFootstepVolume: 0.075
+  walkingFootstepInterval: 0.5
+  runningFootstepInterval: 0.5
+  sprintingFootstepInterval: 0.5
   runThresholdSound: 0.5
-  sprintThresholdSound: 0.8
+  sprintThresholdSound: 0.5
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.3

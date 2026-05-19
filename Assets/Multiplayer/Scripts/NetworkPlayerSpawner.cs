@@ -10,8 +10,8 @@ using StarterAssets;
 public class NetworkPlayerSpawner : NetworkBehaviour
 {
 
-    [SerializeField] private GameObject playerPrefab;       // Team A — playerAmutureprefab
-    [SerializeField] private GameObject teamBPlayerPrefab;  // Team B — playerAmutureprefab1
+    public GameObject playerPrefab;       // Team A — playerAmutureprefab
+    public GameObject teamBPlayerPrefab;  // Team B — playerAmutureprefab1
 
     [SerializeField] private LayerMask groundLayer;
 

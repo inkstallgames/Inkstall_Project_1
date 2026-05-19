@@ -83,15 +83,15 @@ public class NetworkWeaponEquipSystem : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (!GetInput<StarterAssets.NetworkInputData>(out var input))
-        {
-            return;
-        }
-
         if (Object.HasStateAuthority)
         {
             // ALWAYS enforce primary weapon
             EquipPrimaryWeapon();
+        }
+
+        if (!GetInput<StarterAssets.NetworkInputData>(out var input))
+        {
+            return;
         }
     }
 

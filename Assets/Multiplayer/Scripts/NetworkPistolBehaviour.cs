@@ -49,6 +49,17 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     public int MaxAmmo => maxAmmo;
 
     private Camera playerCamera;
+    private Camera PlayerCamera
+    {
+        get
+        {
+            if (playerCamera == null)
+            {
+                playerCamera = Camera.main;
+            }
+            return playerCamera;
+        }
+    }
     
     // Client-side prediction for instant shooting
     private bool hasPredictedShot;
@@ -63,7 +74,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     private float predictedReloadTime;
     private NetworkWeaponEquipSystem equipSystem;
     private PlayerNetworkData playerData;
-    private bool isLocalPlayer;
+    private bool isLocalPlayer => Object != null && Object.HasInputAuthority;
     private PistolRecoilAnimation pistolRecoilAnimation; // Reference to pistol recoil script
 
     /// <summary>
@@ -92,13 +103,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             CurrentAmmo = currentAmmo;
             ReserveAmmo = reserveAmmo;
             IsReloading = false;
-        }
-
-        isLocalPlayer = Object.HasInputAuthority;
-
-        if (isLocalPlayer)
-        {
-            playerCamera = Camera.main;
         }
 
         equipSystem = GetComponent<NetworkWeaponEquipSystem>();
@@ -146,10 +150,10 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         hasPredictedShot = true;
         predictedShotTime = Time.time;
         
-        if (playerCamera != null)
+        if (PlayerCamera != null)
         {
-            predictedShotOrigin = playerCamera.transform.position;
-            predictedShotDirection = playerCamera.transform.forward;
+            predictedShotOrigin = PlayerCamera.transform.position;
+            predictedShotDirection = PlayerCamera.transform.forward;
         }
         else
         {
@@ -257,10 +261,10 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         inputData.isShooting = wantsToShoot;
         inputData.isReloading = wantsToReload;
         
-        if (playerCamera != null)
+        if (PlayerCamera != null)
         {
-            inputData.aimDirection = playerCamera.transform.forward;
-            inputData.aimOrigin = playerCamera.transform.position;
+            inputData.aimDirection = PlayerCamera.transform.forward;
+            inputData.aimOrigin = PlayerCamera.transform.position;
         }
         
         wantsToShoot = false;
@@ -269,15 +273,15 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (!GetInput<StarterAssets.NetworkInputData>(out var input))
-        {
-            return;
-        }
-
-        // Process reload completion first
+        // Process reload completion first (independent of client input!)
         if (IsReloading && ReloadTimer.ExpiredOrNotRunning(Runner))
         {
             FinishReload();
+        }
+
+        if (!GetInput<StarterAssets.NetworkInputData>(out var input))
+        {
+            return;
         }
 
         // Process reload request

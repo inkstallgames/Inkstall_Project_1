@@ -33,6 +33,8 @@ public class MainMenu : MonoBehaviour
 
         // Load or set default player name
         string savedName = PlayerPrefs.GetString("PlayerName", "");
+        bool isFirstTime = PlayerPrefs.GetInt("HasSetInitialName", 0) == 0;
+
         if (string.IsNullOrEmpty(savedName))
         {
             savedName = $"Player {UnityEngine.Random.Range(1000, 9999)}";
@@ -68,6 +70,11 @@ public class MainMenu : MonoBehaviour
         if (runner != null && runner.IsRunning)
         {
             SwitchToLobby();
+        }
+        else if (isFirstTime)
+        {
+            // Only show the rename panel automatically if we're actually staying on the main menu
+            ChangeUserName();
         }
     }
 
@@ -278,6 +285,10 @@ public class MainMenu : MonoBehaviour
 
     public void HideChangeUserName()
     {
+        // Mark as set even if they just closed the panel without changing
+        PlayerPrefs.SetInt("HasSetInitialName", 1);
+        PlayerPrefs.Save();
+
         changeUserNamePanel.SetActive(false);
     }
 
@@ -289,6 +300,9 @@ public class MainMenu : MonoBehaviour
             if (!string.IsNullOrEmpty(newName))
             {
                 PlayerPrefs.SetString("PlayerName", newName);
+                PlayerPrefs.SetInt("HasSetInitialName", 1);
+                PlayerPrefs.Save();
+
                 HideChangeUserName();
                 Debug.Log($"Player name changed to: {newName}");
                 

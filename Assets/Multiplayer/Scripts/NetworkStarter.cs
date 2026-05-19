@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using System.Text;
 // Removed System.Diagnostics to avoid ambiguity with UnityEngine.Debug
 
 public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
@@ -44,7 +45,27 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     private NetworkRunner _runner;
     private NetworkSceneManagerDefault _sceneManager;
     private bool _isShuttingDown = false;
+    private bool _wasKicked = false;
     private Coroutine _pingLoggerCoroutine;
+
+    // ===== RECONNECTION SUPPORT =====
+    /// <summary>
+    /// A persistent connection token (GUID) stored in PlayerPrefs.
+    /// Used to identify returning players after a disconnect.
+    /// </summary>
+    private byte[] _connectionToken;
+
+    /// <summary>
+    /// Maps PlayerRef → connection token for all players in the current session.
+    /// Only populated on the server.
+    /// </summary>
+    private Dictionary<PlayerRef, byte[]> _playerTokens = new Dictionary<PlayerRef, byte[]>();
+
+    /// <summary>
+    /// Public accessor so NetworkGameManager can pull all tokens when the game starts.
+    /// </summary>
+    public Dictionary<PlayerRef, byte[]> PlayerTokens => _playerTokens;
+    // ===== END RECONNECTION SUPPORT =====
 
     private async void Awake()
     {
@@ -56,6 +77,9 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         
         _instance = this;
         DontDestroyOnLoad(gameObject);
+        
+        // Generate or load persistent connection token
+        _connectionToken = GetOrCreateConnectionToken();
         
         // Apply FPS optimizations for fast-paced gameplay
         ApplyFPSOptimizations();
@@ -217,6 +241,8 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 PlayerCount = _maxPlayers,          // ← enforce 10-player cap
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager,
+                // Connection token for player identification on reconnect
+                ConnectionToken = _connectionToken,
                 // Ensure proper prefab loading for clients
                 ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>()
                 // NOTE: Network optimization settings (TickRate, ClientPrediction, etc.)
@@ -334,6 +360,8 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 PlayerCount = _maxPlayers,          // ← match host's 10-player cap
                 Scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex),
                 SceneManager = _sceneManager,
+                // Connection token for player identification on reconnect
+                ConnectionToken = _connectionToken,
                 // Ensure proper prefab loading for clients
                 ObjectProvider = _runnerPrefab?.GetComponent<INetworkObjectProvider>()
                 // NOTE: Network optimization settings are configured in NetworkRunner prefab
@@ -390,19 +418,23 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         switch (reason)
         {
             case ShutdownReason.GameNotFound:
-                return "Room not found. Please check the join code and try again.";
+                return "Room not Found";
+            case ShutdownReason.GameClosed:
+                return "Game Already Started";
             case ShutdownReason.ConnectionTimeout:
-                return "Connection timed out. The room may not exist or your network is slow.";
+                return "Connection Timed Out";
             case ShutdownReason.ConnectionRefused:
-                return "Connection refused. The room may be full or not accepting players.";
+                return "Game Already Started";
+            case ShutdownReason.GameIsFull:
+                return "Room is full";
             case ShutdownReason.OperationTimeout:
-                return "Operation timed out. Please try again.";
+                return "Connection Timed Out";
             case ShutdownReason.InvalidAuthentication:
-                return "Authentication failed. Please restart the game.";
+                return "Auth Failed";
             case ShutdownReason.IncompatibleConfiguration:
-                return "Incompatible game version. Please ensure all players have the same version.";
+                return "Version Mismatch";
             default:
-                return $"Connection lost: {reason}. Please try again.";
+                return $"Error: {reason}";
         }
     }
 
@@ -487,9 +519,52 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        // UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} joined. IsServer: {runner.IsServer}");
+        UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} joined. IsServer: {runner.IsServer}");
         var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-        // UnityEngine.Debug.Log($"[NetworkStarter] Current scene: {currentScene.name}");
+        UnityEngine.Debug.Log($"[NetworkStarter] Current scene: {currentScene.name}");
+
+        // ===== RECONNECTION: Register token and check for returning player =====
+        if (runner.IsServer)
+        {
+            byte[] token = runner.GetPlayerConnectionToken(player);
+            string tokenId = (token != null && token.Length > 0) ? NetworkGameManager.TokenToString(token) : "NULL";
+            string shortToken = tokenId.Length > 8 ? tokenId.Substring(0, 8) : tokenId;
+            UnityEngine.Debug.Log($"[RECONNECT] Player {player.PlayerId} token received: {shortToken}... (length: {(token != null ? token.Length : 0)})");
+
+            if (token != null && token.Length > 0)
+            {
+                _playerTokens[player] = token;
+                UnityEngine.Debug.Log($"[RECONNECT] Stored token {shortToken}... for Player {player.PlayerId} in _playerTokens (count: {_playerTokens.Count})");
+
+                // Register the token with the game manager
+                if (NetworkGameManager.Instance != null)
+                {
+                    NetworkGameManager.Instance.RegisterPlayerToken(player, token);
+
+                    bool gameInProgress = NetworkGameManager.Instance.IsGameInProgress();
+                    bool isDisconnected = NetworkGameManager.Instance.IsDisconnectedPlayer(token);
+                    bool isKnownPlayer = NetworkGameManager.Instance.IsKnownMatchPlayer(token);
+                    UnityEngine.Debug.Log($"[RECONNECT] Token {shortToken}... verification: GameInProgress={gameInProgress}, IsKnownMatchPlayer={isKnownPlayer}, IsDisconnectedPlayer={isDisconnected}");
+
+                    // Check if this is a reconnecting player
+                    if (gameInProgress && isDisconnected)
+                    {
+                        UnityEngine.Debug.Log($"[RECONNECT] ✅ Player {player.PlayerId} is RECONNECTING with token {shortToken}... — restoring state.");
+                        NetworkGameManager.Instance.RestoreReconnectedPlayer(player, token);
+                        return; // Skip normal join flow — reconnected player is handled
+                    }
+                    else if (gameInProgress && !isDisconnected)
+                    {
+                        UnityEngine.Debug.Log($"[RECONNECT] Player {player.PlayerId} joined mid-game but is NOT a disconnected player (token {shortToken}...). Normal join flow.");
+                    }
+                }
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning($"[RECONNECT] Player {player.PlayerId} has NO connection token! Reconnection will not work for this player.");
+            }
+        }
+        // ===== END RECONNECTION =====
 
         // Use a coroutine to wait for the lobby manager to be ready, especially on clients
         StartCoroutine(NotifyLobbyManagerOfPlayerJoin(player));
@@ -548,43 +623,68 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        // UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} left. IsServer: {runner.IsServer}");
+        UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} left. IsServer: {runner.IsServer}");
         
-        // Despawn the player's character if they have one
         if (runner.IsServer)
         {
-            // UnityEngine.Debug.Log($"[NetworkStarter] Attempting to find and despawn character for player {player.PlayerId}");
+            // ===== RECONNECTION: Save player state if game is in progress =====
+            bool gameInProgress = NetworkGameManager.Instance != null && NetworkGameManager.Instance.IsGameInProgress();
             
-            var playerObject = runner.GetPlayerObject(player);
-            if (playerObject != null)
+            if (gameInProgress)
             {
-                // UnityEngine.Debug.Log($"[NetworkStarter] Found player object via GetPlayerObject: {playerObject.name}");
-                // UnityEngine.Debug.Log($"[NetworkStarter] Despawning player {player.PlayerId}'s character");
-                runner.Despawn(playerObject);
+                // Get the player's connection token before we lose it
+                byte[] token = null;
+                _playerTokens.TryGetValue(player, out token);
+                string tokenId = (token != null && token.Length > 0) ? NetworkGameManager.TokenToString(token) : "NULL";
+                string shortToken = tokenId.Length > 8 ? tokenId.Substring(0, 8) : tokenId;
+
+                UnityEngine.Debug.Log($"[RECONNECT] Player {player.PlayerId} left mid-game. Token: {shortToken}... — character will be KEPT ALIVE for reconnection.");
+
+                if (token != null && token.Length > 0 && NetworkGameManager.Instance != null)
+                {
+                    // SaveDisconnectedPlayerData stores the NetworkObject reference and removes input authority.
+                    // The character stays in the world — it will NOT be despawned.
+                    NetworkGameManager.Instance.SaveDisconnectedPlayerData(player, token);
+                }
+                else
+                {
+                    UnityEngine.Debug.LogWarning($"[RECONNECT] Cannot save state for Player {player.PlayerId} — token is null or GameManager unavailable.");
+                }
+                
+                // Do NOT despawn the character — it stays in the world for reconnection.
+                // Do NOT call runner.Disconnect — Fusion already handles the disconnect.
             }
             else
             {
-                // UnityEngine.Debug.LogWarning($"[NetworkStarter] GetPlayerObject returned null for player {player.PlayerId}");
+                UnityEngine.Debug.Log($"[RECONNECT] Player {player.PlayerId} left but game is NOT in progress — despawning character.");
                 
-                // Fallback: Search for the player's character manually
-                var allNetworkObjects = FindObjectsOfType<NetworkObject>();
-                // UnityEngine.Debug.Log($"[NetworkStarter] Searching through {allNetworkObjects.Length} NetworkObjects");
-                
-                foreach (var netObj in allNetworkObjects)
+                // Game is not in progress (lobby or post-game), so despawn normally
+                var playerObject = runner.GetPlayerObject(player);
+                if (playerObject != null)
                 {
-                    if (netObj.InputAuthority == player)
+                    runner.Despawn(playerObject);
+                }
+                else
+                {
+                    // Fallback: Search for the player's character manually
+                    var allNetworkObjects = FindObjectsOfType<NetworkObject>();
+                    foreach (var netObj in allNetworkObjects)
                     {
-                        // UnityEngine.Debug.Log($"[NetworkStarter] Found character via InputAuthority: {netObj.name}");
-                        // UnityEngine.Debug.Log($"[NetworkStarter] Despawning {netObj.name} for player {player.PlayerId}");
-                        runner.Despawn(netObj);
-                        break;
+                        if (netObj.InputAuthority == player)
+                        {
+                            runner.Despawn(netObj);
+                            break;
+                        }
                     }
                 }
+                
+                // Actively disconnect the player from the server
+                runner.Disconnect(player);
             }
-            
-            // Actively disconnect the player from the server to ensure they receive the disconnect signal
-            // UnityEngine.Debug.Log($"[NetworkStarter] Disconnecting player {player.PlayerId} from server");
-            runner.Disconnect(player);
+            // ===== END RECONNECTION =====
+
+            // Clean up token mapping
+            _playerTokens.Remove(player);
         }
         
         NetworkLobbyManager.Instance?.OnPlayerLeft(player);
@@ -637,12 +737,15 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         switch (shutdownReason)
         {
             case ShutdownReason.ConnectionTimeout:
-            case ShutdownReason.ConnectionRefused:
             case ShutdownReason.OperationTimeout:
                 mainMenu.ShowErrorAndReturnToMenu("Server request timed out.");
                 break;
             case ShutdownReason.GameNotFound:
+            case ShutdownReason.GameClosed:
+            case ShutdownReason.GameIsFull:
+            case ShutdownReason.ConnectionRefused:
             case ShutdownReason.InvalidAuthentication:
+            case ShutdownReason.IncompatibleConfiguration:
                 // These are handled by the JoinSession callback, no extra action needed here.
                 break;
             default:
@@ -655,31 +758,8 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     
     public void OnDisconnectedFromServer(NetworkRunner runner)
     {
-        // UnityEngine.Debug.Log("[NetworkStarter] Disconnected from server");
-        
-        // If we're a client and got disconnected, handle it
-        if (!runner.IsServer)
-        {
-            UnityMainThreadDispatcher.Instance().Enqueue(() =>
-            {
-                var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-                
-                // If we're not in the Lobby scene, we need to load it first
-                if (currentScene.name != "MultiplayerLobby")
-                {
-                    // UnityEngine.Debug.Log($"[NetworkStarter] Client disconnected from {currentScene.name}, loading MultiplayerLobby scene");
-                    SceneManager.LoadScene("MultiplayerLobby");
-                    
-                    // After loading lobby, show the error message
-                    StartCoroutine(ShowDisconnectErrorAfterSceneLoad());
-                }
-                else
-                {
-                    // We're already in the Lobby scene, just show the error
-                    ShowDisconnectError();
-                }
-            });
-        }
+        // NOTE: This parameterless overload is NOT called by Fusion 2.
+        // The actual callback is OnDisconnectedFromServer(NetworkRunner, NetDisconnectReason) below.
     }
     
     private System.Collections.IEnumerator ShowDisconnectErrorAfterSceneLoad()
@@ -699,10 +779,58 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
         
-        mainMenu.ShowErrorAndReturnToMenu("Server request timed out.");
+        if (_wasKicked)
+        {
+            _wasKicked = false;
+            mainMenu.ShowErrorAndReturnToMenu("You were kicked from the lobby.");
+        }
+        else
+        {
+            mainMenu.ShowErrorAndReturnToMenu("Server request timed out.");
+        }
     }
     
-    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) {}
+    /// <summary>
+    /// Called by NetworkLobbyManager when the local player is being kicked.
+    /// Sets a flag so the disconnect handler shows the correct message.
+    /// </summary>
+    public void SetKickedFlag(bool kicked)
+    {
+        _wasKicked = kicked;
+    }
+    
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
+    {
+        string tokenId = (token != null && token.Length > 0) ? NetworkGameManager.TokenToString(token) : "NULL";
+        string shortToken = tokenId.Length > 8 ? tokenId.Substring(0, 8) : tokenId;
+        UnityEngine.Debug.Log($"[RECONNECT] OnConnectRequest received. Token: {shortToken}... (length: {(token != null ? token.Length : 0)})");
+
+        // ===== RECONNECTION: Gate mid-game connections =====
+        if (runner.IsServer && NetworkGameManager.Instance != null && NetworkGameManager.Instance.IsGameInProgress())
+        {
+            bool isKnown = token != null && token.Length > 0 && NetworkGameManager.Instance.IsKnownMatchPlayer(token);
+            bool isDisconnected = token != null && token.Length > 0 && NetworkGameManager.Instance.IsDisconnectedPlayer(token);
+            UnityEngine.Debug.Log($"[RECONNECT] Mid-game connection check — Token: {shortToken}..., IsKnownMatchPlayer: {isKnown}, IsDisconnectedPlayer: {isDisconnected}");
+
+            // Only allow known match players to rejoin during a game
+            if (isKnown)
+            {
+                UnityEngine.Debug.Log($"[RECONNECT] ✅ Connection ACCEPTED — token {shortToken}... is a known match player.");
+                request.Accept();
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning($"[RECONNECT] ❌ Connection REJECTED — token {shortToken}... is NOT a known match participant. Game in progress.");
+                request.Refuse();
+            }
+        }
+        else
+        {
+            // Not in a game — accept all connections normally
+            UnityEngine.Debug.Log($"[RECONNECT] No active game — accepting connection for token {shortToken}...");
+            request.Accept();
+        }
+    }
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
     {
         // UnityEngine.Debug.LogError($"[Network] Connect failed: {reason}");
@@ -831,7 +959,37 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) {}
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
+    {
+        UnityEngine.Debug.Log($"[NetworkStarter] Disconnected from server. Reason: {reason}");
+        
+        // If we're a client and got disconnected, handle it
+        if (!runner.IsServer)
+        {
+            // Shut down the network runner so it doesn't stay alive in the background
+            ShutdownRunner();
+            
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+                
+                // If we're not in the Lobby scene, we need to load it first
+                if (currentScene.name != "MultiplayerLobby")
+                {
+                    UnityEngine.Debug.Log($"[NetworkStarter] Client disconnected from {currentScene.name}, loading MultiplayerLobby scene");
+                    SceneManager.LoadScene("MultiplayerLobby");
+                    
+                    // After loading lobby, show the error message
+                    StartCoroutine(ShowDisconnectErrorAfterSceneLoad());
+                }
+                else
+                {
+                    // We're already in the Lobby scene, just show the error
+                    ShowDisconnectError();
+                }
+            });
+        }
+    }
     
     /// <summary>
     /// Check if host has acceptable internet quality for multiplayer
@@ -907,4 +1065,36 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             ShutdownRunner();
         }
     }
+
+    // ===== RECONNECTION: Token Utilities =====
+
+    /// <summary>
+    /// Returns or creates a persistent connection token (GUID) stored in PlayerPrefs.
+    /// This token uniquely identifies this device/player across sessions.
+    /// </summary>
+    private byte[] GetOrCreateConnectionToken()
+    {
+        string tokenKey = "Fusion_ConnectionToken";
+        string savedToken = PlayerPrefs.GetString(tokenKey, "");
+
+        if (string.IsNullOrEmpty(savedToken))
+        {
+            savedToken = Guid.NewGuid().ToString();
+            PlayerPrefs.SetString(tokenKey, savedToken);
+            PlayerPrefs.Save();
+            UnityEngine.Debug.Log($"[RECONNECT] 🆕 Generated NEW connection token: {savedToken.Substring(0, 8)}...");
+        }
+        else
+        {
+            UnityEngine.Debug.Log($"[RECONNECT] 📋 Loaded existing connection token: {savedToken.Substring(0, 8)}...");
+        }
+
+        // Convert GUID string to bytes
+        byte[] tokenBytes = Encoding.UTF8.GetBytes(savedToken);
+        string hexToken = NetworkGameManager.TokenToString(tokenBytes);
+        UnityEngine.Debug.Log($"[RECONNECT] Token hex ID: {hexToken.Substring(0, Mathf.Min(16, hexToken.Length))}... ({tokenBytes.Length} bytes)");
+        return tokenBytes;
+    }
+
+    // ===== END RECONNECTION =====
 }

@@ -15,18 +15,40 @@ public class PistolInputHandler : MonoBehaviour
 
     private NetworkPistolBehaviour pistolBehaviour;
     private bool isLocalPlayer = false;
+    private bool hasInitialized = false;
+
+    private bool IsLocalPlayer
+    {
+        get
+        {
+            if (pistolBehaviour != null && pistolBehaviour.Object != null)
+            {
+                return pistolBehaviour.Object.HasInputAuthority;
+            }
+            return false;
+        }
+    }
 
     private void Start()
     {
         pistolBehaviour = GetComponent<NetworkPistolBehaviour>();
-        
-        if (pistolBehaviour != null && pistolBehaviour.Object != null)
-        {
-            isLocalPlayer = pistolBehaviour.Object.HasInputAuthority;
-        }
+        TryInitialize();
+    }
 
-        if (isLocalPlayer)
+    /// <summary>
+    /// Attempts to initialize the local player flag. Retried each frame if Object
+    /// is not yet valid or if input authority has not synced yet (common during reconnection).
+    /// </summary>
+    private void TryInitialize()
+    {
+        if (hasInitialized) return;
+        if (pistolBehaviour == null) pistolBehaviour = GetComponent<NetworkPistolBehaviour>();
+        if (pistolBehaviour == null || pistolBehaviour.Object == null) return;
+
+        if (IsLocalPlayer)
         {
+            isLocalPlayer = true;
+            hasInitialized = true;
             SetupUIButtons();
         }
     }
@@ -43,6 +65,12 @@ public class PistolInputHandler : MonoBehaviour
 
     private void Update()
     {
+        // Retry initialization if Object wasn't ready at Start time (reconnection)
+        if (!hasInitialized)
+        {
+            TryInitialize();
+        }
+
         if (!isLocalPlayer || pistolBehaviour == null)
         {
             return;

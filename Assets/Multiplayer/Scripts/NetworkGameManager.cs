@@ -1,10 +1,8 @@
 using Fusion;
-
 using UnityEngine;
-
 using System.Collections.Generic;
-
 using System.Linq;
+using System.Text;
 
 
 
@@ -109,12 +107,50 @@ public class NetworkGameManager : NetworkBehaviour
 
 
     private Dictionary<PlayerRef, PlayerNetworkData> players = new Dictionary<PlayerRef, PlayerNetworkData>();
-
     private NetworkPlayerSpawner playerSpawner;
-
     private Dictionary<PlayerRef, float> respawnTimers = new Dictionary<PlayerRef, float>();
-
     private List<NetworkObject> activeProjectiles = new List<NetworkObject>();
+
+    // ===== RECONNECTION SUPPORT =====
+    /// <summary>
+    /// Stores the state of a player who disconnected mid-game so they can be restored on rejoin.
+    /// </summary>
+    public struct DisconnectedPlayerData
+    {
+        public string PlayerName;
+        public int TeamId;
+        public int Kills;
+        public int Deaths;
+        public float DisconnectTime;
+        /// <summary>
+        /// The player's character object that remains alive in the world.
+        /// Null if the player was dead (mid-respawn) when they disconnected.
+        /// </summary>
+        public NetworkObject PlayerObject;
+        /// <summary>
+        /// The old PlayerRef that was assigned before disconnect.
+        /// Needed to transfer networked dictionary entries (kills/deaths) to the new PlayerRef.
+        /// </summary>
+        public PlayerRef OldPlayerRef;
+    }
+
+    /// <summary>
+    /// Maps a connection token (hex string) to the saved data of players who disconnected mid-game.
+    /// </summary>
+    private Dictionary<string, DisconnectedPlayerData> _disconnectedPlayers = new Dictionary<string, DisconnectedPlayerData>();
+
+    /// <summary>
+    /// Maps a connection token (hex string) to the PlayerRef that was assigned to that token.
+    /// Populated when a player first joins during the game so we can identify them on reconnect.
+    /// </summary>
+    private Dictionary<string, PlayerRef> _tokenToPlayerRef = new Dictionary<string, PlayerRef>();
+
+    /// <summary>
+    /// Set of connection tokens for all players who were part of this match.
+    /// Used to distinguish returning players from brand new ones mid-game.
+    /// </summary>
+    private HashSet<string> _matchPlayerTokens = new HashSet<string>();
+    // ===== END RECONNECTION SUPPORT =====
 
 
 
@@ -271,14 +307,13 @@ public class NetworkGameManager : NetworkBehaviour
         
 
         // Clear previous game data
-
         PlayerKills.Clear();
-
         PlayerDeaths.Clear();
-
         AlivePlayers.Clear();
-
         respawnTimers.Clear();
+        _disconnectedPlayers.Clear();
+        _tokenToPlayerRef.Clear();
+        _matchPlayerTokens.Clear();
 
 
 
@@ -313,6 +348,17 @@ public class NetworkGameManager : NetworkBehaviour
         RPC_NotifyGameStarting();
 
         
+
+        // Keep the session open so disconnected players can rejoin.
+        // The OnConnectRequest callback in NetworkStarter will gate new vs returning players.
+        if (Runner.SessionInfo != null)
+        {
+            Runner.SessionInfo.IsOpen = true;
+            Debug.Log("[NetworkGameManager] Session kept open — disconnected players can rejoin during the match.");
+        }
+
+        // Register all current players' connection tokens as match participants
+        RegisterAllPlayerTokens();
 
         // Load the scene asynchronously to prevent the main thread from blocking
 
@@ -571,31 +617,12 @@ public class NetworkGameManager : NetworkBehaviour
 
 
     public void RegisterPlayer(PlayerRef player, PlayerNetworkData playerData)
-
     {
-
         if (!players.ContainsKey(player))
-
         {
-
             players[player] = playerData;
-
             // Debug.Log($"Player {player.PlayerId} registered with team {playerData.TeamId}");
-
-            
-
-            // If game is in progress, spawn the player
-
-            if (CurrentGameState == GameState.InProgress || CurrentGameState == GameState.RoundOver)
-
-            {
-
-                playerSpawner?.SpawnPlayer(player);
-
-            }
-
         }
-
     }
 
 
@@ -748,46 +775,42 @@ public class NetworkGameManager : NetworkBehaviour
 
         }
 
-    public void OnPlayerKilled(PlayerRef victim, PlayerRef killer, string weaponName = "Unknown")
+    public void OnPlayerKilled(NetworkObject victimObj, PlayerRef killer, string weaponName = "Unknown")
     {
         if (!Object.HasStateAuthority) 
         {
             return;
         }
 
+        PlayerRef victim = victimObj != null ? victimObj.InputAuthority : default;
+        var victimData = victimObj != null ? victimObj.GetComponent<PlayerNetworkData>() : null;
 
         // Update individual player stats
-        if (PlayerKills.ContainsKey(killer))
+        if (killer != PlayerRef.None && PlayerKills.ContainsKey(killer))
         {
             PlayerKills.Set(killer, PlayerKills[killer] + 1);
         }
-        else
-        {
-            // PlayerKills does not contain killer
-        }
 
-        if (PlayerDeaths.ContainsKey(victim))
+        if (victim != PlayerRef.None && PlayerDeaths.ContainsKey(victim))
         {
             PlayerDeaths.Set(victim, PlayerDeaths[victim] + 1);
         }
-        else
-        {
-            // PlayerDeaths does not contain victim
-        }
 
         // Remove from alive players
-        AlivePlayers.Remove(victim);
-        PlayersAlive = AlivePlayers.Count;
+        if (victim != PlayerRef.None)
+        {
+            AlivePlayers.Remove(victim);
+            PlayersAlive = AlivePlayers.Count;
+        }
 
-        var killerData = Runner.GetPlayerObject(killer)?.GetComponent<PlayerNetworkData>();
-        var victimData = Runner.GetPlayerObject(victim)?.GetComponent<PlayerNetworkData>();
+        var killerObject = Runner.GetPlayerObject(killer);
+        var killerData = killerObject?.GetComponent<PlayerNetworkData>();
 
         string killerName = killerData != null ? killerData.PlayerName : $"Player {killer.PlayerId}";
-        string victimName = victimData != null ? victimData.PlayerName : $"Player {victim.PlayerId}";
+        string victimName = victimData != null ? victimData.PlayerName : $"Unknown";
 
 
         // Restore ability charge and ammo for the killer
-        var killerObject = Runner.GetPlayerObject(killer);
         if (killerObject != null)
         {
             var abilityController = killerObject.GetComponent<PlayerAbilityController>();
@@ -953,29 +976,33 @@ public class NetworkGameManager : NetworkBehaviour
     
 
     private void EndGame(int winningTeam)
-
     {
-
         if (CurrentGameState == GameState.GameOver) return; // prevent duplicate calls
 
         CurrentGameState = GameState.GameOver;
-
         WinningTeam = winningTeam;
 
-
+        // Clear reconnection data — no need to rejoin a finished game
+        // First, despawn any abandoned characters from disconnected players
+        foreach (var kvp in _disconnectedPlayers)
+        {
+            var data = kvp.Value;
+            if (data.PlayerObject != null && data.PlayerObject.IsValid && Runner != null)
+            {
+                Debug.Log($"[NetworkGameManager] EndGame — despawning abandoned character for '{data.PlayerName}'");
+                Runner.Despawn(data.PlayerObject);
+            }
+        }
+        _disconnectedPlayers.Clear();
+        _matchPlayerTokens.Clear();
 
         string winnerName = winningTeam == 0 ? "Hero's Won"
-
                           : winningTeam == 1 ? "Alien's won"
-
                           : "It's a Draw!";
-
-
 
         RPC_OnGameEnded(winningTeam, winnerName);
 
         // The NetworkUIManager handles the Game Over → Leaderboard → Exit sequence on each client.
-
     }
 
 
@@ -1020,6 +1047,13 @@ public class NetworkGameManager : NetworkBehaviour
         // Return to lobby but keep the network runner alive
         if (Object.HasStateAuthority)
         {
+            // Reopen the session so new players can join for the next match
+            if (Runner.SessionInfo != null)
+            {
+                Runner.SessionInfo.IsOpen = true;
+                Debug.Log("[NetworkGameManager] Session reopened — players can join again.");
+            }
+            
             Runner.LoadScene("MultiplayerLobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
         }
     }
@@ -1150,19 +1184,19 @@ public class NetworkGameManager : NetworkBehaviour
 
 
 
-    public void ScheduleDeathSequence(PlayerRef playerRef, int teamId, string playerName, float respawnDelay)
+    public void ScheduleDeathSequence(NetworkObject deadObject, PlayerRef playerRef, int teamId, string playerName, float respawnDelay)
 
     {
 
         if (!Object.HasStateAuthority) return;
 
-        StartCoroutine(DeathSequenceRoutine(playerRef, teamId, playerName, respawnDelay));
+        StartCoroutine(DeathSequenceRoutine(deadObject, playerRef, teamId, playerName, respawnDelay));
 
     }
 
 
 
-    private System.Collections.IEnumerator DeathSequenceRoutine(PlayerRef playerRef, int teamId, string playerName, float respawnDelay)
+    private System.Collections.IEnumerator DeathSequenceRoutine(NetworkObject deadObject, PlayerRef playerRef, int teamId, string playerName, float respawnDelay)
 
     {
 
@@ -1178,34 +1212,94 @@ public class NetworkGameManager : NetworkBehaviour
 
         float remainingRespawnTime = Mathf.Max(0.1f, respawnDelay - 0.5f);
 
-        RPC_NotifyPlayerDied(playerRef, remainingRespawnTime);
+        if (playerRef != PlayerRef.None)
+        {
+            RPC_NotifyPlayerDied(playerRef, remainingRespawnTime);
+        }
 
 
 
         // 3. Despawn the player
 
-        if (Runner != null)
+        if (Runner != null && deadObject != null && deadObject.IsValid)
 
         {
 
-            var playerObject = Runner.GetPlayerObject(playerRef);
-
-            if (playerObject != null)
-
-            {
-
-                Runner.Despawn(playerObject);
-
-            }
+            Runner.Despawn(deadObject);
 
         }
 
 
 
         // 4. Schedule the actual respawn
+        if (playerRef != PlayerRef.None)
+        {
+            ScheduleRespawn(playerRef, teamId, playerName, remainingRespawnTime);
+        }
+        else
+        {
+            // Player is disconnected - they still respawn!
+            StartCoroutine(RespawnDisconnectedPlayerRoutine(playerName, teamId, remainingRespawnTime));
+        }
+    }
 
-        ScheduleRespawn(playerRef, teamId, playerName, remainingRespawnTime);
+    private System.Collections.IEnumerator RespawnDisconnectedPlayerRoutine(string playerName, int teamId, float delay)
+    {
+        yield return new WaitForSeconds(delay);
 
+        if (!Object.HasStateAuthority) yield break;
+
+        // Find the disconnected player's data
+        string tokenKey = null;
+        foreach (var kvp in _disconnectedPlayers)
+        {
+            if (kvp.Value.PlayerName == playerName)
+            {
+                tokenKey = kvp.Key;
+                break;
+            }
+        }
+
+        if (tokenKey == null) yield break;
+
+        var data = _disconnectedPlayers[tokenKey];
+
+        // Spawn a new idle character
+        var spawnPoint = GetSpawnPoint(teamId);
+        var spawnPosition = spawnPoint != null ? spawnPoint.position : Vector3.zero;
+        var spawnRotation = spawnPoint != null ? spawnPoint.rotation : Quaternion.identity;
+
+        GameObject prefabToSpawn = playerPrefab; // from GameManager
+        if (teamId == 1 && weaponPrefabs != null && playerSpawner != null && playerSpawner.teamBPlayerPrefab != null) 
+        {
+            prefabToSpawn = playerSpawner.teamBPlayerPrefab;
+        }
+        else if (teamId == 1 && playerSpawner != null && playerSpawner.teamBPlayerPrefab != null)
+        {
+            prefabToSpawn = playerSpawner.teamBPlayerPrefab;
+        }
+
+        var playerObject = Runner.Spawn(prefabToSpawn, spawnPosition, spawnRotation, default); // No input authority
+
+        if (playerObject != null)
+        {
+            var pnd = playerObject.GetComponent<PlayerNetworkData>();
+            if (pnd != null)
+            {
+                pnd.TeamId = teamId;
+                pnd.PlayerName = playerName;
+                pnd.Health = 100;
+                pnd.Kills = data.Kills;
+                pnd.Deaths = data.Deaths;
+                pnd.UpdateVisuals();
+            }
+
+            // Update the stored reference so when they reconnect, they get this new object
+            data.PlayerObject = playerObject;
+            _disconnectedPlayers[tokenKey] = data;
+            
+            Debug.Log($"[NetworkGameManager] Respawned idle character for disconnected player '{playerName}'");
+        }
     }
 
 
@@ -1305,12 +1399,292 @@ public class NetworkGameManager : NetworkBehaviour
             // Debug.LogError($"[NetworkGameManager] Failed to get player object after spawning for player {playerRef.PlayerId}");
 
         }
-
     }
 
+    // ===== RECONNECTION SUPPORT METHODS =====
 
+    /// <summary>
+    /// Converts a byte[] connection token to a hex string for dictionary lookup.
+    /// </summary>
+    public static string TokenToString(byte[] token)
+    {
+        if (token == null || token.Length == 0) return string.Empty;
+        var sb = new StringBuilder(token.Length * 2);
+        foreach (var b in token)
+            sb.AppendFormat("{0:X2}", b);
+        return sb.ToString();
+    }
 
+    /// <summary>
+    /// Registers a player's connection token when they join during an active match.
+    /// Called by NetworkStarter.OnPlayerJoined.
+    /// </summary>
+    public void RegisterPlayerToken(PlayerRef player, byte[] token)
+    {
+        if (token == null || token.Length == 0) return;
+        string tokenStr = TokenToString(token);
+        _tokenToPlayerRef[tokenStr] = player;
+        _matchPlayerTokens.Add(tokenStr);
+        Debug.Log($"[NetworkGameManager] Registered token for player {player.PlayerId}: {tokenStr.Substring(0, Mathf.Min(8, tokenStr.Length))}...");
+    }
+
+    /// <summary>
+    /// Registers all currently connected players' tokens as match participants.
+    /// Called when the game starts. Pulls tokens from NetworkStarter since
+    /// OnPlayerJoined fires during lobby (before NetworkGameManager exists).
+    /// </summary>
+    private void RegisterAllPlayerTokens()
+    {
+        var networkStarter = NetworkStarter.Instance;
+        if (networkStarter == null)
+        {
+            Debug.LogWarning("[NetworkGameManager] NetworkStarter.Instance is null — cannot register player tokens!");
+            return;
+        }
+
+        var allTokens = networkStarter.PlayerTokens;
+        Debug.Log($"[RECONNECT] RegisterAllPlayerTokens — pulling {allTokens.Count} tokens from NetworkStarter._playerTokens");
+
+        foreach (var kvp in allTokens)
+        {
+            PlayerRef player = kvp.Key;
+            byte[] token = kvp.Value;
+
+            if (token == null || token.Length == 0) continue;
+
+            string tokenStr = TokenToString(token);
+            _tokenToPlayerRef[tokenStr] = player;
+            _matchPlayerTokens.Add(tokenStr);
+
+            string shortToken = tokenStr.Length > 8 ? tokenStr.Substring(0, 8) : tokenStr;
+            Debug.Log($"[RECONNECT] Registered match token for Player {player.PlayerId}: {shortToken}...");
+        }
+
+        Debug.Log($"[RECONNECT] Match now has {_matchPlayerTokens.Count} registered player tokens.");
+    }
+
+    /// <summary>
+    /// Returns true if the game is currently in progress (Starting, InProgress, or RoundOver).
+    /// </summary>
+    public bool IsGameInProgress()
+    {
+        return CurrentGameState == GameState.Starting 
+            || CurrentGameState == GameState.InProgress 
+            || CurrentGameState == GameState.RoundOver;
+    }
+
+    /// <summary>
+    /// Checks if a connection token belongs to a player who was in this match.
+    /// Used by NetworkStarter.OnConnectRequest to allow/reject mid-game joins.
+    /// </summary>
+    public bool IsKnownMatchPlayer(byte[] token)
+    {
+        if (token == null || token.Length == 0) return false;
+        return _matchPlayerTokens.Contains(TokenToString(token));
+    }
+
+    /// <summary>
+    /// Checks if a connection token belongs to a player who is currently disconnected.
+    /// </summary>
+    public bool IsDisconnectedPlayer(byte[] token)
+    {
+        if (token == null || token.Length == 0) return false;
+        return _disconnectedPlayers.ContainsKey(TokenToString(token));
+    }
+
+    /// <summary>
+    /// Saves a disconnected player's character and stats so they can be restored on rejoin.
+    /// The character is kept alive in the world — NOT despawned.
+    /// Called by NetworkStarter.OnPlayerLeft when a game is in progress.
+    /// </summary>
+    public void SaveDisconnectedPlayerData(PlayerRef player, byte[] token)
+    {
+        if (token == null || token.Length == 0)
+        {
+            Debug.LogWarning($"[NetworkGameManager] Cannot save disconnected data — no token for player {player.PlayerId}");
+            return;
+        }
+
+        string tokenStr = TokenToString(token);
+        var data = new DisconnectedPlayerData
+        {
+            DisconnectTime = Runner.SimulationTime,
+            OldPlayerRef = player
+        };
+
+        // Pull stats from the networked dictionaries
+        if (PlayerKills.ContainsKey(player))
+            data.Kills = PlayerKills.Get(player);
+        if (PlayerDeaths.ContainsKey(player))
+            data.Deaths = PlayerDeaths.Get(player);
+
+        // Store the player's character object (it stays alive in the world)
+        var playerObj = Runner.GetPlayerObject(player);
+        data.PlayerObject = playerObj;
+
+        if (playerObj != null)
+        {
+            var pnd = playerObj.GetComponent<PlayerNetworkData>();
+            if (pnd != null)
+            {
+                data.TeamId = pnd.TeamId;
+                data.PlayerName = pnd.PlayerName;
+            }
+
+            // Remove input authority so the character stops receiving input
+            // The character will just stand idle in the world
+            playerObj.RemoveInputAuthority();
+            Debug.Log($"[NetworkGameManager] Removed input authority from '{data.PlayerName}' — character stays in world.");
+        }
+        else
+        {
+            // Player object is null — they were dead/respawning when they disconnected
+            Debug.Log($"[NetworkGameManager] Player {player.PlayerId} has no character object (dead/respawning). Will respawn on reconnect.");
+        }
+
+        // Fallback: try lobby data for team/name
+        if (string.IsNullOrEmpty(data.PlayerName) && NetworkLobbyManager.Instance != null
+            && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(player))
+        {
+            var lobbyData = NetworkLobbyManager.Instance.LobbyPlayers[player];
+            data.TeamId = lobbyData.TeamID;
+            data.PlayerName = lobbyData.PlayerName.ToString();
+        }
+
+        _disconnectedPlayers[tokenStr] = data;
+        Debug.Log($"[NetworkGameManager] Saved disconnected data for '{data.PlayerName}' (Team {data.TeamId}, K:{data.Kills}/D:{data.Deaths}, HasObject: {data.PlayerObject != null})");
+    }
+
+    /// <summary>
+    /// Restores a reconnected player by reassigning input authority on their existing character.
+    /// If the character was destroyed (player was dead when they disconnected), respawns them.
+    /// Called by NetworkStarter.OnPlayerJoined when the token matches a disconnected player.
+    /// </summary>
+    public void RestoreReconnectedPlayer(PlayerRef newPlayerRef, byte[] token)
+    {
+        string tokenStr = TokenToString(token);
+        if (!_disconnectedPlayers.ContainsKey(tokenStr))
+        {
+            Debug.LogWarning($"[NetworkGameManager] No disconnected data found for token.");
+            return;
+        }
+
+        var savedData = _disconnectedPlayers[tokenStr];
+        _disconnectedPlayers.Remove(tokenStr);
+
+        // Update the token→player mapping with the new PlayerRef
+        _tokenToPlayerRef[tokenStr] = newPlayerRef;
+
+        Debug.Log($"[NetworkGameManager] Restoring reconnected player '{savedData.PlayerName}' (Team {savedData.TeamId}, K:{savedData.Kills}/D:{savedData.Deaths}, HasObject: {savedData.PlayerObject != null})");
+
+        // Transfer stats from old PlayerRef to new PlayerRef in networked dictionaries
+        PlayerRef oldRef = savedData.OldPlayerRef;
+        if (PlayerKills.ContainsKey(oldRef))
+            PlayerKills.Remove(oldRef);
+        if (PlayerDeaths.ContainsKey(oldRef))
+            PlayerDeaths.Remove(oldRef);
+        PlayerKills.Set(newPlayerRef, savedData.Kills);
+        PlayerDeaths.Set(newPlayerRef, savedData.Deaths);
+
+        // Update alive players list
+        AlivePlayers.Remove(oldRef);
+        if (AllPlayers.Contains(oldRef))
+            AllPlayers.Remove(oldRef);
+        if (!AllPlayers.Contains(newPlayerRef))
+            AllPlayers.Add(newPlayerRef);
+
+        // Update lobby data with the saved team and name
+        if (NetworkLobbyManager.Instance != null)
+        {
+            NetworkLobbyManager.Instance.RestoreReconnectedPlayerLobbyData(
+                newPlayerRef, savedData.PlayerName, savedData.TeamId);
+        }
+
+        // Check if the character object still exists in the world
+        if (savedData.PlayerObject != null && savedData.PlayerObject.IsValid)
+        {
+            // Character is still alive — reassign input authority to the reconnecting player
+            var existingObject = savedData.PlayerObject;
+            existingObject.AssignInputAuthority(newPlayerRef);
+            Runner.SetPlayerObject(newPlayerRef, existingObject);
+
+            // Re-add to alive players
+            if (!AlivePlayers.Contains(newPlayerRef))
+                AlivePlayers.Add(newPlayerRef);
+            PlayersAlive = AlivePlayers.Count;
+
+            // Update the PlayerNetworkData with the new stats
+            var pnd = existingObject.GetComponent<PlayerNetworkData>();
+            if (pnd != null)
+            {
+                pnd.Kills = savedData.Kills;
+                pnd.Deaths = savedData.Deaths;
+            }
+
+            Debug.Log($"[NetworkGameManager] ✅ Player '{savedData.PlayerName}' reconnected — SAME character reassigned (input authority transferred to Player {newPlayerRef.PlayerId}).");
+        }
+        else
+        {
+            // Character was destroyed (player was dead/respawning when they disconnected)
+            // Need to spawn a fresh one
+            Debug.Log($"[NetworkGameManager] Player '{savedData.PlayerName}' had no character — spawning fresh.");
+
+            RefreshPlayerSpawner();
+            if (playerSpawner != null)
+            {
+                playerSpawner.SpawnPlayer(newPlayerRef);
+
+                var playerObject = Runner.GetPlayerObject(newPlayerRef);
+                if (playerObject != null)
+                {
+                    var pnd = playerObject.GetComponent<PlayerNetworkData>();
+                    if (pnd != null)
+                    {
+                        pnd.TeamId = savedData.TeamId;
+                        pnd.PlayerName = savedData.PlayerName;
+                        pnd.Health = 100;
+                        pnd.Kills = savedData.Kills;
+                        pnd.Deaths = savedData.Deaths;
+                        pnd.UpdateVisuals();
+                    }
+
+                    // Reset abilities and ammo
+                    playerObject.GetComponent<PlayerAbilityController>()?.GrantAbilityCharge();
+                    var bombBehaviour = playerObject.GetComponent<NetworkBombBehaviour>();
+                    if (bombBehaviour != null)
+                        bombBehaviour.CurrentBombs = bombBehaviour.MaxBombs;
+                }
+            }
+
+            // Re-add to alive players
+            if (!AlivePlayers.Contains(newPlayerRef))
+                AlivePlayers.Add(newPlayerRef);
+            PlayersAlive = AlivePlayers.Count;
+        }
+
+        Debug.Log($"[NetworkGameManager] Player '{savedData.PlayerName}' has been fully restored.");
+    }
+
+    /// <summary>
+    /// Gets the connection token for a player by looking up the stored mapping.
+    /// Returns null if no token was registered.
+    /// </summary>
+    public byte[] GetTokenForPlayer(PlayerRef player)
+    {
+        foreach (var kvp in _tokenToPlayerRef)
+        {
+            if (kvp.Value == player)
+            {
+                // Convert hex string back to byte array
+                string hex = kvp.Key;
+                byte[] token = new byte[hex.Length / 2];
+                for (int i = 0; i < token.Length; i++)
+                    token[i] = System.Convert.ToByte(hex.Substring(i * 2, 2), 16);
+                return token;
+            }
+        }
+        return null;
+    }
+
+    // ===== END RECONNECTION SUPPORT =====
 }
-
-
-

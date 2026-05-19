@@ -52,13 +52,24 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     public int MaxEnergy => maxEnergy;
 
     private Camera playerCamera;
+    private Camera PlayerCamera
+    {
+        get
+        {
+            if (playerCamera == null)
+            {
+                playerCamera = Camera.main;
+            }
+            return playerCamera;
+        }
+    }
     private bool wantsToShoot;
     private bool wantsToReload;
     private bool isShootingContinuously; // Track continuous firing state
     private NetworkWeaponEquipSystem equipSystem;
     private PlayerNetworkData playerData;
     private float lastShotTime;
-    private bool isLocalPlayer;
+    private bool isLocalPlayer => Object != null && Object.HasInputAuthority;
     
     // Decoupled Visual State NetworkBool
     [Networked] public NetworkBool IsFiringLaser { get; set; }
@@ -121,13 +132,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             ReserveEnergy = reserveEnergy;
         }
 
-        isLocalPlayer = Object.HasInputAuthority;
-
-        if (isLocalPlayer)
-        {
-            playerCamera = Camera.main;
-        }
-
         equipSystem = GetComponent<NetworkWeaponEquipSystem>();
         playerData = GetComponent<PlayerNetworkData>();
         
@@ -180,11 +184,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (_handsCamera == null || cam != _handsCamera) return;
 
         Transform fp = ActiveFirePoint;
-        if (fp == null || playerCamera == null) return;
+        if (fp == null || PlayerCamera == null) return;
 
         Vector3 beamStart    = fp.position;
-        Vector3 camOrigin    = playerCamera.transform.position;
-        Vector3 direction    = playerCamera.transform.forward;
+        Vector3 camOrigin    = PlayerCamera.transform.position;
+        Vector3 direction    = PlayerCamera.transform.forward;
 
         RaycastHit hit;
         bool didHit = Physics.Raycast(camOrigin, direction, out hit, range, hitLayers);
@@ -242,10 +246,10 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         inputData.isReloading = wantsToReload;
         wantsToReload = false;
         
-        if (playerCamera != null)
+        if (PlayerCamera != null)
         {
-            inputData.aimDirection = playerCamera.transform.forward;
-            inputData.aimOrigin = playerCamera.transform.position;
+            inputData.aimDirection = PlayerCamera.transform.forward;
+            inputData.aimOrigin = PlayerCamera.transform.position;
         }
         
         // DON'T reset wantsToShoot here - let it persist until explicitly cleared
@@ -254,12 +258,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
-        if (!GetInput<StarterAssets.NetworkInputData>(out var input))
-        {
-            return;
-        }
-
-        // Process reload completion first
+        // Process reload completion first (independent of client input!)
         if (IsReloading && ReloadTimer.ExpiredOrNotRunning(Runner))
         {
             if (Object.HasStateAuthority)
@@ -277,6 +276,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 
                 RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
             }
+        }
+
+        if (!GetInput<StarterAssets.NetworkInputData>(out var input))
+        {
+            return;
         }
 
         // Process manual reload request (from UI button or R key)
@@ -544,10 +548,10 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         // Local player uses camera forward for crosshair accuracy.
         // Remote player reads the networked aim direction written by the shooter — the only reliable source.
         Vector3 direction = isLocalPlayer
-            ? (playerCamera != null ? playerCamera.transform.forward : Vector3.forward)
+            ? (PlayerCamera != null ? PlayerCamera.transform.forward : Vector3.forward)
             : (NetworkedAimDirection != Vector3.zero ? NetworkedAimDirection : transform.forward);
         Vector3 origin = isLocalPlayer
-            ? (playerCamera != null ? playerCamera.transform.position : transform.position)
+            ? (PlayerCamera != null ? PlayerCamera.transform.position : transform.position)
             : (NetworkedAimOrigin != Vector3.zero ? NetworkedAimOrigin : transform.position);
 
         // Always start the beam at the gun barrel so it visually fires from the gun.
@@ -714,8 +718,8 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (isLocalPlayer)
         {
             // Local player: use camera for aim direction
-            aimOrigin = playerCamera != null ? playerCamera.transform.position : transform.position;
-            aimDir    = playerCamera != null ? playerCamera.transform.forward  : transform.forward;
+            aimOrigin = PlayerCamera != null ? PlayerCamera.transform.position : transform.position;
+            aimDir    = PlayerCamera != null ? PlayerCamera.transform.forward  : transform.forward;
         }
         else
         {

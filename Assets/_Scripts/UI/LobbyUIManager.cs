@@ -261,11 +261,13 @@ public class LobbyUIManager : MonoBehaviour
         // Sort: host first, then by player ID
         var sortedPlayers = players
             .OrderByDescending(p => p.Value.IsHost)
-            .ThenBy(p => p.Key)
-            .Select(p => p.Value);
+            .ThenBy(p => p.Key);
 
-        foreach (var player in sortedPlayers)
+        foreach (var kvp in sortedPlayers)
         {
+            int playerId = kvp.Key;
+            PlayerLobbyData player = kvp.Value;
+
             // Route to the correct team column
             GameObject parent = player.TeamID == 1 ? teamBListContent : teamAListContent;
             if (parent == null) continue;
@@ -273,8 +275,22 @@ public class LobbyUIManager : MonoBehaviour
             GameObject item = Instantiate(playerListItemPrefab, parent.transform);
             PlayerListItemUI listItem = item.GetComponent<PlayerListItemUI>();
             if (listItem != null)
+            {
                 listItem.SetPlayerInfo(player.PlayerName.ToString(), player.IsReady, player.IsHost, player.PlayerColor, player.TeamID);
+                
+                // Show kick button only if local user is host AND this row is not the host
+                bool showKick = isHost && !player.IsHost;
+                listItem.SetupKickButton(playerId, showKick, OnKickButtonPressed);
+            }
         }
+    }
+
+    /// <summary>
+    /// Called when the host presses a kick button on a player row.
+    /// </summary>
+    private void OnKickButtonPressed(int playerId)
+    {
+        NetworkLobbyManager.Instance?.KickPlayer(playerId);
     }
 
     public void SetJoinCode(string joinCode)

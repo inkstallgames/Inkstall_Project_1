@@ -67,10 +67,19 @@ namespace StarterAssets
         public AudioSource footstepAudioSource;
         [Tooltip("Walking footstep sounds (randomly selected)")]
         public AudioClip[] walkingFootsteps;
+        [Range(0, 1)] [Tooltip("Volume of walking footsteps")]
+        public float walkingFootstepVolume = 0.5f;
+
         [Tooltip("Running footstep sounds (randomly selected)")]
         public AudioClip[] runningFootsteps;
+        [Range(0, 1)] [Tooltip("Volume of running footsteps")]
+        public float runningFootstepVolume = 0.5f;
+
         [Tooltip("Sprinting footstep sounds (randomly selected)")]
         public AudioClip[] sprintingFootsteps;
+        [Range(0, 1)] [Tooltip("Volume of sprinting footsteps")]
+        public float sprintingFootstepVolume = 0.5f;
+
         [Tooltip("Time between footsteps when walking")]
         public float walkingFootstepInterval = 0.5f;
         [Tooltip("Time between footsteps when running")]
@@ -183,6 +192,59 @@ namespace StarterAssets
         [Networked] public Vector3 NetworkedPosition { get; set; }
         [Networked] public float NetworkedSpeed { get; set; }
 
+        private bool _callbacksRegistered = false;
+        private bool _inputComponentEnabled = false;
+        private bool _sensitivitySubscribed = false;
+        private bool _cameraTargetAssigned = false;
+
+        private void UpdateInputAuthorityState()
+        {
+            if (Object == null || !Object.IsValid) return;
+
+            bool hasInputAuthority = Object.HasInputAuthority;
+
+            if (hasInputAuthority)
+            {
+                // 1. Dynamically register callbacks when input authority is established
+                if (!_callbacksRegistered)
+                {
+                    Runner.AddCallbacks(this);
+                    _callbacksRegistered = true;
+                    Debug.Log($"[ThirdPersonController] Registered input callbacks for local player.");
+                }
+
+                // 2. Dynamically enable input component when input authority is established
+                if (_nativeInput != null && !_inputComponentEnabled)
+                {
+                    _nativeInput.enabled = true;
+                    _inputComponentEnabled = true;
+                    Debug.Log($"[ThirdPersonController] Enabled input component for local player.");
+                }
+
+                // 3. Listen for sensitivity updates mid-game if this is our player
+                if (!_sensitivitySubscribed)
+                {
+                    MultiplayerSettingsManager.OnSensitivityChangedEvent += UpdateSensitivity;
+                    _sensitivitySubscribed = true;
+                }
+
+                // 4. Set up camera target
+                if (!_cameraTargetAssigned)
+                {
+                    var cameraController = GetComponent<PlayerCameraController>();
+                    if (cameraController != null)
+                    {
+                        var cameraTarget = cameraController.GetCameraTarget();
+                        if (cameraTarget != null)
+                        {
+                            CinemachineCameraTarget = cameraTarget.gameObject;
+                            _cameraTargetAssigned = true;
+                        }
+                    }
+                }
+            }
+        }
+
         private bool IsCurrentDeviceMouse
         {
             get
@@ -205,6 +267,9 @@ namespace StarterAssets
 
         private void Update()
         {
+            // Dynamically monitor and manage input authority registration
+            UpdateInputAuthorityState();
+
             // Handle movement sounds for all players
             HandleMovementSounds();
         }
@@ -238,7 +303,7 @@ namespace StarterAssets
                         if (_hasArmAnimator)
                         {
                             _armAnimator.enabled = true;
-                                                    }
+                        }
                     }
                 }
                 
@@ -254,7 +319,7 @@ namespace StarterAssets
                         if (_hasFullBodyAnimator)
                         {
                             _fullBodyAnimator.enabled = true;
-                                                    }
+                        }
                     }
                 }
             }
@@ -276,12 +341,6 @@ namespace StarterAssets
             // Load custom standalone multiplayer sensitivity
             mpCameraSensitivity = PlayerPrefs.GetFloat(MP_SENSITIVITY_KEY, 0.2f);
             
-            // Listen for sensitivity updates mid-game if this is our player
-            if (Object.HasInputAuthority)
-            {
-                MultiplayerSettingsManager.OnSensitivityChangedEvent += UpdateSensitivity;
-            }
-            
             AssignAnimationIDs();
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
@@ -292,12 +351,6 @@ namespace StarterAssets
                 NetworkedPosition = transform.position;
             }
 
-            // Enable/disable input components based on authority
-            if (_nativeInput != null)
-            {
-                _nativeInput.enabled = Object.HasInputAuthority;
-            }
-
             // Initialize camera yaw based on spawn rotation for all players
             _cinemachineTargetYaw = transform.eulerAngles.y;
             _cinemachineTargetPitch = 0f;
@@ -306,21 +359,24 @@ namespace StarterAssets
             SetupFootstepAudio();
             _previouslyGrounded = Grounded;
 
-            if (Object.HasInputAuthority)
-            {
-                Runner.AddCallbacks(this);
+            // Force an initial authority state check in Spawned
+            UpdateInputAuthorityState();
+        }
 
-                // Set up camera target
-                var cameraController = GetComponent<PlayerCameraController>();
-                if (cameraController != null)
-                {
-                    var cameraTarget = cameraController.GetCameraTarget();
-                    if (cameraTarget != null)
-                    {
-                        CinemachineCameraTarget = cameraTarget.gameObject;
-                    }
-                }
+        public override void Despawned(NetworkRunner runner, bool hasState)
+        {
+            if (_sensitivitySubscribed)
+            {
+                MultiplayerSettingsManager.OnSensitivityChangedEvent -= UpdateSensitivity;
+                _sensitivitySubscribed = false;
             }
+            if (_callbacksRegistered)
+            {
+                runner.RemoveCallbacks(this);
+                _callbacksRegistered = false;
+            }
+            _inputComponentEnabled = false;
+            _cameraTargetAssigned = false;
         }
 
         private void SetupFootstepAudio()
@@ -445,17 +501,21 @@ namespace StarterAssets
         private void PlayFootstep(FootstepType footstepType)
         {
             AudioClip[] footstepClips = null;
+            float volumeToUse = 1.0f;
             
             switch (footstepType)
             {
                 case FootstepType.Walking:
                     footstepClips = walkingFootsteps;
+                    volumeToUse = walkingFootstepVolume;
                     break;
                 case FootstepType.Running:
                     footstepClips = runningFootsteps;
+                    volumeToUse = runningFootstepVolume;
                     break;
                 case FootstepType.Sprinting:
                     footstepClips = sprintingFootsteps;
+                    volumeToUse = sprintingFootstepVolume;
                     break;
             }
             
@@ -463,22 +523,13 @@ namespace StarterAssets
             {
                 // Select random footstep from array
                 AudioClip randomFootstep = footstepClips[UnityEngine.Random.Range(0, footstepClips.Length)];
-                footstepAudioSource.PlayOneShot(randomFootstep);
+                footstepAudioSource.PlayOneShot(randomFootstep, volumeToUse);
             }
             else
             {
             }
         }
         
-        public override void Despawned(NetworkRunner runner, bool hasState)
-        {
-            if (Object.HasInputAuthority)
-            {
-                MultiplayerSettingsManager.OnSensitivityChangedEvent -= UpdateSensitivity;
-                runner.RemoveCallbacks(this);
-            }
-        }
-
         private void UpdateSensitivity(float newSensitivity)
         {
             mpCameraSensitivity = newSensitivity;

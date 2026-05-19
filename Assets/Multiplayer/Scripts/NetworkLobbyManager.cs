@@ -57,6 +57,16 @@ public class NetworkLobbyManager : NetworkBehaviour
     private readonly int[] timeInSeconds = { 300, 600, 900, 1200 };
 
     private LobbyUIManager uiManager;
+    
+    // Networked version counter — incremented on every lobby data change.
+    // Clients detect changes by comparing against their local _lastLobbyVersion.
+    // This is reliable because it syncs atomically with LobbyPlayers via Fusion state.
+    [Networked] public int LobbyVersion { get; set; }
+    
+    // Dirty flag to prevent rebuilding the player list every frame (which kills button clicks)
+    private bool _playerListDirty = true;
+    private int _lastLobbyVersion = -1;
+    private int _lastKnownPlayerCount = -1;
 
     public override void Spawned()
     {
@@ -228,6 +238,7 @@ public class NetworkLobbyManager : NetworkBehaviour
         };
         
         LobbyPlayers.Add(player, playerData);
+        LobbyVersion++;
         
         // Set the networked PlayerColor property using the retrieve-modify-set pattern
         // Use modulo to cycle through available colors if we have more players than colors
@@ -346,10 +357,34 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         base.Render();
 
-        // Re-acquire UI manager if needed
+        // Re-acquire UI manager if needed (happens after scene transitions)
         if (uiManager == null)
         {
             uiManager = LobbyUIManager.Instance;
+            
+            // If we just re-acquired a new UI manager (e.g. returning from game to lobby),
+            // force a full rebuild since the old scene's UI was destroyed
+            if (uiManager != null)
+            {
+                _playerListDirty = true;
+                
+                // Re-initialize the lobby UI for the new scene
+                var modeOptions = System.Enum.GetNames(typeof(GameMode)).ToList();
+                bool isHost = Runner.IsServer;
+                uiManager.InitializeLobbyUI(
+                    new List<string> { "Rust" }, 
+                    modeOptions, 
+                    new List<string> { "5:00", "10:00", "15:00", "20:00" }, 
+                    isHost
+                );
+                uiManager.ShowLobby(true);
+                
+                // Restore join code
+                if (!string.IsNullOrEmpty(JoinCode))
+                {
+                    uiManager.SetJoinCode(JoinCode);
+                }
+            }
         }
 
         // Update lobby UI
@@ -364,59 +399,43 @@ public class NetworkLobbyManager : NetworkBehaviour
         {
             try 
             {
-                // Create a dictionary with all players in the lobby
-                var players = new Dictionary<int, PlayerLobbyData>();
-                foreach (var kvp in LobbyPlayers)
-                {
-                    if (kvp.Key != default(PlayerRef))
-                    {
-                        var playerData = kvp.Value;
-                        players[kvp.Key.PlayerId] = playerData;
-                        // Debug.Log($"[RPC_UpdateLobbyUI] Adding player {kvp.Key.PlayerId}: {playerData.PlayerName} (Host: {playerData.IsHost}, Ready: {playerData.IsReady})");
-                    }
-                }
+                // Mark the player list for rebuild on the next Render frame
+                _playerListDirty = true;
                 
-                // Update the player list in the UI
-                if (uiManager != null) // Double check uiManager is still valid
+                // Update UI based on local player (button states are cheap, do immediately)
+                if (uiManager != null && LobbyPlayers.ContainsKey(Runner.LocalPlayer))
                 {
-                    uiManager.UpdatePlayerList(players);
+                    var localPlayerData = LobbyPlayers[Runner.LocalPlayer];
                     
-                    // Update UI based on local player
-                    if (LobbyPlayers.ContainsKey(Runner.LocalPlayer))
+                    // Only show ready button for non-host players
+                    if (uiManager.readyButton != null)
                     {
-                        var localPlayerData = LobbyPlayers[Runner.LocalPlayer];
-                        
-                        // Only show ready button for non-host players
-                        if (uiManager.readyButton != null)
+                        uiManager.readyButton.gameObject.SetActive(!localPlayerData.IsHost);
+                        if (!localPlayerData.IsHost)
                         {
-                            uiManager.readyButton.gameObject.SetActive(!localPlayerData.IsHost);
-                            if (!localPlayerData.IsHost)
-                            {
-                                uiManager.SetReadyButtonState(localPlayerData.IsReady);
-                            }
+                            uiManager.SetReadyButtonState(localPlayerData.IsReady);
                         }
+                    }
+                    
+                    // Show start button only for host
+                    if (uiManager.startGameButton != null)
+                    {
+                        bool isHost = Runner.IsServer;
+                        uiManager.startGameButton.gameObject.SetActive(isHost);
                         
-                        // Show start button only for host
-                        if (uiManager.startGameButton != null)
+                        // Update start button state for host
+                        if (isHost)
                         {
-                            bool isHost = Runner.IsServer;
-                            uiManager.startGameButton.gameObject.SetActive(isHost);
+                            // Check if testing mode is enabled
+                            var networkStarter = NetworkStarter.Instance;
+                            bool isTestingMode = networkStarter != null && networkStarter.IsHostOnlyTestingEnabled;
                             
-                            // Update start button state for host
-                            if (isHost)
-                            {
-                                // Check if testing mode is enabled
-                                var networkStarter = NetworkStarter.Instance;
-                                bool isTestingMode = networkStarter != null && networkStarter.IsHostOnlyTestingEnabled;
-                                
-                                // In testing mode, allow starting with 1 player. Otherwise require minPlayersToStart
-                                int requiredPlayers = isTestingMode ? 1 : minPlayersToStart;
-                                bool allReady = LobbyPlayers.Count >= requiredPlayers && 
-                                             LobbyPlayers.All(p => p.Value.IsReady);
-                                
-                                // Debug.Log($"[NetworkLobbyManager] Start button check - Testing Mode: {isTestingMode}, Players: {LobbyPlayers.Count}, Required: {requiredPlayers}, All Ready: {allReady}");
-                                uiManager.startGameButton.interactable = allReady;
-                            }
+                            // In testing mode, allow starting with 1 player. Otherwise require minPlayersToStart
+                            int requiredPlayers = isTestingMode ? 1 : minPlayersToStart;
+                            bool allReady = LobbyPlayers.Count >= requiredPlayers && 
+                                         LobbyPlayers.All(p => p.Value.IsReady);
+                            
+                            uiManager.startGameButton.interactable = allReady;
                         }
                     }
                 }
@@ -432,9 +451,29 @@ public class NetworkLobbyManager : NetworkBehaviour
     {
         if (uiManager == null) return;
 
-        // Update player list continuously
-        var playerDict = LobbyPlayers.ToDictionary(kvp => kvp.Key.PlayerId, kvp => kvp.Value);
-        uiManager.UpdatePlayerList(playerDict);
+        // Detect lobby data changes via the networked version counter
+        // This is reliable because LobbyVersion syncs atomically with LobbyPlayers
+        if (LobbyVersion != _lastLobbyVersion)
+        {
+            _lastLobbyVersion = LobbyVersion;
+            _playerListDirty = true;
+        }
+
+        // Also detect player count changes as a fallback
+        if (LobbyPlayers.Count != _lastKnownPlayerCount)
+        {
+            _lastKnownPlayerCount = LobbyPlayers.Count;
+            _playerListDirty = true;
+        }
+
+        // Only rebuild the player list when data has actually changed
+        // Rebuilding every frame destroys and recreates buttons, preventing click events
+        if (_playerListDirty)
+        {
+            _playerListDirty = false;
+            var playerDict = LobbyPlayers.ToDictionary(kvp => kvp.Key.PlayerId, kvp => kvp.Value);
+            uiManager.UpdatePlayerList(playerDict);
+        }
 
         // Update Join Code continuously
         if (!string.IsNullOrEmpty(JoinCode))
@@ -442,7 +481,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             uiManager.SetJoinCode(JoinCode);
         }
 
-        // Update button visibility and state based on host status
+        // Update button visibility and state based on host status (cheap, OK every frame)
         bool isHost = Runner.IsServer;
         
         if (uiManager.startGameButton != null)
@@ -514,6 +553,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             var data = LobbyPlayers[playerRef];
             data.IsReady = isReady;
             LobbyPlayers.Set(playerRef, data);
+            LobbyVersion++;
             // Debug.Log($"[RPC_SetPlayerReady] Player {playerRef.PlayerId} set ready state to {isReady}");
             RPC_UpdateLobbyUI();
         }
@@ -543,6 +583,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             var data = LobbyPlayers[info.Source];
             data.PlayerName = name;
             LobbyPlayers.Set(info.Source, data);
+            LobbyVersion++;
 
             // After updating the name, force a UI update for all clients
             RPC_UpdateLobbyUI();
@@ -561,6 +602,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             var data = LobbyPlayers[source];
             data.TeamID = teamId;
             LobbyPlayers.Set(source, data);
+            LobbyVersion++;
             // Debug.Log($"[NetworkLobbyManager] Player {source.PlayerId} team set to {teamId}");
             // Broadcast updated player list to all clients
             RPC_UpdateLobbyUI();
@@ -642,7 +684,135 @@ public class NetworkLobbyManager : NetworkBehaviour
             if (LobbyPlayers.ContainsKey(player))
             {
                 LobbyPlayers.Remove(player);
+                LobbyVersion++;
                 UpdateLobbyUI();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Restores lobby data for a player who reconnected mid-game.
+    /// Called by NetworkGameManager.RestoreReconnectedPlayer.
+    /// </summary>
+    public void RestoreReconnectedPlayerLobbyData(PlayerRef player, string playerName, int teamId)
+    {
+        if (!Runner.IsServer) return;
+
+        // Remove stale entry if one exists
+        if (LobbyPlayers.ContainsKey(player))
+            LobbyPlayers.Remove(player);
+
+        var data = new PlayerLobbyData
+        {
+            PlayerName = playerName,
+            IsHost = false,
+            IsReady = true, // Reconnected player is auto-ready since the game is in progress
+            TeamID = teamId
+        };
+
+        LobbyPlayers.Add(player, data);
+
+        // Assign a color
+        int colorIndex = (LobbyPlayers.Count - 1) % 10; // match the playerColors list size
+        var colors = new List<Color>
+        {
+            Color.blue, Color.yellow, Color.magenta, Color.cyan,
+            new Color(1f, 0.5f, 0f), Color.white,
+            new Color(0.5f, 0f, 1f), new Color(0f, 1f, 0.5f),
+            new Color(1f, 0f, 0.5f), new Color(0.5f, 1f, 0f)
+        };
+        var coloredData = LobbyPlayers[player];
+        coloredData.PlayerColor = colors[colorIndex];
+        LobbyPlayers.Set(player, coloredData);
+
+        LobbyVersion++;
+        Debug.Log($"[NetworkLobbyManager] Restored lobby data for reconnected player '{playerName}' (Team {teamId})");
+    }
+
+    /// <summary>
+    /// Kick a player from the lobby. Only the host can call this.
+    /// </summary>
+    /// <param name="playerId">The PlayerId (int) of the player to kick.</param>
+    public void KickPlayer(int playerId)
+    {
+        if (!Runner.IsServer)
+        {
+            Debug.LogWarning("[NetworkLobbyManager] Only the host can kick players.");
+            return;
+        }
+
+        // Find the matching PlayerRef from the lobby dictionary
+        PlayerRef targetPlayer = default;
+        foreach (var kvp in LobbyPlayers)
+        {
+            if (kvp.Key.PlayerId == playerId)
+            {
+                targetPlayer = kvp.Key;
+                break;
+            }
+        }
+
+        if (targetPlayer == default)
+        {
+            Debug.LogWarning($"[NetworkLobbyManager] Could not find player with ID {playerId} to kick.");
+            return;
+        }
+
+        // Don't allow kicking the host
+        if (LobbyPlayers.ContainsKey(targetPlayer) && LobbyPlayers[targetPlayer].IsHost)
+        {
+            Debug.LogWarning("[NetworkLobbyManager] Cannot kick the host!");
+            return;
+        }
+
+        string kickedName = LobbyPlayers.ContainsKey(targetPlayer) 
+            ? LobbyPlayers[targetPlayer].PlayerName.ToString() 
+            : $"Player {playerId}";
+        
+        Debug.Log($"[NetworkLobbyManager] Host is kicking player: {kickedName} (ID: {playerId})");
+
+        // Notify all clients that this player was kicked (so the kicked client can show a message)
+        RPC_NotifyKicked(targetPlayer);
+
+        // Remove from lobby data
+        if (LobbyPlayers.ContainsKey(targetPlayer))
+        {
+            LobbyPlayers.Remove(targetPlayer);
+            LobbyVersion++;
+        }
+
+        // Update UI for remaining players
+        RPC_UpdateLobbyUI();
+
+        // Disconnect the player from the server
+        Runner.Disconnect(targetPlayer);
+    }
+
+    /// <summary>
+    /// RPC sent to all clients when a player is kicked.
+    /// The kicked client uses this to show a "You were kicked" message.
+    /// Other clients just see a notification.
+    /// </summary>
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_NotifyKicked(PlayerRef kickedPlayer)
+    {
+        // If the local player is the one being kicked, show a specific message
+        if (Runner.LocalPlayer == kickedPlayer)
+        {
+            Debug.Log("[NetworkLobbyManager] You have been kicked from the lobby.");
+            
+            // Set a flag so the disconnect handler shows the right message
+            NetworkStarter.Instance?.SetKickedFlag(true);
+        }
+        else
+        {
+            // Other players see a notification
+            if (uiManager != null)
+            {
+                string kickedName = LobbyPlayers.ContainsKey(kickedPlayer) 
+                    ? LobbyPlayers[kickedPlayer].PlayerName.ToString() 
+                    : $"Player {kickedPlayer.PlayerId}";
+                uiManager.ShowMessage($"{kickedName} was kicked from the lobby.");
             }
         }
     }

@@ -13,27 +13,41 @@ public class LaserInputHandler : MonoBehaviour
 
     private NetworkLaserBehaviour laserBehaviour;
     private bool isLocalPlayer = false;
+    private bool hasInitialized = false;
+
+    private bool IsLocalPlayer
+    {
+        get
+        {
+            if (laserBehaviour != null && laserBehaviour.Object != null)
+            {
+                return laserBehaviour.Object.HasInputAuthority;
+            }
+            return false;
+        }
+    }
 
     private void Start()
     {
         laserBehaviour = GetComponent<NetworkLaserBehaviour>();
-        
-        // Check if this is the local player
-        if (laserBehaviour != null && laserBehaviour.Object != null)
-        {
-            isLocalPlayer = laserBehaviour.Object.HasInputAuthority;
-        }
+        TryInitialize();
+    }
 
-        // Only enable for local players (prefab separation handles team restrictions)
-        if (isLocalPlayer)
+    /// <summary>
+    /// Attempts to initialize the local player flag. Retried each frame if Object
+    /// is not yet valid or if input authority has not synced yet (common during reconnection).
+    /// </summary>
+    private void TryInitialize()
+    {
+        if (hasInitialized) return;
+        if (laserBehaviour == null) laserBehaviour = GetComponent<NetworkLaserBehaviour>();
+        if (laserBehaviour == null || laserBehaviour.Object == null) return;
+
+        if (IsLocalPlayer)
         {
+            isLocalPlayer = true;
+            hasInitialized = true;
             SetupUIButtons();
-            // Debug.Log("[LaserInputHandler] Laser controls enabled for local player");
-        }
-        else
-        {
-            // Debug.Log("[LaserInputHandler] Laser controls disabled - not local player");
-            this.enabled = false;
         }
     }
 
@@ -48,6 +62,13 @@ public class LaserInputHandler : MonoBehaviour
 
     private void Update()
     {
+        // Retry initialization if Object wasn't ready at Start time (reconnection)
+        if (!hasInitialized)
+        {
+            TryInitialize();
+            return; // Wait until next frame after initialization
+        }
+
         if (!isLocalPlayer || laserBehaviour == null)
         {
             return;

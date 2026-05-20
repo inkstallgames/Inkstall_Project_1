@@ -7,11 +7,10 @@ using System.Text;
 
 
 public enum GameMode
-
 {
-
-    TeamDeathmatch   // Team-based deathmatch
-
+    TeamDeathmatch,   // Team-based deathmatch
+    FreeForAll,       // 10-player Free for All deathmatch
+    CaptureTheBase    // Capture the base
 }
 
 
@@ -593,25 +592,67 @@ public class NetworkGameManager : NetworkBehaviour
 
 
     private void EndGameByTimer()
-
     {
-
         if (CurrentGameState != GameState.InProgress) return; // guard double-call
 
+        if (CurrentGameMode == GameMode.TeamDeathmatch)
+        {
+            int winningTeam;
+            if (BlueTeamScore > RedTeamScore)      winningTeam = 0;
+            else if (RedTeamScore > BlueTeamScore) winningTeam = 1;
+            else                                   winningTeam = -1; // draw
 
+            EndGame(winningTeam);
+        }
+        else if (CurrentGameMode == GameMode.FreeForAll)
+        {
+            PlayerRef winnerRef = PlayerRef.None;
+            int maxKills = -1;
+            bool isDraw = false;
 
-        int winningTeam;
+            foreach (var kvp in PlayerKills)
+            {
+                if (kvp.Value > maxKills)
+                {
+                    maxKills = kvp.Value;
+                    winnerRef = kvp.Key;
+                    isDraw = false;
+                }
+                else if (kvp.Value == maxKills && maxKills != -1)
+                {
+                    isDraw = true;
+                }
+            }
 
-        if (BlueTeamScore > RedTeamScore)      winningTeam = 0;
+            if (isDraw || winnerRef == PlayerRef.None)
+            {
+                EndGame(-1, "It's a Draw!");
+            }
+            else
+            {
+                string winnerName = GetPlayerNameOrFallback(winnerRef);
+                EndGame(-1, $"{winnerName} Wins!");
+            }
+        }
+    }
 
-        else if (RedTeamScore > BlueTeamScore) winningTeam = 1;
-
-        else                                   winningTeam = -1; // draw
-
-
-
-        EndGame(winningTeam);
-
+    public string GetPlayerNameOrFallback(PlayerRef player)
+    {
+        if (players.TryGetValue(player, out var data) && data != null)
+        {
+            return data.PlayerName;
+        }
+        
+        // Search in disconnected players
+        foreach (var kvp in _disconnectedPlayers)
+        {
+            if (kvp.Value.OldPlayerRef == player)
+            {
+                return kvp.Value.PlayerName;
+            }
+        }
+        
+        return $"Player {player.PlayerId}";
     }
 
 
@@ -834,8 +875,9 @@ public class NetworkGameManager : NetworkBehaviour
             }
         }
 
-        // Update scores - always award points if players have valid, distinct teams 
-        if (killerData != null && victimData != null && 
+        // Update scores - always award points if players have valid, distinct teams (only in TeamDeathmatch)
+        if (CurrentGameMode == GameMode.TeamDeathmatch &&
+            killerData != null && victimData != null && 
             killerData.TeamId >= 0 && victimData.TeamId >= 0 && 
             killerData.TeamId != victimData.TeamId)
         {
@@ -882,29 +924,29 @@ public class NetworkGameManager : NetworkBehaviour
     }
 
     private void CheckGameEndConditions()
-
     {
-
         if (CurrentGameMode == GameMode.TeamDeathmatch)
-
         {
-
             // Check if a team has won the round
-
             if (BlueTeamScore >= 25 || RedTeamScore >= 25)
-
             {
-
                 int winningTeam = BlueTeamScore > RedTeamScore ? 0 : 1;
-
                 EndRound(winningTeam);
-
             }
-
         }
-
-        // Add other game mode conditions here
-
+        else if (CurrentGameMode == GameMode.FreeForAll)
+        {
+            // Check if any player has reached killsToWin
+            foreach (var kvp in PlayerKills)
+            {
+                if (kvp.Value >= killsToWin)
+                {
+                    string winnerName = GetPlayerNameOrFallback(kvp.Key);
+                    EndGame(-1, $"{winnerName} Wins!");
+                    break;
+                }
+            }
+        }
     }
 
     
@@ -975,7 +1017,7 @@ public class NetworkGameManager : NetworkBehaviour
 
     
 
-    private void EndGame(int winningTeam)
+    private void EndGame(int winningTeam, string winnerText = null)
     {
         if (CurrentGameState == GameState.GameOver) return; // prevent duplicate calls
 
@@ -996,11 +1038,14 @@ public class NetworkGameManager : NetworkBehaviour
         _disconnectedPlayers.Clear();
         _matchPlayerTokens.Clear();
 
-        string winnerName = winningTeam == 0 ? "Hero's Won"
-                          : winningTeam == 1 ? "Alien's won"
-                          : "It's a Draw!";
+        if (string.IsNullOrEmpty(winnerText))
+        {
+            winnerText = winningTeam == 0 ? "Hero's Won"
+                       : winningTeam == 1 ? "Alien's won"
+                       : "It's a Draw!";
+        }
 
-        RPC_OnGameEnded(winningTeam, winnerName);
+        RPC_OnGameEnded(winningTeam, winnerText);
 
         // The NetworkUIManager handles the Game Over → Leaderboard → Exit sequence on each client.
     }
@@ -1358,7 +1403,10 @@ public class NetworkGameManager : NetworkBehaviour
 
             {
 
-                playerData.TeamId = teamId;
+                if (CurrentGameMode != GameMode.FreeForAll)
+                {
+                    playerData.TeamId = teamId;
+                }
 
                 playerData.PlayerName = playerName;
 

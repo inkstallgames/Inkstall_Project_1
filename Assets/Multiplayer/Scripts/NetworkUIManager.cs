@@ -69,6 +69,11 @@ public class NetworkUIManager : MonoBehaviour
     [Header("Team Score UI")]
     [SerializeField] private TextMeshProUGUI blueTeamScoreText;  // Blue team score display
     [SerializeField] private TextMeshProUGUI redTeamScoreText;   // Red team score display
+    [SerializeField] private GameObject teamAScorePanel;          // GameObject representing Team A Score UI (hidden in FFA)
+    [SerializeField] private GameObject teamBScorePanel;          // GameObject representing Team B Score UI (hidden in FFA)
+    [SerializeField] private GameObject ffaLocalPlayerPanel;            // Parent container for FFA local player rank & kills (enabled in FFA only)
+    [SerializeField] private TextMeshProUGUI ffaLocalPlayerKillsText;  // Text showing local player's kills in FFA (e.g. 5 Kills)
+    [SerializeField] private TextMeshProUGUI ffaLocalPlayerRankText;   // Text showing local player's rank in FFA (e.g. #2)
 
     [Header("State Panels")]
     [SerializeField] private GameObject waitingForPlayersPanel; // Panel shown while waiting for others
@@ -843,15 +848,62 @@ public class NetworkUIManager : MonoBehaviour
             timerText.text = $"{minutes:00}:{seconds:00}";
         }
 
-        // Team scores
-        if (blueTeamScoreText != null)
+        // Team & FFA scores
+        if (gm.CurrentGameMode == GameMode.TeamDeathmatch)
         {
-            blueTeamScoreText.text = $"{gm.BlueTeamScore}";
-        }
+            if (teamAScorePanel != null) teamAScorePanel.SetActive(true);
+            if (teamBScorePanel != null) teamBScorePanel.SetActive(true);
+            if (ffaLocalPlayerPanel != null) ffaLocalPlayerPanel.SetActive(false);
 
-        if (redTeamScoreText != null)
+            if (blueTeamScoreText != null)
+            {
+                blueTeamScoreText.gameObject.SetActive(true);
+                blueTeamScoreText.text = $"{gm.BlueTeamScore}";
+            }
+
+            if (redTeamScoreText != null)
+            {
+                redTeamScoreText.gameObject.SetActive(true);
+                redTeamScoreText.text = $"{gm.RedTeamScore}";
+            }
+        }
+        else if (gm.CurrentGameMode == GameMode.FreeForAll)
         {
-            redTeamScoreText.text = $"{gm.RedTeamScore}";
+            if (teamAScorePanel != null) teamAScorePanel.SetActive(false);
+            if (teamBScorePanel != null) teamBScorePanel.SetActive(false);
+            if (ffaLocalPlayerPanel != null) ffaLocalPlayerPanel.SetActive(true);
+
+            // Find and display local player's rank & kills
+            if (runner != null && runner.IsRunning)
+            {
+                var allSortedPlayers = gm.PlayerKills
+                    .OrderByDescending(p => p.Value)
+                    .ToList();
+
+                int localRank = -1;
+                int localKills = 0;
+
+                for (int i = 0; i < allSortedPlayers.Count; i++)
+                {
+                    if (allSortedPlayers[i].Key == runner.LocalPlayer)
+                    {
+                        localRank = i + 1;
+                        localKills = allSortedPlayers[i].Value;
+                        break;
+                    }
+                }
+
+                if (ffaLocalPlayerKillsText != null)
+                    ffaLocalPlayerKillsText.text = localRank != -1 ? $"{localKills} Kills" : "0 Kills";
+
+                if (ffaLocalPlayerRankText != null)
+                    ffaLocalPlayerRankText.text = localRank != -1 ? $"#{localRank}" : "#-";
+            }
+            else
+            {
+                if (ffaLocalPlayerKillsText != null) ffaLocalPlayerKillsText.text = "0 Kills";
+                if (ffaLocalPlayerRankText != null) ffaLocalPlayerRankText.text = "#-";
+            }
         }
 
         // Ping — update every 0.5s to avoid per-frame overhead

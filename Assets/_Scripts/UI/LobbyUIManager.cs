@@ -57,6 +57,10 @@ public class LobbyUIManager : MonoBehaviour
     private string _rawJoinCode = "";          // Stores the bare join code (no prefix)
     private Coroutine _copyFeedbackCoroutine;  // Tracks the running feedback timer
     
+    [Header("Team Headers")]
+    [SerializeField] private TextMeshProUGUI teamAHeaderText;
+    [SerializeField] private TextMeshProUGUI teamBHeaderText;
+    
     private void Awake()
     {
         // Singleton pattern
@@ -84,7 +88,11 @@ public class LobbyUIManager : MonoBehaviour
             mapButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.OnMapSelectionChanged(0));
             
         if (modeDropdown != null)
-            modeDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance?.OnModeSelectionChanged(val));
+            modeDropdown.onValueChanged.AddListener((val) =>
+            {
+                NetworkLobbyManager.Instance?.OnModeSelectionChanged(val);
+                UpdateTeamHeaders(val);
+            });
             
         if (timeDropdown != null)
             timeDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance?.OnTimeSelectionChanged(val));
@@ -236,7 +244,21 @@ public class LobbyUIManager : MonoBehaviour
         {
             modeDropdown.interactable = isHost;
             modeDropdown.ClearOptions();
-            modeDropdown.AddOptions(modeOptions);
+            
+            // Format mode options: Use "TDM", "FFA" and remove capture area/base option
+            List<string> formattedOptions = new List<string>();
+            foreach (var opt in modeOptions)
+            {
+                if (opt.Equals("TeamDeathmatch", StringComparison.OrdinalIgnoreCase) || opt.Equals("TDM", StringComparison.OrdinalIgnoreCase))
+                {
+                    formattedOptions.Add("TDM");
+                }
+                else if (opt.Equals("FreeForAll", StringComparison.OrdinalIgnoreCase) || opt.Equals("FFA", StringComparison.OrdinalIgnoreCase))
+                {
+                    formattedOptions.Add("FFA");
+                }
+            }
+            modeDropdown.AddOptions(formattedOptions);
         }
 
         if (timeDropdown != null)
@@ -250,8 +272,55 @@ public class LobbyUIManager : MonoBehaviour
         // The NetworkLobbyManager will handle the initial state
     }
 
+    /// <summary>
+    /// Called immediately when the mode dropdown value changes.
+    /// Updates team column headers to reflect the selected mode.
+    /// </summary>
+    private void UpdateTeamHeaders(int modeIndex)
+    {
+        bool isFFA = (GameMode)modeIndex == GameMode.FreeForAll;
+
+        if (isFFA)
+        {
+            if (teamAHeaderText != null) teamAHeaderText.text = "FFA";
+            if (teamBHeaderText != null) teamBHeaderText.text = "FFA";
+        }
+        else
+        {
+            if (teamAHeaderText != null) teamAHeaderText.text = "Hero's";
+            if (teamBHeaderText != null) teamBHeaderText.text = "Aliens";
+        }
+    }
+
     public void UpdatePlayerList(Dictionary<int, PlayerLobbyData> players)
     {
+        bool isFFA = false;
+        if (NetworkLobbyManager.Instance != null)
+        {
+            isFFA = (GameMode)NetworkLobbyManager.Instance.SelectedModeIndex == GameMode.FreeForAll;
+        }
+
+        // Hide/Show ScrollView columns and rename headers dynamically
+        if (teamAListContent != null && teamBListContent != null)
+        {
+            GameObject teamBScroll = teamBListContent.transform.parent?.parent?.gameObject;
+            if (teamBScroll != null)
+            {
+                teamBScroll.SetActive(!isFFA);
+            }
+
+            if (isFFA)
+            {
+                if (teamAHeaderText != null) teamAHeaderText.text = "FFA";
+                if (teamBHeaderText != null) teamBHeaderText.text = "FFA";
+            }
+            else
+            {
+                if (teamAHeaderText != null) teamAHeaderText.text = "Hero's";
+                if (teamBHeaderText != null) teamBHeaderText.text = "Aliens";
+            }
+        }
+
         // Clear both team columns
         if (teamAListContent != null)
             foreach (Transform t in teamAListContent.transform) Destroy(t.gameObject);
@@ -268,8 +337,8 @@ public class LobbyUIManager : MonoBehaviour
             int playerId = kvp.Key;
             PlayerLobbyData player = kvp.Value;
 
-            // Route to the correct team column
-            GameObject parent = player.TeamID == 1 ? teamBListContent : teamAListContent;
+            // Route to the correct team column (In FFA, all players go to team A panel)
+            GameObject parent = (isFFA || player.TeamID != 1) ? teamAListContent : teamBListContent;
             if (parent == null) continue;
 
             GameObject item = Instantiate(playerListItemPrefab, parent.transform);

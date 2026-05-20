@@ -506,6 +506,12 @@ public class NetworkLobbyManager : NetworkBehaviour
                 uiManager.SetReadyButtonState(localPlayerData.IsReady);
             }
         }
+
+        // Hide team switch button for FreeForAll mode
+        if (uiManager.switchTeamButton != null)
+        {
+            uiManager.switchTeamButton.gameObject.SetActive((GameMode)SelectedModeIndex == GameMode.TeamDeathmatch);
+        }
     }
 
     private void UpdateGameSettingsUI()
@@ -522,11 +528,12 @@ public class NetworkLobbyManager : NetworkBehaviour
         if (uiManager.modeDropdown != null)
         {
             uiManager.modeDropdown.interactable = isHost;
-            var modeOptionsList = System.Enum.GetNames(typeof(GameMode)).ToList();
-            if (uiManager.modeDropdown.options.Count != modeOptionsList.Count)
+            // Only populate "TDM" and "FFA" (2 options) to match LobbyUIManager's formatting
+            int expectedCount = 2;
+            if (uiManager.modeDropdown.options.Count != expectedCount)
             {
                 uiManager.modeDropdown.ClearOptions();
-                uiManager.modeDropdown.AddOptions(modeOptionsList);
+                uiManager.modeDropdown.AddOptions(new List<string> { "TDM", "FFA" });
             }
             uiManager.modeDropdown.SetValueWithoutNotify(SelectedModeIndex);
         }
@@ -856,18 +863,30 @@ public class NetworkLobbyManager : NetworkBehaviour
                 // Debug.Log($"[NetworkLobbyManager] Initializing game with scene: {sceneName}");
                 GameMode gameMode = (GameMode)SelectedModeIndex;
 
-                // Assign teams for TeamDeathmatch
-                int teamCounter = 0;
-                foreach (var kvp in LobbyPlayers)
+                if (gameMode == GameMode.TeamDeathmatch)
                 {
-                    var player = kvp.Key;
-                    var playerData = kvp.Value;
-                    playerData.TeamID = teamCounter % 2; // Alternate between Team 0 and Team 1
-                    LobbyPlayers.Set(player, playerData);
-                    // Debug.Log($"[NetworkLobbyManager] Set TeamID for Player {player.PlayerId} to {playerData.TeamID} for TeamDeathmatch.");
-                    teamCounter++;
+                    // Assign teams for TeamDeathmatch
+                    int teamCounter = 0;
+                    foreach (var kvp in LobbyPlayers)
+                    {
+                        var player = kvp.Key;
+                        var playerData = kvp.Value;
+                        playerData.TeamID = teamCounter % 2; // Alternate between Team 0 and Team 1
+                        LobbyPlayers.Set(player, playerData);
+                        teamCounter++;
+                    }
                 }
-
+                else if (gameMode == GameMode.FreeForAll)
+                {
+                    // For FreeForAll, team ID is always -1
+                    foreach (var kvp in LobbyPlayers)
+                    {
+                        var player = kvp.Key;
+                        var playerData = kvp.Value;
+                        playerData.TeamID = -1;
+                        LobbyPlayers.Set(player, playerData);
+                    }
+                }
 
                 NetworkGameManager.Instance.StartGame(gameMode, timeInSeconds[SelectedTimeIndex], sceneName);
             }

@@ -136,7 +136,12 @@ public class NetworkPlayerSpawner : NetworkBehaviour
         if (lobbyManager != null && lobbyManager.LobbyPlayers.ContainsKey(player))
         {
             teamId = lobbyManager.LobbyPlayers[player].TeamID;
-            // Debug.Log($"[NetworkPlayerSpawner] Got TeamId {teamId} from lobby data for player {player.PlayerId}");
+        }
+
+        // If in Free For All mode, override teamId to a random choice of 0 (Hero) or 1 (Alien)
+        if (NetworkGameManager.Instance != null && NetworkGameManager.Instance.CurrentGameMode == GameMode.FreeForAll)
+        {
+            teamId = UnityEngine.Random.Range(0, 2);
         }
 
         // Pick prefab based on team

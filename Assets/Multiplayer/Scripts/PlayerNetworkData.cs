@@ -124,55 +124,32 @@ public class PlayerNetworkData : NetworkBehaviour
     {
 
         // Update name tag
-
         if (nameTag != null)
-
         {
-
             nameTag.text = PlayerName;
-
-            nameTag.color = TeamId == 0 ? Color.blue : (TeamId == 1 ? Color.red : Color.white);
-
+            bool isFFA = NetworkGameManager.Instance != null && NetworkGameManager.Instance.CurrentGameMode == GameMode.FreeForAll;
+            nameTag.color = isFFA ? Color.white : (TeamId == 0 ? Color.blue : (TeamId == 1 ? Color.red : Color.white));
         }
-
-
 
         // Update health bar
-
         if (healthBar != null)
-
         {
-
             healthBar.value = Health / 100f;
-
         }
 
-
-
         // Update team indicators
-
         if (teamIndicators != null && teamIndicators.Length > 0)
-
         {
-
             foreach (var indicator in teamIndicators)
-
             {
-
                 indicator.SetActive(false);
-
             }
 
-
-
-            if (TeamId >= 0 && TeamId < teamIndicators.Length)
-
+            bool isFFA = NetworkGameManager.Instance != null && NetworkGameManager.Instance.CurrentGameMode == GameMode.FreeForAll;
+            if (!isFFA && TeamId >= 0 && TeamId < teamIndicators.Length)
             {
-
                 teamIndicators[TeamId].SetActive(true);
-
             }
-
         }
     }
 
@@ -184,8 +161,9 @@ public class PlayerNetworkData : NetworkBehaviour
         LastDamageWeapon = weaponName;
 
         // --- Friendly fire protection ---
-        // Ignore damage from players on the same team
-        if (sourcePlayer != default && sourcePlayer != Object.InputAuthority)
+        // Ignore damage from players on the same team (only if not in Free For All mode)
+        bool isFFA = NetworkGameManager.Instance != null && NetworkGameManager.Instance.CurrentGameMode == GameMode.FreeForAll;
+        if (!isFFA && sourcePlayer != default && sourcePlayer != Object.InputAuthority)
         {
             var sourceObject = Runner.GetPlayerObject(sourcePlayer);
             if (sourceObject != null)

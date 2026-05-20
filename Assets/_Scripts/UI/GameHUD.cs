@@ -58,9 +58,32 @@ public class GameHUD : MonoBehaviour
             {
                 teamScoreText.text = $"Blue: {gameManager.BlueTeamScore} - Red: {gameManager.RedTeamScore}";
             }
+            else if (gameManager.CurrentGameMode == GameMode.FreeForAll)
+            {
+                PlayerRef leaderRef = PlayerRef.None;
+                int maxKills = -1;
+                foreach (var kvp in gameManager.PlayerKills)
+                {
+                    if (kvp.Value > maxKills)
+                    {
+                        maxKills = kvp.Value;
+                        leaderRef = kvp.Key;
+                    }
+                }
+
+                if (leaderRef != PlayerRef.None && maxKills >= 0)
+                {
+                    string leaderName = gameManager.GetPlayerNameOrFallback(leaderRef);
+                    teamScoreText.text = $"Leader: {leaderName} ({maxKills} Kills)";
+                }
+                else
+                {
+                    teamScoreText.text = "Free For All";
+                }
+            }
             else
             {
-                teamScoreText.text = "Free For All";
+                teamScoreText.text = gameManager.CurrentGameMode.ToString();
             }
         }
     }

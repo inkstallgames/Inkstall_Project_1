@@ -66,8 +66,8 @@ public class MysteryBoxSpawner : NetworkBehaviour
                 int currentSecond = Mathf.CeilToInt(remaining.Value);
                 if (currentSecond != lastLoggedSecond && currentSecond > 0 && currentSecond <= 5) 
                 {
-                    // Only logging the last 5 seconds to prevent spam, or you can remove the "&& currentSecond <= 5" to log every second.
-                    Debug.Log($"[MysteryBoxSpawner] Spawning in {currentSecond}...");
+                    // DISABLED - Performance killer: Only logging the last 5 seconds to prevent spam, or you can remove the "&& currentSecond <= 5" to log every second.
+                    // Debug.Log($"[MysteryBoxSpawner] Spawning in {currentSecond}...");
                     lastLoggedSecond = currentSecond;
                 }
             }
@@ -77,7 +77,7 @@ public class MysteryBoxSpawner : NetworkBehaviour
         if (spawnTimer.Expired(Runner))
         {
             SpawnBox();
-            Debug.Log($"[MysteryBoxSpawner] Timer restarted. Next spawn in {spawnInterval} seconds.");
+            // Debug.Log($"[MysteryBoxSpawner] Timer restarted. Next spawn in {spawnInterval} seconds."); // DISABLED - Performance killer
             spawnTimer = TickTimer.CreateFromSeconds(Runner, spawnInterval);
             lastLoggedSecond = -1;
         }
@@ -94,6 +94,6 @@ public class MysteryBoxSpawner : NetworkBehaviour
         // Spawn it across the network and keep track of it
         currentSpawnedBox = Runner.Spawn(mysteryBoxPrefab, spawnTransform.position, spawnTransform.rotation, null);
         
-        Debug.Log($"[MysteryBoxSpawner] Successfully spawned a Mystery Box at: {spawnTransform.position}");
+        // DISABLED - Performance killer: Debug.Log($"[MysteryBoxSpawner] Successfully spawned a Mystery Box at: {spawnTransform.position}");
     }
 }

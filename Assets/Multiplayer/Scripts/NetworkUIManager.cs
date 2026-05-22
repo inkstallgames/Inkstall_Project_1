@@ -458,7 +458,7 @@ public class NetworkUIManager : MonoBehaviour
             localEquipSystem = localPlayerObject.GetComponent<NetworkWeaponEquipSystem>();
             localPlayerData = localPlayerObject.GetComponent<PlayerNetworkData>();
             localAbilityController = localPlayerObject.GetComponent<PlayerAbilityController>();
-            Debug.Log($"[NetworkUIManager] Local player found. Pistol: {localPistolBehaviour != null}, Laser: {localLaserBehaviour != null}, Equip: {localEquipSystem != null}");
+            // DISABLED - Performance killer: Debug.Log($"[NetworkUIManager] Local player found. Pistol: {localPistolBehaviour != null}, Laser: {localLaserBehaviour != null}, Equip: {localEquipSystem != null}");
         }
     }
 

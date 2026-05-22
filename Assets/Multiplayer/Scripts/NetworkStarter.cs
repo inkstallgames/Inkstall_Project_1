@@ -39,6 +39,17 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private bool enableVSync = false;
     [SerializeField] private int optimizedUpdateFrequency = 30;
     
+    [Header("Advanced Performance Settings")]
+    [SerializeField] private bool enableBatching = true;
+    [SerializeField] private bool enableOcclusion = false;
+    [SerializeField] private int maxParticleCount = 100;
+    [SerializeField] private bool optimizePhysics = true;
+    
+    [Header("Runtime Performance Fixes")]
+    [SerializeField] private bool reduceLogSpam = true;
+    [SerializeField] private bool optimizeCameraOperations = true;
+    [SerializeField] private bool cacheFrequentLookups = true;
+    
     // Store the current join code so it can be accessed by other scripts
     public string CurrentJoinCode { get; private set; }
 

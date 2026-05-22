@@ -131,12 +131,12 @@ public class PlayerHeadUI : MonoBehaviour
         // time as the screen UI health bar.
         _targetHealth = _playerData.Health;
 
-        // Log when health value changes
-        if (debugLogs && _lastLoggedHealth != _playerData.Health)
-        {
-            _lastLoggedHealth = _playerData.Health;
-            Debug.Log($"[PlayerHeadUI] Health changed → {_playerData.Health} for player '{_playerData.PlayerName}' (IsLocalPlayer={_playerData.Object?.HasInputAuthority})");
-        }
+        // DISABLED - Performance killer: Log when health value changes
+        // if (debugLogs && _lastLoggedHealth != _playerData.Health)
+        // {
+        //     _lastLoggedHealth = _playerData.Health;
+        //     Debug.Log($"[PlayerHeadUI] Health changed → {_playerData.Health} for player '{_playerData.PlayerName}' (IsLocalPlayer={_playerData.Object?.HasInputAuthority})");
+        // }
 
         // Only rebuild the TextMesh when the name actually changes
         if (_cachedName != _playerData.PlayerName)
@@ -144,7 +144,7 @@ public class PlayerHeadUI : MonoBehaviour
             _cachedName = _playerData.PlayerName;
             if (playerNameText != null)
                 playerNameText.text = _cachedName;
-            if (debugLogs) Debug.Log($"[PlayerHeadUI] Name updated → '{_cachedName}'");
+            // DISABLED - Performance killer: if (debugLogs) Debug.Log($"[PlayerHeadUI] Name updated → '{_cachedName}'");
         }
 
         UpdateBillboard();

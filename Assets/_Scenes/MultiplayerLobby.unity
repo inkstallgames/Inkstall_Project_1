@@ -7412,7 +7412,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -10.999939}
+  m_AnchoredPosition: {x: 0, y: -10.999756}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1193734836
@@ -8420,6 +8420,13 @@ MonoBehaviour:
   targetFPS: 60
   enableVSync: 0
   optimizedUpdateFrequency: 30
+  enableBatching: 1
+  enableOcclusion: 0
+  maxParticleCount: 100
+  optimizePhysics: 1
+  reduceLogSpam: 1
+  optimizeCameraOperations: 1
+  cacheFrequentLookups: 1
 --- !u!1 &1327212377
 GameObject:
   m_ObjectHideFlags: 0

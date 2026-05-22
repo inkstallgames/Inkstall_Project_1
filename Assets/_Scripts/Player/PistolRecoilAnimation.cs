@@ -112,7 +112,6 @@ public class PistolRecoilAnimation : NetworkBehaviour
                 // Check if reload is pending after fire animation completes
                 if (_pendingReload)
                 {
-                    Debug.Log("[RELOAD] Fire animation completed, starting pending reload...");
                     StartReloadAnimation();
                 }
             }
@@ -132,12 +131,15 @@ public class PistolRecoilAnimation : NetworkBehaviour
         {
             case 1: // Rotate X to -3° (tilt pistol down)
                 _currentReloadRotation = Quaternion.Slerp(_currentReloadRotation, _targetReloadRotation, Time.deltaTime * reloadSpeed);
-                Debug.Log($"[RELOAD] Stage 1 - Rotating: Current={_currentReloadRotation.eulerAngles}, Target={_targetReloadRotation.eulerAngles}, Angle={Quaternion.Angle(_currentReloadRotation, _targetReloadRotation):F1}° remaining");
+                
+                // DISABLED - Performance killer: Remove any debug logging from render loop
+                // float angle = Quaternion.Angle(_currentReloadRotation, _targetReloadRotation);
+                // Debug.Log($"[RELOAD] Stage 1 - Rotating: Current={_currentReloadRotation}, Target={_targetReloadRotation}, Angle={angle:F1}° remaining");
+                
                 if (Quaternion.Angle(_currentReloadRotation, _targetReloadRotation) < 1f)
                 {
                     _reloadStage = 2;
                     _waitTimer = 0f; // Reset wait timer
-                    Debug.Log($"[RELOAD] Stage 1 Complete - Moving to Stage 2: Wait for {waitAfterRotation}s");
                 }
                 break;
                 
@@ -234,7 +236,6 @@ public class PistolRecoilAnimation : NetworkBehaviour
         // Check if fire animation is still playing, if so, wait for it to complete
         if (_isRecoiling || _isReturning)
         {
-            Debug.Log("[RELOAD] Fire animation still playing, waiting for it to complete before reload...");
             _pendingReload = true; // Set flag to start reload after fire animation completes
             return;
         }
@@ -263,11 +264,6 @@ public class PistolRecoilAnimation : NetworkBehaviour
         
         // Start delayed sound playback
         StartCoroutine(PlayReloadSoundDelayed());
-        
-        Debug.Log($"[RELOAD] Reload animation started!");
-        Debug.Log($"[RELOAD] Initial Rotation: {_initialRotation.eulerAngles}");
-        Debug.Log($"[RELOAD] Target Rotation: {_targetReloadRotation.eulerAngles}");
-        Debug.Log($"[RELOAD] X Rotation Amount: {xRotationAmount}");
     }
     
     /// <summary>
@@ -281,8 +277,6 @@ public class PistolRecoilAnimation : NetworkBehaviour
         // Play reload sound after delay
         if (reloadSound != null && !_soundPlayed)
         {
-            Debug.Log($"[RELOAD] Playing reload sound: {reloadSound.name}");
-            
             // Create a temporary GameObject with AudioSource for 2D sound
             GameObject tempAudioObject = new GameObject("TempReloadSound");
             AudioSource tempAudioSource = tempAudioObject.AddComponent<AudioSource>();
@@ -318,7 +312,7 @@ public class PistolRecoilAnimation : NetworkBehaviour
         // Check if pistol is ready to fire (prevent spamming)
         if (!IsReadyToFire())
         {
-            Debug.Log("[PistolRecoilAnimation] Pistol not ready to fire - animation still in progress!");
+            // Debug.Log("[PistolRecoilAnimation] Pistol not ready to fire - animation still in progress!"); // DISABLED - Performance killer
             return;
         }
         
@@ -328,7 +322,7 @@ public class PistolRecoilAnimation : NetworkBehaviour
         _recoilVelocity = 0f;
         _isRecoiling = true;
         
-        Debug.Log($"[PistolRecoilAnimation] Pistol fire triggered! Rotation: 0° → {-recoilAmount}° → 0°");
+        // Debug.Log($"[PistolRecoilAnimation] Pistol fire triggered! Rotation: 0° → {-recoilAmount}° → 0°"); // DISABLED - Performance killer
     }
     
     /// <summary>
@@ -341,7 +335,7 @@ public class PistolRecoilAnimation : NetworkBehaviour
         // Check if pistol is ready to fire (prevent spamming)
         if (!IsReadyToFire())
         {
-            Debug.Log("[PistolRecoilAnimation] Pistol not ready to fire - animation still in progress!");
+            // Debug.Log("[PistolRecoilAnimation] Pistol not ready to fire - animation still in progress!"); // DISABLED - Performance killer
             return;
         }
         
@@ -350,7 +344,7 @@ public class PistolRecoilAnimation : NetworkBehaviour
         _recoilVelocity = 0f;
         _isRecoiling = true;
         
-        Debug.Log($"[PistolRecoilAnimation] Custom recoil triggered! Rotation: 0° → {-customRecoilAmount}° → 0°");
+        // Debug.Log($"[PistolRecoilAnimation] Custom recoil triggered! Rotation: 0° → {-customRecoilAmount}° → 0°"); // DISABLED - Performance killer
     }
     
     /// <summary>

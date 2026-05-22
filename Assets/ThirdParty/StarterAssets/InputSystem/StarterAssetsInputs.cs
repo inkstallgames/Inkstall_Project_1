@@ -220,7 +220,7 @@ namespace StarterAssets
 
 			{
 
-				Debug.Log($"[StarterAssetsInputs] Direct input - move: {move} on GameObject: {gameObject.name}");
+				// Debug.Log($"[StarterAssetsInputs] Direct input - move: {move} on GameObject: {gameObject.name}"); // DISABLED - Performance killer
 
 			}
 
@@ -343,7 +343,7 @@ namespace StarterAssets
 
 			MoveInput(value.Get<Vector2>());
 
-			Debug.Log($"[StarterAssetsInputs] OnMove: {move} on GameObject: {gameObject.name}, enabled: {enabled}");
+			// Debug.Log($"[StarterAssetsInputs] OnMove: {move} on GameObject: {gameObject.name}, enabled: {enabled}");
 
 		}
 
@@ -392,7 +392,7 @@ namespace StarterAssets
 
 			JumpInput(value.isPressed);
 
-			Debug.Log($"[StarterAssetsInputs] OnJump: {jump}");
+			// Debug.Log($"[StarterAssetsInputs] OnJump: {jump}"); // DISABLED - Performance killer
 
 		}
 
@@ -410,7 +410,7 @@ namespace StarterAssets
 
 			SprintInput(value.isPressed);
 
-			Debug.Log($"[StarterAssetsInputs] OnSprint: {sprint}");
+			// Debug.Log($"[StarterAssetsInputs] OnSprint: {sprint}"); // DISABLED - Performance killer
 
 		}
 

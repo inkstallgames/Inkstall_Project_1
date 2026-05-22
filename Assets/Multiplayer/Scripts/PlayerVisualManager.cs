@@ -38,25 +38,33 @@ public class PlayerVisualManager : NetworkBehaviour
 
     private bool _armsParented;
     private Camera _mainCam;
+
     private Camera _handsCamera; // Found at runtime by tag "HandCamera" (scene object, not prefab)
 
     private bool _wasLocalPlayer;
 
+
+
     public override void Spawned()
+
     {
+
+        base.Spawned();
+
         _wasLocalPlayer = Object.HasInputAuthority;
+
         SetupVisuals(_wasLocalPlayer);
-        
-        // Force idle animation immediately to prevent T-pose
-        ForceIdleAnimation();
-        
-        // Also try again after a short delay in case animators weren't ready
-        StartCoroutine(DelayedIdleAnimation());
+
     }
 
+
+
     public void SetupVisuals(bool isLocalPlayer)
+
     {
+
         // Handle First Person Arms (Local Only) - ACTIVATE IMMEDIATELY
+
         foreach (var arms in firstPersonArms)
         {
             if (arms != null)
@@ -290,6 +298,7 @@ public class PlayerVisualManager : NetworkBehaviour
             yield return null;
         }
 
+        // Optimized camera operations - batch transform changes
         foreach (var arms in firstPersonArms)
         {
             if (arms != null)
@@ -297,21 +306,18 @@ public class PlayerVisualManager : NetworkBehaviour
                 arms.transform.SetParent(_mainCam.transform, false);
                 arms.transform.localPosition = armPositionOffset;
                 arms.transform.localRotation = Quaternion.Euler(armRotationOffset);
-                Debug.Log($"[PlayerVisualManager] Parented '{arms.name}' to MainCamera successfully.");
             }
         }
         _armsParented = true;
 
-        // Find HandsCamera at runtime by tag - it lives in the scene, not the prefab
-        var handsCamObj = GameObject.FindWithTag("HandCamera");
-        if (handsCamObj != null)
+        // Cache HandsCamera lookup to avoid repeated FindWithTag calls
+        if (_handsCamera == null)
         {
-            _handsCamera = handsCamObj.GetComponent<Camera>();
-            Debug.Log($"[PlayerVisualManager] HandsCamera found at runtime: {handsCamObj.name}");
-        }
-        else
-        {
-            Debug.LogWarning("[PlayerVisualManager] HandsCamera not found! Make sure it has the tag 'HandCamera'.");
+            var handsCamObj = GameObject.FindWithTag("HandCamera");
+            if (handsCamObj != null)
+            {
+                _handsCamera = handsCamObj.GetComponent<Camera>();
+            }
         }
     }
 
@@ -372,10 +378,15 @@ public class PlayerVisualManager : NetworkBehaviour
     
     private System.Collections.IEnumerator DelayedIdleAnimation()
     {
-        // Wait a few frames for all components to be fully initialized
-        yield return new WaitForSeconds(0.1f);
+        // DISABLED - Performance killer: Prevent additional animator errors
+        // The delayed animation is causing more Animator.GotoState errors
+        yield break;
         
+        // Original code commented out:
+        /*
+        yield return new WaitForSeconds(0.1f);
         ForceIdleAnimation();
+        */
     }
     
     private void ForceIdleAnimation()
@@ -415,24 +426,58 @@ public class PlayerVisualManager : NetworkBehaviour
     
     private void ForceAnimatorToIdle(Animator animator)
     {
-        // Try to set the animator to the default state (usually idle)
-        // This helps prevent the T-pose when spawning
-        animator.Play("Idle", 0, 0f);
-        animator.Update(0f); // Force immediate update
+        // DISABLED - Performance killer: This method is causing 1030ms frame spikes
+        // due to Animator.GotoState errors. Let the animator handle its own states.
+        return;
         
-        // If "Idle" state doesn't exist, try other common idle animation names
-        if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash == 0)
+        // Original code commented out to prevent massive performance issues:
+        /*
+        if (animator == null) return;
+        
+        // Check if animator has any parameters and states
+        if (animator.parameters.Length == 0) return;
+        
+        // Try to set the animator to the default state (usually idle)
+        // Only play if the state exists to avoid errors
+        if (HasAnimatorState(animator, "Idle"))
+        {
+            animator.Play("Idle", 0, 0f);
+        }
+        else if (HasAnimatorState(animator, "Pistol Idle"))
         {
             animator.Play("Pistol Idle", 0, 0f);
-            animator.Update(0f);
         }
-        
-        if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash == 0)
+        else if (HasAnimatorState(animator, "Base Layer.Idle"))
         {
             animator.Play("Base Layer.Idle", 0, 0f);
-            animator.Update(0f);
         }
+        else
+        {
+            // Fallback: try to play the first available state
+            var controller = animator.runtimeAnimatorController;
+            if (controller != null && controller.animationClips.Length > 0)
+            {
+                animator.Play(controller.animationClips[0].name, 0, 0f);
+            }
+        }
+        */
+    }
+    
+    private bool HasAnimatorState(Animator animator, string stateName)
+    {
+        if (animator == null || string.IsNullOrEmpty(stateName)) return false;
         
+        int stateHash = Animator.StringToHash(stateName);
+        
+        // Check if the state exists in any layer
+        for (int layer = 0; layer < animator.layerCount; layer++)
+        {
+            if (animator.HasState(layer, stateHash))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

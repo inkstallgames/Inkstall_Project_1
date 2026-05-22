@@ -24,7 +24,7 @@ public class MysteryBox : NetworkBehaviour
                         {
                             pistol.HasAutoFirePowerup = true;
                             playerData.RPC_NotifyPowerupReceived("Pistol Auto Fire");
-                            Debug.Log($"[MysteryBox] Mystery box was hit! Player {sourcePlayer.PlayerId} (Hero) was given the power-up: Pistol Auto Fire");
+                            // DISABLED - Performance killer: Debug.Log($"[MysteryBox] Mystery box was hit! Player {sourcePlayer.PlayerId} (Hero) was given the power-up: Pistol Auto Fire");
                         }
                     }
                     else
@@ -34,7 +34,7 @@ public class MysteryBox : NetworkBehaviour
                         {
                             bomb.GrantGrenadeAmmoPowerup();
                             playerData.RPC_NotifyPowerupReceived("Grenade Ammo");
-                            Debug.Log($"[MysteryBox] Mystery box was hit! Player {sourcePlayer.PlayerId} (Hero) was given the power-up: Grenade Ammo");
+                            // DISABLED - Performance killer: Debug.Log($"[MysteryBox] Mystery box was hit! Player {sourcePlayer.PlayerId} (Hero) was given the power-up: Grenade Ammo");
                         }
                     }
                 }
@@ -48,7 +48,7 @@ public class MysteryBox : NetworkBehaviour
                         {
                             laser.HasDamageIncreasePowerup = true;
                             playerData.RPC_NotifyPowerupReceived("Laser Damage Increase");
-                            Debug.Log($"[MysteryBox] Mystery box was hit! Player {sourcePlayer.PlayerId} (Alien) was given the power-up: Laser Damage Increase");
+                            // DISABLED - Performance killer: Debug.Log($"[MysteryBox] Mystery box was hit! Player {sourcePlayer.PlayerId} (Alien) was given the power-up: Laser Damage Increase");
                         }
                     }
                     else
@@ -58,7 +58,7 @@ public class MysteryBox : NetworkBehaviour
                         {
                             bomb.GrantGrenadeAmmoPowerup();
                             playerData.RPC_NotifyPowerupReceived("Grenade Ammo");
-                            Debug.Log($"[MysteryBox] Mystery box was hit! Player {sourcePlayer.PlayerId} (Alien) was given the power-up: Grenade Ammo");
+                            // DISABLED - Performance killer: Debug.Log($"[MysteryBox] Mystery box was hit! Player {sourcePlayer.PlayerId} (Alien) was given the power-up: Grenade Ammo");
                         }
                     }
                 }

@@ -960,20 +960,8 @@ public class NetworkUIManager : MonoBehaviour
             // Find and display local player's rank & kills (throttled, no LINQ allocations)
             if (runner != null && runner.IsRunning)
             {
-<<<<<<< Updated upstream
-                var allSortedPlayers = gm.PlayerKills
-                    .OrderByDescending(p => p.Value)
-                    .ThenBy(p => gm.PlayerDeaths.ContainsKey(p.Key) ? gm.PlayerDeaths.Get(p.Key) : 0)
-                    .ToList();
-
-                int localRank = -1;
-                int localKills = 0;
-
-                for (int i = 0; i < allSortedPlayers.Count; i++)
-=======
                 ffaRankUpdateTimer -= Time.deltaTime;
                 if (ffaRankUpdateTimer <= 0f)
->>>>>>> Stashed changes
                 {
                     ffaRankUpdateTimer = FFA_RANK_UPDATE_INTERVAL;
 

@@ -290,6 +290,7 @@ public class LobbyUIManager : MonoBehaviour
             if (teamAHeaderText != null) teamAHeaderText.text = "Hero's";
             if (teamBHeaderText != null) teamBHeaderText.text = "Aliens";
         }
+
     }
 
     public void UpdatePlayerList(Dictionary<int, PlayerLobbyData> players)
@@ -300,25 +301,16 @@ public class LobbyUIManager : MonoBehaviour
             isFFA = (GameMode)NetworkLobbyManager.Instance.SelectedModeIndex == GameMode.FreeForAll;
         }
 
-        // Hide/Show ScrollView columns and rename headers dynamically
-        if (teamAListContent != null && teamBListContent != null)
+        // Update team headers based on mode
+        if (isFFA)
         {
-            GameObject teamBScroll = teamBListContent.transform.parent?.parent?.gameObject;
-            if (teamBScroll != null)
-            {
-                teamBScroll.SetActive(!isFFA);
-            }
-
-            if (isFFA)
-            {
-                if (teamAHeaderText != null) teamAHeaderText.text = "FFA";
-                if (teamBHeaderText != null) teamBHeaderText.text = "FFA";
-            }
-            else
-            {
-                if (teamAHeaderText != null) teamAHeaderText.text = "Hero's";
-                if (teamBHeaderText != null) teamBHeaderText.text = "Aliens";
-            }
+            if (teamAHeaderText != null) teamAHeaderText.text = "FFA";
+            if (teamBHeaderText != null) teamBHeaderText.text = "FFA";
+        }
+        else
+        {
+            if (teamAHeaderText != null) teamAHeaderText.text = "Hero's";
+            if (teamBHeaderText != null) teamBHeaderText.text = "Aliens";
         }
 
         // Clear both team columns

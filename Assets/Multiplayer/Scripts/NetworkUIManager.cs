@@ -290,7 +290,7 @@ public class NetworkUIManager : MonoBehaviour
             UpdatePlayerStatsUI();
             UpdateLeaderboardCache();
             
-            // TEST KILL FEED
+            // TEST KILL FEED + KILL NOTIFICATION
             if (Input.GetKeyDown(KeyCode.K))
             {
                 // Randomly assign teams 0 and 1 for testing
@@ -302,6 +302,17 @@ public class NetworkUIManager : MonoBehaviour
                 string randomWeapon = testWeapons[Random.Range(0, testWeapons.Length)];
                 
                 AddKillFeedEntry("Test Killer", randomKillerTeam, "Test Victim", randomVictimTeam, randomWeapon);
+
+                // Also trigger the personal kill notification pop animation
+                OnPlayerKilled("Test Victim");
+            }
+
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                if (NetworkGameManager.Instance != null && runner != null && runner.IsRunning)
+                {
+                    NetworkGameManager.Instance.RPC_DebugSimulateKill(runner.LocalPlayer);
+                }
             }
 
             // Keyboard shortcut: press T to throw/shoot
@@ -878,6 +889,7 @@ public class NetworkUIManager : MonoBehaviour
             {
                 var allSortedPlayers = gm.PlayerKills
                     .OrderByDescending(p => p.Value)
+                    .ThenBy(p => gm.PlayerDeaths.ContainsKey(p.Key) ? gm.PlayerDeaths.Get(p.Key) : 0)
                     .ToList();
 
                 int localRank = -1;
@@ -1290,6 +1302,28 @@ public class NetworkUIManager : MonoBehaviour
 
     public void OnPlayerKilled(string victimName)
     {
+        // Check if the script is attached to the text object directly (or use the singleton)
+        KillNotificationPopAnimation popAnim = null;
+        if (killNotificationText != null)
+        {
+            popAnim = killNotificationText.GetComponent<KillNotificationPopAnimation>();
+            if (popAnim == null) popAnim = killNotificationText.GetComponentInParent<KillNotificationPopAnimation>();
+        }
+        if (popAnim == null) popAnim = KillNotificationPopAnimation.Instance;
+
+        if (popAnim != null)
+        {
+            if (killNotificationText != null) 
+            {
+                popAnim.SetKillText(killNotificationText);
+            }
+            // Ensure the game object is active so the coroutine can start
+            popAnim.gameObject.SetActive(true);
+            popAnim.Play(victimName);
+            return;
+        }
+
+        // Fallback: plain text show/hide (original behaviour)
         if (killNotificationText != null)
         {
             // Stop any existing kill notification
@@ -1301,6 +1335,10 @@ public class NetworkUIManager : MonoBehaviour
             // Show new kill notification
             killNotificationText.text = $"You killed {victimName}";
             killNotificationText.gameObject.SetActive(true);
+            
+            // If it has a canvas group (maybe added by the user manually), ensure it's visible
+            var cg = killNotificationText.GetComponent<CanvasGroup>();
+            if (cg != null) cg.alpha = 1f;
             
             killNotificationCoroutine = StartCoroutine(ShowKillNotification(victimName));
         }

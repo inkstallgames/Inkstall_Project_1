@@ -608,19 +608,33 @@ public class NetworkGameManager : NetworkBehaviour
         {
             PlayerRef winnerRef = PlayerRef.None;
             int maxKills = -1;
+            int minDeaths = int.MaxValue;
             bool isDraw = false;
 
             foreach (var kvp in PlayerKills)
             {
-                if (kvp.Value > maxKills)
+                int kills = kvp.Value;
+                int deaths = PlayerDeaths.ContainsKey(kvp.Key) ? PlayerDeaths.Get(kvp.Key) : 0;
+
+                if (kills > maxKills)
                 {
-                    maxKills = kvp.Value;
+                    maxKills = kills;
+                    minDeaths = deaths;
                     winnerRef = kvp.Key;
                     isDraw = false;
                 }
-                else if (kvp.Value == maxKills && maxKills != -1)
+                else if (kills == maxKills && maxKills != -1)
                 {
-                    isDraw = true;
+                    if (deaths < minDeaths)
+                    {
+                        minDeaths = deaths;
+                        winnerRef = kvp.Key;
+                        isDraw = false;
+                    }
+                    else if (deaths == minDeaths)
+                    {
+                        isDraw = true;
+                    }
                 }
             }
 
@@ -923,6 +937,25 @@ public class NetworkGameManager : NetworkBehaviour
         }
     }
 
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_DebugSimulateKill(PlayerRef killer)
+    {
+        Debug.Log($"[NetworkGameManager] Simulated kill by {killer}");
+        // Find a random victim to kill
+        PlayerRef victim = default;
+        foreach (var p in AlivePlayers)
+        {
+            if (p != killer)
+            {
+                victim = p;
+                break;
+            }
+        }
+        
+        var victimObj = Runner.GetPlayerObject(victim);
+        OnPlayerKilled(victimObj, killer, "TestWeapon");
+    }
+
     private void CheckGameEndConditions()
     {
         if (CurrentGameMode == GameMode.TeamDeathmatch)
@@ -937,13 +970,51 @@ public class NetworkGameManager : NetworkBehaviour
         else if (CurrentGameMode == GameMode.FreeForAll)
         {
             // Check if any player has reached killsToWin
+            PlayerRef bestPlayer = PlayerRef.None;
+            int maxKills = -1;
+            int minDeaths = int.MaxValue;
+            bool isDraw = false;
+
             foreach (var kvp in PlayerKills)
             {
                 if (kvp.Value >= killsToWin)
                 {
-                    string winnerName = GetPlayerNameOrFallback(kvp.Key);
+                    int kills = kvp.Value;
+                    int deaths = PlayerDeaths.ContainsKey(kvp.Key) ? PlayerDeaths.Get(kvp.Key) : 0;
+
+                    if (kills > maxKills)
+                    {
+                        maxKills = kills;
+                        minDeaths = deaths;
+                        bestPlayer = kvp.Key;
+                        isDraw = false;
+                    }
+                    else if (kills == maxKills)
+                    {
+                        if (deaths < minDeaths)
+                        {
+                            minDeaths = deaths;
+                            bestPlayer = kvp.Key;
+                            isDraw = false;
+                        }
+                        else if (deaths == minDeaths)
+                        {
+                            isDraw = true;
+                        }
+                    }
+                }
+            }
+
+            if (maxKills >= killsToWin)
+            {
+                if (isDraw)
+                {
+                    EndGame(-1, "It's a Draw!");
+                }
+                else
+                {
+                    string winnerName = GetPlayerNameOrFallback(bestPlayer);
                     EndGame(-1, $"{winnerName} Wins!");
-                    break;
                 }
             }
         }

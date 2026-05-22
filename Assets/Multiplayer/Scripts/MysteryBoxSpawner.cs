@@ -31,6 +31,13 @@ public class MysteryBoxSpawner : NetworkBehaviour
         // Only the host/server needs to handle spawning logic
         if (!Object.HasStateAuthority) return;
 
+        // Disable mystery boxes in Free For All mode
+        if (NetworkGameManager.Instance != null && NetworkGameManager.Instance.CurrentGameMode == GameMode.FreeForAll)
+        {
+            Debug.Log("[MysteryBoxSpawner] Mystery boxes are disabled in Free For All mode.");
+            return;
+        }
+
         if (spawnPoints.Length > 0 && mysteryBoxPrefab != null)
         {
             // Start the timer
@@ -47,6 +54,10 @@ public class MysteryBoxSpawner : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
+
+        // Ensure we don't tick the timer or spawn if the mode is Free For All
+        if (NetworkGameManager.Instance != null && NetworkGameManager.Instance.CurrentGameMode == GameMode.FreeForAll)
+            return;
 
         // If the box is still in the world, pause the countdown.
         // This ensures a new box spawns exactly 15 seconds AFTER the old one is collected/destroyed.

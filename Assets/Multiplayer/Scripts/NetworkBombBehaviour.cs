@@ -35,6 +35,7 @@ public class NetworkBombBehaviour : NetworkBehaviour
     [Networked] public int CurrentBombs { get; set; }
     [Networked] public int MaxBombs { get; set; }
     [Networked] private TickTimer ThrowCooldownTimer { get; set; }
+    [Networked] public NetworkBool HasGrenadeAmmoPowerup { get; set; }
 
     // --- Local-only state ---
     private Camera playerCamera;
@@ -419,6 +420,8 @@ public class NetworkBombBehaviour : NetworkBehaviour
     public void GrantGrenadeAmmoPowerup()
     {
         if (!Object.HasStateAuthority) return;
+        if (HasGrenadeAmmoPowerup) return; // Already received — prevent stacking
+        HasGrenadeAmmoPowerup = true;
         MaxBombs += 3;
         CurrentBombs = MaxBombs;
     }

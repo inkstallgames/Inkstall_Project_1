@@ -24,6 +24,9 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     private static NetworkStarter _instance;
     public static NetworkStarter Instance => _instance;
 
+    /// <summary>Active network runner, if a session is running.</summary>
+    public NetworkRunner Runner => _runner;
+
     [Header("Settings")]
     [SerializeField] private NetworkRunner _runnerPrefab;
     [SerializeField] private int _maxPlayers = 10;

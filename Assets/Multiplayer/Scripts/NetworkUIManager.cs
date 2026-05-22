@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using System.Linq;
 
 /// <summary>
 /// Handles all network game UI interactions — throw button, ammo display,
@@ -136,8 +135,26 @@ public class NetworkUIManager : MonoBehaviour
     private float abilityActiveEndTime = 0f;
     private float pingUpdateTimer = 0f;
     private const float PING_UPDATE_INTERVAL = 0.5f;
+    private float leaderboardUpdateTimer = 0f;
+    private const float LEADERBOARD_UPDATE_INTERVAL = 0.5f;
+    private float ffaRankUpdateTimer = 0f;
+    private const float FFA_RANK_UPDATE_INTERVAL = 0.5f;
     private int _lastKnownHealth = -1;
+    private int _lastDisplayedHealth = -1;
     private int _lastKnownKills = -1;
+    private int _lastDisplayedKills = -1;
+    private int _lastKnownDeaths = -1;
+    private int _lastDisplayedBombs = -1;
+    private int _lastDisplayedPistolAmmo = -1;
+    private int _lastDisplayedPistolReserve = -1;
+    private int _lastDisplayedLaserEnergy = -1;
+    private int _lastDisplayedLaserReserve = -1;
+    private string _lastDisplayedPlayerName;
+    private int _lastDisplayedBlueScore = -1;
+    private int _lastDisplayedRedScore = -1;
+    private int _lastDisplayedFfaKills = -1;
+    private int _lastDisplayedFfaRank = -1;
+    private readonly List<KeyValuePair<PlayerRef, int>> _ffaKillSortBuffer = new List<KeyValuePair<PlayerRef, int>>(10);
     private float _damageIndicatorTimer = 0f;
     private const float DAMAGE_INDICATOR_DURATION = 0.3f;
     private float _healIndicatorTimer = 0f;
@@ -238,7 +255,10 @@ public class NetworkUIManager : MonoBehaviour
         // Also invalidate stale runner (destroyed or no longer running)
         if (runner == null || !runner)
         {
-            runner = FindObjectOfType<NetworkRunner>();
+            if (NetworkStarter.Instance != null && NetworkStarter.Instance.Runner != null)
+                runner = NetworkStarter.Instance.Runner;
+            if (runner == null)
+                runner = FindObjectOfType<NetworkRunner>();
         }
         else if (!runner.IsRunning)
         {
@@ -288,7 +308,14 @@ public class NetworkUIManager : MonoBehaviour
             UpdateBombUI();
             UpdateBulletAmmoUI();
             UpdatePlayerStatsUI();
-            UpdateLeaderboardCache();
+
+            // Leaderboard is only shown at game-over; throttle scene scans to avoid per-frame cost.
+            leaderboardUpdateTimer -= Time.deltaTime;
+            if (leaderboardUpdateTimer <= 0f)
+            {
+                leaderboardUpdateTimer = LEADERBOARD_UPDATE_INTERVAL;
+                UpdateLeaderboardCache();
+            }
             
             // TEST KILL FEED + KILL NOTIFICATION
             if (Input.GetKeyDown(KeyCode.K))
@@ -487,7 +514,22 @@ public class NetworkUIManager : MonoBehaviour
         localPlayerData = null;
         localAbilityController = null;
         _lastKnownHealth = -1;
+        _lastDisplayedHealth = -1;
         _lastKnownKills = -1;
+        _lastDisplayedKills = -1;
+        _lastKnownDeaths = -1;
+        _lastDisplayedBombs = -1;
+        _lastDisplayedPistolAmmo = -1;
+        _lastDisplayedPistolReserve = -1;
+        _lastDisplayedLaserEnergy = -1;
+        _lastDisplayedLaserReserve = -1;
+        _lastDisplayedPlayerName = null;
+        _lastDisplayedBlueScore = -1;
+        _lastDisplayedRedScore = -1;
+        _lastDisplayedFfaKills = -1;
+        _lastDisplayedFfaRank = -1;
+        leaderboardUpdateTimer = 0f;
+        ffaRankUpdateTimer = 0f;
     }
 
     // ---------------------------------------------------------------
@@ -636,7 +678,8 @@ public class NetworkUIManager : MonoBehaviour
         if (localBombBehaviour == null) return;
 
         int currentBombs = localBombBehaviour.CurrentBombs;
-        int maxBombs = localBombBehaviour.MaxBombs;
+        if (currentBombs == _lastDisplayedBombs) return;
+        _lastDisplayedBombs = currentBombs;
 
         // Update ammo text
         if (ammoText != null)
@@ -664,25 +707,36 @@ public class NetworkUIManager : MonoBehaviour
     // Bullet Ammo UI
     // ---------------------------------------------------------------
 
+    private int _lastEquippedWeaponType = -1; // 0=pistol, 1=laser
+
     private void UpdateBulletAmmoUI()
     {
-        // Check which weapon is equipped
+        int equippedType = -1;
         if (localEquipSystem != null)
         {
             if (localEquipSystem.IsPistolEquipped() && localPistolBehaviour != null)
-            {
-                UpdatePistolAmmoUI();
-            }
+                equippedType = 0;
             else if (localEquipSystem.IsLaserEquipped() && localLaserBehaviour != null)
-            {
-                UpdateLaserAmmoUI();
-            }
+                equippedType = 1;
         }
-        // Fallback to pistol if equip system not available
         else if (localPistolBehaviour != null)
         {
-            UpdatePistolAmmoUI();
+            equippedType = 0;
         }
+
+        if (equippedType != _lastEquippedWeaponType)
+        {
+            _lastEquippedWeaponType = equippedType;
+            _lastDisplayedPistolAmmo = -1;
+            _lastDisplayedPistolReserve = -1;
+            _lastDisplayedLaserEnergy = -1;
+            _lastDisplayedLaserReserve = -1;
+        }
+
+        if (equippedType == 0)
+            UpdatePistolAmmoUI();
+        else if (equippedType == 1)
+            UpdateLaserAmmoUI();
     }
 
     private void UpdatePistolAmmoUI()
@@ -693,23 +747,25 @@ public class NetworkUIManager : MonoBehaviour
             localPistolBehaviour.RequestReload();
         }
 
-        // Update bullet ammo text - keep showing current ammo during reload
-        if (bulletAmmoText != null)
+        int currentBullets = localPistolBehaviour.CurrentAmmo;
+        int reserveBullets = localPistolBehaviour.ReserveAmmo;
+        bool isReloading = localPistolBehaviour.IsReloading;
+
+        // Update bullet ammo text when values change
+        if (bulletAmmoText != null &&
+            (currentBullets != _lastDisplayedPistolAmmo || reserveBullets != _lastDisplayedPistolReserve))
         {
-            int currentBullets = localPistolBehaviour.CurrentAmmo;
-            int reserveBullets = localPistolBehaviour.ReserveAmmo;
-            
-            // Always show ammo count, even during reload
-            // The ammo count will automatically update when reload completes
+            _lastDisplayedPistolAmmo = currentBullets;
+            _lastDisplayedPistolReserve = reserveBullets;
             bulletAmmoText.text = $"{currentBullets:D2}/{reserveBullets:D2}";
         }
-        
+
         // Update reload button visual feedback
         if (reloadButton != null)
         {
-            bool canReload = !localPistolBehaviour.IsReloading && 
-                            localPistolBehaviour.ReserveAmmo > 0 && 
-                            localPistolBehaviour.CurrentAmmo < localPistolBehaviour.MaxAmmo;
+            bool canReload = !isReloading &&
+                            reserveBullets > 0 &&
+                            currentBullets < localPistolBehaviour.MaxAmmo;
             reloadButton.interactable = canReload;
         }
     }
@@ -722,23 +778,24 @@ public class NetworkUIManager : MonoBehaviour
             // Laser auto-reloads when energy reaches zero (handled in NetworkLaserBehaviour)
         }
 
-        // Update laser energy text - keep showing current energy during reload
-        if (bulletAmmoText != null)
+        int currentEnergy = localLaserBehaviour.CurrentEnergy;
+        int reserveEnergy = localLaserBehaviour.ReserveEnergy;
+
+        // Update laser energy text when values change
+        if (bulletAmmoText != null &&
+            (currentEnergy != _lastDisplayedLaserEnergy || reserveEnergy != _lastDisplayedLaserReserve))
         {
-            int currentEnergy = localLaserBehaviour.CurrentEnergy;
-            int reserveEnergy = localLaserBehaviour.ReserveEnergy;
-            
-            // Always show energy count, even during reload
-            // The energy count will automatically update when reload completes
+            _lastDisplayedLaserEnergy = currentEnergy;
+            _lastDisplayedLaserReserve = reserveEnergy;
             bulletAmmoText.text = $"{currentEnergy:D2}/{reserveEnergy:D2}";
         }
-        
+
         // Update reload button visual feedback
         if (reloadButton != null)
         {
-            bool canReload = !localLaserBehaviour.IsReloading && 
-                            localLaserBehaviour.ReserveEnergy > 0 && 
-                            localLaserBehaviour.CurrentEnergy < localLaserBehaviour.MaxEnergy;
+            bool canReload = !localLaserBehaviour.IsReloading &&
+                            reserveEnergy > 0 &&
+                            currentEnergy < localLaserBehaviour.MaxEnergy;
             reloadButton.interactable = canReload;
         }
     }
@@ -791,17 +848,21 @@ public class NetworkUIManager : MonoBehaviour
         // Health
         if (healthBar != null)
         {
-            healthBar.value = currentHealth / 100f;
+            float healthNormalized = currentHealth / 100f;
+            if (!Mathf.Approximately(healthBar.value, healthNormalized))
+                healthBar.value = healthNormalized;
         }
 
-        if (healthText != null)
+        if (healthText != null && currentHealth != _lastDisplayedHealth)
         {
+            _lastDisplayedHealth = currentHealth;
             healthText.text = $"{currentHealth}";
         }
 
         // Kills & Deaths
-        if (killsText != null)
+        if (killsText != null && currentKills != _lastDisplayedKills)
         {
+            _lastDisplayedKills = currentKills;
             killsText.text = $"Kills: {currentKills}";
         }
 
@@ -812,18 +873,22 @@ public class NetworkUIManager : MonoBehaviour
                 audioSource.PlayOneShot(killSoundEffect);
             }
         }
-        
+
         _lastKnownKills = currentKills;
 
-        if (deathsText != null)
+        int currentDeaths = localPlayerData.Deaths;
+        if (deathsText != null && currentDeaths != _lastKnownDeaths)
         {
-            deathsText.text = $"Deaths: {localPlayerData.Deaths}";
+            _lastKnownDeaths = currentDeaths;
+            deathsText.text = $"Deaths: {currentDeaths}";
         }
 
         // Player name
-        if (playerNameText != null)
+        string playerName = localPlayerData.PlayerName;
+        if (playerNameText != null && playerName != _lastDisplayedPlayerName)
         {
-            playerNameText.text = localPlayerData.PlayerName;
+            _lastDisplayedPlayerName = playerName;
+            playerNameText.text = playerName;
         }
     }
 
@@ -869,13 +934,21 @@ public class NetworkUIManager : MonoBehaviour
             if (blueTeamScoreText != null)
             {
                 blueTeamScoreText.gameObject.SetActive(true);
-                blueTeamScoreText.text = $"{gm.BlueTeamScore}";
+                if (gm.BlueTeamScore != _lastDisplayedBlueScore)
+                {
+                    _lastDisplayedBlueScore = gm.BlueTeamScore;
+                    blueTeamScoreText.text = $"{gm.BlueTeamScore}";
+                }
             }
 
             if (redTeamScoreText != null)
             {
                 redTeamScoreText.gameObject.SetActive(true);
-                redTeamScoreText.text = $"{gm.RedTeamScore}";
+                if (gm.RedTeamScore != _lastDisplayedRedScore)
+                {
+                    _lastDisplayedRedScore = gm.RedTeamScore;
+                    redTeamScoreText.text = $"{gm.RedTeamScore}";
+                }
             }
         }
         else if (gm.CurrentGameMode == GameMode.FreeForAll)
@@ -884,9 +957,10 @@ public class NetworkUIManager : MonoBehaviour
             if (teamBScorePanel != null) teamBScorePanel.SetActive(false);
             if (ffaLocalPlayerPanel != null) ffaLocalPlayerPanel.SetActive(true);
 
-            // Find and display local player's rank & kills
+            // Find and display local player's rank & kills (throttled, no LINQ allocations)
             if (runner != null && runner.IsRunning)
             {
+<<<<<<< Updated upstream
                 var allSortedPlayers = gm.PlayerKills
                     .OrderByDescending(p => p.Value)
                     .ThenBy(p => gm.PlayerDeaths.ContainsKey(p.Key) ? gm.PlayerDeaths.Get(p.Key) : 0)
@@ -896,20 +970,43 @@ public class NetworkUIManager : MonoBehaviour
                 int localKills = 0;
 
                 for (int i = 0; i < allSortedPlayers.Count; i++)
+=======
+                ffaRankUpdateTimer -= Time.deltaTime;
+                if (ffaRankUpdateTimer <= 0f)
+>>>>>>> Stashed changes
                 {
-                    if (allSortedPlayers[i].Key == runner.LocalPlayer)
+                    ffaRankUpdateTimer = FFA_RANK_UPDATE_INTERVAL;
+
+                    _ffaKillSortBuffer.Clear();
+                    foreach (var entry in gm.PlayerKills)
+                        _ffaKillSortBuffer.Add(new KeyValuePair<PlayerRef, int>(entry.Key, entry.Value));
+                    _ffaKillSortBuffer.Sort((a, b) => b.Value.CompareTo(a.Value));
+
+                    int localRank = -1;
+                    int localKills = 0;
+
+                    for (int i = 0; i < _ffaKillSortBuffer.Count; i++)
                     {
-                        localRank = i + 1;
-                        localKills = allSortedPlayers[i].Value;
-                        break;
+                        if (_ffaKillSortBuffer[i].Key == runner.LocalPlayer)
+                        {
+                            localRank = i + 1;
+                            localKills = _ffaKillSortBuffer[i].Value;
+                            break;
+                        }
+                    }
+
+                    if (localKills != _lastDisplayedFfaKills && ffaLocalPlayerKillsText != null)
+                    {
+                        _lastDisplayedFfaKills = localKills;
+                        ffaLocalPlayerKillsText.text = localRank != -1 ? $"{localKills} Kills" : "0 Kills";
+                    }
+
+                    if (localRank != _lastDisplayedFfaRank && ffaLocalPlayerRankText != null)
+                    {
+                        _lastDisplayedFfaRank = localRank;
+                        ffaLocalPlayerRankText.text = localRank != -1 ? $"#{localRank}" : "#-";
                     }
                 }
-
-                if (ffaLocalPlayerKillsText != null)
-                    ffaLocalPlayerKillsText.text = localRank != -1 ? $"{localKills} Kills" : "0 Kills";
-
-                if (ffaLocalPlayerRankText != null)
-                    ffaLocalPlayerRankText.text = localRank != -1 ? $"#{localRank}" : "#-";
             }
             else
             {
@@ -1141,6 +1238,8 @@ public class NetworkUIManager : MonoBehaviour
     // Leaderboard
     // ---------------------------------------------------------------
 
+    private readonly List<PlayerRef> _leaderboardKeysToRemove = new List<PlayerRef>(4);
+
     private void UpdateLeaderboardCache()
     {
         var allPlayers = FindObjectsOfType<PlayerNetworkData>();
@@ -1155,17 +1254,17 @@ public class NetworkUIManager : MonoBehaviour
             bool isLocal = pData.Object.HasInputAuthority;
             
             // Clean up any old duplicate entries for this player name that had a different PlayerRef (due to reconnecting)
-            System.Collections.Generic.List<PlayerRef> keysToRemove = new System.Collections.Generic.List<PlayerRef>();
+            _leaderboardKeysToRemove.Clear();
             foreach (var kvp in allTimeLeaderboard)
             {
                 if (kvp.Value.PlayerName == pName && kvp.Key != pref)
                 {
-                    keysToRemove.Add(kvp.Key);
+                    _leaderboardKeysToRemove.Add(kvp.Key);
                 }
             }
-            foreach (var key in keysToRemove)
+            for (int i = 0; i < _leaderboardKeysToRemove.Count; i++)
             {
-                allTimeLeaderboard.Remove(key);
+                allTimeLeaderboard.Remove(_leaderboardKeysToRemove[i]);
             }
             
             // Only update if we have meaningful data, avoiding resetting to 0 momentarily

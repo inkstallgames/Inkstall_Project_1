@@ -92,6 +92,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     private LineRenderer continuousBeam;
     private GameObject continuousImpact;
     private GameObject continuousMuzzleFlash;
+    private ParticleSystem _cachedImpactParticles;
     
     // Track beam destruction
     private int beamDestructionCount = 0;
@@ -624,12 +625,12 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
             
             // Get the particle system and make sure it plays
-            var impactParticles = continuousImpact.GetComponent<ParticleSystem>();
-            if (impactParticles != null)
+            _cachedImpactParticles = continuousImpact.GetComponent<ParticleSystem>();
+            if (_cachedImpactParticles != null)
             {
-                var main = impactParticles.main;
+                var main = _cachedImpactParticles.main;
                 main.loop = true; // Ensure looping for continuous mode
-                impactParticles.Play();
+                _cachedImpactParticles.Play();
             }
             else
             {
@@ -753,8 +754,8 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             {
                 continuousImpact.transform.position = hitPoint;
                 continuousImpact.transform.rotation = Quaternion.LookRotation(hit.normal);
-                var impactParticles = continuousImpact.GetComponent<ParticleSystem>();
-                if (impactParticles != null && !impactParticles.isPlaying) impactParticles.Play();
+                if (_cachedImpactParticles != null && !_cachedImpactParticles.isPlaying)
+                    _cachedImpactParticles.Play();
             }
         }
         else if (didHit && laserImpactPrefab != null)
@@ -768,12 +769,12 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             var impactEffect = continuousImpact.GetComponent<LaserImpactEffect>();
             if (impactEffect != null) impactEffect.SetContinuousMode(true);
 
-            var impactParticles = continuousImpact.GetComponent<ParticleSystem>();
-            if (impactParticles != null)
+            _cachedImpactParticles = continuousImpact.GetComponent<ParticleSystem>();
+            if (_cachedImpactParticles != null)
             {
-                var main = impactParticles.main;
+                var main = _cachedImpactParticles.main;
                 main.loop = true;
-                impactParticles.Play();
+                _cachedImpactParticles.Play();
             }
         }
 
@@ -825,6 +826,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         {
             Destroy(continuousImpact);
             continuousImpact = null;
+            _cachedImpactParticles = null;
         }
         
         // Stop continuous laser sound
@@ -838,19 +840,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     {
         if (IsFiringLaser && !_lastIsFiringLaser)
         {
-            Debug.Log($"[NetworkLaserBehaviour] *** RENDER: STARTING BEAM *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")} | ActiveFirePoint: {(ActiveFirePoint != null ? ActiveFirePoint.name : "NULL")}");
             StartContinuousBeam();
         }
         else if (!IsFiringLaser && _lastIsFiringLaser)
         {
-            Debug.Log($"[NetworkLaserBehaviour] *** RENDER: STOPPING BEAM *** Player: {(isLocalPlayer ? "LOCAL" : "REMOTE")}");
             StopContinuousBeam();
-        }
-
-        // Standard graphical continuous beam updates perfectly synced to screen refresh
-        if (IsFiringLaser)
-        {
-            UpdateContinuousBeam();
         }
 
         _lastIsFiringLaser = IsFiringLaser;
@@ -861,11 +855,8 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         // Safety check: don't access networked properties before Spawned() is called
         if (Object == null || !Object.IsValid) return;
         
-        // Update beam/impact in LateUpdate — runs AFTER Cinemachine positions the camera,
-        // so the local player impact will use the most accurate camera direction.
-        // Local player: only impact is updated here (beam is on FPS_Hands, handled by pre-render hook).
-        // Remote player: both beam and impact are updated here.
-        if (IsFiringLaser && continuousBeam != null)
+        // Single visual update per frame, after Cinemachine positions the camera.
+        if (IsFiringLaser)
         {
             UpdateContinuousBeam();
         }

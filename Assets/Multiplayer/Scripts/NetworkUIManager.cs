@@ -1389,27 +1389,6 @@ public class NetworkUIManager : MonoBehaviour
 
     public void OnPlayerKilled(string victimName)
     {
-        // Check if the script is attached to the text object directly (or use the singleton)
-        KillNotificationPopAnimation popAnim = null;
-        if (killNotificationText != null)
-        {
-            popAnim = killNotificationText.GetComponent<KillNotificationPopAnimation>();
-            if (popAnim == null) popAnim = killNotificationText.GetComponentInParent<KillNotificationPopAnimation>();
-        }
-        if (popAnim == null) popAnim = KillNotificationPopAnimation.Instance;
-
-        if (popAnim != null)
-        {
-            if (killNotificationText != null) 
-            {
-                popAnim.SetKillText(killNotificationText);
-            }
-            // Ensure the game object is active so the coroutine can start
-            popAnim.gameObject.SetActive(true);
-            popAnim.Play(victimName);
-            return;
-        }
-
         // Fallback: plain text show/hide (original behaviour)
         if (killNotificationText != null)
         {

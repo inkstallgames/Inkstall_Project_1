@@ -67,7 +67,6 @@ public class MysteryBox : NetworkBehaviour
                     // If player already has both powerups, give nothing extra
                     if (hasDamageIncrease && hasGrenadeAmmo)
                     {
-                        var laser = playerObj.GetComponent<NetworkLaserBehaviour>();
                         if (laser != null)
                         {
                             laser.HasDamageIncreasePowerup = true;

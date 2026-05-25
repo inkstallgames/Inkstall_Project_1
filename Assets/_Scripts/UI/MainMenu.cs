@@ -44,6 +44,8 @@ public class MainMenu : MonoBehaviour
         if (playerNameInputField != null)
         {
             playerNameInputField.text = savedName;
+            // Set character limit to 12
+            playerNameInputField.characterLimit = 12;
         }
 
         if (playerNameText != null)
@@ -297,6 +299,15 @@ public class MainMenu : MonoBehaviour
         if (playerNameInputField != null)
         {
             string newName = playerNameInputField.text.Trim();
+            
+            // Limit player name to 12 characters
+            if (newName.Length > 12)
+            {
+                newName = newName.Substring(0, 12);
+                // Update the input field to show the truncated name
+                playerNameInputField.text = newName;
+            }
+            
             if (!string.IsNullOrEmpty(newName))
             {
                 PlayerPrefs.SetString("PlayerName", newName);

@@ -286,7 +286,18 @@ public class PlayerNetworkData : NetworkBehaviour
     public void RPC_SetPlayerName(string name)
 
     {
-
+        // Limit player name to 12 characters
+        if (name.Length > 12)
+        {
+            name = name.Substring(0, 12);
+        }
+        
+        // Ensure name is not empty after truncation
+        if (string.IsNullOrEmpty(name))
+        {
+            name = "Player";
+        }
+        
         PlayerName = name;
 
     }

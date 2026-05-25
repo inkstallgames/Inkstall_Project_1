@@ -61,6 +61,10 @@ public class LobbyUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI teamAHeaderText;
     [SerializeField] private TextMeshProUGUI teamBHeaderText;
     
+    [Header("Team Panels")]
+    [SerializeField] private Image teamAPanelImage;  // Background image for Team A panel (blue by default)
+    [SerializeField] private Image teamBPanelImage;  // Background image for Team B panel (red by default)
+    
     private void Awake()
     {
         // Singleton pattern
@@ -270,11 +274,17 @@ public class LobbyUIManager : MonoBehaviour
         
         // Host starts as not ready and must click ready like everyone else
         // The NetworkLobbyManager will handle the initial state
+        
+        // Initialize panel colors based on current mode
+        if (NetworkLobbyManager.Instance != null)
+        {
+            UpdateTeamHeaders(NetworkLobbyManager.Instance.SelectedModeIndex);
+        }
     }
 
     /// <summary>
     /// Called immediately when the mode dropdown value changes.
-    /// Updates team column headers to reflect the selected mode.
+    /// Updates team column headers and panel colors to reflect the selected mode.
     /// </summary>
     private void UpdateTeamHeaders(int modeIndex)
     {
@@ -284,11 +294,22 @@ public class LobbyUIManager : MonoBehaviour
         {
             if (teamAHeaderText != null) teamAHeaderText.text = "FFA";
             if (teamBHeaderText != null) teamBHeaderText.text = "FFA";
+            
+            // Make both panels blue for FFA mode
+            Color blueColor = new Color(0.18f, 0.47f, 1f); // Same blue as game over panel
+            if (teamAPanelImage != null) teamAPanelImage.color = blueColor;
+            if (teamBPanelImage != null) teamBPanelImage.color = blueColor;
         }
         else
         {
             if (teamAHeaderText != null) teamAHeaderText.text = "Hero's";
             if (teamBHeaderText != null) teamBHeaderText.text = "Aliens";
+            
+            // Restore original colors for Team Deathmatch
+            Color blueColor = new Color(0.18f, 0.47f, 1f); // Blue for Team A (Hero's)
+            Color redColor = new Color(1f, 0.22f, 0.22f);   // Red for Team B (Aliens)
+            if (teamAPanelImage != null) teamAPanelImage.color = blueColor;
+            if (teamBPanelImage != null) teamBPanelImage.color = redColor;
         }
 
     }

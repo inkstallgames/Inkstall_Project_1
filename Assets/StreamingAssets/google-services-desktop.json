@@ -7,271 +7,29 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:383598510964:android:2ed4c6aa42a435faa8a221",
-        "android_client_info": {
-          "package_name": "com.inkstall.app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAy6fCdmr41KMe4jPor1c3KuFAyswYKLvA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "383598510964-b9fj0vaua89re9gu4ioinhjin32dej6g.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.inkstall.fourkal"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:383598510964:android:343218cfdb252d40a8a221",
-        "android_client_info": {
-          "package_name": "com.inkstall.dygno"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAy6fCdmr41KMe4jPor1c3KuFAyswYKLvA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "383598510964-b9fj0vaua89re9gu4ioinhjin32dej6g.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.inkstall.fourkal"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:383598510964:android:4bf8112aeec4ed3ba8a221",
-        "android_client_info": {
-          "package_name": "com.inkstall.fourkal"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAy6fCdmr41KMe4jPor1c3KuFAyswYKLvA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "383598510964-b9fj0vaua89re9gu4ioinhjin32dej6g.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.inkstall.fourkal"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:383598510964:android:a5f66f1eac6cd3bca8a221",
-        "android_client_info": {
-          "package_name": "com.inkstall.inkkart"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAy6fCdmr41KMe4jPor1c3KuFAyswYKLvA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "383598510964-b9fj0vaua89re9gu4ioinhjin32dej6g.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.inkstall.fourkal"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:383598510964:android:ea422a14c6cde955a8a221",
-        "android_client_info": {
-          "package_name": "com.inkstall.inkstalltalk"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAy6fCdmr41KMe4jPor1c3KuFAyswYKLvA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "383598510964-b9fj0vaua89re9gu4ioinhjin32dej6g.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.inkstall.fourkal"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:383598510964:android:a62f5f23deb9a58fa8a221",
-        "android_client_info": {
-          "package_name": "com.inkstall.student"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "383598510964-n7it1gnc83hev4nctt8b3b5c5ts3omb9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.inkstall.student",
-            "certificate_hash": "aeb7a10b86a31f75ad46f67c9bd577943a3eeda0"
-          }
-        },
-        {
-          "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAy6fCdmr41KMe4jPor1c3KuFAyswYKLvA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "383598510964-b9fj0vaua89re9gu4ioinhjin32dej6g.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.inkstall.fourkal"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:383598510964:android:d64a1a2d265f0efba8a221",
+        "mobilesdk_app_id": "1:383598510964:ios:315667e7c021073fa8a221",
         "android_client_info": {
           "package_name": "com.inkstall.xenoattack"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "383598510964-3tkfle1f8h014eklq5pdongr5ch209es.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.inkstall.xenoattack",
-            "certificate_hash": "99b65ee7da1acb1e3d3317a0bdcd50174761ee85"
-          }
-        },
-        {
-          "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAy6fCdmr41KMe4jPor1c3KuFAyswYKLvA"
+          "current_key": "AIzaSyAH-eAeLHWD5e6p06XAEkUcljYWQbOYzjg"
         }
       ],
       "services": {
+        "analytics_service": {
+          "status": 0
+        },
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "383598510964-51l74fgp8q3cqcqo8upqvlrndpvet7h8.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "383598510964-b9fj0vaua89re9gu4ioinhjin32dej6g.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.inkstall.fourkal"
-              }
-            }
-          ]
+          "status": 1
         }
-      }
+      },
+      "oauth_client": [
+        {
+          "client_id": "383598510964-idlt9l3ofo078tm5ucfrs1l686st6b1e.apps.googleusercontent.com"
+        }
+      ]
     }
   ],
   "configuration_version": "1"

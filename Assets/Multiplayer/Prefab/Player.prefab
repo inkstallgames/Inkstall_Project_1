@@ -102,7 +102,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 2.2
+  m_Height: 2.05
   m_Radius: 0.28
   m_SlopeLimit: 90
   m_StepOffset: 0.25
@@ -421,6 +421,8 @@ MonoBehaviour:
   bombDamage: 25
   _CurrentBombs: 0
   _MaxBombs: 0
+  _HasGrenadeAmmoPowerup:
+    _value: 0
 --- !u!114 &3537175789903063825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -463,7 +465,6 @@ MonoBehaviour:
     m_Bits: 4294967295
   maxAmmo: 15
   currentAmmo: 15
-  reserveAmmo: 60
   reloadTime: 2
   muzzleFlashPrefab: {fileID: 6093627466791319318, guid: cd60837d9807ad44ba929273ca0d3da8,
     type: 3}
@@ -478,7 +479,6 @@ MonoBehaviour:
   soundVolume: 1
   bulletTrailSpeed: 300
   _CurrentAmmo: 0
-  _ReserveAmmo: 0
   _IsReloading: 0
   _HasAutoFirePowerup:
     _value: 0

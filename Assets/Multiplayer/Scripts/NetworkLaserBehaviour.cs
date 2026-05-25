@@ -23,13 +23,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [SerializeField] private Color laserColor = Color.red;
 
     [Header("Energy (Ammo System)")]
-    [SerializeField] private int maxEnergy = 30;
-    [SerializeField] private int currentEnergy = 30;
-    [SerializeField] private int reserveEnergy = 90;
-    [SerializeField] private int energyPerShot = 0; // Test value - should consume no energy
-    [SerializeField] private float energyRegenRate = 20f; // Energy per second
-    [SerializeField] private float regenDelay = 2f; // Delay before regen starts
+    [SerializeField] private int maxEnergy = 20;
+    [SerializeField] private int currentEnergy = 20;
+    [SerializeField] private int energyPerShot = 1; // Consume 1 energy per shot
     [SerializeField] private float reloadTime = 2f; // Reload time when energy reaches zero
+    [Tooltip("Unlimited energy system - no reserve energy needed")]
 
     [Header("Effects")]
     [SerializeField] private GameObject laserBeamPrefab;
@@ -41,9 +39,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     [SerializeField] private float soundVolume = 1.0f;
 
     [Networked] public int CurrentEnergy { get; set; }
-    [Networked] public int ReserveEnergy { get; set; }
     [Networked] private TickTimer FireCooldownTimer { get; set; }
-    [Networked] private TickTimer EnergyRegenTimer { get; set; }
     [Networked] private TickTimer ReloadTimer { get; set; }
     [Networked] public bool IsReloading { get; set; }
     [Networked] private TickTimer PostReloadCooldown { get; set; }
@@ -130,7 +126,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (Object.HasStateAuthority)
         {
             CurrentEnergy = currentEnergy;
-            ReserveEnergy = reserveEnergy;
         }
 
         equipSystem = GetComponent<NetworkWeaponEquipSystem>();
@@ -264,18 +259,15 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         {
             if (Object.HasStateAuthority)
             {
-                int energyNeeded = maxEnergy - CurrentEnergy;
-                int energyToReload = Mathf.Min(energyNeeded, ReserveEnergy);
-
-                CurrentEnergy += energyToReload;
-                ReserveEnergy -= energyToReload;
+                // Unlimited energy - always reload to full capacity
+                CurrentEnergy = maxEnergy;
                 IsReloading = false;
                 ReloadTimer = TickTimer.None;
                 
                 // Add a small cooldown after reload to prevent immediate firing
                 PostReloadCooldown = TickTimer.CreateFromSeconds(Runner, 0.1f);
                 
-                RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
+                RPC_UpdateEnergy(CurrentEnergy);
             }
         }
 
@@ -284,8 +276,8 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             return;
         }
 
-        // Process manual reload request (from UI button or R key)
-        if (input.isReloading && !IsReloading && CurrentEnergy < maxEnergy && ReserveEnergy > 0)
+        // Process manual reload request (from UI button or R key) - unlimited energy
+        if (input.isReloading && !IsReloading && CurrentEnergy < maxEnergy)
         {
             if (Object.HasStateAuthority)
             {
@@ -300,40 +292,20 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         }
         
         
-        // Regenerate energy when not shooting
-        if (!input.isShooting && CurrentEnergy < maxEnergy)
+        // Auto-reload when empty for unlimited energy system
+        if (!input.isShooting && CurrentEnergy <= 0 && !IsReloading)
         {
-            if (IsReloading)
+            if (Object.HasStateAuthority)
             {
-                // Still reloading - don't allow normal regen
-                float remainingTime = ReloadTimer.RemainingTime(Runner) ?? 0f;
-                // Debug.Log($"[NetworkLaserBehaviour] *** RELOADING... *** Player {Object.InputAuthority.PlayerId} | {remainingTime:F1}s remaining");
-                return;
-            }
-            
-            if (EnergyRegenTimer.ExpiredOrNotRunning(Runner) && ReserveEnergy > 0)
-            {
-                if (Object.HasStateAuthority)
-                {
-                    int oldEnergy = CurrentEnergy;
-                    int maxRegen = Mathf.RoundToInt(energyRegenRate * Runner.DeltaTime);
-                    int actualRegen = Mathf.Min(maxEnergy - CurrentEnergy, Mathf.Min(maxRegen, ReserveEnergy));
-
-                    CurrentEnergy += actualRegen;
-                    ReserveEnergy -= actualRegen;
-                    
-                    RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
-                }
+                IsReloading = true;
+                ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
+                RPC_PlayReloadSound();
             }
         }
         else if (input.isShooting)
         {
-            // Reset regen timer when shooting
-            if (Object.HasStateAuthority)
-            {
-                EnergyRegenTimer = TickTimer.CreateFromSeconds(Runner, regenDelay);
-                // Debug.Log($"[NetworkLaserBehaviour] *** RECHARGE DELAY STARTED *** Player {Object.InputAuthority.PlayerId} - Energy regen paused for {regenDelay}s");
-            }
+            // Energy regeneration disabled for unlimited system
+            // No regen timer needed since we use reload system
         }
 
         // Check if we can fire - player must NOT be reloading and post-reload cooldown must be expired
@@ -390,17 +362,14 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         {
             CurrentEnergy = 0;
             
-            // Only start reload if we have reserve energy
-            if (ReserveEnergy > 0)
+            // Auto-reload when out of energy (unlimited system)
+            IsReloading = true;
+            ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
+            
+            // Play reload start sound using a GameObject so we can stop it later
+            if (laserReloadSound != null)
             {
-                IsReloading = true;
-                ReloadTimer = TickTimer.CreateFromSeconds(Runner, reloadTime);
-                
-                // Play reload start sound using a GameObject so we can stop it later
-                if (laserReloadSound != null)
-                {
-                    RPC_PlayReloadSound();
-                }
+                RPC_PlayReloadSound();
             }
         }
 
@@ -428,16 +397,15 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
         }
 
-        RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
+        RPC_UpdateEnergy(CurrentEnergy);
     }
 
 
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_UpdateEnergy(int newEnergy, int newReserve)
+    private void RPC_UpdateEnergy(int newEnergy)
     {
         CurrentEnergy = newEnergy;
-        ReserveEnergy = newReserve;
     }
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -465,8 +433,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     public void AddEnergy(int amount)
     {
         if (!Object.HasStateAuthority) return;
-        ReserveEnergy += amount;
-        RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
+        // Unlimited energy system - just reload to full capacity
+        CurrentEnergy = maxEnergy;
+        RPC_UpdateEnergy(CurrentEnergy);
     }
 
     /// <summary>
@@ -478,11 +447,10 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         
         CurrentEnergy = maxEnergy;
-        ReserveEnergy = Mathf.Min(reserveEnergy, 150);
         IsReloading = false;
         ReloadTimer = TickTimer.None;
         
-        RPC_UpdateEnergy(CurrentEnergy, ReserveEnergy);
+        RPC_UpdateEnergy(CurrentEnergy);
     }
 
     private System.Collections.IEnumerator ShowMuzzleFlash()

@@ -572,28 +572,19 @@ public class NetworkUIManager : MonoBehaviour
         {
             if (localEquipSystem.IsPistolEquipped() && localPistolBehaviour != null && !localPistolBehaviour.IsReloading)
             {
-                // Check if we have reserve ammo before allowing reload
-                if (localPistolBehaviour.ReserveAmmo > 0)
-                {
-                    localPistolBehaviour.RequestReload();
-                }
+                // Unlimited ammo - always allow reload
+                localPistolBehaviour.RequestReload();
             }
             else if (localEquipSystem.IsLaserEquipped() && localLaserBehaviour != null && !localLaserBehaviour.IsReloading)
             {
-                // Check if we have reserve energy before allowing reload
-                if (localLaserBehaviour.ReserveEnergy > 0)
-                {
-                    localLaserBehaviour.RequestReload();
-                }
+                // Unlimited energy - always allow reload
+                localLaserBehaviour.RequestReload();
             }
         }
         else if (localPistolBehaviour != null && !localPistolBehaviour.IsReloading)
         {
-            // Check if we have reserve ammo before allowing reload
-            if (localPistolBehaviour.ReserveAmmo > 0)
-            {
-                localPistolBehaviour.RequestReload();
-            }
+            // Unlimited ammo - always allow reload
+            localPistolBehaviour.RequestReload();
         }
     }
 
@@ -741,61 +732,57 @@ public class NetworkUIManager : MonoBehaviour
 
     private void UpdatePistolAmmoUI()
     {
-        // Auto-reload when current ammo is zero
-        if (localPistolBehaviour.CurrentAmmo == 0 && !localPistolBehaviour.IsReloading && localPistolBehaviour.ReserveAmmo > 0)
+        // Auto-reload when current ammo is zero (unlimited ammo)
+        if (localPistolBehaviour.CurrentAmmo == 0 && !localPistolBehaviour.IsReloading)
         {
             localPistolBehaviour.RequestReload();
         }
 
         int currentBullets = localPistolBehaviour.CurrentAmmo;
-        int reserveBullets = localPistolBehaviour.ReserveAmmo;
+        int maxCapacity = localPistolBehaviour.MaxAmmo;
         bool isReloading = localPistolBehaviour.IsReloading;
 
-        // Update bullet ammo text when values change
+        // Update bullet ammo text when values change (show current/maxCapacity)
         if (bulletAmmoText != null &&
-            (currentBullets != _lastDisplayedPistolAmmo || reserveBullets != _lastDisplayedPistolReserve))
+            (currentBullets != _lastDisplayedPistolAmmo || maxCapacity != _lastDisplayedPistolReserve))
         {
             _lastDisplayedPistolAmmo = currentBullets;
-            _lastDisplayedPistolReserve = reserveBullets;
-            bulletAmmoText.text = $"{currentBullets:D2}/{reserveBullets:D2}";
+            _lastDisplayedPistolReserve = maxCapacity;
+            bulletAmmoText.text = $"{currentBullets:D2}/{maxCapacity:D2}";
         }
 
-        // Update reload button visual feedback
+        // Update reload button visual feedback (unlimited ammo - always allow reload if not full)
         if (reloadButton != null)
         {
-            bool canReload = !isReloading &&
-                            reserveBullets > 0 &&
-                            currentBullets < localPistolBehaviour.MaxAmmo;
+            bool canReload = !isReloading && currentBullets < maxCapacity;
             reloadButton.interactable = canReload;
         }
     }
 
     private void UpdateLaserAmmoUI()
     {
-        // Auto-reload when energy reaches zero
+        // Auto-reload when energy reaches zero (unlimited system)
         if (localLaserBehaviour.CurrentEnergy == 0 && !localLaserBehaviour.IsReloading)
         {
             // Laser auto-reloads when energy reaches zero (handled in NetworkLaserBehaviour)
         }
 
         int currentEnergy = localLaserBehaviour.CurrentEnergy;
-        int reserveEnergy = localLaserBehaviour.ReserveEnergy;
+        int maxCapacity = localLaserBehaviour.MaxEnergy;
 
-        // Update laser energy text when values change
+        // Update laser energy text when values change (show current/maxCapacity)
         if (bulletAmmoText != null &&
-            (currentEnergy != _lastDisplayedLaserEnergy || reserveEnergy != _lastDisplayedLaserReserve))
+            (currentEnergy != _lastDisplayedLaserEnergy || maxCapacity != _lastDisplayedLaserReserve))
         {
             _lastDisplayedLaserEnergy = currentEnergy;
-            _lastDisplayedLaserReserve = reserveEnergy;
-            bulletAmmoText.text = $"{currentEnergy:D2}/{reserveEnergy:D2}";
+            _lastDisplayedLaserReserve = maxCapacity;
+            bulletAmmoText.text = $"{currentEnergy:D2}/{maxCapacity:D2}";
         }
 
-        // Update reload button visual feedback
+        // Update reload button visual feedback (unlimited energy - always allow reload if not full)
         if (reloadButton != null)
         {
-            bool canReload = !localLaserBehaviour.IsReloading &&
-                            reserveEnergy > 0 &&
-                            currentEnergy < localLaserBehaviour.MaxEnergy;
+            bool canReload = !localLaserBehaviour.IsReloading && currentEnergy < maxCapacity;
             reloadButton.interactable = canReload;
         }
     }

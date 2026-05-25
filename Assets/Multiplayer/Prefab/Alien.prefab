@@ -450,6 +450,8 @@ MonoBehaviour:
   bombDamage: 25
   _CurrentBombs: 0
   _MaxBombs: 0
+  _HasGrenadeAmmoPowerup:
+    _value: 0
 --- !u!114 &3537175789903063825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -610,12 +612,9 @@ MonoBehaviour:
     m_Bits: 4294967295
   beamWidth: 0.1
   laserColor: {r: 1, g: 0, b: 0, a: 1}
-  maxEnergy: 30
-  currentEnergy: 30
-  reserveEnergy: 90
+  maxEnergy: 20
+  currentEnergy: 20
   energyPerShot: 2
-  energyRegenRate: 20
-  regenDelay: 2
   reloadTime: 2
   laserBeamPrefab: {fileID: 4792249407261658504, guid: 9a16209519b43ca4b98fe8e6b74ba57b,
     type: 3}
@@ -627,7 +626,6 @@ MonoBehaviour:
   laserReloadSound: {fileID: 8300000, guid: 0dcdc5714f8d89f4dad9b379ad6f918b, type: 3}
   soundVolume: 1
   _CurrentEnergy: 0
-  _ReserveEnergy: 0
   _IsReloading: 0
   _HasDamageIncreasePowerup:
     _value: 0

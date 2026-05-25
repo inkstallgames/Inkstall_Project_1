@@ -21,10 +21,10 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [SerializeField] private LayerMask hitLayers = -1;
 
     [Header("Ammo")]
-    [SerializeField] private int maxAmmo = 30;
-    [SerializeField] private int currentAmmo = 30;
-    [SerializeField] private int reserveAmmo = 90;
+    [SerializeField] private int maxAmmo = 20;
+    [SerializeField] private int currentAmmo = 20;
     [SerializeField] private float reloadTime = 1.5f;
+    [Tooltip("Unlimited ammo system - no reserve ammo needed")]
 
     [Header("Effects")]
     [SerializeField] private GameObject muzzleFlashPrefab; // Particle system muzzle flash
@@ -40,7 +40,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [SerializeField] private float bulletTrailSpeed = 300f;
 
     [Networked] public int CurrentAmmo { get; set; }
-    [Networked] public int ReserveAmmo { get; set; }
     [Networked] private TickTimer FireCooldownTimer { get; set; }
     [Networked] private TickTimer ReloadTimer { get; set; }
     [Networked] public bool IsReloading { get; set; }
@@ -101,7 +100,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         if (Object.HasStateAuthority)
         {
             CurrentAmmo = currentAmmo;
-            ReserveAmmo = reserveAmmo;
             IsReloading = false;
         }
 
@@ -136,7 +134,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     {
         if (CurrentAmmo <= 0)
         {
-            if (!IsReloading && ReserveAmmo > 0 && !hasPredictedReload)
+            if (!IsReloading && !hasPredictedReload)
             {
                 PredictReload();
             }
@@ -226,7 +224,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     private void PredictReload()
     {
         if (CurrentAmmo >= maxAmmo) return;
-        if (ReserveAmmo <= 0) return;
         if (IsReloading) return;
         
         // Store prediction data
@@ -330,8 +327,8 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             // Clear prediction if no ammo
             if (Object.HasInputAuthority) ClearShootPrediction();
             
-            // Auto reload when out of ammo and trying to shoot
-            if (!IsReloading && ReserveAmmo > 0)
+            // Auto reload when out of ammo and trying to shoot (unlimited ammo)
+            if (!IsReloading)
             {
                 TryReload();
             }
@@ -402,13 +399,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             if (Object.HasInputAuthority) ClearReloadPrediction();
             return;
         }
-
-        if (ReserveAmmo <= 0)
-        {
-            // Clear prediction if no reserve ammo
-            if (Object.HasInputAuthority) ClearReloadPrediction();
-            return;
-        }
         
         // Clear client-side prediction when server processes the reload
         if (Object.HasInputAuthority)
@@ -428,11 +418,8 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             return;
         }
 
-        int ammoNeeded = maxAmmo - CurrentAmmo;
-        int ammoToReload = Mathf.Min(ammoNeeded, ReserveAmmo);
-        
-        CurrentAmmo += ammoToReload;
-        ReserveAmmo -= ammoToReload;
+        // Unlimited ammo - always reload to full capacity
+        CurrentAmmo = maxAmmo;
         IsReloading = false;
     }
 
@@ -549,7 +536,8 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     public void AddAmmo(int amount)
     {
         if (!Object.HasStateAuthority) return;
-        ReserveAmmo += amount;
+        // Unlimited ammo - just reload to full capacity
+        CurrentAmmo = maxAmmo;
     }
 
     /// <summary>
@@ -562,8 +550,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         
         CurrentAmmo = maxAmmo;
-        // Set reserve ammo to maximum (150), capped to never exceed
-        ReserveAmmo = Mathf.Min(reserveAmmo, 150);
         IsReloading = false;
     }
 

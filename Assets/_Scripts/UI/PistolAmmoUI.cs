@@ -46,7 +46,7 @@ public class PistolAmmoUI : MonoBehaviour
     {
         if (ammoText != null)
         {
-            ammoText.text = $"{localPlayerPistol.CurrentAmmo} / {localPlayerPistol.ReserveAmmo}";
+            ammoText.text = $"{localPlayerPistol.CurrentAmmo} / {localPlayerPistol.MaxAmmo}";
         }
     }
 

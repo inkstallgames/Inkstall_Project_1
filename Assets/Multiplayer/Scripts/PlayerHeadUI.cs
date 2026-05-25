@@ -26,6 +26,12 @@ public class PlayerHeadUI : MonoBehaviour
     public Color highHealthColor = new Color(0.18f, 0.85f, 0.18f);  // green
     public Color midHealthColor  = new Color(1.00f, 0.70f, 0.00f);  // yellow-orange
     public Color lowHealthColor  = new Color(0.90f, 0.10f, 0.10f);  // red
+    
+    [Header("Name Colors")]
+    public Color defaultNameColor = Color.white;
+    public Color enemyNameColor = new Color(0.90f, 0.10f, 0.10f);  // Red for enemies in FFA
+    public Color heroTeamColor = new Color(0.18f, 0.47f, 1f);        // Blue for Hero team (Team A)
+    public Color alienTeamColor = new Color(1f, 0.22f, 0.22f);       // Red for Alien team (Team B)
 
     [Header("Smoothing")]
     [Tooltip("How fast the health bar slides to the new value (higher = faster)")]
@@ -37,6 +43,8 @@ public class PlayerHeadUI : MonoBehaviour
     private float             _targetHealth  = 100f;
     private float             _displayHealth = 100f;
     private string            _cachedName;
+    private Color             _cachedNameColor;
+    private int               _cachedLocalTeamId = -1;
 
     // ── Debug toggle ───────────────────────────────────────────────────
     [Header("Debug")]
@@ -95,6 +103,12 @@ public class PlayerHeadUI : MonoBehaviour
             _targetHealth  = _playerData.Health;
             _displayHealth = _playerData.Health;
             SetHealthBarInstant(_playerData.Health / 100f);
+            
+            // Initialize name color
+            _cachedNameColor = defaultNameColor;
+            if (playerNameText != null)
+                playerNameText.color = _cachedNameColor;
+                
             if (debugLogs) Debug.Log($"[PlayerHeadUI] Start — Found PlayerNetworkData. PlayerName='{_playerData.PlayerName}' Health={_playerData.Health} HasInputAuthority={_playerData.Object?.HasInputAuthority}");
         }
 
@@ -146,6 +160,9 @@ public class PlayerHeadUI : MonoBehaviour
                 playerNameText.text = _cachedName;
             // DISABLED - Performance killer: if (debugLogs) Debug.Log($"[PlayerHeadUI] Name updated → '{_cachedName}'");
         }
+        
+        // Update name color based on game mode and player relationship
+        UpdateNameColor();
 
         UpdateBillboard();
         UpdateVisibility();
@@ -218,5 +235,73 @@ public class PlayerHeadUI : MonoBehaviour
             healthBarFill.color = normalizedValue > 0.5f
                 ? Color.Lerp(midHealthColor, highHealthColor, (normalizedValue - 0.5f) * 2f)
                 : Color.Lerp(lowHealthColor, midHealthColor,   normalizedValue         * 2f);
+    }
+    
+    private void UpdateNameColor()
+    {
+        if (playerNameText == null || _playerData == null) return;
+        
+        bool isLocalPlayer = _playerData.Object?.HasInputAuthority == true;
+        Color targetColor = defaultNameColor;
+        
+        // Don't change color for local player (their own head UI is hidden anyway)
+        if (!isLocalPlayer && NetworkGameManager.Instance != null)
+        {
+            GameMode currentMode = NetworkGameManager.Instance.CurrentGameMode;
+            
+            if (currentMode == GameMode.FreeForAll)
+            {
+                // FFA: All other players are enemies (red)
+                targetColor = enemyNameColor;
+                
+                if (debugLogs && _cachedNameColor != targetColor)
+                    Debug.Log($"[PlayerHeadUI] FFA Mode: Player '{_playerData.PlayerName}' name set to enemy color (red)");
+            }
+            else if (currentMode == GameMode.TeamDeathmatch)
+            {
+                // TDM: Show team colors
+                int playerTeamId = _playerData.TeamId;
+                int localTeamId = GetLocalPlayerTeamId();
+                
+                if (playerTeamId == 0) // Hero team (Team A)
+                {
+                    targetColor = heroTeamColor; // Blue
+                }
+                else if (playerTeamId == 1) // Alien team (Team B)
+                {
+                    targetColor = alienTeamColor; // Red
+                }
+                
+                if (debugLogs && _cachedNameColor != targetColor)
+                    Debug.Log($"[PlayerHeadUI] TDM Mode: Player '{_playerData.PlayerName}' (Team {playerTeamId}) name set to team color");
+            }
+        }
+        
+        // Only update if color actually changed (performance optimization)
+        if (_cachedNameColor != targetColor)
+        {
+            _cachedNameColor = targetColor;
+            playerNameText.color = targetColor;
+        }
+    }
+    
+    private int GetLocalPlayerTeamId()
+    {
+        // Return cached value if already found
+        if (_cachedLocalTeamId != -1)
+            return _cachedLocalTeamId;
+            
+        // Find local player's team ID and cache it
+        var localPlayerData = FindObjectsOfType<PlayerNetworkData>();
+        foreach (var playerData in localPlayerData)
+        {
+            if (playerData.Object != null && playerData.Object.HasInputAuthority)
+            {
+                _cachedLocalTeamId = playerData.TeamId;
+                return _cachedLocalTeamId;
+            }
+        }
+        _cachedLocalTeamId = 0; // Default to Hero team if not found
+        return _cachedLocalTeamId;
     }
 }

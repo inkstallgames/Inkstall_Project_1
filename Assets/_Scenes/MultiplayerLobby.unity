@@ -2381,6 +2381,8 @@ MonoBehaviour:
   teamBHeaderText: {fileID: 1923716313}
   teamAPanelImage: {fileID: 1884250969}
   teamBPanelImage: {fileID: 1095963914}
+  maxPlayersPerPanel: 5
+  spacingMultiplier: 2
 --- !u!1 &389538491
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,6 +12,8 @@ public class NetworkLobbyManager : NetworkBehaviour
 
     [Header("Game Settings")]
     public int minPlayersToStart = 2;
+    [Tooltip("Max players per team in TDM lobby (5 per panel).")]
+    public int maxPlayersPerTeam = 5;
     [Networked, Capacity(10)] public NetworkDictionary<PlayerRef, PlayerLobbyData> LobbyPlayers { get; } 
 
     [Networked] public string JoinCode { get; set; }
@@ -226,8 +228,20 @@ public class NetworkLobbyManager : NetworkBehaviour
             if (kvp.Value.TeamID == 0) teamACount++;
             else if (kvp.Value.TeamID == 1) teamBCount++;
         }
-        int assignedTeam = (teamBCount < teamACount) ? 1 : 0; // tie or A fewer → Team A
-        // Debug.Log($"[NetworkLobbyManager] Auto-assigning player {player.PlayerId} to Team {assignedTeam} (A:{teamACount} B:{teamBCount})");
+        int assignedTeam;
+        if ((GameMode)SelectedModeIndex == GameMode.TeamDeathmatch)
+        {
+            if (teamACount >= maxPlayersPerTeam)
+                assignedTeam = 1;
+            else if (teamBCount >= maxPlayersPerTeam)
+                assignedTeam = 0;
+            else
+                assignedTeam = teamACount <= teamBCount ? 0 : 1;
+        }
+        else
+        {
+            assignedTeam = (teamBCount < teamACount) ? 1 : 0;
+        }
 
         var playerData = new PlayerLobbyData
         {
@@ -276,11 +290,66 @@ public class NetworkLobbyManager : NetworkBehaviour
     /// </summary>
     public void SwitchTeam()
     {
+        if (Runner == null || !Runner.IsRunning) return;
         if (!LobbyPlayers.ContainsKey(Runner.LocalPlayer)) return;
+        if ((GameMode)SelectedModeIndex != GameMode.TeamDeathmatch) return;
+
         int currentTeam = LobbyPlayers[Runner.LocalPlayer].TeamID;
         int newTeam = (currentTeam == 0) ? 1 : 0;
-        // Debug.Log($"[NetworkLobbyManager] Local player switching from Team {currentTeam} to Team {newTeam}");
-        RPC_SetPlayerTeam(newTeam);
+        TryRequestTeamChange(newTeam);
+    }
+
+    /// <summary>
+    /// Requests a team change for the local player. Fails if the target team is full (5/5).
+    /// </summary>
+    public void TryRequestTeamChange(int teamId)
+    {
+        if (Runner == null || !Runner.IsRunning) return;
+        if (!LobbyPlayers.ContainsKey(Runner.LocalPlayer)) return;
+
+        if (!CanSwitchToTeam(Runner.LocalPlayer, teamId, out _))
+            return;
+
+        RPC_SetPlayerTeam(teamId);
+    }
+
+    private int CountPlayersOnTeam(int teamId, PlayerRef excludePlayer = default)
+    {
+        int count = 0;
+        foreach (var kvp in LobbyPlayers)
+        {
+            if (excludePlayer != default && kvp.Key == excludePlayer)
+                continue;
+            if (kvp.Value.TeamID == teamId)
+                count++;
+        }
+        return count;
+    }
+
+    private bool CanSwitchToTeam(PlayerRef player, int teamId, out string denyReason)
+    {
+        denyReason = null;
+
+        if ((GameMode)SelectedModeIndex != GameMode.TeamDeathmatch)
+            return true;
+
+        if (!LobbyPlayers.ContainsKey(player))
+        {
+            denyReason = "Unable to switch teams.";
+            return false;
+        }
+
+        if (LobbyPlayers[player].TeamID == teamId)
+            return true;
+
+        if (CountPlayersOnTeam(teamId, player) >= maxPlayersPerTeam)
+        {
+            string teamName = teamId == 0 ? "Hero's" : "Aliens";
+            denyReason = $"{teamName} team is full ({maxPlayersPerTeam}/{maxPlayersPerTeam}).";
+            return false;
+        }
+
+        return true;
     }
 
     public void OnMapSelectionChanged(int index) => RPC_SetGameSetting(nameof(SelectedMapIndex), index);
@@ -590,6 +659,7 @@ public class NetworkLobbyManager : NetworkBehaviour
             var data = LobbyPlayers[info.Source];
             data.PlayerName = name;
             LobbyPlayers.Set(info.Source, data);
+            NetworkGameManager.Instance?.SetPlayerDisplayName(info.Source, name);
             LobbyVersion++;
 
             // After updating the name, force a UI update for all clients
@@ -604,16 +674,20 @@ public class NetworkLobbyManager : NetworkBehaviour
         // When the host calls this on themselves, info.Source may be default
         if (source == default) source = Runner.LocalPlayer;
 
-        if (LobbyPlayers.ContainsKey(source))
-        {
-            var data = LobbyPlayers[source];
-            data.TeamID = teamId;
-            LobbyPlayers.Set(source, data);
-            LobbyVersion++;
-            // Debug.Log($"[NetworkLobbyManager] Player {source.PlayerId} team set to {teamId}");
-            // Broadcast updated player list to all clients
-            RPC_UpdateLobbyUI();
-        }
+        if (!LobbyPlayers.ContainsKey(source))
+            return;
+
+        var data = LobbyPlayers[source];
+        if (data.TeamID == teamId)
+            return;
+
+        if (!CanSwitchToTeam(source, teamId, out _))
+            return;
+
+        data.TeamID = teamId;
+        LobbyPlayers.Set(source, data);
+        LobbyVersion++;
+        RPC_UpdateLobbyUI();
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

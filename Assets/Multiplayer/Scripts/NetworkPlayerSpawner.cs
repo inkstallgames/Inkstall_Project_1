@@ -191,6 +191,15 @@ public class NetworkPlayerSpawner : NetworkBehaviour
             if (playerNetworkData != null)
             {
                 playerNetworkData.TeamId = teamId;
+
+                if (lobbyManager != null && lobbyManager.LobbyPlayers.ContainsKey(player))
+                {
+                    string lobbyName = lobbyManager.LobbyPlayers[player].PlayerName.ToString();
+                    if (!string.IsNullOrEmpty(lobbyName))
+                        playerNetworkData.PlayerName = lobbyName;
+                }
+
+                gameManager?.RegisterPlayer(player, playerNetworkData);
                 
                 // Restore Kills and Deaths from GameManager so they persist across respawns
                 if (gameManager != null)

@@ -106,6 +106,8 @@ public class NetworkGameManager : NetworkBehaviour
 
 
     private Dictionary<PlayerRef, PlayerNetworkData> players = new Dictionary<PlayerRef, PlayerNetworkData>();
+    /// <summary>Display names for the current match (survives despawn/respawn).</summary>
+    private readonly Dictionary<PlayerRef, string> _matchPlayerNames = new Dictionary<PlayerRef, string>();
     private NetworkPlayerSpawner playerSpawner;
     private Dictionary<PlayerRef, float> respawnTimers = new Dictionary<PlayerRef, float>();
     private List<NetworkObject> activeProjectiles = new List<NetworkObject>();
@@ -313,6 +315,7 @@ public class NetworkGameManager : NetworkBehaviour
         _disconnectedPlayers.Clear();
         _tokenToPlayerRef.Clear();
         _matchPlayerTokens.Clear();
+        _matchPlayerNames.Clear();
 
 
 
@@ -325,6 +328,8 @@ public class NetworkGameManager : NetworkBehaviour
             PlayerKills.Set(player, 0);
 
             PlayerDeaths.Set(player, 0);
+
+            CachePlayerNameFromLobby(player);
 
         }
 
@@ -652,32 +657,88 @@ public class NetworkGameManager : NetworkBehaviour
 
     public string GetPlayerNameOrFallback(PlayerRef player)
     {
-        if (players.TryGetValue(player, out var data) && data != null)
+        if (player == PlayerRef.None)
+            return "Unknown";
+
+        // Live character (always current after respawn)
+        if (Runner != null)
         {
-            return data.PlayerName;
-        }
-        
-        // Search in disconnected players
-        foreach (var kvp in _disconnectedPlayers)
-        {
-            if (kvp.Value.OldPlayerRef == player)
+            var playerObj = Runner.GetPlayerObject(player);
+            if (playerObj != null)
             {
-                return kvp.Value.PlayerName;
+                var liveData = playerObj.GetComponent<PlayerNetworkData>();
+                if (liveData != null && !string.IsNullOrEmpty(liveData.PlayerName))
+                    return liveData.PlayerName;
             }
         }
-        
+
+        if (_matchPlayerNames.TryGetValue(player, out string cachedName) && !string.IsNullOrEmpty(cachedName))
+            return cachedName;
+
+        if (players.TryGetValue(player, out var data) && data != null && !string.IsNullOrEmpty(data.PlayerName))
+            return data.PlayerName;
+
+        if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(player))
+        {
+            string lobbyName = NetworkLobbyManager.Instance.LobbyPlayers[player].PlayerName.ToString();
+            if (!string.IsNullOrEmpty(lobbyName))
+                return lobbyName;
+        }
+
+        foreach (var kvp in _disconnectedPlayers)
+        {
+            if (kvp.Value.OldPlayerRef == player && !string.IsNullOrEmpty(kvp.Value.PlayerName))
+                return kvp.Value.PlayerName;
+        }
+
+        if (Runner != null && player == Runner.LocalPlayer)
+        {
+            string prefsName = PlayerPrefs.GetString("PlayerName", "");
+            if (!string.IsNullOrEmpty(prefsName))
+                return prefsName;
+        }
+
         return $"Player {player.PlayerId}";
     }
 
+    public void SetPlayerDisplayName(PlayerRef player, string name)
+    {
+        if (player == PlayerRef.None || string.IsNullOrEmpty(name))
+            return;
+        _matchPlayerNames[player] = name;
+    }
 
+    private void CachePlayerNameFromLobby(PlayerRef player)
+    {
+        if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(player))
+        {
+            string lobbyName = NetworkLobbyManager.Instance.LobbyPlayers[player].PlayerName.ToString();
+            if (!string.IsNullOrEmpty(lobbyName))
+            {
+                SetPlayerDisplayName(player, lobbyName);
+                return;
+            }
+        }
+
+        if (Runner != null && player == Runner.LocalPlayer)
+        {
+            string prefsName = PlayerPrefs.GetString("PlayerName", "");
+            if (!string.IsNullOrEmpty(prefsName))
+                SetPlayerDisplayName(player, prefsName);
+        }
+    }
 
     public void RegisterPlayer(PlayerRef player, PlayerNetworkData playerData)
     {
-        if (!players.ContainsKey(player))
-        {
-            players[player] = playerData;
-            // Debug.Log($"Player {player.PlayerId} registered with team {playerData.TeamId}");
-        }
+        if (playerData == null)
+            return;
+
+        players[player] = playerData;
+
+        if (!string.IsNullOrEmpty(playerData.PlayerName))
+            SetPlayerDisplayName(player, playerData.PlayerName);
+        else
+            CachePlayerNameFromLobby(player);
     }
 
 
@@ -1480,6 +1541,10 @@ public class NetworkGameManager : NetworkBehaviour
                 }
 
                 playerData.PlayerName = playerName;
+
+                SetPlayerDisplayName(playerRef, playerName);
+
+                RegisterPlayer(playerRef, playerData);
 
                 playerData.Health = 100;
 

@@ -63,6 +63,12 @@ public class PlayerNetworkData : NetworkBehaviour
 
     private int _lastTeamId;
 
+    private GameMode _lastGameMode = (GameMode)(-1);
+
+    private static readonly Color FfaEnemyNameColor = new Color(0.90f, 0.10f, 0.10f);
+    private static readonly Color HeroTeamNameColor = new Color(0.18f, 0.47f, 1f);
+    private static readonly Color AlienTeamNameColor = new Color(1f, 0.22f, 0.22f);
+
 
 
     public override void Spawned()
@@ -119,16 +125,32 @@ public class PlayerNetworkData : NetworkBehaviour
 
 
 
+    private Color GetHeadNameColor()
+    {
+        bool isLocalPlayer = Object != null && Object.HasInputAuthority;
+        bool isFFA = NetworkGameManager.Instance != null
+            && NetworkGameManager.Instance.CurrentGameMode == GameMode.FreeForAll;
+
+        if (isFFA)
+            return isLocalPlayer ? Color.white : FfaEnemyNameColor;
+
+        if (TeamId == 0)
+            return HeroTeamNameColor;
+        if (TeamId == 1)
+            return AlienTeamNameColor;
+
+        return Color.white;
+    }
+
     public void UpdateVisuals()
 
     {
 
-        // Update name tag
+        // Update name tag (same TMP as PlayerHeadUI on Hero prefab — keep colors in sync)
         if (nameTag != null)
         {
             nameTag.text = PlayerName;
-            bool isFFA = NetworkGameManager.Instance != null && NetworkGameManager.Instance.CurrentGameMode == GameMode.FreeForAll;
-            nameTag.color = isFFA ? Color.white : (TeamId == 0 ? Color.blue : (TeamId == 1 ? Color.red : Color.white));
+            nameTag.color = GetHeadNameColor();
         }
 
         // Update health bar
@@ -300,6 +322,8 @@ public class PlayerNetworkData : NetworkBehaviour
         
         PlayerName = name;
 
+        NetworkGameManager.Instance?.SetPlayerDisplayName(Object.InputAuthority, name);
+
     }
 
 
@@ -341,11 +365,16 @@ public class PlayerNetworkData : NetworkBehaviour
 
     public override void Render()
     {
+        GameMode mode = NetworkGameManager.Instance != null
+            ? NetworkGameManager.Instance.CurrentGameMode
+            : GameMode.TeamDeathmatch;
+
         // OPTIMIZATION: Only update visuals when values actually change
-        if (_lastPlayerName != PlayerName || _lastTeamId != TeamId)
+        if (_lastPlayerName != PlayerName || _lastTeamId != TeamId || _lastGameMode != mode)
         {
             _lastPlayerName = PlayerName;
             _lastTeamId = TeamId;
+            _lastGameMode = mode;
             UpdateVisuals();
         }
     }

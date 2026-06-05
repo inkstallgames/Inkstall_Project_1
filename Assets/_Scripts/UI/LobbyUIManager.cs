@@ -343,18 +343,43 @@ public class LobbyUIManager : MonoBehaviour
         // Sort: host first, then by player ID
         var sortedPlayers = players
             .OrderByDescending(p => p.Value.IsHost)
-            .ThenBy(p => p.Key);
+            .ThenBy(p => p.Key)
+            .ToList();
 
-        foreach (var kvp in sortedPlayers)
+        const int maxPlayersPerColumn = 5;
+        int teamASlot = 0;
+        int teamBSlot = 0;
+
+        for (int i = 0; i < sortedPlayers.Count; i++)
         {
+            var kvp = sortedPlayers[i];
             int playerId = kvp.Key;
             PlayerLobbyData player = kvp.Value;
 
-            // Route to the correct team column (In FFA, all players go to team A panel)
-            GameObject parent = (isFFA || player.TeamID != 1) ? teamAListContent : teamBListContent;
+            GameObject parent;
+            int slotIndex;
+            if (isFFA)
+            {
+                bool leftColumn = i < maxPlayersPerColumn;
+                parent = leftColumn ? teamAListContent : teamBListContent;
+                slotIndex = leftColumn ? i : i - maxPlayersPerColumn;
+            }
+            else
+            {
+                bool heroesTeam = player.TeamID == 0;
+                parent = heroesTeam ? teamAListContent : teamBListContent;
+                slotIndex = heroesTeam ? teamASlot : teamBSlot;
+                if (slotIndex >= maxPlayersPerColumn)
+                    continue;
+                if (heroesTeam) teamASlot++;
+                else teamBSlot++;
+            }
+
             if (parent == null) continue;
 
             GameObject item = Instantiate(playerListItemPrefab, parent.transform);
+            item.transform.SetSiblingIndex(slotIndex);
+
             PlayerListItemUI listItem = item.GetComponent<PlayerListItemUI>();
             if (listItem != null)
             {
@@ -453,12 +478,14 @@ public class LobbyUIManager : MonoBehaviour
 
     public void ShowMessage(string message)
     {
-        if (notificationText != null)
-        {
-            notificationText.text = message;
+        if (notificationText == null || string.IsNullOrEmpty(message)) return;
+
+        notificationText.text = message;
+        // Only enable the label itself — never deactivate lobby/team panels.
+        if (!notificationText.gameObject.activeSelf)
             notificationText.gameObject.SetActive(true);
-            StartCoroutine(HideMessageAfterDelay(3f));
-        }
+
+        StartCoroutine(HideMessageAfterDelay(3f));
     }
 
     private System.Collections.IEnumerator HideMessageAfterDelay(float delay)

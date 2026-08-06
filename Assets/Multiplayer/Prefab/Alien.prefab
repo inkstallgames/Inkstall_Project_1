@@ -192,7 +192,8 @@ MonoBehaviour:
   sprintingFootstepInterval: 0.5
   runThresholdSound: 0.5
   sprintThresholdSound: 0.5
-  adaptiveFootstepClip: {fileID: 8300000, guid: dbe4405baeea2404ba3d422430b5fd3b, type: 3}
+  adaptiveFootstepClip: {fileID: 8300000, guid: 64625e58dca09524688160e1ceeff45c,
+    type: 3}
   slowFootstepInterval: 0.55
   fastFootstepInterval: 0.25
   slowFootstepPitch: 0.9
@@ -647,6 +648,7 @@ MonoBehaviour:
     _value: 0
   _IsFiringLaser:
     _value: 0
+  visualRaycastInterval: 0.05
   _NetworkedAimOrigin: {x: 0, y: 0, z: 0}
   _NetworkedAimDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &4750772492329756353

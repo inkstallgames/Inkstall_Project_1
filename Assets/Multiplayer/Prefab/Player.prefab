@@ -125,7 +125,7 @@ MonoBehaviour:
   SprintSpeed: 5
   RotationSmoothTime: 0
   SpeedChangeRate: 999
-  LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+  LandingAudioClip: {fileID: 0}
   FootstepAudioClips:
   - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
   - {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
@@ -161,7 +161,8 @@ MonoBehaviour:
   sprintingFootstepInterval: 0.5
   runThresholdSound: 0.5
   sprintThresholdSound: 0.5
-  adaptiveFootstepClip: {fileID: 8300000, guid: dbe4405baeea2404ba3d422430b5fd3b, type: 3}
+  adaptiveFootstepClip: {fileID: 8300000, guid: 64625e58dca09524688160e1ceeff45c,
+    type: 3}
   slowFootstepInterval: 0.55
   fastFootstepInterval: 0.25
   slowFootstepPitch: 0.9

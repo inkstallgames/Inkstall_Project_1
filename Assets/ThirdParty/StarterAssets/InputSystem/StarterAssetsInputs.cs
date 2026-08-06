@@ -138,7 +138,6 @@ namespace StarterAssets
 
 			
 
-			Debug.Log($"[StarterAssetsInputs] Input actions enabled for {gameObject.name}");
 
 #endif
 
@@ -162,7 +161,6 @@ namespace StarterAssets
 
 			
 
-			Debug.Log($"[StarterAssetsInputs] Input actions disabled for {gameObject.name}");
 
 #endif
 
@@ -226,8 +224,8 @@ namespace StarterAssets
 
 			
 
-			// --- Settings panel guard: suppress look input while settings is open ---
-			bool settingsActive = NetworkUIManager.Instance != null && NetworkUIManager.Instance.IsSettingsPanelActive;
+			// --- Menu guard: suppress look input while settings or the HUD editor is open ---
+			bool settingsActive = NetworkUIManager.Instance != null && NetworkUIManager.Instance.IsGameplayInputBlocked;
 			if (settingsActive)
 			{
 				// Zero-out look so the camera never rotates while the player is in settings

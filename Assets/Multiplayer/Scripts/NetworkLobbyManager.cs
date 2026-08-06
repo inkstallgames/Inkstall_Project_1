@@ -373,12 +373,24 @@ public class NetworkLobbyManager : NetworkBehaviour
 
         public void StartGame()
     {
+        StartMatch();
+    }
+
+    /// <summary>Starts the match. Returns false when nothing was started, so callers can keep the lobby visible.</summary>
+    public bool StartMatch()
+    {
         // Debug.Log($"[NetworkLobbyManager] StartGame called. IsServer: {Runner?.IsServer}");
 
-        if (!Runner.IsServer)
+        if (Runner == null || !Runner.IsServer)
         {
             // Debug.LogError("[NetworkLobbyManager] Only the server can start the game!");
-            return;
+            return false;
+        }
+
+        if (NetworkGameManager.Instance == null)
+        {
+            Debug.LogError("[NetworkLobbyManager] NetworkGameManager.Instance is null! Cannot start game.");
+            return false;
         }
 
         // Hero selection is disabled — spawn players directly with playerPrefab
@@ -403,18 +415,13 @@ public class NetworkLobbyManager : NetworkBehaviour
         GameStartTimer = default;
 
         // Notify NetworkGameManager to start the game (loads the scene)
-        if (NetworkGameManager.Instance != null)
-        {
-            NetworkGameManager.Instance.StartGame(
-                (GameMode)SelectedModeIndex,
-                timeInSeconds[SelectedTimeIndex],
-                sceneName
-            );
-        }
-        else
-        {
-            // Debug.LogError("[NetworkLobbyManager] NetworkGameManager.Instance is null! Cannot start game.");
-        }
+        NetworkGameManager.Instance.StartGame(
+            (GameMode)SelectedModeIndex,
+            timeInSeconds[SelectedTimeIndex],
+            sceneName
+        );
+
+        return true;
     }
 
     private void OnGameStarted()
@@ -519,6 +526,7 @@ public class NetworkLobbyManager : NetworkBehaviour
     private void UpdateLobbyUI()
     {
         if (uiManager == null) return;
+        if (uiManager.IsLoadingIntoMatch) return;
 
         // Detect lobby data changes via the networked version counter
         // This is reliable because LobbyVersion syncs atomically with LobbyPlayers

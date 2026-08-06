@@ -52,6 +52,8 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private bool reduceLogSpam = true;
     [SerializeField] private bool optimizeCameraOperations = true;
     [SerializeField] private bool cacheFrequentLookups = true;
+    [Tooltip("Verbose reconnection logs. Leave off for smooth gameplay.")]
+    [SerializeField] private bool logReconnectDebug = false;
     
     // Store the current join code so it can be accessed by other scripts
     public string CurrentJoinCode { get; private set; }
@@ -543,12 +545,12 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             byte[] token = runner.GetPlayerConnectionToken(player);
             string tokenId = (token != null && token.Length > 0) ? NetworkGameManager.TokenToString(token) : "NULL";
             string shortToken = tokenId.Length > 8 ? tokenId.Substring(0, 8) : tokenId;
-            UnityEngine.Debug.Log($"[RECONNECT] Player {player.PlayerId} token received: {shortToken}... (length: {(token != null ? token.Length : 0)})");
+            LogReconnect($"[RECONNECT] Player {player.PlayerId} token received: {shortToken}... (length: {(token != null ? token.Length : 0)})");
 
             if (token != null && token.Length > 0)
             {
                 _playerTokens[player] = token;
-                UnityEngine.Debug.Log($"[RECONNECT] Stored token {shortToken}... for Player {player.PlayerId} in _playerTokens (count: {_playerTokens.Count})");
+                LogReconnect($"[RECONNECT] Stored token {shortToken}... for Player {player.PlayerId} in _playerTokens (count: {_playerTokens.Count})");
 
                 // Register the token with the game manager
                 if (NetworkGameManager.Instance != null)
@@ -558,27 +560,26 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                     bool gameInProgress = NetworkGameManager.Instance.IsGameInProgress();
                     bool isDisconnected = NetworkGameManager.Instance.IsDisconnectedPlayer(token);
                     bool isKnownPlayer = NetworkGameManager.Instance.IsKnownMatchPlayer(token);
-                    UnityEngine.Debug.Log($"[RECONNECT] Token {shortToken}... verification: GameInProgress={gameInProgress}, IsKnownMatchPlayer={isKnownPlayer}, IsDisconnectedPlayer={isDisconnected}");
+                    LogReconnect($"[RECONNECT] Token {shortToken}... verification: GameInProgress={gameInProgress}, IsKnownMatchPlayer={isKnownPlayer}, IsDisconnectedPlayer={isDisconnected}");
 
                     // Check if this is a reconnecting player
                     if (gameInProgress && isDisconnected)
                     {
-                        UnityEngine.Debug.Log($"[RECONNECT] ✅ Player {player.PlayerId} is RECONNECTING with token {shortToken}... — restoring state.");
+                        LogReconnect($"[RECONNECT] ✅ Player {player.PlayerId} is RECONNECTING with token {shortToken}... — restoring state.");
                         NetworkGameManager.Instance.RestoreReconnectedPlayer(player, token);
                         return; // Skip normal join flow — reconnected player is handled
                     }
                     else if (gameInProgress && !isDisconnected)
                     {
-                        UnityEngine.Debug.Log($"[RECONNECT] Player {player.PlayerId} joined mid-game but is NOT a disconnected player (token {shortToken}...). Normal join flow.");
+                        LogReconnect($"[RECONNECT] Player {player.PlayerId} joined mid-game but is NOT a disconnected player (token {shortToken}...). Normal join flow.");
                     }
                 }
             }
             else
             {
-                UnityEngine.Debug.LogWarning($"[RECONNECT] Player {player.PlayerId} has NO connection token! Reconnection will not work for this player.");
+                LogReconnectWarning($"[RECONNECT] Player {player.PlayerId} has NO connection token! Reconnection will not work for this player.");
             }
         }
-        // ===== END RECONNECTION =====
 
         // Use a coroutine to wait for the lobby manager to be ready, especially on clients
         StartCoroutine(NotifyLobbyManagerOfPlayerJoin(player));
@@ -652,7 +653,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 string tokenId = (token != null && token.Length > 0) ? NetworkGameManager.TokenToString(token) : "NULL";
                 string shortToken = tokenId.Length > 8 ? tokenId.Substring(0, 8) : tokenId;
 
-                UnityEngine.Debug.Log($"[RECONNECT] Player {player.PlayerId} left mid-game. Token: {shortToken}... — character will be KEPT ALIVE for reconnection.");
+                LogReconnect($"[RECONNECT] Player {player.PlayerId} left mid-game. Token: {shortToken}... — character will be KEPT ALIVE for reconnection.");
 
                 if (token != null && token.Length > 0 && NetworkGameManager.Instance != null)
                 {
@@ -662,7 +663,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 }
                 else
                 {
-                    UnityEngine.Debug.LogWarning($"[RECONNECT] Cannot save state for Player {player.PlayerId} — token is null or GameManager unavailable.");
+                    LogReconnectWarning($"[RECONNECT] Cannot save state for Player {player.PlayerId} — token is null or GameManager unavailable.");
                 }
                 
                 // Do NOT despawn the character — it stays in the world for reconnection.
@@ -670,7 +671,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             }
             else
             {
-                UnityEngine.Debug.Log($"[RECONNECT] Player {player.PlayerId} left but game is NOT in progress — despawning character.");
+                LogReconnect($"[RECONNECT] Player {player.PlayerId} left but game is NOT in progress — despawning character.");
                 
                 // Game is not in progress (lobby or post-game), so despawn normally
                 var playerObject = runner.GetPlayerObject(player);
@@ -695,7 +696,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 // Actively disconnect the player from the server
                 runner.Disconnect(player);
             }
-            // ===== END RECONNECTION =====
 
             // Clean up token mapping
             _playerTokens.Remove(player);
@@ -817,31 +817,31 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     {
         string tokenId = (token != null && token.Length > 0) ? NetworkGameManager.TokenToString(token) : "NULL";
         string shortToken = tokenId.Length > 8 ? tokenId.Substring(0, 8) : tokenId;
-        UnityEngine.Debug.Log($"[RECONNECT] OnConnectRequest received. Token: {shortToken}... (length: {(token != null ? token.Length : 0)})");
+        LogReconnect($"[RECONNECT] OnConnectRequest received. Token: {shortToken}... (length: {(token != null ? token.Length : 0)})");
 
         // ===== RECONNECTION: Gate mid-game connections =====
         if (runner.IsServer && NetworkGameManager.Instance != null && NetworkGameManager.Instance.IsGameInProgress())
         {
             bool isKnown = token != null && token.Length > 0 && NetworkGameManager.Instance.IsKnownMatchPlayer(token);
             bool isDisconnected = token != null && token.Length > 0 && NetworkGameManager.Instance.IsDisconnectedPlayer(token);
-            UnityEngine.Debug.Log($"[RECONNECT] Mid-game connection check — Token: {shortToken}..., IsKnownMatchPlayer: {isKnown}, IsDisconnectedPlayer: {isDisconnected}");
+            LogReconnect($"[RECONNECT] Mid-game connection check — Token: {shortToken}..., IsKnownMatchPlayer: {isKnown}, IsDisconnectedPlayer: {isDisconnected}");
 
             // Only allow known match players to rejoin during a game
             if (isKnown)
             {
-                UnityEngine.Debug.Log($"[RECONNECT] ✅ Connection ACCEPTED — token {shortToken}... is a known match player.");
+                LogReconnect($"[RECONNECT] ✅ Connection ACCEPTED — token {shortToken}... is a known match player.");
                 request.Accept();
             }
             else
             {
-                UnityEngine.Debug.LogWarning($"[RECONNECT] ❌ Connection REJECTED — token {shortToken}... is NOT a known match participant. Game in progress.");
+                LogReconnectWarning($"[RECONNECT] ❌ Connection REJECTED — token {shortToken}... is NOT a known match participant. Game in progress.");
                 request.Refuse();
             }
         }
         else
         {
             // Not in a game — accept all connections normally
-            UnityEngine.Debug.Log($"[RECONNECT] No active game — accepting connection for token {shortToken}...");
+            LogReconnect($"[RECONNECT] No active game — accepting connection for token {shortToken}...");
             request.Accept();
         }
     }
@@ -1096,18 +1096,31 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
             savedToken = Guid.NewGuid().ToString();
             PlayerPrefs.SetString(tokenKey, savedToken);
             PlayerPrefs.Save();
-            UnityEngine.Debug.Log($"[RECONNECT] 🆕 Generated NEW connection token: {savedToken.Substring(0, 8)}...");
+            LogReconnect($"[RECONNECT] 🆕 Generated NEW connection token: {savedToken.Substring(0, 8)}...");
         }
         else
         {
-            UnityEngine.Debug.Log($"[RECONNECT] 📋 Loaded existing connection token: {savedToken.Substring(0, 8)}...");
+            LogReconnect($"[RECONNECT] 📋 Loaded existing connection token: {savedToken.Substring(0, 8)}...");
         }
 
         // Convert GUID string to bytes
         byte[] tokenBytes = Encoding.UTF8.GetBytes(savedToken);
         string hexToken = NetworkGameManager.TokenToString(tokenBytes);
-        UnityEngine.Debug.Log($"[RECONNECT] Token hex ID: {hexToken.Substring(0, Mathf.Min(16, hexToken.Length))}... ({tokenBytes.Length} bytes)");
+        LogReconnect($"[RECONNECT] Token hex ID: {hexToken.Substring(0, Mathf.Min(16, hexToken.Length))}... ({tokenBytes.Length} bytes)");
         return tokenBytes;
+    }
+
+
+    private void LogReconnect(string message)
+    {
+        if (logReconnectDebug)
+            UnityEngine.Debug.Log(message);
+    }
+
+    private void LogReconnectWarning(string message)
+    {
+        if (logReconnectDebug)
+            UnityEngine.Debug.LogWarning(message);
     }
 
     // ===== END RECONNECTION =====

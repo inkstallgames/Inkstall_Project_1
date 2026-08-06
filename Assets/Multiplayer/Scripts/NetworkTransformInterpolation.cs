@@ -24,7 +24,7 @@ public class NetworkTransformInterpolation : NetworkBehaviour
     
     [Header("Debug")]
     [SerializeField] private bool showDebugInfo = false;
-    [SerializeField] private bool showJumpDebug = true; // Debug jump interpolation
+    [SerializeField] private bool showJumpDebug = false; // Debug jump interpolation
     
     private Vector3 _renderPosition;
     private Quaternion _renderRotation;

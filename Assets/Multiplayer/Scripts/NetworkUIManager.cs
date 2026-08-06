@@ -116,7 +116,13 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip killSoundEffect;
 
-    public bool IsSettingsPanelActive => settingsPanel != null && settingsPanel.activeSelf;
+    // Treat live HUD editing like the settings menu so gameplay input remains blocked.
+    public bool IsSettingsPanelActive =>
+        (settingsPanel != null && settingsPanel.activeSelf) ||
+        HUDCustomizationManager.IsEditMode;
+
+    /// <summary>Alias used by input scripts to suppress movement/look while a menu or the HUD editor is open.</summary>
+    public bool IsGameplayInputBlocked => IsSettingsPanelActive;
 
     // Cached references
     private NetworkRunner runner;
@@ -154,6 +160,12 @@ public class NetworkUIManager : MonoBehaviour
     private int _lastDisplayedRedScore = -1;
     private int _lastDisplayedFfaKills = -1;
     private int _lastDisplayedFfaRank = -1;
+    private string _lastDisplayedGameState;
+    private int _lastDisplayedTimerSeconds = -1;
+    private int _lastDisplayedWaitingSeconds = -1;
+    private string _lastWaitingStatus;
+    private GameMode? _lastDisplayedScoreMode;
+    private bool? _lastAbilityReady;
     private readonly List<KeyValuePair<PlayerRef, int>> _ffaKillSortBuffer = new List<KeyValuePair<PlayerRef, int>>(10);
     private float _damageIndicatorTimer = 0f;
     private const float DAMAGE_INDICATOR_DURATION = 0.3f;
@@ -272,7 +284,6 @@ public class NetworkUIManager : MonoBehaviour
         // (happens when a player disconnects and reconnects — old object is despawned)
         if (localPlayerObject != null && (!localPlayerObject || !localPlayerObject.IsValid))
         {
-            Debug.Log("[NetworkUIManager] Cached local player object is no longer valid — clearing references for re-discovery.");
             ClearCachedPlayerReferences();
         }
 
@@ -316,21 +327,16 @@ public class NetworkUIManager : MonoBehaviour
                 leaderboardUpdateTimer = LEADERBOARD_UPDATE_INTERVAL;
                 UpdateLeaderboardCache();
             }
-            
-            // TEST KILL FEED + KILL NOTIFICATION
+
+#if UNITY_EDITOR
+            // TEST KILL FEED + KILL NOTIFICATION (editor only)
             if (Input.GetKeyDown(KeyCode.K))
             {
-                // Randomly assign teams 0 and 1 for testing
                 int randomKillerTeam = Random.Range(0, 2);
                 int randomVictimTeam = randomKillerTeam == 0 ? 1 : 0;
-                
-                // Randomly pick a weapon name from the known list
                 string[] testWeapons = { "Pistol", "Laser", "Bomb" };
                 string randomWeapon = testWeapons[Random.Range(0, testWeapons.Length)];
-                
                 AddKillFeedEntry("Test Killer", randomKillerTeam, "Test Victim", randomVictimTeam, randomWeapon);
-
-                // Also trigger the personal kill notification pop animation
                 OnPlayerKilled("Test Victim");
             }
 
@@ -341,6 +347,7 @@ public class NetworkUIManager : MonoBehaviour
                     NetworkGameManager.Instance.RPC_DebugSimulateKill(runner.LocalPlayer);
                 }
             }
+#endif
 
             // Keyboard shortcut: press T to throw/shoot
             // For laser: use GetKey (held) for continuous fire, GetKeyDown for others
@@ -418,7 +425,13 @@ public class NetworkUIManager : MonoBehaviour
                 {
                     // Countdown is active
                     float remainingTime = lobbyManager.GameStartTimer.RemainingTime(runner) ?? 0;
-                    waitingStatusText.text = $"Game starting in {Mathf.CeilToInt(remainingTime)}";
+                    int secondsLeft = Mathf.CeilToInt(remainingTime);
+                    if (secondsLeft != _lastDisplayedWaitingSeconds)
+                    {
+                        _lastDisplayedWaitingSeconds = secondsLeft;
+                        _lastWaitingStatus = $"Game starting in {secondsLeft}";
+                        waitingStatusText.text = _lastWaitingStatus;
+                    }
 
                     if (lobbyManager.GameStartTimer.Expired(runner))
                     {
@@ -437,10 +450,11 @@ public class NetworkUIManager : MonoBehaviour
                         ShowWaitingForPlayersScreen(false);
                     }
                 }
-                else
+                else if (_lastWaitingStatus != "Waiting for other players...")
                 {
-                    // Waiting for players, before countdown starts
-                    waitingStatusText.text = "Waiting for other players...";
+                    _lastWaitingStatus = "Waiting for other players...";
+                    _lastDisplayedWaitingSeconds = -1;
+                    waitingStatusText.text = _lastWaitingStatus;
                 }
             }
         }
@@ -528,6 +542,12 @@ public class NetworkUIManager : MonoBehaviour
         _lastDisplayedRedScore = -1;
         _lastDisplayedFfaKills = -1;
         _lastDisplayedFfaRank = -1;
+        _lastDisplayedGameState = null;
+        _lastDisplayedTimerSeconds = -1;
+        _lastDisplayedWaitingSeconds = -1;
+        _lastWaitingStatus = null;
+        _lastDisplayedScoreMode = null;
+        _lastAbilityReady = null;
         leaderboardUpdateTimer = 0f;
         ffaRankUpdateTimer = 0f;
     }
@@ -605,6 +625,8 @@ public class NetworkUIManager : MonoBehaviour
         if (localAbilityController == null) return;
 
         bool ready = !localAbilityController.IsOnCooldown(); // true = has charge
+        if (_lastAbilityReady == ready) return;
+        _lastAbilityReady = ready;
 
         // Radial fill overlay: fully filled (blocked) when no charge, hidden when ready
         if (abilityCooldownOverlay != null)
@@ -613,7 +635,7 @@ public class NetworkUIManager : MonoBehaviour
             abilityCooldownOverlay.gameObject.SetActive(!ready);
         }
 
-        // Text: "Q" when ready, "🔒" (or "—") when waiting for a kill
+        // Text: "Q" when ready, "KILL" when waiting for a kill
         if (abilityCooldownText != null)
         {
             abilityCooldownText.text = ready ? "Q" : "KILL";
@@ -896,53 +918,64 @@ public class NetworkUIManager : MonoBehaviour
         // Game state
         if (gameStateText != null)
         {
-            gameStateText.text = gm.CurrentGameState.ToString();
+            string stateLabel = gm.CurrentGameState.ToString();
+            if (stateLabel != _lastDisplayedGameState)
+            {
+                _lastDisplayedGameState = stateLabel;
+                gameStateText.text = stateLabel;
+            }
         }
 
-        // Timer
+        // Timer — only rewrite TMP when the displayed second changes
         if (timerText != null && runner != null && runner.IsRunning && gm.CurrentGameState == GameState.InProgress)
         {
             float elapsed = runner.SimulationTime - gm.RoundStartTime;
-            float remaining = gm.RoundTime - elapsed;
-            remaining = Mathf.Max(0, remaining);
+            float remaining = Mathf.Max(0f, gm.RoundTime - elapsed);
+            int totalSeconds = Mathf.FloorToInt(remaining);
 
-            int minutes = Mathf.FloorToInt(remaining / 60f);
-            int seconds = Mathf.FloorToInt(remaining % 60f);
-            timerText.text = $"{minutes:00}:{seconds:00}";
+            if (totalSeconds != _lastDisplayedTimerSeconds)
+            {
+                _lastDisplayedTimerSeconds = totalSeconds;
+                int minutes = totalSeconds / 60;
+                int seconds = totalSeconds % 60;
+                timerText.text = $"{minutes:00}:{seconds:00}";
+            }
         }
 
-        // Team & FFA scores
+        // Team & FFA scores — only toggle panel active state when mode changes
         if (gm.CurrentGameMode == GameMode.TeamDeathmatch)
         {
-            if (teamAScorePanel != null) teamAScorePanel.SetActive(true);
-            if (teamBScorePanel != null) teamBScorePanel.SetActive(true);
-            if (ffaLocalPlayerPanel != null) ffaLocalPlayerPanel.SetActive(false);
-
-            if (blueTeamScoreText != null)
+            if (_lastDisplayedScoreMode != GameMode.TeamDeathmatch)
             {
-                blueTeamScoreText.gameObject.SetActive(true);
-                if (gm.BlueTeamScore != _lastDisplayedBlueScore)
-                {
-                    _lastDisplayedBlueScore = gm.BlueTeamScore;
-                    blueTeamScoreText.text = $"{gm.BlueTeamScore}";
-                }
+                _lastDisplayedScoreMode = GameMode.TeamDeathmatch;
+                if (teamAScorePanel != null) teamAScorePanel.SetActive(true);
+                if (teamBScorePanel != null) teamBScorePanel.SetActive(true);
+                if (ffaLocalPlayerPanel != null) ffaLocalPlayerPanel.SetActive(false);
+                if (blueTeamScoreText != null) blueTeamScoreText.gameObject.SetActive(true);
+                if (redTeamScoreText != null) redTeamScoreText.gameObject.SetActive(true);
             }
 
-            if (redTeamScoreText != null)
+            if (blueTeamScoreText != null && gm.BlueTeamScore != _lastDisplayedBlueScore)
             {
-                redTeamScoreText.gameObject.SetActive(true);
-                if (gm.RedTeamScore != _lastDisplayedRedScore)
-                {
-                    _lastDisplayedRedScore = gm.RedTeamScore;
-                    redTeamScoreText.text = $"{gm.RedTeamScore}";
-                }
+                _lastDisplayedBlueScore = gm.BlueTeamScore;
+                blueTeamScoreText.text = $"{gm.BlueTeamScore}";
+            }
+
+            if (redTeamScoreText != null && gm.RedTeamScore != _lastDisplayedRedScore)
+            {
+                _lastDisplayedRedScore = gm.RedTeamScore;
+                redTeamScoreText.text = $"{gm.RedTeamScore}";
             }
         }
         else if (gm.CurrentGameMode == GameMode.FreeForAll)
         {
-            if (teamAScorePanel != null) teamAScorePanel.SetActive(false);
-            if (teamBScorePanel != null) teamBScorePanel.SetActive(false);
-            if (ffaLocalPlayerPanel != null) ffaLocalPlayerPanel.SetActive(true);
+            if (_lastDisplayedScoreMode != GameMode.FreeForAll)
+            {
+                _lastDisplayedScoreMode = GameMode.FreeForAll;
+                if (teamAScorePanel != null) teamAScorePanel.SetActive(false);
+                if (teamBScorePanel != null) teamBScorePanel.SetActive(false);
+                if (ffaLocalPlayerPanel != null) ffaLocalPlayerPanel.SetActive(true);
+            }
 
             // Find and display local player's rank & kills (throttled, no LINQ allocations)
             if (runner != null && runner.IsRunning)
@@ -1474,6 +1507,52 @@ public class NetworkUIManager : MonoBehaviour
         // Re-lock cursor when closing settings (PC only)
         // On mobile, changing cursor lock state causes touch delta spikes
         // that corrupt camera rotation and invert movement direction
+#if (!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+#endif
+    }
+
+    /// <summary>
+    /// Opens the live HUD editor from the in-match Settings panel.
+    /// Wire the Settings > Edit Controls button to this method.
+    /// </summary>
+    public void EditControlsBtn()
+    {
+        Debug.Log("[HUDCustomize] Edit Controls button clicked.");
+
+        var customizer = HUDCustomizationManager.Instance;
+        if (customizer == null)
+        {
+            Debug.LogWarning("[HUDCustomize] HUDCustomizationManager.Instance is null — add the HUD Customizer object to this scene.");
+            return;
+        }
+
+        customizer.OpenLiveEditor();
+        if (!customizer.IsLiveEditing)
+        {
+            Debug.LogWarning("[HUDCustomize] Live editing did not start — see the warning above for the reason.");
+            return;
+        }
+
+        // The same customization panel used in the lobby is now visible.
+        settingsPanel.SetActive(false);
+        Debug.Log("[HUDCustomize] Settings panel hidden; customization panel is now driving the HUD edit.");
+
+#if (!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+#endif
+    }
+
+    /// <summary>Called by the shared customization panel after Save or Close.</summary>
+    public void FinishLiveControlEditing()
+    {
+        Debug.Log("[HUDCustomize] Editing finished — closing menus and resuming gameplay.");
+
+        if (settingsPanel != null)
+            settingsPanel.SetActive(false);
+
 #if (!UNITY_ANDROID && !UNITY_IOS) || UNITY_EDITOR
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

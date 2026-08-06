@@ -49,7 +49,7 @@ public class PlayerHeadUI : MonoBehaviour
     // ── Debug toggle ───────────────────────────────────────────────────
     [Header("Debug")]
     [Tooltip("Enable to print diagnostic logs to the Console")]
-    public bool debugLogs = true;
+    public bool debugLogs = false;
 
     // ── Unity lifecycle ────────────────────────────────────────────────
 

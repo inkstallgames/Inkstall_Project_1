@@ -54,6 +54,14 @@ public class LobbyUIManager : MonoBehaviour
 
     private bool isHost = false;
     private bool isWaitingScreenActive = false;
+    private bool _isLoadingIntoMatch = false;  // true from "Start Game" until the map scene replaces this one
+
+    /// <summary>True while the map is loading, so lobby UI refreshes can be skipped.</summary>
+    public bool IsLoadingIntoMatch => _isLoadingIntoMatch;
+
+    private GameObject _autoLoadingScreen;  // built on demand when loadingScreenPanel is unassigned
+    private TextMeshProUGUI _loadingLabel;
+    private Coroutine _loadingDotsCoroutine;
     private string _rawJoinCode = "";          // Stores the bare join code (no prefix)
     private Coroutine _copyFeedbackCoroutine;  // Tracks the running feedback timer
     
@@ -86,7 +94,7 @@ public class LobbyUIManager : MonoBehaviour
     {
         // Host controls
         if (startGameButton != null)
-            startGameButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.StartGame());
+            startGameButton.onClick.AddListener(OnStartGameClicked);
             
         if (mapButton != null)
             mapButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.OnMapSelectionChanged(0));
@@ -132,6 +140,26 @@ public class LobbyUIManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Hides the lobby the moment the host commits to starting, so the map load
+    /// isn't spent staring at the lobby panel. Only hides if the match really started.
+    /// </summary>
+    private void OnStartGameClicked()
+    {
+        var lobby = NetworkLobbyManager.Instance;
+        if (lobby == null)
+        {
+            Debug.LogWarning("[LobbyUIManager] Start Game clicked but NetworkLobbyManager.Instance is null.");
+            return;
+        }
+
+        if (lobby.StartMatch())
+        {
+            if (startGameButton != null) startGameButton.interactable = false;
+            ShowLoadingScreen(true);
+        }
+    }
+
     private void Update()
     {
         // Manually check if the game is ready and hide the waiting screen
@@ -140,6 +168,9 @@ public class LobbyUIManager : MonoBehaviour
             ShowWaitingForPlayersScreen(false);
             isWaitingScreenActive = false; // Ensure this only runs once
         }
+
+        // While loading into the map, keep every lobby-scene control hidden.
+        if (_isLoadingIntoMatch) return;
 
         if(lobbyPanel.activeSelf)
         {
@@ -499,10 +530,18 @@ public class LobbyUIManager : MonoBehaviour
 
     public void ShowLobby(bool show)
     {
+        if (show)
+        {
+            _isLoadingIntoMatch = false;
+            if (startGameButton != null) startGameButton.interactable = true;
+        }
+
         if(lobbyPanel != null) lobbyPanel.SetActive(show);
         if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
         if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
         if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
+        if (_autoLoadingScreen != null) _autoLoadingScreen.SetActive(false);
+        StopLoadingDotsAnimation();
     }
 
     public void ShowHeroSelectionPanel(bool show)
@@ -527,13 +566,118 @@ public class LobbyUIManager : MonoBehaviour
 
     public void ShowLoadingScreen(bool show = true)
     {
-        if (loadingScreenPanel != null) loadingScreenPanel.SetActive(show);
+        _isLoadingIntoMatch = show;
+
+        GameObject screen = show ? EnsureLoadingScreen() : (loadingScreenPanel != null ? loadingScreenPanel : _autoLoadingScreen);
+        if (screen != null) screen.SetActive(show);
+
         if (show)
         {
             if (lobbyPanel != null) lobbyPanel.SetActive(false);
             if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
             if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
             if (waitingForPlayersPanel != null) waitingForPlayersPanel.SetActive(false);
+
+            // These are toggled from Update() against lobbyPanel, so hide them explicitly.
+            if (ExitBtn != null) ExitBtn.gameObject.SetActive(false);
+            if (HUDEditButton != null) HUDEditButton.gameObject.SetActive(false);
+
+            StartLoadingDotsAnimation();
+            Debug.Log("[LobbyUIManager] Loading into match — lobby UI hidden.");
+        }
+        else
+        {
+            StopLoadingDotsAnimation();
+        }
+    }
+
+    /// <summary>
+    /// Returns the assigned loading panel, or builds a plain full-screen one when the
+    /// scene has none, so the map load is never spent looking at the lobby.
+    /// </summary>
+    private GameObject EnsureLoadingScreen()
+    {
+        if (loadingScreenPanel != null)
+        {
+            // Prefer an assigned panel's label if one exists so dots can animate there too.
+            if (_loadingLabel == null)
+            {
+                _loadingLabel = loadingScreenPanel.GetComponentInChildren<TextMeshProUGUI>(true);
+                if (_loadingLabel != null)
+                    _loadingLabel.text = "Loading...";
+            }
+            return loadingScreenPanel;
+        }
+
+        if (_autoLoadingScreen != null) return _autoLoadingScreen;
+
+        var root = new GameObject("AutoLoadingScreen", typeof(Canvas), typeof(CanvasScaler));
+        var canvas = root.GetComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 5000;
+
+        var scaler = root.GetComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920f, 1080f);
+
+        var background = new GameObject("Background", typeof(Image));
+        background.transform.SetParent(root.transform, false);
+        var backgroundRT = background.GetComponent<RectTransform>();
+        backgroundRT.anchorMin = Vector2.zero;
+        backgroundRT.anchorMax = Vector2.one;
+        backgroundRT.offsetMin = Vector2.zero;
+        backgroundRT.offsetMax = Vector2.zero;
+        background.GetComponent<Image>().color = Color.black;
+
+        var label = new GameObject("Label", typeof(TextMeshProUGUI));
+        label.transform.SetParent(root.transform, false);
+        var labelRT = label.GetComponent<RectTransform>();
+        labelRT.anchorMin = new Vector2(0.5f, 0.5f);
+        labelRT.anchorMax = new Vector2(0.5f, 0.5f);
+        labelRT.anchoredPosition = Vector2.zero;
+        labelRT.sizeDelta = new Vector2(1200f, 160f);
+        _loadingLabel = label.GetComponent<TextMeshProUGUI>();
+        _loadingLabel.text = "Loading...";
+        _loadingLabel.alignment = TextAlignmentOptions.Center;
+        _loadingLabel.fontSize = 56f;
+        _loadingLabel.color = Color.white;
+
+        _autoLoadingScreen = root;
+        Debug.Log("[LobbyUIManager] loadingScreenPanel is unassigned — using the built-in fallback loading screen.");
+        return _autoLoadingScreen;
+    }
+
+    private void StartLoadingDotsAnimation()
+    {
+        if (_loadingLabel == null && _autoLoadingScreen != null)
+            _loadingLabel = _autoLoadingScreen.GetComponentInChildren<TextMeshProUGUI>(true);
+
+        if (_loadingLabel == null) return;
+
+        StopLoadingDotsAnimation();
+        _loadingDotsCoroutine = StartCoroutine(AnimateLoadingDots());
+    }
+
+    private void StopLoadingDotsAnimation()
+    {
+        if (_loadingDotsCoroutine != null)
+        {
+            StopCoroutine(_loadingDotsCoroutine);
+            _loadingDotsCoroutine = null;
+        }
+    }
+
+    private System.Collections.IEnumerator AnimateLoadingDots()
+    {
+        const string baseText = "Loading";
+        // First frame: show all three dots, then cycle.
+        int dotCount = 3;
+
+        while (_loadingLabel != null)
+        {
+            _loadingLabel.text = baseText + new string('.', dotCount);
+            yield return new WaitForSecondsRealtime(0.4f);
+            dotCount = (dotCount % 3) + 1; // "...", ".", "..", then "...", ...
         }
     }
 
@@ -548,6 +692,8 @@ public class LobbyUIManager : MonoBehaviour
             if (heroSelectionPanel != null) heroSelectionPanel.SetActive(false);
             if (inGameUIPanel != null) inGameUIPanel.SetActive(false);
             if (loadingScreenPanel != null) loadingScreenPanel.SetActive(false);
+            if (_autoLoadingScreen != null) _autoLoadingScreen.SetActive(false);
+            StopLoadingDotsAnimation();
         }
     }
 

@@ -43,9 +43,15 @@ public class DraggableHUDElement : MonoBehaviour
     private static DraggableHUDElement _currentlyDragging; // only one at a time
     private Vector2 _lastMousePos;
 
-    // Pinch tracking (mobile)
+    // Pinch tracking (mobile). Ownership is static so a two-finger pinch only
+    // resizes the element it is centred on, never every element at once.
+    private static DraggableHUDElement _currentlyPinching;
+    private static float _pinchOwnerDistance;
     private float   _initialPinchDistance;
     private Vector3 _initialPinchScale;
+
+    /// <summary>How far (screen px) from an element the pinch centre may be and still grab it.</summary>
+    private const float PinchClaimRadius = 200f;
 
     // ---------------------------------------------------------------
     // Public API
@@ -82,10 +88,20 @@ public class DraggableHUDElement : MonoBehaviour
         {
             // Release ownership if edit mode was exited mid-drag
             if (_currentlyDragging == this) _currentlyDragging = null;
+            if (_currentlyPinching == this) _currentlyPinching = null;
             return;
         }
 
-        HandleMouseDrag();
+        // A two-finger pinch must not also drag the element around.
+        if (Input.touchCount >= 2)
+        {
+            if (_currentlyDragging == this) _currentlyDragging = null;
+        }
+        else
+        {
+            HandleMouseDrag();
+        }
+
         HandlePinchScale();
         HandleScrollWheelScale();
     }
@@ -103,7 +119,13 @@ public class DraggableHUDElement : MonoBehaviour
             {
                 _currentlyDragging = this;
                 _lastMousePos      = Input.mousePosition;
-                _rt.SetAsLastSibling(); // bring to front
+
+                // In the lobby preview, bringing the element to front helps.
+                // On the live HUD it would reorder the real UI and draw the
+                // element over the editor toolbar, so leave the order alone.
+                if (!HUDCustomizationManager.IsLiveEditModeActive)
+                    _rt.SetAsLastSibling();
+                Debug.Log($"[HUDCustomize] Started dragging '{ElementId}' at {_rt.anchoredPosition}.");
             }
         }
 
@@ -111,6 +133,7 @@ public class DraggableHUDElement : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && _currentlyDragging == this)
         {
             _currentlyDragging = null;
+            Debug.Log($"[HUDCustomize] Dropped '{ElementId}' at {_rt.anchoredPosition}, scale {_rt.localScale.x:0.00}.");
         }
 
         // Move while dragging
@@ -134,24 +157,67 @@ public class DraggableHUDElement : MonoBehaviour
 
     private void HandlePinchScale()
     {
-        if (Input.touchCount != 2) return;
-
-        Touch t0 = Input.GetTouch(0);
-        Touch t1 = Input.GetTouch(1);
-
-        if (t1.phase == TouchPhase.Began)
+        if (Input.touchCount != 2)
         {
-            _initialPinchDistance = Vector2.Distance(t0.position, t1.position);
-            _initialPinchScale    = _rt.localScale;
+            // Pinch finished — release the claim so the next pinch can pick a new target.
+            if (_currentlyPinching == this)
+            {
+                Debug.Log($"[HUDCustomize] Finished resizing '{ElementId}' at scale {_rt.localScale.x:0.00}.");
+                _currentlyPinching = null;
+                _initialPinchDistance = 0f;
+            }
             return;
         }
 
+        Touch t0 = Input.GetTouch(0);
+        Touch t1 = Input.GetTouch(1);
+        Vector2 pinchCenter = (t0.position + t1.position) * 0.5f;
+
+        // Claim the pinch for whichever element is closest to the pinch centre.
+        bool pinchStarting = t0.phase == TouchPhase.Began || t1.phase == TouchPhase.Began;
+        if (pinchStarting || _currentlyPinching == null)
+        {
+            float distance = ScreenDistanceTo(pinchCenter);
+            bool eligible = distance <= PinchClaimRadius;
+
+            if (eligible && (_currentlyPinching == null || distance < _pinchOwnerDistance))
+            {
+                _currentlyPinching  = this;
+                _pinchOwnerDistance = distance;
+            }
+
+            if (_currentlyPinching == this)
+            {
+                _initialPinchDistance = Vector2.Distance(t0.position, t1.position);
+                _initialPinchScale    = _rt.localScale;
+                Debug.Log($"[HUDCustomize] Pinch grabbed '{ElementId}' (distance to pinch centre {distance:0}px).");
+                return;
+            }
+        }
+
+        if (_currentlyPinching != this) return;
         if (_initialPinchDistance <= 0f) return;
 
         float currentDist = Vector2.Distance(t0.position, t1.position);
         float ratio       = currentDist / _initialPinchDistance;
         float newUniform  = Mathf.Clamp(_initialPinchScale.x * ratio, minScale, maxScale);
         _rt.localScale    = new Vector3(newUniform, newUniform, 1f);
+    }
+
+    /// <summary>
+    /// 0 when the point is inside this element, otherwise the screen-space gap
+    /// between the point and the element's centre.
+    /// </summary>
+    private float ScreenDistanceTo(Vector2 screenPoint)
+    {
+        Canvas canvas = GetRootCanvas();
+        Camera cam = canvas != null ? canvas.worldCamera : null;
+
+        if (RectTransformUtility.RectangleContainsScreenPoint(_rt, screenPoint, cam))
+            return 0f;
+
+        Vector2 center = RectTransformUtility.WorldToScreenPoint(cam, _rt.position);
+        return Vector2.Distance(center, screenPoint);
     }
 
     // ---------------------------------------------------------------

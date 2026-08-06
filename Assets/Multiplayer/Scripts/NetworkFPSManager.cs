@@ -12,7 +12,8 @@ public class NetworkFPSManager : MonoBehaviour
     [SerializeField] private bool disableVSync = true;
     
     [Header("Debug")]
-    [SerializeField] private bool showFPSCounter = true;
+    [Tooltip("Off by default — OnGUI FPS overlay costs CPU. Toggle in-play with F3 if needed.")]
+    [SerializeField] private bool showFPSCounter = false;
     [SerializeField] private KeyCode toggleFPSKey = KeyCode.F3;
     
     private float deltaTime = 0.0f;
@@ -26,11 +27,10 @@ public class NetworkFPSManager : MonoBehaviour
     
     private void Start()
     {
+        // Counter stays off until F3 (or Inspector enable + play toggle).
+        showFPS = false;
         if (showFPSCounter)
-        {
-            showFPS = true;
             InitializeGUIStyle();
-        }
     }
     
     private void InitializeFrameRate()
@@ -67,6 +67,8 @@ public class NetworkFPSManager : MonoBehaviour
         if (Input.GetKeyDown(toggleFPSKey))
         {
             showFPS = !showFPS;
+            if (showFPS && style == null)
+                InitializeGUIStyle();
         }
         
         // Calculate FPS
@@ -78,6 +80,7 @@ public class NetworkFPSManager : MonoBehaviour
     
     private void OnGUI()
     {
+        // OnGUI is expensive — keep it off unless the player explicitly toggles the counter.
         if (!showFPS || style == null) return;
         
         float fps = 1.0f / deltaTime;

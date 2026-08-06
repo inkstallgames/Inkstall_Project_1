@@ -70,6 +70,12 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     // Decoupled Visual State NetworkBool
     [Networked] public NetworkBool IsFiringLaser { get; set; }
     private bool _lastIsFiringLaser;
+    private float _nextVisualRaycastTime;
+    private bool _cachedBeamDidHit;
+    private Vector3 _cachedBeamHitPoint;
+    private Vector3 _cachedBeamHitNormal;
+    [Tooltip("How often the visual laser raycasts. Damage still runs on the network tick.")]
+    [SerializeField] private float visualRaycastInterval = 0.05f;
     
     // Networked aim state so remote clients can draw the beam correctly.
     // Set every FixedUpdateNetwork tick from the shooter's camera input.
@@ -507,9 +513,10 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     
     private void StartContinuousBeam()
     {
+        _nextVisualRaycastTime = 0f;
+        _cachedBeamDidHit = false;
         if (continuousBeam != null)
         {
-            Debug.Log($"[NetworkLaserBehaviour] *** BEAM ALREADY EXISTS *** Skipping creation");
             return;
         }
 
@@ -700,8 +707,27 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         }
 
         RaycastHit hit;
-        bool didHit = Physics.Raycast(aimOrigin, aimDir, out hit, range, hitLayers);
-        Vector3 hitPoint = didHit ? hit.point : aimOrigin + aimDir * range;
+        bool didHit;
+        Vector3 hitPoint;
+        Vector3 hitNormal;
+
+        // Throttle visual raycasts — beam position still updates every frame from the cache.
+        if (Time.unscaledTime >= _nextVisualRaycastTime)
+        {
+            _nextVisualRaycastTime = Time.unscaledTime + Mathf.Max(0.02f, visualRaycastInterval);
+            didHit = Physics.Raycast(aimOrigin, aimDir, out hit, range, hitLayers);
+            hitPoint = didHit ? hit.point : aimOrigin + aimDir * range;
+            hitNormal = didHit ? hit.normal : -aimDir;
+            _cachedBeamDidHit = didHit;
+            _cachedBeamHitPoint = hitPoint;
+            _cachedBeamHitNormal = hitNormal;
+        }
+        else
+        {
+            didHit = _cachedBeamDidHit;
+            hitPoint = didHit ? _cachedBeamHitPoint : aimOrigin + aimDir * range;
+            hitNormal = _cachedBeamHitNormal;
+        }
 
         // --- Update beam positions (remote only; local beam handled by pre-render hook) ---
         if (!isLocalPlayer)
@@ -721,7 +747,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             if (didHit)
             {
                 continuousImpact.transform.position = hitPoint;
-                continuousImpact.transform.rotation = Quaternion.LookRotation(hit.normal);
+                continuousImpact.transform.rotation = Quaternion.LookRotation(hitNormal);
                 if (_cachedImpactParticles != null && !_cachedImpactParticles.isPlaying)
                     _cachedImpactParticles.Play();
             }
@@ -730,7 +756,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         {
             // Lazily create impact if it wasn't created during StartContinuousBeam
             // (e.g. initial raycast missed because player was looking at the sky)
-            continuousImpact = Instantiate(laserImpactPrefab, hitPoint, Quaternion.LookRotation(hit.normal));
+            continuousImpact = Instantiate(laserImpactPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
             continuousImpact.transform.SetParent(transform);
             continuousImpact.SetActive(true);
 

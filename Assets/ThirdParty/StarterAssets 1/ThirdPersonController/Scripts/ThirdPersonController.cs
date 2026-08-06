@@ -91,6 +91,29 @@ namespace StarterAssets
         [Tooltip("Threshold for joystick magnitude to trigger sprinting")]
         public float sprintThresholdSound = 0.8f;
 
+        [Header("Adaptive Footstep Audio")]
+        [Tooltip("One short footstep clip used at different speeds. If empty, the first Walking Footstep is used.")]
+        public AudioClip adaptiveFootstepClip;
+        [Range(0.15f, 1f)]
+        [Tooltip("Seconds between steps with a lightly dragged joystick.")]
+        public float slowFootstepInterval = 0.55f;
+        [Range(0.1f, 0.8f)]
+        [Tooltip("Seconds between steps with a fully dragged joystick or sprint.")]
+        public float fastFootstepInterval = 0.25f;
+        [Range(0.5f, 1.5f)]
+        [Tooltip("Clip pitch while walking.")]
+        public float slowFootstepPitch = 0.9f;
+        [Range(0.5f, 2f)]
+        [Tooltip("Clip pitch while running.")]
+        public float fastFootstepPitch = 1.2f;
+        [Range(0f, 1f)]
+        public float slowFootstepVolume = 0.055f;
+        [Range(0f, 1f)]
+        public float fastFootstepVolume = 0.09f;
+        [Range(0f, 0.3f)]
+        [Tooltip("Joystick amount below which no footstep is played.")]
+        public float footstepDeadZone = 0.08f;
+
         [Space(10)]
         [Tooltip("The height the player can jump")]
         public float JumpHeight = 1.2f;
@@ -168,6 +191,13 @@ namespace StarterAssets
         private bool _hasAnimator;
         private bool _hasArmAnimator;
         private bool _hasFullBodyAnimator;
+        private bool _fullBodyHasDirection;
+        private bool _fullBodyHasFire;
+        private bool _fullBodyHasEquipGrenade;
+        private bool _fallbackHasDirection;
+        private bool _fallbackHasFire;
+        private bool _fallbackHasEquipGrenade;
+        private bool _fallbackHasThrowGrenade;
         private const float _threshold = 0.01f;
         private Vector3 _lastInputDirection = Vector3.zero;
         private NetworkInputData _latestInput;
@@ -176,6 +206,7 @@ namespace StarterAssets
         private float _nextFootstepTime;
         private FootstepType _currentFootstepType = FootstepType.None;
         private bool _previouslyGrounded;
+        private float _smoothedFootstepStrength;
 
         // Networked animation state - synced from state authority to all clients
         [Networked] public float NetworkedAnimationBlend { get; set; }
@@ -385,8 +416,6 @@ namespace StarterAssets
             if (footstepAudioSource == null)
             {
                 footstepAudioSource = gameObject.AddComponent<AudioSource>();
-                footstepAudioSource.playOnAwake = false;
-                footstepAudioSource.loop = false; // Individual footstep sounds
                 footstepAudioSource.spatialBlend = 1.0f; // 3D sound
                 footstepAudioSource.volume = 0.7f;
                 
@@ -395,6 +424,11 @@ namespace StarterAssets
                 footstepAudioSource.maxDistance = 25f;
                 footstepAudioSource.rolloffMode = AudioRolloffMode.Logarithmic;
             }
+
+            // Footsteps are short one-shots; an AudioSource assigned on a prefab must
+            // obey the same settings as one created at runtime.
+            footstepAudioSource.playOnAwake = false;
+            footstepAudioSource.loop = false;
         }
 
         private void HandleMovementSounds()
@@ -413,6 +447,7 @@ namespace StarterAssets
             {
                 if (LandingAudioClip != null)
                 {
+                    footstepAudioSource.pitch = 1f;
                     footstepAudioSource.PlayOneShot(LandingAudioClip, FootstepAudioVolume);
                 }
             }
@@ -422,6 +457,7 @@ namespace StarterAssets
             if (!currentGrounded)
             {
                 _currentFootstepType = FootstepType.None;
+                _smoothedFootstepStrength = 0f;
                 return;
             }
             
@@ -442,60 +478,57 @@ namespace StarterAssets
                 isSprinting = magnitude > sprintThresholdSound;
             }
             
-            // Determine footstep type based on movement
-            FootstepType newFootstepType = FootstepType.None;
-            
-            if (magnitude > 0.01f)
+            float targetStrength = magnitude > footstepDeadZone
+                ? Mathf.InverseLerp(footstepDeadZone, 1f, Mathf.Clamp01(magnitude))
+                : 0f;
+            if (isSprinting)
+                targetStrength = 1f;
+
+            // Smooth small joystick changes so cadence and pitch do not sound jittery.
+            _smoothedFootstepStrength = Mathf.MoveTowards(
+                _smoothedFootstepStrength,
+                targetStrength,
+                Time.deltaTime * 5f);
+
+            if (targetStrength > 0f)
             {
-                if (isSprinting || magnitude > sprintThresholdSound)
+                if (_currentFootstepType == FootstepType.None)
                 {
-                    newFootstepType = FootstepType.Sprinting;
-                }
-                else if (magnitude > runThresholdSound)
-                {
-                    newFootstepType = FootstepType.Running;
-                }
-                else
-                {
-                    newFootstepType = FootstepType.Walking;
-                }
-            }
-            
-            
-            // Handle footstep timing and playback
-            if (newFootstepType != FootstepType.None)
-            {
-                if (newFootstepType != _currentFootstepType)
-                {
-                    // Footstep type changed, reset timing
-                    _currentFootstepType = newFootstepType;
+                    _currentFootstepType = FootstepType.Walking;
                     _nextFootstepTime = Time.time;
                 }
-                
-                // Check if it's time for next footstep
+
                 if (Time.time >= _nextFootstepTime)
                 {
-                    PlayFootstep(newFootstepType);
-                    
-                    // Set next footstep time based on type
-                    switch (newFootstepType)
-                    {
-                        case FootstepType.Walking:
-                            _nextFootstepTime = Time.time + walkingFootstepInterval;
-                            break;
-                        case FootstepType.Running:
-                            _nextFootstepTime = Time.time + runningFootstepInterval;
-                            break;
-                        case FootstepType.Sprinting:
-                            _nextFootstepTime = Time.time + sprintingFootstepInterval;
-                            break;
-                    }
+                    PlayAdaptiveFootstep(_smoothedFootstepStrength);
+                    float interval = Mathf.Lerp(slowFootstepInterval, fastFootstepInterval, _smoothedFootstepStrength);
+                    _nextFootstepTime = Time.time + interval;
                 }
             }
             else
             {
                 _currentFootstepType = FootstepType.None;
+                _smoothedFootstepStrength = 0f;
             }
+        }
+
+        private void PlayAdaptiveFootstep(float movementStrength)
+        {
+            AudioClip clip = null;
+
+            // Prefer the single-step pool so consecutive steps do not sound identical.
+            if (walkingFootsteps != null && walkingFootsteps.Length > 0)
+                clip = walkingFootsteps[UnityEngine.Random.Range(0, walkingFootsteps.Length)];
+            else if (adaptiveFootstepClip != null)
+                clip = adaptiveFootstepClip;
+            else if (FootstepAudioClips != null && FootstepAudioClips.Length > 0)
+                clip = FootstepAudioClips[UnityEngine.Random.Range(0, FootstepAudioClips.Length)];
+
+            if (clip == null) return;
+
+            footstepAudioSource.pitch = Mathf.Lerp(slowFootstepPitch, fastFootstepPitch, movementStrength);
+            float volume = Mathf.Lerp(slowFootstepVolume, fastFootstepVolume, movementStrength);
+            footstepAudioSource.PlayOneShot(clip, volume);
         }
         
         private void PlayFootstep(FootstepType footstepType)
@@ -657,7 +690,7 @@ namespace StarterAssets
                     
                 }
                 // Only set Direction parameter if it exists in the animator
-                if (HasParameter(_fullBodyAnimator, _animIDDirection))
+                if (_fullBodyHasDirection)
                 {
                     _fullBodyAnimator.SetFloat(_animIDDirection, direction);
                 }
@@ -670,9 +703,9 @@ namespace StarterAssets
                 _fullBodyAnimator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _fullBodyAnimator.SetBool(_animIDJump, NetworkedIsJumping && !NetworkedGrounded);
                 
-                if (_latestInput.isShooting && HasParameter(_fullBodyAnimator, _animIDFire)) 
+                if (_latestInput.isShooting && _fullBodyHasFire) 
                     _fullBodyAnimator.SetTrigger(_animIDFire);
-                if (_latestInput.equipBomb && HasParameter(_fullBodyAnimator, _animIDEquipGranade)) 
+                if (_latestInput.equipBomb && _fullBodyHasEquipGrenade) 
                     _fullBodyAnimator.SetTrigger(_animIDEquipGranade);
                 
 
@@ -712,7 +745,7 @@ namespace StarterAssets
                     
                 }
                 // Only set Direction parameter if it exists in the animator
-                if (HasParameter(_animator, _animIDDirection))
+                if (_fallbackHasDirection)
                 {
                     _animator.SetFloat(_animIDDirection, direction);
                 }
@@ -725,11 +758,11 @@ namespace StarterAssets
                 _animator.SetBool(_animIDGrounded, NetworkedGrounded);
                 _animator.SetBool(_animIDJump, NetworkedIsJumping && !NetworkedGrounded);
                 
-                if (_latestInput.isShooting && HasParameter(_animator, _animIDFire)) 
+                if (_latestInput.isShooting && _fallbackHasFire) 
                     _animator.SetTrigger(_animIDFire);
-                if (_latestInput.equipBomb && HasParameter(_animator, _animIDEquipGranade)) 
+                if (_latestInput.equipBomb && _fallbackHasEquipGrenade) 
                     _animator.SetTrigger(_animIDEquipGranade);
-                if (_latestInput.isThrowingBomb && HasParameter(_animator, _animIDThrowGranade)) 
+                if (_latestInput.isThrowingBomb && _fallbackHasThrowGrenade) 
                     _animator.SetTrigger(_animIDThrowGranade);
             }
         }
@@ -744,6 +777,18 @@ namespace StarterAssets
                     return true;
             }
             return false;
+        }
+
+        private void CacheAnimatorParameterFlags()
+        {
+            _fullBodyHasDirection = HasParameter(_fullBodyAnimator, _animIDDirection);
+            _fullBodyHasFire = HasParameter(_fullBodyAnimator, _animIDFire);
+            _fullBodyHasEquipGrenade = HasParameter(_fullBodyAnimator, _animIDEquipGranade);
+
+            _fallbackHasDirection = HasParameter(_animator, _animIDDirection);
+            _fallbackHasFire = HasParameter(_animator, _animIDFire);
+            _fallbackHasEquipGrenade = HasParameter(_animator, _animIDEquipGranade);
+            _fallbackHasThrowGrenade = HasParameter(_animator, _animIDThrowGranade);
         }
 
         private void AssignAnimationIDs()
@@ -779,6 +824,9 @@ namespace StarterAssets
             
             // NEW: Animation parameters for backward movement
             _animIDDirection = Animator.StringToHash("Direction");
+
+            // Scan animator.parameters once — not every Render() frame.
+            CacheAnimatorParameterFlags();
         }
 
         private void GroundedCheck()

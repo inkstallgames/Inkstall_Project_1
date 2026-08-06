@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26e54e5a728a9234ab24fcf1460ed8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 2
-  SprintSpeed: 4
+  MoveSpeed: 3
+  SprintSpeed: 5
   RotationSmoothTime: 0.3
   SpeedChangeRate: 10
   LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
@@ -171,19 +171,35 @@ MonoBehaviour:
   FootstepAudioVolume: 0.3
   footstepAudioSource: {fileID: 0}
   walkingFootsteps:
-  - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
+  - {fileID: 8300000, guid: eec53751c4e79a7469fc34e774360128, type: 3}
+  - {fileID: 8300000, guid: dbe4405baeea2404ba3d422430b5fd3b, type: 3}
+  - {fileID: 8300000, guid: c8657061120b2da4fb645654b16201f6, type: 3}
+  - {fileID: 8300000, guid: 8ff53086d637af8478c1408b78b3dd05, type: 3}
+  - {fileID: 8300000, guid: b662731f964d624449b092d4198147de, type: 3}
   walkingFootstepVolume: 0.075
   runningFootsteps:
-  - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
+  - {fileID: 8300000, guid: eec53751c4e79a7469fc34e774360128, type: 3}
+  - {fileID: 8300000, guid: dbe4405baeea2404ba3d422430b5fd3b, type: 3}
+  - {fileID: 8300000, guid: c8657061120b2da4fb645654b16201f6, type: 3}
   runningFootstepVolume: 0.075
   sprintingFootsteps:
-  - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
+  - {fileID: 8300000, guid: eec53751c4e79a7469fc34e774360128, type: 3}
+  - {fileID: 8300000, guid: dbe4405baeea2404ba3d422430b5fd3b, type: 3}
+  - {fileID: 8300000, guid: c8657061120b2da4fb645654b16201f6, type: 3}
   sprintingFootstepVolume: 0.075
   walkingFootstepInterval: 0.5
   runningFootstepInterval: 0.5
   sprintingFootstepInterval: 0.5
   runThresholdSound: 0.5
   sprintThresholdSound: 0.5
+  adaptiveFootstepClip: {fileID: 8300000, guid: dbe4405baeea2404ba3d422430b5fd3b, type: 3}
+  slowFootstepInterval: 0.55
+  fastFootstepInterval: 0.25
+  slowFootstepPitch: 0.9
+  fastFootstepPitch: 1.2
+  slowFootstepVolume: 0.055
+  fastFootstepVolume: 0.09
+  footstepDeadZone: 0.08
   JumpHeight: 1.2
   Gravity: -15
   JumpTimeout: 0.3

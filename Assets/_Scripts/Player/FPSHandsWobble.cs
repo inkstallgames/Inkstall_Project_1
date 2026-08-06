@@ -286,14 +286,12 @@ public class FPSHandsWobble : NetworkBehaviour
             // CRITICAL: Detect jump moment when going from grounded to not grounded
             if (_wasGrounded && !_isGrounded && enableJumpEffects)
             {
-                Debug.Log($"[FPSHandsWobble] Jump detected! Was grounded: {_wasGrounded}, Is grounded: {_isGrounded}");
                 TriggerLandingBounce(); // This will handle the jump lift
             }
             
             // Trigger landing bounce when landing
             if (!_wasGrounded && _isGrounded && enableJumpEffects)
             {
-                Debug.Log($"[FPSHandsWobble] Landing detected! Was grounded: {_wasGrounded}, Is grounded: {_isGrounded}");
                 TriggerLandingBounce();
             }
         }
@@ -377,8 +375,6 @@ public class FPSHandsWobble : NetworkBehaviour
                 // Add minimal forward push when jumping (keep in camera view)
                 Vector3 jumpPush = Vector3.forward * jumpLiftAmount * 0.1f; // Reduced from 0.3f to 0.1f
                 _targetWobble += jumpPush;
-                
-                Debug.Log($"[FPSHandsWobble] Jump effects applied! Lift: {jumpLiftAmount}");
             }
             else
             {

@@ -56,6 +56,10 @@ public class HUDCustomizationManager : MonoBehaviour
     [SerializeField] private Button resetButton;
     [SerializeField] private Button closeButton;
 
+    [Header("Debugging")]
+    [Tooltip("Logs every step of the Edit Controls flow. Turn off for release builds.")]
+    [SerializeField] private bool logFlow = true;
+
     [Header("Rust Game Scene — apply on load")]
     [Tooltip("In the Rust scene, assign the live HUD canvas root here so layout is applied on Awake.")]
     [SerializeField] private GameObject liveHUDCanvasRoot;
@@ -68,6 +72,32 @@ public class HUDCustomizationManager : MonoBehaviour
     private List<DraggableHUDElement> _editableElements = new List<DraggableHUDElement>();
     private UILayoutProfile    _workingProfile;  // edited in-memory; only saved on confirm
     private UILayoutProfile    _defaultProfile;  // prefab positions captured on first open
+    private UILayoutProfile    _liveEditBackup;  // layout as it was when in-match editing started
+    private bool               _isLiveEditing;   // true while editing the real in-game HUD
+
+    // Hierarchy changes made while live editing so the HUD the player is moving
+    // draws above the panel's dim backdrop. Undone when editing ends.
+    private struct MovedChild
+    {
+        public Transform child;
+        public Transform parent;
+        public int       index;
+    }
+
+    private readonly List<MovedChild> _movedToolbars = new List<MovedChild>();
+    private Transform _panelOriginalParent;
+    private int       _panelOriginalIndex;
+
+    // The dim no longer covers the HUD, so the controls being dragged would still
+    // fire (shoot, jump, move). Their raycasts are suppressed while editing.
+    private struct BlockedElement
+    {
+        public CanvasGroup group;
+        public bool        previousBlocksRaycasts;
+        public bool        groupWasAdded;
+    }
+
+    private readonly List<BlockedElement> _blockedElements = new List<BlockedElement>();
 
     // ---------------------------------------------------------------
     // Unity lifecycle
@@ -90,21 +120,25 @@ public class HUDCustomizationManager : MonoBehaviour
             openEditorButton.onClick.RemoveAllListeners();
             openEditorButton.onClick.AddListener(OpenEditor);
         }
-        if (saveButton != null) 
+        if (saveButton != null)
         {
             saveButton.onClick.RemoveAllListeners();
-            saveButton.onClick.AddListener(SaveAndClose);
+            saveButton.onClick.AddListener(SaveCurrentEditor);
         }
-        if (resetButton != null) 
+        if (resetButton != null)
         {
             resetButton.onClick.RemoveAllListeners();
-            resetButton.onClick.AddListener(ResetToDefaults);
+            resetButton.onClick.AddListener(ResetCurrentEditor);
         }
-        if (closeButton != null) 
+        if (closeButton != null)
         {
             closeButton.onClick.RemoveAllListeners();
-            closeButton.onClick.AddListener(CloseWithoutSaving);
+            closeButton.onClick.AddListener(CloseCurrentEditor);
         }
+
+        Flow($"Awake in scene '{gameObject.scene.name}': panel={(customizationPanel != null ? customizationPanel.name : "MISSING")}, " +
+             $"save={(saveButton != null ? "ok" : "MISSING")}, reset={(resetButton != null ? "ok" : "MISSING")}, " +
+             $"close={(closeButton != null ? "ok" : "MISSING")}, liveRoot={(liveHUDCanvasRoot != null ? liveHUDCanvasRoot.name : "auto")}.");
 
         // Start with panel hidden
         if (customizationPanel != null)
@@ -208,18 +242,28 @@ public class HUDCustomizationManager : MonoBehaviour
         IsEditMode = true;
     }
 
-    public void SaveAndClose()
+    /// <summary>
+    /// Writes the preview layout to PlayerPrefs and keeps the editor open so the
+    /// player can carry on adjusting. Only Close leaves the editor.
+    /// </summary>
+    public void SavePreviewLayout()
     {
         try
         {
             // Snapshot current positions/scales from the preview into _workingProfile
             BakeCurrentLayoutIntoProfile();
             _workingProfile.Save();
+            Flow($"Saved preview layout for {_editableElements.Count} elements to PlayerPrefs. Editor stays open.");
         }
         catch (System.Exception e)
         {
             Debug.LogError($"[HUDCustomizationManager] Error saving layout: {e}");
         }
+    }
+
+    public void SaveAndClose()
+    {
+        SavePreviewLayout();
 
         IsEditMode = false;
         if (customizationPanel != null) customizationPanel.SetActive(false);
@@ -273,6 +317,360 @@ public class HUDCustomizationManager : MonoBehaviour
         catch (System.Exception e)
         {
             Debug.LogError($"[HUDCustomizationManager] Error resetting to defaults: {e}");
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // In-match live editing (no preview clone — the real HUD is moved)
+    // ---------------------------------------------------------------
+
+    public bool IsLiveEditing => _isLiveEditing;
+
+    /// <summary>True while the real in-game HUD (not a preview clone) is being edited.</summary>
+    public static bool IsLiveEditModeActive => Instance != null && Instance._isLiveEditing;
+
+    /// <summary>
+    /// Starts editing the HUD that is currently on screen during a match.
+    /// Unlike <see cref="OpenEditor"/> there is no preview clone: the real
+    /// elements are dragged, so the player sees exactly what they will get.
+    /// </summary>
+    public void OpenLiveEditor()
+    {
+        if (_isLiveEditing)
+        {
+            Flow("OpenLiveEditor ignored — already live editing.");
+            return;
+        }
+
+        GameObject root = ResolveLiveRoot();
+        if (root == null)
+        {
+            Debug.LogWarning("[HUDCustomizationManager] OpenLiveEditor: no live HUD canvas root found.");
+            return;
+        }
+
+        Flow($"OpenLiveEditor: live root = '{root.name}' (scene '{root.scene.name}').");
+
+        UILayoutProfile saved = UILayoutProfile.Load();
+        _workingProfile = saved ?? new UILayoutProfile();
+        Flow(saved != null
+            ? "Loaded saved layout from PlayerPrefs."
+            : "No saved layout yet — starting from current HUD positions.");
+
+        _editableElements.Clear();
+        _editableElements.AddRange(
+            root.GetComponentsInChildren<DraggableHUDElement>(includeInactive: true));
+
+        if (_editableElements.Count == 0)
+        {
+            Debug.LogWarning($"[HUDCustomizationManager] No DraggableHUDElement components found under '{root.name}'. Add the component to each HUD element you want the player to move.");
+            return;
+        }
+
+        Flow($"Found {_editableElements.Count} draggable HUD elements: {string.Join(", ", _editableElements.ConvertAll(e => e != null ? e.ElementId : "null"))}");
+
+        if (customizationPanel == null)
+            Debug.LogWarning("[HUDCustomizationManager] 'Customization Panel' is not assigned in this scene, so the Save / Reset / Close UI cannot appear.");
+
+        // Snapshot so Cancel restores the exact pre-edit state.
+        _liveEditBackup = CaptureLayoutFromElements(_editableElements);
+
+        // Only trust these positions as factory defaults when the player has
+        // never saved a layout — otherwise we would bake their custom layout in.
+        if (saved == null)
+            UILayoutProfile.SaveFactoryDefaultsOnce(_liveEditBackup);
+
+        _defaultProfile = UILayoutProfile.LoadFactory() ?? _liveEditBackup;
+
+        if (customizationPanel != null)
+        {
+            customizationPanel.SetActive(true);
+
+            // Dim the scene, but let the controls being edited sit on top of the dim.
+            RaiseLiveEditLayers();
+        }
+
+        _isLiveEditing = true;
+        IsEditMode     = true;
+
+        Flow($"Live edit mode ON. Panel '{(customizationPanel != null ? customizationPanel.name : "none")}' active = {(customizationPanel != null && customizationPanel.activeInHierarchy)}.");
+    }
+
+    /// <summary>
+    /// Writes the current on-screen layout to PlayerPrefs and keeps the editor
+    /// open so the player can carry on adjusting. Only Close leaves edit mode.
+    /// </summary>
+    public void SaveLiveEditor()
+    {
+        if (!_isLiveEditing)
+        {
+            Flow("SaveLiveEditor ignored — not live editing.");
+            return;
+        }
+
+        try
+        {
+            BakeCurrentLayoutIntoProfile();
+            _workingProfile.Save();
+
+            // Closing later must keep what was just saved, not revert to the
+            // positions the controls had when editing started.
+            _liveEditBackup = CaptureLayoutFromElements(_editableElements);
+
+            Flow($"Saved live layout for {_editableElements.Count} elements to PlayerPrefs. Editor stays open.");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[HUDCustomizationManager] Error saving live layout: {e}");
+        }
+    }
+
+    /// <summary>
+    /// Leaves edit mode, discarding anything moved since the last Save (or since
+    /// editing started, if the player never saved).
+    /// </summary>
+    public void CancelLiveEditor()
+    {
+        if (!_isLiveEditing)
+        {
+            Flow("CancelLiveEditor ignored — not live editing.");
+            return;
+        }
+
+        Flow("Close pressed — restoring the last saved layout and leaving edit mode.");
+        ApplyProfileToElements(_liveEditBackup);
+        EndLiveEdit();
+    }
+
+    /// <summary>
+    /// Moves the live elements back to factory defaults without touching
+    /// PlayerPrefs — the player still has to press Save to keep it.
+    /// </summary>
+    public void ResetLiveToDefaults()
+    {
+        if (!_isLiveEditing)
+        {
+            Flow("ResetLiveToDefaults ignored — not live editing.");
+            return;
+        }
+
+        Flow(_defaultProfile != null
+            ? "Reset pressed — moving live HUD back to factory defaults (not saved until Save)."
+            : "Reset pressed but no factory default layout is available.");
+        ApplyProfileToElements(_defaultProfile);
+    }
+
+    private void EndLiveEdit()
+    {
+        IsEditMode     = false;
+        _isLiveEditing = false;
+        _liveEditBackup = null;
+        _editableElements.Clear();
+
+        ClearLiveEditLayers();
+
+        if (customizationPanel != null)
+            customizationPanel.SetActive(false);
+
+        Flow("Live edit mode OFF — handing control back to gameplay.");
+
+        NetworkUIManager.Instance?.FinishLiveControlEditing();
+    }
+
+    private void SaveCurrentEditor()
+    {
+        Flow($"Save button pressed (live editing = {_isLiveEditing}).");
+
+        if (_isLiveEditing)
+            SaveLiveEditor();
+        else
+            SavePreviewLayout();
+    }
+
+    private void ResetCurrentEditor()
+    {
+        Flow($"Reset button pressed (live editing = {_isLiveEditing}).");
+
+        if (_isLiveEditing)
+            ResetLiveToDefaults();
+        else
+            ResetToDefaults();
+    }
+
+    private void CloseCurrentEditor()
+    {
+        Flow($"Close button pressed (live editing = {_isLiveEditing}).");
+
+        if (_isLiveEditing)
+            CancelLiveEditor();
+        else
+            CloseWithoutSaving();
+    }
+
+    /// <summary>
+    /// Reorders the hierarchy so the dim backdrop sits behind the whole HUD while
+    /// the editor toolbar sits in front of it. Sibling order is used instead of
+    /// nested canvases, because a nested canvas would take its buttons out of the
+    /// root GraphicRaycaster and they would stop responding to clicks.
+    /// </summary>
+    private void RaiseLiveEditLayers()
+    {
+        ClearLiveEditLayers();
+
+        BlockElementInput();
+
+        if (customizationPanel == null) return;
+
+        Canvas parentCanvas = customizationPanel.GetComponentInParent<Canvas>();
+        RectTransform canvasRT = parentCanvas != null ? parentCanvas.rootCanvas.transform as RectTransform : null;
+        if (canvasRT == null) return;
+
+        Vector2 screen = canvasRT.rect.size;
+
+        // Lift the toolbar out of the panel so it stays above the HUD.
+        foreach (Transform child in customizationPanel.transform)
+        {
+            RectTransform rt = child as RectTransform;
+            if (rt == null) continue;
+
+            bool coversScreen = screen.x > 0f &&
+                                rt.rect.width  >= screen.x * 0.9f &&
+                                rt.rect.height >= screen.y * 0.9f;
+            if (coversScreen) continue; // dim / preview backdrops stay in the panel
+
+            _movedToolbars.Add(new MovedChild
+            {
+                child  = child,
+                parent = child.parent,
+                index  = child.GetSiblingIndex()
+            });
+        }
+
+        foreach (MovedChild moved in _movedToolbars)
+        {
+            moved.child.SetParent(canvasRT, false);
+            moved.child.SetAsLastSibling();
+        }
+
+        // Push the dim backdrop behind every HUD element.
+        _panelOriginalParent = customizationPanel.transform.parent;
+        _panelOriginalIndex  = customizationPanel.transform.GetSiblingIndex();
+        customizationPanel.transform.SetParent(canvasRT, false);
+        customizationPanel.transform.SetAsFirstSibling();
+
+        Flow($"Dim moved behind the HUD; lifted {_movedToolbars.Count} toolbar object(s) above it.");
+    }
+
+    private void BlockElementInput()
+    {
+        _blockedElements.Clear();
+
+        foreach (DraggableHUDElement elem in _editableElements)
+        {
+            if (elem == null) continue;
+
+            CanvasGroup group = elem.GetComponent<CanvasGroup>();
+            bool added = group == null;
+            if (added) group = elem.gameObject.AddComponent<CanvasGroup>();
+
+            _blockedElements.Add(new BlockedElement
+            {
+                group                  = group,
+                previousBlocksRaycasts = group.blocksRaycasts,
+                groupWasAdded          = added
+            });
+
+            group.blocksRaycasts = false;
+        }
+
+        Flow($"Suppressed input on {_blockedElements.Count} control(s) so editing cannot fire them.");
+    }
+
+    private void RestoreElementInput()
+    {
+        foreach (BlockedElement blocked in _blockedElements)
+        {
+            if (blocked.group == null) continue;
+
+            if (blocked.groupWasAdded)
+                Destroy(blocked.group);
+            else
+                blocked.group.blocksRaycasts = blocked.previousBlocksRaycasts;
+        }
+
+        if (_blockedElements.Count > 0)
+            Flow($"Re-enabled input on {_blockedElements.Count} control(s).");
+
+        _blockedElements.Clear();
+    }
+
+    private void ClearLiveEditLayers()
+    {
+        RestoreElementInput();
+
+        foreach (MovedChild moved in _movedToolbars)
+        {
+            if (moved.child == null || moved.parent == null) continue;
+
+            moved.child.SetParent(moved.parent, false);
+            moved.child.SetSiblingIndex(moved.index);
+        }
+
+        if (_movedToolbars.Count > 0)
+            Flow($"Returned {_movedToolbars.Count} toolbar object(s) to the customization panel.");
+
+        _movedToolbars.Clear();
+
+        if (customizationPanel != null && _panelOriginalParent != null)
+        {
+            customizationPanel.transform.SetParent(_panelOriginalParent, false);
+            customizationPanel.transform.SetSiblingIndex(_panelOriginalIndex);
+            _panelOriginalParent = null;
+        }
+    }
+
+    private void Flow(string message)
+    {
+        if (logFlow) Debug.Log($"[HUDCustomize] {message}");
+    }
+
+    private GameObject ResolveLiveRoot()
+    {
+        // A prefab asset dragged into this field would move the asset, not the
+        // HUD on screen, so only accept a reference that lives in a loaded scene.
+        if (liveHUDCanvasRoot != null)
+        {
+            if (liveHUDCanvasRoot.scene.IsValid())
+                return liveHUDCanvasRoot;
+
+            Debug.LogWarning("[HUDCustomizationManager] liveHUDCanvasRoot points to a prefab asset, not the in-scene HUD. Falling back to the active HUD canvas.");
+        }
+
+        if (NetworkUIManager.Instance != null)
+        {
+            Canvas canvas = NetworkUIManager.Instance.GetComponentInParent<Canvas>();
+            if (canvas != null) return canvas.rootCanvas.gameObject;
+            return NetworkUIManager.Instance.gameObject;
+        }
+
+        Canvas own = GetComponentInParent<Canvas>();
+        return own != null ? own.rootCanvas.gameObject : null;
+    }
+
+    private void ApplyProfileToElements(UILayoutProfile profile)
+    {
+        if (profile == null) return;
+
+        foreach (var elem in _editableElements)
+        {
+            if (elem == null || elem.RT == null) continue;
+
+            UIElementLayout layout = profile.GetElement(elem.ElementId);
+            if (layout == null) continue;
+
+            elem.RT.anchoredPosition = layout.anchoredPosition;
+            elem.RT.localScale       = layout.localScale;
+            elem.gameObject.SetActive(layout.isVisible);
         }
     }
 

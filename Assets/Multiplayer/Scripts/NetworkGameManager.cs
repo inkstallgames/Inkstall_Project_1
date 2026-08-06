@@ -1609,7 +1609,6 @@ public class NetworkGameManager : NetworkBehaviour
         string tokenStr = TokenToString(token);
         _tokenToPlayerRef[tokenStr] = player;
         _matchPlayerTokens.Add(tokenStr);
-        Debug.Log($"[NetworkGameManager] Registered token for player {player.PlayerId}: {tokenStr.Substring(0, Mathf.Min(8, tokenStr.Length))}...");
     }
 
     /// <summary>
@@ -1627,7 +1626,7 @@ public class NetworkGameManager : NetworkBehaviour
         }
 
         var allTokens = networkStarter.PlayerTokens;
-        Debug.Log($"[RECONNECT] RegisterAllPlayerTokens — pulling {allTokens.Count} tokens from NetworkStarter._playerTokens");
+        // reconnect debug silenced for performance
 
         foreach (var kvp in allTokens)
         {
@@ -1641,10 +1640,10 @@ public class NetworkGameManager : NetworkBehaviour
             _matchPlayerTokens.Add(tokenStr);
 
             string shortToken = tokenStr.Length > 8 ? tokenStr.Substring(0, 8) : tokenStr;
-            Debug.Log($"[RECONNECT] Registered match token for Player {player.PlayerId}: {shortToken}...");
+            // reconnect debug silenced for performance
         }
 
-        Debug.Log($"[RECONNECT] Match now has {_matchPlayerTokens.Count} registered player tokens.");
+        // reconnect debug silenced for performance
     }
 
     /// <summary>

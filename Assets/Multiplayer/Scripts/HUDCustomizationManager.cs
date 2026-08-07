@@ -85,6 +85,7 @@ public class HUDCustomizationManager : MonoBehaviour
     }
 
     private readonly List<MovedChild> _movedToolbars = new List<MovedChild>();
+    private readonly List<MovedChild> _raisedHudRoots = new List<MovedChild>();
     private Transform _panelOriginalParent;
     private int       _panelOriginalIndex;
 
@@ -98,6 +99,9 @@ public class HUDCustomizationManager : MonoBehaviour
     }
 
     private readonly List<BlockedElement> _blockedElements = new List<BlockedElement>();
+
+    // Lobby / menu canvas siblings hidden while the preview editor is open.
+    private readonly List<GameObject> _hiddenCanvasSiblings = new List<GameObject>();
 
     // ---------------------------------------------------------------
     // Unity lifecycle
@@ -181,6 +185,10 @@ public class HUDCustomizationManager : MonoBehaviour
         if (customizationPanel != null)
             customizationPanel.SetActive(true);
 
+        // HOST / JOIN / EXIT etc. must not stay visible under the editor.
+        HideCanvasSiblingsBehindEditor();
+        HUDCustomizerPanelChrome.Apply(customizationPanel);
+
         // Load the saved profile (or build a default from the prefab)
         _workingProfile = UILayoutProfile.Load() ?? new UILayoutProfile();
 
@@ -215,6 +223,10 @@ public class HUDCustomizationManager : MonoBehaviour
                 rt.sizeDelta        = Vector2.zero; // no extra size beyond anchor rect
                 rt.localScale       = Vector3.one;
             }
+
+            // Drop lobby/match chrome from the clone (Waiting For Players, menus, etc.)
+            // so only draggable controls sit on the dim backdrop.
+            HideNonEditablePreviewChrome(_previewInstance);
         }
 
         // Collect all draggable elements in the preview
@@ -267,6 +279,7 @@ public class HUDCustomizationManager : MonoBehaviour
 
         IsEditMode = false;
         if (customizationPanel != null) customizationPanel.SetActive(false);
+        RestoreCanvasSiblingsBehindEditor();
 
         // Destroy preview to free memory
         if (_previewInstance != null)
@@ -280,6 +293,7 @@ public class HUDCustomizationManager : MonoBehaviour
     {
         IsEditMode = false;
         if (customizationPanel != null) customizationPanel.SetActive(false);
+        RestoreCanvasSiblingsBehindEditor();
 
         if (_previewInstance != null)
         {
@@ -385,6 +399,7 @@ public class HUDCustomizationManager : MonoBehaviour
         if (customizationPanel != null)
         {
             customizationPanel.SetActive(true);
+            HUDCustomizerPanelChrome.Apply(customizationPanel);
 
             // Dim the scene, but let the controls being edited sit on top of the dim.
             RaiseLiveEditLayers();
@@ -508,10 +523,10 @@ public class HUDCustomizationManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Reorders the hierarchy so the dim backdrop sits behind the whole HUD while
-    /// the editor toolbar sits in front of it. Sibling order is used instead of
-    /// nested canvases, because a nested canvas would take its buttons out of the
-    /// root GraphicRaycaster and they would stop responding to clicks.
+    /// Stack order while live editing:
+    ///   lobby / waiting / other UI  →  dim backdrop  →  editable HUD  →  toolbar
+    /// Sibling order is used instead of nested canvases so Save/Reset/Close stay
+    /// under the root GraphicRaycaster.
     /// </summary>
     private void RaiseLiveEditLayers()
     {
@@ -527,7 +542,7 @@ public class HUDCustomizationManager : MonoBehaviour
 
         Vector2 screen = canvasRT.rect.size;
 
-        // Lift the toolbar out of the panel so it stays above the HUD.
+        // Collect toolbar children (non-fullscreen) before reparenting the panel.
         foreach (Transform child in customizationPanel.transform)
         {
             RectTransform rt = child as RectTransform;
@@ -546,19 +561,101 @@ public class HUDCustomizationManager : MonoBehaviour
             });
         }
 
+        // Dim covers waiting screens / menus / non-editable chrome on this canvas.
+        _panelOriginalParent = customizationPanel.transform.parent;
+        _panelOriginalIndex  = customizationPanel.transform.GetSiblingIndex();
+        customizationPanel.transform.SetParent(canvasRT, false);
+        customizationPanel.transform.SetAsLastSibling();
+
+        // Lift only the editable controls above the dim so they stay visible to drag.
+        var raised = new HashSet<Transform>();
+        foreach (DraggableHUDElement elem in _editableElements)
+        {
+            if (elem == null) continue;
+
+            Transform root = elem.transform;
+            while (root.parent != null && root.parent != canvasRT)
+                root = root.parent;
+
+            if (root.parent != canvasRT || root == customizationPanel.transform)
+                continue;
+            if (!raised.Add(root)) continue;
+
+            _raisedHudRoots.Add(new MovedChild
+            {
+                child  = root,
+                parent = root.parent,
+                index  = root.GetSiblingIndex()
+            });
+        }
+
+        foreach (MovedChild moved in _raisedHudRoots)
+            moved.child.SetAsLastSibling();
+
+        // Toolbar stays above the HUD controls.
         foreach (MovedChild moved in _movedToolbars)
         {
             moved.child.SetParent(canvasRT, false);
             moved.child.SetAsLastSibling();
         }
 
-        // Push the dim backdrop behind every HUD element.
-        _panelOriginalParent = customizationPanel.transform.parent;
-        _panelOriginalIndex  = customizationPanel.transform.GetSiblingIndex();
-        customizationPanel.transform.SetParent(canvasRT, false);
-        customizationPanel.transform.SetAsFirstSibling();
+        Flow($"Dim covers non-editable UI; raised {_raisedHudRoots.Count} HUD root(s) and {_movedToolbars.Count} toolbar object(s) above it.");
+    }
 
-        Flow($"Dim moved behind the HUD; lifted {_movedToolbars.Count} toolbar object(s) above it.");
+    /// <summary>
+    /// Hides preview canvas children that have no DraggableHUDElement so match/lobby
+    /// screens (e.g. Waiting For Players) do not sit on top of the edit backdrop.
+    /// </summary>
+    private static void HideNonEditablePreviewChrome(GameObject previewRoot)
+    {
+        if (previewRoot == null) return;
+
+        for (int i = 0; i < previewRoot.transform.childCount; i++)
+        {
+            Transform child = previewRoot.transform.GetChild(i);
+            if (child.GetComponentInChildren<DraggableHUDElement>(true) == null)
+                child.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// Turns off every canvas sibling of the customization panel (MainMenuPanel with
+    /// HOST/JOIN, settings, EXIT, etc.) so only the editor + HUD preview remain.
+    /// </summary>
+    private void HideCanvasSiblingsBehindEditor()
+    {
+        RestoreCanvasSiblingsBehindEditor();
+
+        if (customizationPanel == null) return;
+
+        Transform parent = customizationPanel.transform.parent;
+        if (parent == null) return;
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform sibling = parent.GetChild(i);
+            if (sibling == customizationPanel.transform) continue;
+            if (!sibling.gameObject.activeSelf) continue;
+
+            sibling.gameObject.SetActive(false);
+            _hiddenCanvasSiblings.Add(sibling.gameObject);
+        }
+
+        Flow($"Hid {_hiddenCanvasSiblings.Count} lobby/menu sibling(s) while Edit Controls is open.");
+    }
+
+    private void RestoreCanvasSiblingsBehindEditor()
+    {
+        for (int i = 0; i < _hiddenCanvasSiblings.Count; i++)
+        {
+            GameObject go = _hiddenCanvasSiblings[i];
+            if (go != null) go.SetActive(true);
+        }
+
+        if (_hiddenCanvasSiblings.Count > 0)
+            Flow($"Restored {_hiddenCanvasSiblings.Count} lobby/menu sibling(s).");
+
+        _hiddenCanvasSiblings.Clear();
     }
 
     private void BlockElementInput()
@@ -620,6 +717,19 @@ public class HUDCustomizationManager : MonoBehaviour
             Flow($"Returned {_movedToolbars.Count} toolbar object(s) to the customization panel.");
 
         _movedToolbars.Clear();
+
+        // Restore HUD sibling order before putting the panel back.
+        for (int i = _raisedHudRoots.Count - 1; i >= 0; i--)
+        {
+            MovedChild moved = _raisedHudRoots[i];
+            if (moved.child == null || moved.parent == null) continue;
+            moved.child.SetSiblingIndex(moved.index);
+        }
+
+        if (_raisedHudRoots.Count > 0)
+            Flow($"Restored {_raisedHudRoots.Count} HUD root sibling order(s).");
+
+        _raisedHudRoots.Clear();
 
         if (customizationPanel != null && _panelOriginalParent != null)
         {

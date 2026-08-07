@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 
 public class MainMenu : MonoBehaviour
@@ -26,6 +27,8 @@ public class MainMenu : MonoBehaviour
     private NetworkStarter networkStarter;
 
     private IEnumerator hostAnimationCoroutine;
+    private readonly List<GameObject> _hiddenWhileRename = new List<GameObject>();
+    private readonly List<GameObject> _hiddenWhileJoin = new List<GameObject>();
 
     private void Start()
     {
@@ -169,13 +172,18 @@ public class MainMenu : MonoBehaviour
         if (joinCodeInputPanel != null)
         {
             joinCodeInputPanel.SetActive(true);
+            HideMenuChromeBehindJoin();
+            LobbyInputModalChrome.ApplyJoinCode(joinCodeInputPanel);
+            LobbyInputModalChrome.ResetJoinSubtitle(joinStatusText);
+
             // Clear previous input and focus the field
             if (joinCodeInputField != null)
             {
                 joinCodeInputField.text = "";
                 joinCodeInputField.Select();
                 joinCodeInputField.ActivateInputField();
-                changeUserNameButton.gameObject.SetActive(false);
+                if (changeUserNameButton != null)
+                    changeUserNameButton.gameObject.SetActive(false);
             }
         }
     }
@@ -183,10 +191,12 @@ public class MainMenu : MonoBehaviour
     private void HideJoinCodeInput()
     {
         if (joinCodeInputPanel != null)
-        {
             joinCodeInputPanel.SetActive(false);
+
+        RestoreMenuChromeBehindJoin();
+
+        if (changeUserNameButton != null)
             changeUserNameButton.gameObject.SetActive(true);
-        }
     }
     
     // Check if the device has an active internet connection
@@ -282,7 +292,20 @@ public class MainMenu : MonoBehaviour
 
     public void ChangeUserName()
     {
+        if (changeUserNamePanel == null) return;
+
         changeUserNamePanel.SetActive(true);
+        HideCanvasSiblingsBehindRename();
+        LobbyInputModalChrome.ApplyChangeUsername(changeUserNamePanel);
+
+        if (playerNameInputField != null)
+        {
+            string savedName = PlayerPrefs.GetString("PlayerName", playerNameInputField.text);
+            playerNameInputField.text = savedName;
+            playerNameInputField.characterLimit = 10;
+            playerNameInputField.Select();
+            playerNameInputField.ActivateInputField();
+        }
     }
 
     public void HideChangeUserName()
@@ -291,7 +314,10 @@ public class MainMenu : MonoBehaviour
         PlayerPrefs.SetInt("HasSetInitialName", 1);
         PlayerPrefs.Save();
 
-        changeUserNamePanel.SetActive(false);
+        if (changeUserNamePanel != null)
+            changeUserNamePanel.SetActive(false);
+
+        RestoreCanvasSiblingsBehindRename();
     }
 
     public void ConfirmChangeUserName()
@@ -325,6 +351,77 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    private void HideCanvasSiblingsBehindRename()
+    {
+        RestoreCanvasSiblingsBehindRename();
+
+        if (changeUserNamePanel == null) return;
+
+        Transform parent = changeUserNamePanel.transform.parent;
+        if (parent == null) return;
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform sibling = parent.GetChild(i);
+            if (sibling == changeUserNamePanel.transform) continue;
+
+            // Keep lobby artwork so the modal sits on top of it as a layer.
+            if (sibling.name == "Background_Image") continue;
+
+            if (sibling.gameObject.activeSelf)
+            {
+                sibling.gameObject.SetActive(false);
+                _hiddenWhileRename.Add(sibling.gameObject);
+            }
+        }
+    }
+
+    private void RestoreCanvasSiblingsBehindRename()
+    {
+        for (int i = 0; i < _hiddenWhileRename.Count; i++)
+        {
+            GameObject go = _hiddenWhileRename[i];
+            if (go != null) go.SetActive(true);
+        }
+
+        _hiddenWhileRename.Clear();
+    }
+
+    /// <summary>
+    /// Hides HOST / JOIN / other menu buttons under the same parent so only the
+    /// scene backdrop shows through the translucent dim — not the lobby buttons.
+    /// </summary>
+    private void HideMenuChromeBehindJoin()
+    {
+        RestoreMenuChromeBehindJoin();
+
+        if (joinCodeInputPanel == null) return;
+
+        Transform parent = joinCodeInputPanel.transform.parent;
+        if (parent == null) return;
+
+        for (int i = 0; i < parent.childCount; i++)
+        {
+            Transform sibling = parent.GetChild(i);
+            if (sibling == joinCodeInputPanel.transform) continue;
+            if (!sibling.gameObject.activeSelf) continue;
+
+            sibling.gameObject.SetActive(false);
+            _hiddenWhileJoin.Add(sibling.gameObject);
+        }
+    }
+
+    private void RestoreMenuChromeBehindJoin()
+    {
+        for (int i = 0; i < _hiddenWhileJoin.Count; i++)
+        {
+            GameObject go = _hiddenWhileJoin[i];
+            if (go != null) go.SetActive(true);
+        }
+
+        _hiddenWhileJoin.Clear();
+    }
+
     public void ShowMainMenuPanel()
     {
         if (mainMenuPanel != null)
@@ -335,6 +432,8 @@ public class MainMenu : MonoBehaviour
 
         if (joinCodeInputPanel != null)
             joinCodeInputPanel.SetActive(false);
+
+        RestoreMenuChromeBehindJoin();
 
         // Re-enable host/join buttons
         if (hostButton != null)

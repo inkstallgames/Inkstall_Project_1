@@ -659,11 +659,19 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
                 {
                     // SaveDisconnectedPlayerData stores the NetworkObject reference and removes input authority.
                     // The character stays in the world — it will NOT be despawned.
+                    // Also broadcasts a disconnect notification to all remaining players.
                     NetworkGameManager.Instance.SaveDisconnectedPlayerData(player, token);
                 }
                 else
                 {
                     LogReconnectWarning($"[RECONNECT] Cannot save state for Player {player.PlayerId} — token is null or GameManager unavailable.");
+
+                    // Still notify everyone even if we couldn't save reconnect state
+                    if (NetworkGameManager.Instance != null)
+                    {
+                        string fallbackName = ResolveDisconnectPlayerName(runner, player);
+                        NetworkGameManager.Instance.BroadcastPlayerDisconnected(fallbackName);
+                    }
                 }
                 
                 // Do NOT despawn the character — it stays in the world for reconnection.
@@ -703,6 +711,26 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         
         NetworkLobbyManager.Instance?.OnPlayerLeft(player);
     }
+
+    private static string ResolveDisconnectPlayerName(NetworkRunner runner, PlayerRef player)
+    {
+        var playerObject = runner != null ? runner.GetPlayerObject(player) : null;
+        if (playerObject != null)
+        {
+            var pnd = playerObject.GetComponent<PlayerNetworkData>();
+            if (pnd != null && !string.IsNullOrEmpty(pnd.PlayerName))
+                return pnd.PlayerName;
+        }
+
+        if (NetworkLobbyManager.Instance != null && NetworkLobbyManager.Instance.LobbyPlayers.ContainsKey(player))
+        {
+            string lobbyName = NetworkLobbyManager.Instance.LobbyPlayers[player].PlayerName.ToString();
+            if (!string.IsNullOrEmpty(lobbyName))
+                return lobbyName;
+        }
+
+        return $"Player {player.PlayerId}";
+    }
     
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
@@ -729,6 +757,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         });
 
         _runner = null;
+        _isShuttingDown = false;
     }
     
     private System.Collections.IEnumerator ShowErrorAfterSceneLoad(ShutdownReason shutdownReason)
@@ -1077,6 +1106,48 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         {
             _instance = null;
             ShutdownRunner();
+        }
+    }
+
+    /// <summary>
+    /// Fires on a normal app quit. Force-kill / swipe-away may skip this;
+    /// ConnectionTimeout on the host is the backup in that case.
+    /// Backgrounding alone must NOT disconnect — see OnApplicationPause.
+    /// </summary>
+    private void OnApplicationQuit()
+    {
+        TryShutdownForAppExit();
+    }
+
+    /// <summary>
+    /// Intentionally empty: going to background (home button, multitasking) should not
+    /// disconnect the player. Only OnApplicationQuit + host ConnectionTimeout handle leave.
+    /// </summary>
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        // Do not Shutdown here — user wants to stay connected while the app is backgrounded.
+    }
+
+    /// <summary>
+    /// Best-effort Fusion shutdown while the process is still alive.
+    /// Must not await — the OS may kill the app before an async Task completes.
+    /// </summary>
+    private void TryShutdownForAppExit()
+    {
+        if (_isShuttingDown || _runner == null || !_runner.IsRunning)
+            return;
+
+        _isShuttingDown = true;
+        StopPingLogging();
+
+        try
+        {
+            UnityEngine.Debug.Log("[NetworkStarter] App quit — shutting down NetworkRunner so host is notified.");
+            _runner.Shutdown();
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogWarning($"[NetworkStarter] Shutdown on app exit failed: {e.Message}");
         }
     }
 

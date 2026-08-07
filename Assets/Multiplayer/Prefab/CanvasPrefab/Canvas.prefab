@@ -10670,6 +10670,8 @@ MonoBehaviour:
   healIndicatorImage: {fileID: 2823650741104314046}
   killNotificationText: {fileID: 5044932851801710856}
   killNotificationDuration: 3
+  disconnectNotificationText: {fileID: 0}
+  disconnectNotificationDuration: 3
   killFeedContainer: {fileID: 8747969894166278312}
   killFeedItemPrefab: {fileID: 2257559757653415694, guid: c89a18677738c96458938b245f4ac3b8,
     type: 3}

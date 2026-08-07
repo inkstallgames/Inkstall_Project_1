@@ -1734,8 +1734,33 @@ public class NetworkGameManager : NetworkBehaviour
             data.PlayerName = lobbyData.PlayerName.ToString();
         }
 
+        if (string.IsNullOrEmpty(data.PlayerName))
+            data.PlayerName = $"Player {player.PlayerId}";
+
         _disconnectedPlayers[tokenStr] = data;
         Debug.Log($"[NetworkGameManager] Saved disconnected data for '{data.PlayerName}' (Team {data.TeamId}, K:{data.Kills}/D:{data.Deaths}, HasObject: {data.PlayerObject != null})");
+
+        BroadcastPlayerDisconnected(data.PlayerName);
+    }
+
+    /// <summary>
+    /// Notifies all clients that a player disconnected mid-game.
+    /// </summary>
+    public void BroadcastPlayerDisconnected(string playerName)
+    {
+        if (string.IsNullOrEmpty(playerName))
+            playerName = "A player";
+
+        RPC_NotifyPlayerDisconnected(playerName);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_NotifyPlayerDisconnected(string playerName)
+    {
+        if (NetworkUIManager.Instance != null)
+        {
+            NetworkUIManager.Instance.ShowPlayerDisconnected(playerName);
+        }
     }
 
     /// <summary>

@@ -42,6 +42,12 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI killNotificationText; // Shows "You killed [PlayerName]" message
     [SerializeField] private float killNotificationDuration = 3f;     // How long to show kill message
 
+    [Header("Disconnect Notification UI")]
+    [SerializeField] private TextMeshProUGUI disconnectNotificationText; // Shows "[PlayerName] disconnected" to all players
+    [SerializeField] private float disconnectNotificationDuration = 3f;
+    [SerializeField] private float disconnectSlideInDuration = 0.35f;
+    [SerializeField] private float disconnectSlideDistance = 800f;
+
     [Header("Kill Feed UI (Global)")]
     [SerializeField] private RectTransform killFeedContainer; // Container with VerticalLayoutGroup
     [SerializeField] private GameObject killFeedItemPrefab; // Prefab with KillFeedItem script
@@ -175,6 +181,10 @@ public class NetworkUIManager : MonoBehaviour
     // Kill notification system
     private float killNotificationTimer = 0f;
     private Coroutine killNotificationCoroutine;
+    private Coroutine disconnectNotificationCoroutine;
+    private RectTransform _disconnectNotificationRect;
+    private Vector2 _disconnectNotificationRestPos;
+    private bool _disconnectRestPosCached;
 
     // Cached leaderboard data (snapshotted at game-over so it survives despawns)
     private struct LeaderboardEntry
@@ -240,6 +250,29 @@ public class NetworkUIManager : MonoBehaviour
         if (killNotificationText == null)
         {
             // Kill notification text not assigned - will be handled in editor
+        }
+
+        if (disconnectNotificationText == null)
+        {
+            // Use the existing scene object "Player Disconnted Warning" if not assigned in Inspector
+            var texts = GetComponentsInChildren<TextMeshProUGUI>(true);
+            for (int i = 0; i < texts.Length; i++)
+            {
+                if (texts[i] != null && texts[i].gameObject.name == "Player Disconnted Warning")
+                {
+                    disconnectNotificationText = texts[i];
+                    break;
+                }
+            }
+        }
+
+        if (disconnectNotificationText != null)
+        {
+            _disconnectNotificationRect = disconnectNotificationText.rectTransform;
+            _disconnectNotificationRestPos = _disconnectNotificationRect.anchoredPosition;
+            _disconnectRestPosCached = true;
+            disconnectNotificationText.gameObject.SetActive(false);
+            disconnectNotificationText.text = "";
         }
 
         // Apply any saved HUD layout immediately at Start to prevent snapping later
@@ -450,11 +483,17 @@ public class NetworkUIManager : MonoBehaviour
                         ShowWaitingForPlayersScreen(false);
                     }
                 }
-                else if (_lastWaitingStatus != "Waiting for other players...")
+                else
                 {
-                    _lastWaitingStatus = "Waiting for other players...";
-                    _lastDisplayedWaitingSeconds = -1;
-                    waitingStatusText.text = _lastWaitingStatus;
+                    int joined = lobbyManager.PlayersLoadedCount;
+                    int total = lobbyManager.LobbyPlayers.Count;
+                    string status = $"{joined}/{total} players joined";
+                    if (_lastWaitingStatus != status)
+                    {
+                        _lastWaitingStatus = status;
+                        _lastDisplayedWaitingSeconds = -1;
+                        waitingStatusText.text = _lastWaitingStatus;
+                    }
                 }
             }
         }
@@ -1073,6 +1112,71 @@ public class NetworkUIManager : MonoBehaviour
             }
             powerupNotificationCoroutine = StartCoroutine(HidePowerupNotificationAfterDelay());
         }
+    }
+
+    /// <summary>
+    /// Shows which player disconnected mid-game. Visible to all players still in the match.
+    /// Slides in from left to right, then hides after the display duration.
+    /// </summary>
+    public void ShowPlayerDisconnected(string playerName)
+    {
+        if (disconnectNotificationText == null) return;
+
+        if (string.IsNullOrEmpty(playerName))
+            playerName = "A player";
+
+        if (disconnectNotificationCoroutine != null)
+        {
+            StopCoroutine(disconnectNotificationCoroutine);
+        }
+
+        if (_disconnectNotificationRect == null)
+            _disconnectNotificationRect = disconnectNotificationText.rectTransform;
+
+        if (!_disconnectRestPosCached && _disconnectNotificationRect != null)
+        {
+            _disconnectNotificationRestPos = _disconnectNotificationRect.anchoredPosition;
+            _disconnectRestPosCached = true;
+        }
+
+        disconnectNotificationText.text = $"{playerName} disconnected";
+        disconnectNotificationText.gameObject.SetActive(true);
+        disconnectNotificationCoroutine = StartCoroutine(AnimateDisconnectNotification());
+    }
+
+    private System.Collections.IEnumerator AnimateDisconnectNotification()
+    {
+        if (_disconnectNotificationRect != null)
+        {
+            // Start off-screen to the left, then slide to the rest position
+            Vector2 startPos = _disconnectNotificationRestPos + Vector2.left * disconnectSlideDistance;
+            _disconnectNotificationRect.anchoredPosition = startPos;
+
+            float time = 0f;
+            while (time < disconnectSlideInDuration)
+            {
+                time += Time.deltaTime;
+                float t = Mathf.Clamp01(time / disconnectSlideInDuration);
+                // Smoothstep ease-out
+                float smoothT = t * t * (3f - 2f * t);
+                _disconnectNotificationRect.anchoredPosition = Vector2.Lerp(startPos, _disconnectNotificationRestPos, smoothT);
+                yield return null;
+            }
+
+            _disconnectNotificationRect.anchoredPosition = _disconnectNotificationRestPos;
+        }
+
+        yield return new WaitForSeconds(disconnectNotificationDuration);
+
+        if (disconnectNotificationText != null)
+        {
+            disconnectNotificationText.gameObject.SetActive(false);
+            disconnectNotificationText.text = "";
+            if (_disconnectNotificationRect != null && _disconnectRestPosCached)
+                _disconnectNotificationRect.anchoredPosition = _disconnectNotificationRestPos;
+        }
+
+        disconnectNotificationCoroutine = null;
     }
 
     private System.Collections.IEnumerator HidePowerupNotificationAfterDelay()

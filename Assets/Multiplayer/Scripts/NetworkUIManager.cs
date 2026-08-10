@@ -89,9 +89,10 @@ public class NetworkUIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI respawnTimerText;    // Timer text inside the respawn panel
 
     [Header("Game Over UI")]
-    [SerializeField] private GameObject gameOverPanel;            // Panel shown when the match ends
-    [SerializeField] private TextMeshProUGUI gameOverText;        // "Blue Team Wins!" / "Red Team Wins!" / "It's a Draw!"
-    [SerializeField] private UnityEngine.UI.Image gameOverImage;  // Tinted Blue / Red / Grey based on winner
+    [SerializeField] private GameObject gameOverPanel;            // GamewinScreen — panel shown when the match ends
+    [SerializeField] private TextMeshProUGUI gameOverText;        // Winner text ("Heroes Win!" / "Aliens Win!" / draw)
+    [Tooltip("TextBG Image under GamewinScreen. Heroes = blue, Aliens = red, Draw = grey.")]
+    [SerializeField] private UnityEngine.UI.Image gameOverImage;  // TextBG banner tinted by match outcome
 
     [Header("Leaderboard UI")]
     [SerializeField] private GameObject leaderboardPanel;          // Separate panel for the leaderboard (shown after game over panel)
@@ -261,6 +262,20 @@ public class NetworkUIManager : MonoBehaviour
                 if (texts[i] != null && texts[i].gameObject.name == "Player Disconnted Warning")
                 {
                     disconnectNotificationText = texts[i];
+                    break;
+                }
+            }
+        }
+
+        // Resolve TextBG under GamewinScreen if not wired in the Inspector
+        if (gameOverImage == null && gameOverPanel != null)
+        {
+            var images = gameOverPanel.GetComponentsInChildren<UnityEngine.UI.Image>(true);
+            for (int i = 0; i < images.Length; i++)
+            {
+                if (images[i] != null && images[i].gameObject.name == "TextBG")
+                {
+                    gameOverImage = images[i];
                     break;
                 }
             }
@@ -1240,8 +1255,8 @@ public class NetworkUIManager : MonoBehaviour
 
     /// <summary>
     /// Called on all clients when the match ends. Shows the game-over panel,
-    /// sets the winner text, and tints the panel image:
-    ///   winningTeam 0 = Blue (Team A), 1 = Red (Team B), -1 = Grey (Draw).
+    /// sets the winner text, and tints TextBG:
+    ///   winningTeam 0 = Heroes (blue), 1 = Aliens (red), -1 = Draw (grey).
     /// </summary>
     public void ShowGameOverScreen(string winnerText, int winningTeam)
     {
@@ -1255,11 +1270,28 @@ public class NetworkUIManager : MonoBehaviour
             gameOverText.text = winnerText;
         }
 
+        // Ensure TextBG is resolved (panel may have been inactive at Start)
+        if (gameOverImage == null && gameOverPanel != null)
+        {
+            var images = gameOverPanel.GetComponentsInChildren<UnityEngine.UI.Image>(true);
+            for (int i = 0; i < images.Length; i++)
+            {
+                if (images[i] != null && images[i].gameObject.name == "TextBG")
+                {
+                    gameOverImage = images[i];
+                    break;
+                }
+            }
+        }
+
         if (gameOverImage != null)
         {
-            if (winningTeam == 0)       gameOverImage.color = new Color(0.18f, 0.47f, 1f);   // Blue
-            else if (winningTeam == 1)  gameOverImage.color = new Color(1f, 0.22f, 0.22f);   // Red
-            else                        gameOverImage.color = new Color(0.55f, 0.55f, 0.55f); // Grey
+            if (winningTeam == 0)
+                gameOverImage.color = new Color(0.18f, 0.47f, 1f);   // Heroes — blue
+            else if (winningTeam == 1)
+                gameOverImage.color = new Color(1f, 0.22f, 0.22f);   // Aliens — red
+            else
+                gameOverImage.color = new Color(0.55f, 0.55f, 0.55f); // Draw — grey
         }
 
         // Hide leaderboard initially — it will show after the game over panel

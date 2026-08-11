@@ -15,13 +15,19 @@ public class LobbyChatManager : NetworkBehaviour
     [Networked, Capacity(30)]
     private NetworkLinkedList<ChatMessage> Messages { get; }
 
+    private int _lastDisplayedCount = -1;
+
     public override void Render()
     {
         base.Render();
-        if (LobbyUIManager.Instance != null)
-        {
-            LobbyUIManager.Instance.UpdateChat(Messages);
-        }
+        if (LobbyUIManager.Instance == null) return;
+
+        // Only rebuild TMP when the message list actually changes
+        int count = Messages.Count;
+        if (count == _lastDisplayedCount) return;
+        _lastDisplayedCount = count;
+
+        LobbyUIManager.Instance.UpdateChat(Messages);
     }
 
     // RPC for clients to send a message to the host.

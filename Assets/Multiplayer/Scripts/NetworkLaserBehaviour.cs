@@ -272,8 +272,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 
                 // Add a small cooldown after reload to prevent immediate firing
                 PostReloadCooldown = TickTimer.CreateFromSeconds(Runner, 0.1f);
-                
-                RPC_UpdateEnergy(CurrentEnergy);
+                // CurrentEnergy is [Networked] — no RPC needed
             }
         }
 
@@ -403,17 +402,11 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
         }
 
-        RPC_UpdateEnergy(CurrentEnergy);
+        // CurrentEnergy is [Networked] — clients sync automatically (no per-shot RPC)
     }
 
 
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_UpdateEnergy(int newEnergy)
-    {
-        CurrentEnergy = newEnergy;
-    }
-    
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_PlayReloadSound()
     {
@@ -441,7 +434,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         // Unlimited energy system - just reload to full capacity
         CurrentEnergy = maxEnergy;
-        RPC_UpdateEnergy(CurrentEnergy);
     }
 
     /// <summary>
@@ -455,8 +447,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         CurrentEnergy = maxEnergy;
         IsReloading = false;
         ReloadTimer = TickTimer.None;
-        
-        RPC_UpdateEnergy(CurrentEnergy);
     }
 
     private System.Collections.IEnumerator ShowMuzzleFlash()

@@ -90,12 +90,19 @@ public class ReactiveCrosshair : MonoBehaviour
         CacheLineImages();
     }
 
+    private float _findInputRetryTimer;
+
     private void Update()
     {
         // Lazily find the local player's input component (it may not exist at Start)
         if (!_inputCached)
         {
-            TryFindLocalInput();
+            _findInputRetryTimer -= Time.deltaTime;
+            if (_findInputRetryTimer <= 0f)
+            {
+                _findInputRetryTimer = 0.35f;
+                TryFindLocalInput();
+            }
         }
 
         float moveMagnitude = GetLocalMoveMagnitude();

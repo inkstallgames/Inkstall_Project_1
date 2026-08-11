@@ -31,6 +31,7 @@ public class NetworkWeaponEquipSystem : NetworkBehaviour
     private PlayerNetworkData playerData;
     private bool wantsToEquipPrimary;
     private bool wantsToEquipBomb;
+    private WeaponType _lastVisualWeapon = (WeaponType)(-1);
 
     public override void Spawned()
     {
@@ -97,7 +98,11 @@ public class NetworkWeaponEquipSystem : NetworkBehaviour
 
     public override void Render()
     {
-        UpdateWeaponVisuals();
+        if (CurrentWeapon != _lastVisualWeapon)
+        {
+            _lastVisualWeapon = CurrentWeapon;
+            UpdateWeaponVisuals();
+        }
     }
 
     private void EquipWeapon(WeaponType weapon)

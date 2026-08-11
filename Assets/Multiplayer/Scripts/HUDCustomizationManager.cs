@@ -523,10 +523,10 @@ public class HUDCustomizationManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Stack order while live editing:
-    ///   lobby / waiting / other UI  →  dim backdrop  →  editable HUD  →  toolbar
-    /// Sibling order is used instead of nested canvases so Save/Reset/Close stay
-    /// under the root GraphicRaycaster.
+    /// Stack order while live editing (must stay under the customization panel's
+    /// own Canvas — chrome sets overrideSorting + sortingOrder 500):
+    ///   dim backdrop  →  editable HUD  →  TopUI toolbar
+    /// Reparenting HUD/toolbar onto the root canvas would put them under the dim.
     /// </summary>
     private void RaiseLiveEditLayers()
     {
@@ -540,45 +540,36 @@ public class HUDCustomizationManager : MonoBehaviour
         RectTransform canvasRT = parentCanvas != null ? parentCanvas.rootCanvas.transform as RectTransform : null;
         if (canvasRT == null) return;
 
-        Vector2 screen = canvasRT.rect.size;
-
-        // Collect toolbar children (non-fullscreen) before reparenting the panel.
-        foreach (Transform child in customizationPanel.transform)
-        {
-            RectTransform rt = child as RectTransform;
-            if (rt == null) continue;
-
-            bool coversScreen = screen.x > 0f &&
-                                rt.rect.width  >= screen.x * 0.9f &&
-                                rt.rect.height >= screen.y * 0.9f;
-            if (coversScreen) continue; // dim / preview backdrops stay in the panel
-
-            _movedToolbars.Add(new MovedChild
-            {
-                child  = child,
-                parent = child.parent,
-                index  = child.GetSiblingIndex()
-            });
-        }
-
         // Dim covers waiting screens / menus / non-editable chrome on this canvas.
         _panelOriginalParent = customizationPanel.transform.parent;
         _panelOriginalIndex  = customizationPanel.transform.GetSiblingIndex();
         customizationPanel.transform.SetParent(canvasRT, false);
         customizationPanel.transform.SetAsLastSibling();
 
-        // Lift only the editable controls above the dim so they stay visible to drag.
+        // Lift each editable control into the customization panel so they share its
+        // Canvas sorting (sortingOrder 500). Sibling order on the root canvas cannot beat that.
         var raised = new HashSet<Transform>();
         foreach (DraggableHUDElement elem in _editableElements)
         {
             if (elem == null) continue;
 
-            Transform root = elem.transform;
-            while (root.parent != null && root.parent != canvasRT)
-                root = root.parent;
-
-            if (root.parent != canvasRT || root == customizationPanel.transform)
+            Transform target = elem.transform;
+            if (target.IsChildOf(customizationPanel.transform))
                 continue;
+
+            // Raise the highest ancestor that does not contain the editor panel.
+            // That keeps joystick groups / button clusters together without swallowing Settings.
+            Transform root = target;
+            while (root.parent != null &&
+                   root.parent != canvasRT &&
+                   root.parent != customizationPanel.transform &&
+                   !customizationPanel.transform.IsChildOf(root.parent))
+            {
+                root = root.parent;
+            }
+
+            if (root == customizationPanel.transform) continue;
+            if (customizationPanel.transform.IsChildOf(root)) continue;
             if (!raised.Add(root)) continue;
 
             _raisedHudRoots.Add(new MovedChild
@@ -590,16 +581,21 @@ public class HUDCustomizationManager : MonoBehaviour
         }
 
         foreach (MovedChild moved in _raisedHudRoots)
-            moved.child.SetAsLastSibling();
-
-        // Toolbar stays above the HUD controls.
-        foreach (MovedChild moved in _movedToolbars)
         {
-            moved.child.SetParent(canvasRT, false);
+            // worldPositionStays — keep on-screen positions while changing parents
+            moved.child.SetParent(customizationPanel.transform, true);
             moved.child.SetAsLastSibling();
         }
 
-        Flow($"Dim covers non-editable UI; raised {_raisedHudRoots.Count} HUD root(s) and {_movedToolbars.Count} toolbar object(s) above it.");
+        // Toolbar must stay above the raised controls (still inside the panel)
+        Transform topUi = customizationPanel.transform.Find("TopUI");
+        if (topUi != null)
+            topUi.SetAsLastSibling();
+
+        // Drop unused toolbar-move tracking from older layering approach
+        _movedToolbars.Clear();
+
+        Flow($"Dim covers non-editable UI; raised {_raisedHudRoots.Count} HUD root(s) into the Edit Controls panel above the dim.");
     }
 
     /// <summary>
@@ -705,6 +701,7 @@ public class HUDCustomizationManager : MonoBehaviour
     {
         RestoreElementInput();
 
+        // Older builds moved toolbar out of the panel; put those back if present.
         foreach (MovedChild moved in _movedToolbars)
         {
             if (moved.child == null || moved.parent == null) continue;
@@ -718,16 +715,17 @@ public class HUDCustomizationManager : MonoBehaviour
 
         _movedToolbars.Clear();
 
-        // Restore HUD sibling order before putting the panel back.
+        // Restore HUD to original parents (worldPositionStays keeps layout stable).
         for (int i = _raisedHudRoots.Count - 1; i >= 0; i--)
         {
             MovedChild moved = _raisedHudRoots[i];
             if (moved.child == null || moved.parent == null) continue;
+            moved.child.SetParent(moved.parent, true);
             moved.child.SetSiblingIndex(moved.index);
         }
 
         if (_raisedHudRoots.Count > 0)
-            Flow($"Restored {_raisedHudRoots.Count} HUD root sibling order(s).");
+            Flow($"Restored {_raisedHudRoots.Count} HUD root(s) to their gameplay parents.");
 
         _raisedHudRoots.Clear();
 

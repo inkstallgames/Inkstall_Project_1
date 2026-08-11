@@ -85,7 +85,7 @@ public class MysteryBox : NetworkBehaviour
             var bomb = playerObj.GetComponent<NetworkBombBehaviour>();
 
             bool hasAutoFire = pistol != null && pistol.HasAutoFirePowerup;
-            bool hasGrenadeAmmo = bomb != null && bomb.HasGrenadeAmmoPowerup;
+            bool hasGrenadeAmmo = bomb != null && bomb.IsGrenadeAmmoFull;
 
             // If player already has both powerups, give nothing extra
             if (hasAutoFire && hasGrenadeAmmo)
@@ -118,7 +118,7 @@ public class MysteryBox : NetworkBehaviour
             var bomb = playerObj.GetComponent<NetworkBombBehaviour>();
 
             bool hasDamageIncrease = laser != null && laser.HasDamageIncreasePowerup;
-            bool hasGrenadeAmmo = bomb != null && bomb.HasGrenadeAmmoPowerup;
+            bool hasGrenadeAmmo = bomb != null && bomb.IsGrenadeAmmoFull;
 
             if (hasDamageIncrease && hasGrenadeAmmo)
             {

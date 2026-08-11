@@ -36,8 +36,14 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [SerializeField] private AudioClip shootSound;
     [SerializeField] private AudioClip reloadSound;
     [SerializeField] private float soundVolume = 1.0f;
-    [Tooltip("Speed at which the bullet trail travels toward the hit point")]
-    [SerializeField] private float bulletTrailSpeed = 300f;
+    [Tooltip("Visual speed of the tracer tip (lower = more readable streak)")]
+    [SerializeField] private float bulletTrailSpeed = 180f;
+    [Tooltip("How long trail history lasts — short = streak, long = full line")]
+    [SerializeField] private float bulletTrailLifetime = 0.07f;
+    [Tooltip("Minimum time for the tip to travel so the streak is visible")]
+    [SerializeField] private float bulletTrailMinTravelTime = 0.05f;
+    [Tooltip("Cap travel time so long-range shots still feel snappy")]
+    [SerializeField] private float bulletTrailMaxTravelTime = 0.28f;
 
     [Networked] public int CurrentAmmo { get; set; }
     [Networked] private TickTimer FireCooldownTimer { get; set; }
@@ -65,6 +71,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     private Vector3 predictedShotOrigin;
     private Vector3 predictedShotDirection;
     private float predictedShotTime;
+    private bool hasPredictedTrail;
     private bool wantsToShoot;
     private bool wantsToReload;
     
@@ -198,6 +205,9 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         {
             pistolRecoilAnimation.TriggerPistolFire();
         }
+
+        // Instant tracer from the live muzzle so it stays glued to the gun while moving
+        SpawnPredictedBulletTrail();
         
         // Predict ammo decrease ONLY for clients without state authority.
         // Host applies this in FixedUpdateNetwork to prevent double-consumption.
@@ -205,6 +215,30 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         {
             CurrentAmmo--;
         }
+    }
+
+    /// <summary>
+    /// Local-only tracer: raycasts from the camera and draws from the current muzzle.
+    /// Avoids the late RPC trail that freezes at an old world position while you strafe.
+    /// </summary>
+    private void SpawnPredictedBulletTrail()
+    {
+        var fp = ActiveFirePoint;
+        if (bulletTrailPrefab == null || fp == null || PlayerCamera == null)
+        {
+            return;
+        }
+
+        Vector3 origin = PlayerCamera.transform.position;
+        Vector3 direction = PlayerCamera.transform.forward;
+        Vector3 endPoint = origin + direction * range;
+        if (Physics.Raycast(origin, direction, out RaycastHit hit, range, hitLayers))
+        {
+            endPoint = hit.point;
+        }
+
+        hasPredictedTrail = true;
+        SpawnBulletTrailVfx(fp.position, endPoint);
     }
 
     public void RequestReload()
@@ -484,11 +518,23 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             }
         }
 
-        // Bullet trail: spawn at fire point (same as muzzle flash) and move toward endPoint
-        if (bulletTrailPrefab != null && fp != null)
+        // Bullet trail: remotes use shot-time origin from the RPC.
+        // Local player already spawned a predicted tracer from the live muzzle.
+        if (bulletTrailPrefab != null)
         {
-            GameObject trail = Instantiate(bulletTrailPrefab, fp.position, Quaternion.identity);
-            StartCoroutine(SpawnBulletTrail(trail, fp.position, endPoint));
+            if (isLocalPlayer && hasPredictedTrail)
+            {
+                hasPredictedTrail = false;
+            }
+            else
+            {
+                // Prefer networked shot origin so the streak doesn't follow a moving body.
+                Vector3 trailStart = origin != Vector3.zero
+                    ? origin
+                    : (fp != null ? fp.position : endPoint);
+
+                SpawnBulletTrailVfx(trailStart, endPoint);
+            }
         }
 
         if (didHit)
@@ -554,56 +600,85 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     }
 
     /// <summary>
-    /// Moves the bullet trail object from the fire point toward the end point.
-    /// The TrailRenderer on the prefab draws the trail as the object moves.
-    /// Enforces a minimum travel time so the TrailRenderer has enough frames to draw.
-    /// After reaching the destination, waits for the trail to fade before destroying.
+    /// Spawns a short traveling tracer (not a full-length line that pops in and fades).
     /// </summary>
-    private IEnumerator SpawnBulletTrail(GameObject trailObject, Vector3 startPosition, Vector3 endPosition)
+    private void SpawnBulletTrailVfx(Vector3 startPosition, Vector3 endPosition)
     {
-        TrailRenderer trailRenderer = trailObject.GetComponent<TrailRenderer>();
-        float trailTime = trailRenderer != null ? trailRenderer.time : 0.5f;
-
-        // Clear any inherited trail data and anchor the first point at the fire point.
-        // Without this, the TrailRenderer has no recorded start position and the
-        // trail only becomes visible after the object has already moved away.
-        if (trailRenderer != null)
+        if (bulletTrailPrefab == null)
         {
-            trailRenderer.Clear();
+            return;
         }
 
-        // Wait one frame at the fire point so the TrailRenderer records this
-        // as its starting position — the trail will now begin right at the muzzle.
+        Vector3 direction = endPosition - startPosition;
+        Quaternion rotation = direction.sqrMagnitude > 0.0001f
+            ? Quaternion.LookRotation(direction.normalized)
+            : Quaternion.identity;
+
+        GameObject trail = Instantiate(bulletTrailPrefab, startPosition, rotation);
+        StartCoroutine(AnimateBulletTrail(trail, startPosition, endPosition));
+    }
+
+    /// <summary>
+    /// Moves a short TrailRenderer streak from muzzle to impact.
+    /// Trail history is kept brief so it reads as a tracer tip, not a static line.
+    /// </summary>
+    private IEnumerator AnimateBulletTrail(GameObject trailObject, Vector3 startPosition, Vector3 endPosition)
+    {
+        TrailRenderer trailRenderer = trailObject.GetComponent<TrailRenderer>();
+        float trailTime = bulletTrailLifetime;
+
+        if (trailRenderer != null)
+        {
+            trailRenderer.emitting = false;
+            trailRenderer.Clear();
+            trailRenderer.time = trailTime;
+            // Prefer a tapered streak: thicker at the tip (newest), thinner at the tail.
+            trailRenderer.widthMultiplier = Mathf.Max(0.04f, trailRenderer.widthMultiplier);
+            trailRenderer.emitting = true;
+        }
+
+        trailObject.transform.position = startPosition;
+
+        // One physics/render sample at the muzzle so the first vertex is anchored there,
+        // without holding the tip still long enough to look like a stuck world line.
         yield return null;
+        if (trailObject == null)
+        {
+            yield break;
+        }
 
         float distance = Vector3.Distance(startPosition, endPosition);
-        float duration = distance / bulletTrailSpeed;
-
-        // Enforce a minimum travel time so the TrailRenderer has enough frames
-        // to actually draw visible segments (at 60fps, 0.06s = ~4 frames)
-        float minDuration = 0.06f;
-        duration = Mathf.Max(duration, minDuration);
+        float duration = distance / Mathf.Max(1f, bulletTrailSpeed);
+        duration = Mathf.Clamp(duration, bulletTrailMinTravelTime, bulletTrailMaxTravelTime);
 
         float elapsed = 0f;
-
         while (elapsed < duration)
         {
-            // Safety: trail may have been destroyed externally
-            if (trailObject == null) yield break;
+            if (trailObject == null)
+            {
+                yield break;
+            }
 
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
-            trailObject.transform.position = Vector3.Lerp(startPosition, endPosition, t);
+            // Ease out slightly so the tip spends a bit more time readable near impact.
+            float eased = 1f - (1f - t) * (1f - t);
+            trailObject.transform.position = Vector3.Lerp(startPosition, endPosition, eased);
             yield return null;
         }
 
-        // Snap to final position
-        if (trailObject != null)
+        if (trailObject == null)
         {
-            trailObject.transform.position = endPosition;
+            yield break;
         }
 
-        // Wait for the trail to fully fade out before destroying
+        trailObject.transform.position = endPosition;
+        if (trailRenderer != null)
+        {
+            trailRenderer.emitting = false;
+            trailTime = trailRenderer.time;
+        }
+
         yield return new WaitForSeconds(trailTime);
 
         if (trailObject != null)

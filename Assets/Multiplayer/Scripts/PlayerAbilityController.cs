@@ -30,6 +30,10 @@ public class PlayerAbilityController : NetworkBehaviour
     private bool predictedShield;
     private float predictedAbilityTime;
 
+    private bool _lastRenderedShield;
+    private bool _lastRenderedInvisible;
+    private bool _visualsInitialized;
+
     // ---------------------------------------------------------------
     // Inspector Settings
     // ---------------------------------------------------------------
@@ -117,8 +121,18 @@ public class PlayerAbilityController : NetworkBehaviour
 
     public override void Render()
     {
-        SetShieldGlow(IsShielded);
-        ApplyInvisibilityVisuals();
+        bool shield = IsShielded;
+        bool invisible = IsInvisible;
+
+        // Only touch materials when ability visuals actually change
+        if (!_visualsInitialized || shield != _lastRenderedShield || invisible != _lastRenderedInvisible)
+        {
+            SetShieldGlow(shield);
+            ApplyInvisibilityVisuals();
+            _lastRenderedShield = shield;
+            _lastRenderedInvisible = invisible;
+            _visualsInitialized = true;
+        }
     }
 
     // ---------------------------------------------------------------

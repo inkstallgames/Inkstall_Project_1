@@ -69,6 +69,11 @@ public class NetworkLobbyManager : NetworkBehaviour
     private bool _playerListDirty = true;
     private int _lastLobbyVersion = -1;
     private int _lastKnownPlayerCount = -1;
+    private int _lastSelectedModeIndex = -1;
+    private string _lastJoinCodeShown = null;
+    private bool? _lastStartInteractable = null;
+    private bool? _lastReadyState = null;
+    private bool _settingsUiStyled;
 
     public override void Spawned()
     {
@@ -536,6 +541,14 @@ public class NetworkLobbyManager : NetworkBehaviour
             _playerListDirty = true;
         }
 
+        // Mode change (TDM ↔ FFA) must rebuild the list even if TeamIDs didn't change,
+        // because FFA lays players out by slot and TDM lays them out by team.
+        if (SelectedModeIndex != _lastSelectedModeIndex)
+        {
+            _lastSelectedModeIndex = SelectedModeIndex;
+            _playerListDirty = true;
+        }
+
         // Also detect player count changes as a fallback
         if (LobbyPlayers.Count != _lastKnownPlayerCount)
         {
@@ -552,42 +565,57 @@ public class NetworkLobbyManager : NetworkBehaviour
             uiManager.UpdatePlayerList(playerDict);
         }
 
-        // Update Join Code continuously
-        if (!string.IsNullOrEmpty(JoinCode))
+        // Update Join Code only when it changes
+        if (!string.IsNullOrEmpty(JoinCode) && JoinCode != _lastJoinCodeShown)
         {
+            _lastJoinCodeShown = JoinCode;
             uiManager.SetJoinCode(JoinCode);
         }
 
-        // Update button visibility and state based on host status (cheap, OK every frame)
+        // Update button visibility and state based on host status
         bool isHost = Runner.IsServer;
         
         if (uiManager.startGameButton != null)
         {
-            uiManager.startGameButton.gameObject.SetActive(isHost);
+            if (uiManager.startGameButton.gameObject.activeSelf != isHost)
+                uiManager.startGameButton.gameObject.SetActive(isHost);
+
             if (isHost)
             {
                 var networkStarter = NetworkStarter.Instance;
                 bool isTestingMode = networkStarter != null && networkStarter.IsHostOnlyTestingEnabled;
                 int requiredPlayers = isTestingMode ? 1 : minPlayersToStart;
                 bool allReady = LobbyPlayers.Count >= requiredPlayers && LobbyPlayers.All(p => p.Value.IsReady);
-                uiManager.startGameButton.interactable = allReady;
+                if (_lastStartInteractable != allReady)
+                {
+                    _lastStartInteractable = allReady;
+                    uiManager.startGameButton.interactable = allReady;
+                }
             }
         }
 
         if (uiManager.readyButton != null)
         {
-            uiManager.readyButton.gameObject.SetActive(!isHost);
+            if (uiManager.readyButton.gameObject.activeSelf == isHost)
+                uiManager.readyButton.gameObject.SetActive(!isHost);
+
             if (LobbyPlayers.ContainsKey(Runner.LocalPlayer))
             {
                 var localPlayerData = LobbyPlayers[Runner.LocalPlayer];
-                uiManager.SetReadyButtonState(localPlayerData.IsReady);
+                if (_lastReadyState != localPlayerData.IsReady)
+                {
+                    _lastReadyState = localPlayerData.IsReady;
+                    uiManager.SetReadyButtonState(localPlayerData.IsReady);
+                }
             }
         }
 
         // Hide team switch button for FreeForAll mode
         if (uiManager.switchTeamButton != null)
         {
-            uiManager.switchTeamButton.gameObject.SetActive((GameMode)SelectedModeIndex == GameMode.TeamDeathmatch);
+            bool showSwitch = (GameMode)SelectedModeIndex == GameMode.TeamDeathmatch;
+            if (uiManager.switchTeamButton.gameObject.activeSelf != showSwitch)
+                uiManager.switchTeamButton.gameObject.SetActive(showSwitch);
         }
     }
 
@@ -613,6 +641,8 @@ public class NetworkLobbyManager : NetworkBehaviour
                 uiManager.modeDropdown.AddOptions(new List<string> { "TDM", "FFA" });
             }
             uiManager.modeDropdown.SetValueWithoutNotify(SelectedModeIndex);
+            if (!_settingsUiStyled)
+                LobbyUIManager.StyleLobbyDropdown(uiManager.modeDropdown);
         }
         
         if (uiManager.timeDropdown != null)
@@ -624,7 +654,11 @@ public class NetworkLobbyManager : NetworkBehaviour
                 uiManager.timeDropdown.AddOptions(timeOptions);
             }
             uiManager.timeDropdown.SetValueWithoutNotify(SelectedTimeIndex);
+            if (!_settingsUiStyled)
+                LobbyUIManager.StyleLobbyDropdown(uiManager.timeDropdown);
         }
+
+        _settingsUiStyled = true;
     }
 
     // RPCs
@@ -653,8 +687,83 @@ public class NetworkLobbyManager : NetworkBehaviour
         switch (settingName)
         {
             case nameof(SelectedMapIndex): SelectedMapIndex = value; break;
-            case nameof(SelectedModeIndex): SelectedModeIndex = value; break;
+            case nameof(SelectedModeIndex):
+            {
+                int previousMode = SelectedModeIndex;
+                SelectedModeIndex = value;
+                if (previousMode != value)
+                    OnLobbyGameModeChanged(previousMode, value);
+                break;
+            }
             case nameof(SelectedTimeIndex): SelectedTimeIndex = value; break;
+        }
+    }
+
+    /// <summary>
+    /// When returning to TDM from FFA, re-split players across Hero's / Aliens.
+    /// FFA only changes the UI layout, so TeamIDs can all end up looking like
+    /// one column until we rebalance.
+    /// </summary>
+    private void OnLobbyGameModeChanged(int previousMode, int newMode)
+    {
+        if (!Object.HasStateAuthority) return;
+
+        if ((GameMode)newMode == GameMode.TeamDeathmatch)
+        {
+            RebalanceTeamsForTdm();
+        }
+        else
+        {
+            // FFA: refresh lists so everyone stacks in the single-player columns
+            LobbyVersion++;
+            RPC_UpdateLobbyUI();
+        }
+    }
+
+    /// <summary>
+    /// Alternates players onto team 0 / 1 (host first) so both lobby panels stay even.
+    /// </summary>
+    private void RebalanceTeamsForTdm()
+    {
+        if (!Object.HasStateAuthority) return;
+
+        var ordered = LobbyPlayers
+            .OrderByDescending(p => p.Value.IsHost)
+            .ThenBy(p => p.Key.PlayerId)
+            .ToList();
+
+        bool anyChanged = false;
+        int teamA = 0;
+        int teamB = 0;
+
+        foreach (var kvp in ordered)
+        {
+            var data = kvp.Value;
+            int assignedTeam;
+            if (teamA >= maxPlayersPerTeam)
+                assignedTeam = 1;
+            else if (teamB >= maxPlayersPerTeam)
+                assignedTeam = 0;
+            else
+                assignedTeam = teamA <= teamB ? 0 : 1;
+
+            if (data.TeamID != assignedTeam)
+            {
+                data.TeamID = assignedTeam;
+                LobbyPlayers.Set(kvp.Key, data);
+                anyChanged = true;
+            }
+
+            if (assignedTeam == 0) teamA++;
+            else teamB++;
+        }
+
+        LobbyVersion++;
+        RPC_UpdateLobbyUI();
+
+        if (anyChanged)
+        {
+            // Debug.Log($"[NetworkLobbyManager] Rebalanced TDM lobby teams to {teamA}/{teamB}.");
         }
     }
 

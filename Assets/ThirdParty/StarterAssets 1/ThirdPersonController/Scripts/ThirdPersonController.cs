@@ -99,7 +99,7 @@ namespace StarterAssets
         public float slowFootstepInterval = 0.55f;
         [Range(0.1f, 0.8f)]
         [Tooltip("Seconds between steps with a fully dragged joystick or sprint.")]
-        public float fastFootstepInterval = 0.25f;
+        public float fastFootstepInterval = 0.20f;
         [Range(0.5f, 1.5f)]
         [Tooltip("Clip pitch while walking.")]
         public float slowFootstepPitch = 0.9f;

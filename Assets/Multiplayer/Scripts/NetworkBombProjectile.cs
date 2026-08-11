@@ -18,6 +18,7 @@ using System.Collections.Generic;
 public class NetworkBombProjectile : NetworkBehaviour
 {
     private const int MaxPlayerHealth = 100;
+    private const int MaxTrackedPlayers = 16;
 
     [Header("Settings")]
     [SerializeField] private float lifetime = 5f;
@@ -45,6 +46,13 @@ public class NetworkBombProjectile : NetworkBehaviour
 
     private bool hasExploded;
 
+    // Reused buffers — avoid per-tick GetComponent / IEnumerable allocations
+    private readonly List<PlayerNetworkData> _playerBuffer = new List<PlayerNetworkData>(MaxTrackedPlayers);
+    private readonly List<CharacterController> _ccBuffer = new List<CharacterController>(MaxTrackedPlayers);
+    private readonly HashSet<PlayerNetworkData> _damagedBuffer = new HashSet<PlayerNetworkData>();
+    private float _nextPlayerRefreshTime;
+    private const float PlayerCacheInterval = 0.25f;
+
     public void Initialize(PlayerRef source, int damage)
     {
         SourcePlayer = source;
@@ -59,6 +67,8 @@ public class NetworkBombProjectile : NetworkBehaviour
         var rb = GetComponent<Rigidbody>();
         if (rb != null)
             rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+
+        RefreshPlayerCache(force: true);
     }
 
     public override void FixedUpdateNetwork()
@@ -70,6 +80,8 @@ public class NetworkBombProjectile : NetworkBehaviour
             Explode(transform.position, null);
             return;
         }
+
+        RefreshPlayerCache(force: false);
 
         PlayerNetworkData directHit = FindDirectBodyHit();
         if (directHit != null)
@@ -95,16 +107,38 @@ public class NetworkBombProjectile : NetworkBehaviour
         Explode(explosionPos, directHit);
     }
 
+    private void RefreshPlayerCache(bool force)
+    {
+        if (!force && Time.time < _nextPlayerRefreshTime) return;
+        _nextPlayerRefreshTime = Time.time + PlayerCacheInterval;
+
+        _playerBuffer.Clear();
+        _ccBuffer.Clear();
+        if (Runner == null) return;
+
+        foreach (var playerRef in Runner.ActivePlayers)
+        {
+            var obj = Runner.GetPlayerObject(playerRef);
+            if (obj == null) continue;
+            var data = obj.GetComponent<PlayerNetworkData>();
+            if (data == null) continue;
+            _playerBuffer.Add(data);
+            _ccBuffer.Add(data.GetComponent<CharacterController>());
+        }
+    }
+
     private PlayerNetworkData FindDirectBodyHit()
     {
         PlayerNetworkData closest = null;
         float closestDist = float.MaxValue;
+        Vector3 pos = transform.position;
 
-        foreach (var player in EnumeratePlayers())
+        for (int i = 0; i < _playerBuffer.Count; i++)
         {
+            var player = _playerBuffer[i];
             if (!IsValidEnemyTarget(player)) continue;
 
-            float dist = DistanceToPlayerBody(transform.position, player);
+            float dist = DistanceToPlayerBody(pos, player, _ccBuffer[i]);
             if (dist <= bodyHitRadius && dist < closestDist)
             {
                 closestDist = dist;
@@ -115,20 +149,6 @@ public class NetworkBombProjectile : NetworkBehaviour
         return closest;
     }
 
-    private IEnumerable<PlayerNetworkData> EnumeratePlayers()
-    {
-        if (Runner == null) yield break;
-
-        foreach (var playerRef in Runner.ActivePlayers)
-        {
-            var obj = Runner.GetPlayerObject(playerRef);
-            if (obj == null) continue;
-            var data = obj.GetComponent<PlayerNetworkData>();
-            if (data != null)
-                yield return data;
-        }
-    }
-
     private bool IsValidEnemyTarget(PlayerNetworkData player)
     {
         if (player == null || player.Object == null) return false;
@@ -137,9 +157,8 @@ public class NetworkBombProjectile : NetworkBehaviour
         return true;
     }
 
-    private static float DistanceToPlayerBody(Vector3 point, PlayerNetworkData player)
+    private static float DistanceToPlayerBody(Vector3 point, PlayerNetworkData player, CharacterController cc)
     {
-        var cc = player.GetComponent<CharacterController>();
         if (cc != null)
         {
             Vector3 center = player.transform.TransformPoint(cc.center);
@@ -168,6 +187,7 @@ public class NetworkBombProjectile : NetworkBehaviour
         if (hasExploded) return;
         hasExploded = true;
 
+        RefreshPlayerCache(force: true);
         ApplyAreaDamage(explosionPos, directHitPlayer);
         PlayHitEffects(explosionPos);
 
@@ -177,14 +197,15 @@ public class NetworkBombProjectile : NetworkBehaviour
 
     private void ApplyAreaDamage(Vector3 explosionPos, PlayerNetworkData directHitPlayer)
     {
-        var damagedPlayers = new HashSet<PlayerNetworkData>();
+        _damagedBuffer.Clear();
 
         if (directHitPlayer != null)
-            ApplyDamageToPlayer(directHitPlayer, GetDirectHitDamage(), damagedPlayers);
+            ApplyDamageToPlayer(directHitPlayer, GetDirectHitDamage(), _damagedBuffer);
 
-        foreach (var playerData in EnumeratePlayers())
+        for (int i = 0; i < _playerBuffer.Count; i++)
         {
-            if (playerData == null || damagedPlayers.Contains(playerData))
+            var playerData = _playerBuffer[i];
+            if (playerData == null || _damagedBuffer.Contains(playerData))
                 continue;
 
             if (playerData == directHitPlayer)
@@ -193,7 +214,7 @@ public class NetworkBombProjectile : NetworkBehaviour
             if (playerData.Object == null || playerData.Health <= 0)
                 continue;
 
-            float distance = DistanceToPlayerBody(explosionPos, playerData);
+            float distance = DistanceToPlayerBody(explosionPos, playerData, _ccBuffer[i]);
             if (distance > explosionRadius)
                 continue;
 
@@ -201,7 +222,7 @@ public class NetworkBombProjectile : NetworkBehaviour
             if (splashDamage <= 0)
                 continue;
 
-            ApplyDamageToPlayer(playerData, splashDamage, damagedPlayers);
+            ApplyDamageToPlayer(playerData, splashDamage, _damagedBuffer);
         }
     }
 

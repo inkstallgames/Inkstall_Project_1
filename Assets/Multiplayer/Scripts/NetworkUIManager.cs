@@ -150,6 +150,8 @@ public class NetworkUIManager : MonoBehaviour
     private const float PING_UPDATE_INTERVAL = 0.5f;
     private float leaderboardUpdateTimer = 0f;
     private const float LEADERBOARD_UPDATE_INTERVAL = 0.5f;
+    private float findLocalPlayerTimer = 0f;
+    private const float FIND_LOCAL_PLAYER_INTERVAL = 0.35f;
     private float ffaRankUpdateTimer = 0f;
     private const float FFA_RANK_UPDATE_INTERVAL = 0.5f;
     private int _lastKnownHealth = -1;
@@ -337,26 +339,27 @@ public class NetworkUIManager : MonoBehaviour
 
         if (runner != null && localPlayerObject == null)
         {
-            TryFindLocalPlayer();
-            
-            if (localPlayerObject != null)
+            findLocalPlayerTimer -= Time.deltaTime;
+            if (findLocalPlayerTimer <= 0f)
             {
-                // Re-apply layout now that the local player has spawned
-                if (throwButton != null)
+                findLocalPlayerTimer = FIND_LOCAL_PLAYER_INTERVAL;
+                TryFindLocalPlayer();
+
+                if (localPlayerObject != null)
                 {
-                    Canvas rootCanvas = throwButton.GetComponentInParent<Canvas>(true);
-                    if (rootCanvas != null)
+                    // Re-apply layout now that the local player has spawned
+                    if (throwButton != null)
                     {
-                        HUDCustomizationManager.ApplySavedLayout(rootCanvas.gameObject);
+                        Canvas rootCanvas = throwButton.GetComponentInParent<Canvas>(true);
+                        if (rootCanvas != null)
+                            HUDCustomizationManager.ApplySavedLayout(rootCanvas.gameObject);
+                        else
+                            HUDCustomizationManager.ApplySavedLayout(gameObject);
                     }
                     else
                     {
                         HUDCustomizationManager.ApplySavedLayout(gameObject);
                     }
-                }
-                else
-                {
-                    HUDCustomizationManager.ApplySavedLayout(gameObject);
                 }
             }
         }
@@ -1307,14 +1310,20 @@ public class NetworkUIManager : MonoBehaviour
         StartCoroutine(GameOverToLeaderboardSequence());
     }
 
+    private bool _skipLeaderboardWait;
+    private bool _returningToLobby;
+
     /// <summary>
     /// Handles the timed transition:
     ///   1. Show Game Over panel for gameOverDisplayTime seconds
     ///   2. Hide Game Over panel, populate & show Leaderboard panel
-    ///   3. After leaderboardDisplayTime seconds, exit to lobby
+    ///   3. After leaderboardDisplayTime seconds (or Continue), exit to lobby
     /// </summary>
     private System.Collections.IEnumerator GameOverToLeaderboardSequence()
     {
+        _skipLeaderboardWait = false;
+        _returningToLobby = false;
+
         // Phase 1: Game Over panel is already visible — wait
         yield return new WaitForSeconds(gameOverDisplayTime);
 
@@ -1322,30 +1331,47 @@ public class NetworkUIManager : MonoBehaviour
         if (gameOverPanel != null)
             gameOverPanel.SetActive(false);
 
-        PopulateLeaderboard();
-
         if (leaderboardPanel != null)
+        {
             leaderboardPanel.SetActive(true);
+            LeaderboardPanelChrome.Apply(leaderboardPanel, OnLeaderboardContinueClicked);
+        }
+
+        PopulateLeaderboard();
 
         // Unlock cursor so players can see the leaderboard comfortably
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Phase 3: Countdown, then exit
+        // Phase 3: Countdown, or Continue button skips early
         float countdown = leaderboardDisplayTime;
-        while (countdown > 0f)
+        while (countdown > 0f && !_skipLeaderboardWait)
         {
             if (leaderboardCountdownText != null)
-                leaderboardCountdownText.text = Mathf.CeilToInt(countdown).ToString();
+                leaderboardCountdownText.text = Mathf.CeilToInt(countdown).ToString() + "s";
+            LeaderboardPanelChrome.SetCountdownSeconds(Mathf.CeilToInt(countdown));
 
             yield return null;
             countdown -= Time.deltaTime;
         }
 
         if (leaderboardCountdownText != null)
-            leaderboardCountdownText.text = "0";
+            leaderboardCountdownText.text = "0s";
+        LeaderboardPanelChrome.SetCountdownSeconds(0);
 
-        // Shut down and return to lobby
+        FinishLeaderboardAndReturnToLobby();
+    }
+
+    private void OnLeaderboardContinueClicked()
+    {
+        _skipLeaderboardWait = true;
+    }
+
+    private void FinishLeaderboardAndReturnToLobby()
+    {
+        if (_returningToLobby) return;
+        _returningToLobby = true;
+
         if (leaderboardPanel != null)
             leaderboardPanel.SetActive(false);
 
@@ -1487,18 +1513,19 @@ public class NetworkUIManager : MonoBehaviour
 
                 // Update texts
                 if (leaderboardNameTexts[i] != null)
-                {
                     leaderboardNameTexts[i].text = entry.PlayerName;
-                    leaderboardNameTexts[i].color = entry.IsLocalPlayer
-                        ? Color.yellow // Yellow for local player
-                        : Color.white;
-                }
 
                 if (leaderboardKillTexts[i] != null)
                     leaderboardKillTexts[i].text = entry.Kills.ToString();
 
                 if (leaderboardDeathTexts[i] != null)
                     leaderboardDeathTexts[i].text = entry.Deaths.ToString();
+
+                LeaderboardPanelChrome.StyleFilledRow(
+                    leaderboardRows[i],
+                    i,
+                    entry.IsLocalPlayer,
+                    entry.TeamId);
             }
             else
             {

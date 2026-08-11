@@ -109,6 +109,10 @@ public class LobbyUIManager : MonoBehaviour
         if (timeDropdown != null)
             timeDropdown.onValueChanged.AddListener((val) => NetworkLobbyManager.Instance?.OnTimeSelectionChanged(val));
 
+        // Touch-friendly option rows (default TMP item height is only ~20px)
+        StyleLobbyDropdown(modeDropdown);
+        StyleLobbyDropdown(timeDropdown);
+
         // Player controls
         if (readyButton != null)
             readyButton.onClick.AddListener(() => NetworkLobbyManager.Instance?.ToggleReadyStatus());
@@ -222,14 +226,17 @@ public class LobbyUIManager : MonoBehaviour
         
         chatContent.richText = true;
         chatContent.color = Color.white;
-        
-        string chatLog = "";
+
+        // StringBuilder avoids per-message string reallocations
+        var sb = new System.Text.StringBuilder(256);
         foreach (var msg in messages)
         {
             string colorHex = ColorUtility.ToHtmlStringRGB(msg.PlayerColor);
-            chatLog += $"<b><color=#{colorHex}>{msg.PlayerName}:</color></b> {msg.Message}\n";
+            sb.Append("<b><color=#").Append(colorHex).Append('>')
+              .Append(msg.PlayerName).Append(":</color></b> ")
+              .Append(msg.Message).Append('\n');
         }
-        chatContent.text = chatLog;
+        chatContent.text = sb.ToString();
     }
 
 
@@ -294,6 +301,7 @@ public class LobbyUIManager : MonoBehaviour
                 }
             }
             modeDropdown.AddOptions(formattedOptions);
+            StyleLobbyDropdown(modeDropdown);
         }
 
         if (timeDropdown != null)
@@ -301,6 +309,7 @@ public class LobbyUIManager : MonoBehaviour
             timeDropdown.interactable = isHost;
             timeDropdown.ClearOptions();
             timeDropdown.AddOptions(timeOptions);
+            StyleLobbyDropdown(timeDropdown);
         }
         
         // Host starts as not ready and must click ready like everyone else
@@ -310,6 +319,45 @@ public class LobbyUIManager : MonoBehaviour
         if (NetworkLobbyManager.Instance != null)
         {
             UpdateTeamHeaders(NetworkLobbyManager.Instance.SelectedModeIndex);
+        }
+    }
+
+    /// <summary>
+    /// Enlarges TMP dropdown list rows so Mode / Time options are easy to tap on mobile.
+    /// </summary>
+    public static void StyleLobbyDropdown(TMP_Dropdown dropdown, float itemHeight = 36f, float fontSize = 22f)
+    {
+        if (dropdown == null || dropdown.template == null) return;
+
+        RectTransform itemRt = null;
+        if (dropdown.itemText != null)
+            itemRt = dropdown.itemText.transform.parent as RectTransform;
+        if (itemRt == null)
+        {
+            Toggle itemToggle = dropdown.template.GetComponentInChildren<Toggle>(true);
+            if (itemToggle != null)
+                itemRt = itemToggle.transform as RectTransform;
+        }
+
+        if (itemRt != null)
+        {
+            itemRt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, itemHeight);
+
+            LayoutElement layout = itemRt.GetComponent<LayoutElement>();
+            if (layout == null) layout = itemRt.gameObject.AddComponent<LayoutElement>();
+            layout.minHeight = itemHeight;
+            layout.preferredHeight = itemHeight;
+            layout.flexibleHeight = 0f;
+        }
+
+        int optionCount = Mathf.Max(dropdown.options.Count, 2);
+        float templateHeight = Mathf.Clamp(itemHeight * optionCount + 8f, itemHeight * 2f, itemHeight * 5f + 8f);
+        dropdown.template.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, templateHeight);
+
+        if (dropdown.itemText != null)
+        {
+            dropdown.itemText.enableAutoSizing = false;
+            dropdown.itemText.fontSize = fontSize;
         }
     }
 

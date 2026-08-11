@@ -280,8 +280,6 @@ public class PlayerNetworkData : NetworkBehaviour
                     // Fallback: 2D centered sound
                     AudioSource.PlayClipAtPoint(hitSound, Camera.main.transform.position, hitSoundVolume);
                 }
-                
-                Debug.Log($"[PlayerNetworkData] *** {(isLaserDamage ? "LASER" : "BULLET")} HIT SOUND PLAYED *** for local player {PlayerName}");
             }
         }
     }

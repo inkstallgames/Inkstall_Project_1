@@ -156,7 +156,7 @@ MonoBehaviour:
   SprintSpeed: 5
   RotationSmoothTime: 0.3
   SpeedChangeRate: 10
-  LandingAudioClip: {fileID: 8300000, guid: ff697d3070687ce4583faa0561a145a2, type: 3}
+  LandingAudioClip: {fileID: 0}
   FootstepAudioClips:
   - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
   - {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
@@ -192,10 +192,10 @@ MonoBehaviour:
   sprintingFootstepInterval: 0.5
   runThresholdSound: 0.5
   sprintThresholdSound: 0.5
-  adaptiveFootstepClip: {fileID: 8300000, guid: 64625e58dca09524688160e1ceeff45c,
+  adaptiveFootstepClip: {fileID: 8300000, guid: 1f087f7007019504cb32a67be1b31c21,
     type: 3}
   slowFootstepInterval: 0.55
-  fastFootstepInterval: 0.25
+  fastFootstepInterval: 0.2
   slowFootstepPitch: 0.9
   fastFootstepPitch: 1.2
   slowFootstepVolume: 0.055
@@ -458,7 +458,9 @@ MonoBehaviour:
   hitLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  startingBombs: 6
+  startingBombs: 3
+  maxBombCapacity: 5
+  mysteryBoxGrenades: 5
   ballScale: 1
   ballColor: {r: 0, g: 1, b: 0, a: 1}
   throwEffect: {fileID: 0}
@@ -584,10 +586,10 @@ MonoBehaviour:
   shieldMaterial: {fileID: 2100000, guid: e2002a38a660a584db60c728562929a1, type: 2}
   invisibilityMaterial: {fileID: 2100000, guid: fc8eaee3c6ab82a4eb6a4ecf319f42a9,
     type: 2}
-  shieldUseSound: {fileID: 8300000, guid: d5627deb7a77d074da2a0e0f9e66e1f6, type: 3}
-  invisibilityUseSound: {fileID: 8300000, guid: b52d0395c85220748ac17703e88f0fb9,
+  shieldUseSound: {fileID: 8300000, guid: fd79fb9d4a93fab4a8d0203f479de528, type: 3}
+  invisibilityUseSound: {fileID: 8300000, guid: 7fdc15cf9455c454d85693125021d2d5,
     type: 3}
-  abilityEndSound: {fileID: 8300000, guid: fd79fb9d4a93fab4a8d0203f479de528, type: 3}
+  abilityEndSound: {fileID: 8300000, guid: b52d0395c85220748ac17703e88f0fb9, type: 3}
 --- !u!114 &794800702146022241
 MonoBehaviour:
   m_ObjectHideFlags: 0

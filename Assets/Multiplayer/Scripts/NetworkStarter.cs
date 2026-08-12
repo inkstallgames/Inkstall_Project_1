@@ -127,8 +127,6 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
         
         // Set time step to match target FPS
         Time.fixedDeltaTime = 1f / targetFPS;
-        
-        UnityEngine.Debug.Log($"[NetworkStarter] FPS Optimizations Applied: {targetFPS} FPS, VSync: {enableVSync}");
     }
     
     private void InitializeFPSManager()
@@ -535,9 +533,7 @@ public class NetworkStarter : MonoBehaviour, INetworkRunnerCallbacks
     
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        UnityEngine.Debug.Log($"[NetworkStarter] Player {player.PlayerId} joined. IsServer: {runner.IsServer}");
         var currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-        UnityEngine.Debug.Log($"[NetworkStarter] Current scene: {currentScene.name}");
 
         // ===== RECONNECTION: Register token and check for returning player =====
         if (runner.IsServer)

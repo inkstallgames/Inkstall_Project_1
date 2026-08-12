@@ -8,9 +8,18 @@ public class MysteryBox : NetworkBehaviour
     [Tooltip("A player entering this radius claims the box without shooting it.")]
     private float pickupRadius = 1.2f;
 
+    [Header("VFX Performance")]
+    [Tooltip("Disable heavy aura particles beyond this distance from the camera")]
+    [SerializeField] private float vfxCullDistance = 22f;
+    [SerializeField] private float vfxCullCheckInterval = 0.35f;
+
     [Networked] private NetworkBool IsClaimed { get; set; }
 
     private bool _localPickupRequested;
+    private ParticleSystem[] _particleSystems;
+    private Light[] _lights;
+    private bool _vfxEnabled = true;
+    private float _nextCullCheck;
 
     public override void Spawned()
     {
@@ -26,6 +35,54 @@ public class MysteryBox : NetworkBehaviour
             body = gameObject.AddComponent<Rigidbody>();
         body.isKinematic = true;
         body.useGravity = false;
+
+        CacheAndToneDownVfx();
+    }
+
+    void CacheAndToneDownVfx()
+    {
+        _particleSystems = GetComponentsInChildren<ParticleSystem>(true);
+        _lights = GetComponentsInChildren<Light>(true);
+
+        // Realtime point lights on the aura are a common local FPS spike
+        if (_lights != null)
+        {
+            for (int i = 0; i < _lights.Length; i++)
+            {
+                if (_lights[i] != null)
+                    _lights[i].enabled = false;
+            }
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (_particleSystems == null || _particleSystems.Length == 0) return;
+        if (Time.unscaledTime < _nextCullCheck) return;
+        _nextCullCheck = Time.unscaledTime + vfxCullCheckInterval;
+
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        float maxDistSq = vfxCullDistance * vfxCullDistance;
+        bool wantEnabled = (cam.transform.position - transform.position).sqrMagnitude <= maxDistSq;
+        if (wantEnabled == _vfxEnabled) return;
+
+        _vfxEnabled = wantEnabled;
+        for (int i = 0; i < _particleSystems.Length; i++)
+        {
+            ParticleSystem ps = _particleSystems[i];
+            if (ps == null) continue;
+
+            if (wantEnabled)
+            {
+                if (!ps.isPlaying) ps.Play(true);
+            }
+            else
+            {
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)

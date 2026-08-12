@@ -594,11 +594,9 @@ public class LobbyUIManager : MonoBehaviour
 
     public void ShowHeroSelectionPanel(bool show)
     {
-        Debug.Log($"[LobbyUIManager] ShowHeroSelectionPanel called with show={show}");
         if (heroSelectionPanel != null)
         {
             heroSelectionPanel.SetActive(show);
-            Debug.Log($"[LobbyUIManager] Set heroSelectionPanel active to {show}, actual state: {heroSelectionPanel.activeSelf}");
         }
         else
         {
@@ -608,7 +606,6 @@ public class LobbyUIManager : MonoBehaviour
         if (lobbyPanel != null)
         {
             lobbyPanel.SetActive(!show);
-            Debug.Log($"[LobbyUIManager] Set lobbyPanel active to {!show}");
         }
     }
 
@@ -631,7 +628,7 @@ public class LobbyUIManager : MonoBehaviour
             if (HUDEditButton != null) HUDEditButton.gameObject.SetActive(false);
 
             StartLoadingDotsAnimation();
-            Debug.Log("[LobbyUIManager] Loading into match — lobby UI hidden.");
+            // Loading UI hidden — no console spam
         }
         else
         {
@@ -691,7 +688,6 @@ public class LobbyUIManager : MonoBehaviour
         _loadingLabel.color = Color.white;
 
         _autoLoadingScreen = root;
-        Debug.Log("[LobbyUIManager] loadingScreenPanel is unassigned — using the built-in fallback loading screen.");
         return _autoLoadingScreen;
     }
 
@@ -708,6 +704,9 @@ public class LobbyUIManager : MonoBehaviour
 
     private void StopLoadingDotsAnimation()
     {
+        // Unity fake-null: destroyed LobbyUIManager must not call StopCoroutine
+        if (this == null) return;
+
         if (_loadingDotsCoroutine != null)
         {
             StopCoroutine(_loadingDotsCoroutine);

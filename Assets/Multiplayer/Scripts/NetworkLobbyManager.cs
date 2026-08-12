@@ -431,7 +431,8 @@ public class NetworkLobbyManager : NetworkBehaviour
 
     private void OnGameStarted()
     {
-        uiManager.ShowLobby(false);
+        if (uiManager != null)
+            uiManager.ShowLobby(false);
     }
 
     public override void Render()

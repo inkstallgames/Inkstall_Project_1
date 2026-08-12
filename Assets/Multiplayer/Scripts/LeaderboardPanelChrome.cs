@@ -3,8 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// End-of-match scoreboard chrome. Uses a VerticalLayoutGroup so order is always:
-/// Title → #/PLAYER/KILLS/DEATHS → rows → footer.
+/// End-of-match scoreboard chrome. Centered panel layout:
+/// Title → column headers → scrollable player rows → footer (countdown + Continue).
 /// </summary>
 public static class LeaderboardPanelChrome
 {
@@ -31,16 +31,19 @@ public static class LeaderboardPanelChrome
     const string TitleHostName = "ScoreboardTitleHost";
     const string HeaderName = "ScoreboardColumnHeader";
     const string RowsHostName = "ScoreboardRowsHost";
+    const string ScrollName = "ScoreboardScroll";
+    const string ViewportName = "ScoreboardViewport";
     const string FooterName = "ScoreboardFooter";
 
-    const float RefCardWidth = 900f;
-    const float RefCardHeight = 560f;
-    const float ScreenMarginX = 48f;
-    const float ScreenMarginY = 48f;
-    const float TitleHeight = 70f;
-    const float HeaderHeight = 48f;
-    const float FooterHeight = 88f;
-    const float RowHeight = 56f;
+    const float RefCardWidth = 1100f;
+    const float RefCardHeight = 900f;
+    const float ScreenMarginX = 24f;
+    const float ScreenMarginY = 36f;
+    const float MaxScreenHeightFrac = 0.92f;
+    const float TitleHeight = 74f;
+    const float HeaderHeight = 50f;
+    const float FooterHeight = 84f;
+    const float RowHeight = 58f;
     const float RankWidth = 64f;
     const float StatWidth = 110f;
     const float SidePad = 28f;
@@ -198,7 +201,7 @@ public static class LeaderboardPanelChrome
     {
         Vector2 size = ResolveCardSize(card);
 
-        // Centered card — not full-screen tall
+        // Centered panel (not full-screen)
         card.anchorMin = new Vector2(0.5f, 0.5f);
         card.anchorMax = new Vector2(0.5f, 0.5f);
         card.pivot = new Vector2(0.5f, 0.5f);
@@ -233,12 +236,13 @@ public static class LeaderboardPanelChrome
             Mathf.RoundToInt(SidePad),
             Mathf.RoundToInt(SidePad),
             20,
-            20);
+            16);
         vlg.spacing = 10f;
         vlg.childAlignment = TextAnchor.UpperCenter;
         vlg.childControlWidth = true;
         vlg.childControlHeight = true;
         vlg.childForceExpandWidth = true;
+        // Rows host takes remaining height; title/header/footer stay fixed
         vlg.childForceExpandHeight = false;
     }
 
@@ -250,9 +254,9 @@ public static class LeaderboardPanelChrome
             return new Vector2(RefCardWidth, RefCardHeight);
 
         float maxW = Mathf.Max(320f, canvasRt.rect.width - ScreenMarginX * 2f);
-        float maxH = Mathf.Max(360f, canvasRt.rect.height - ScreenMarginY * 2f);
-        // Cap height ~70% of screen so the panel doesn't dominate
-        maxH = Mathf.Min(maxH, canvasRt.rect.height * 0.7f);
+        float maxH = Mathf.Max(420f, canvasRt.rect.height - ScreenMarginY * 2f);
+        maxH = Mathf.Min(maxH, canvasRt.rect.height * MaxScreenHeightFrac);
+
         float scale = Mathf.Min(1f, maxW / RefCardWidth, maxH / RefCardHeight);
         return new Vector2(RefCardWidth * scale, RefCardHeight * scale);
     }
@@ -286,7 +290,29 @@ public static class LeaderboardPanelChrome
     static bool IsOurHost(Transform t)
     {
         return t.name == TitleHostName || t.name == HeaderName ||
-               t.name == RowsHostName || t.name == FooterName || t.name == CardName;
+               t.name == RowsHostName || t.name == FooterName || t.name == CardName ||
+               t.name == ScrollName || t.name == ViewportName;
+    }
+
+    /// <summary>
+    /// Call after filling rows so the scroll content height matches visible players.
+    /// </summary>
+    public static void RefreshScrollLayout(GameObject panelRoot)
+    {
+        if (panelRoot == null) return;
+        Transform rows = FindDeep(panelRoot.transform, "PlayerRows");
+        if (rows == null) return;
+
+        RectTransform content = rows as RectTransform;
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(content);
+
+        ScrollRect scroll = panelRoot.GetComponentInChildren<ScrollRect>(true);
+        if (scroll != null)
+        {
+            scroll.content = content;
+            scroll.verticalNormalizedPosition = 1f;
+        }
     }
 
     // ---------------------------------------------------------------
@@ -430,43 +456,110 @@ public static class LeaderboardPanelChrome
         if (le == null) le = host.gameObject.AddComponent<LayoutElement>();
         le.flexibleWidth = 1f;
         le.flexibleHeight = 1f;
-        le.minHeight = 120f;
+        le.minHeight = 160f;
         le.preferredHeight = -1f;
 
-        // Move PlayerRows under our host and stretch-fill
+        RectTransform viewport = EnsureScrollViewport(host);
+
         if (playerRows != null)
         {
-            // Hide the old LeaderBoardContent wrapper once rows are adopted
-            Transform content = playerRows.parent;
-            if (playerRows.parent != host)
-                playerRows.SetParent(host, false);
+            Transform oldParent = playerRows.parent;
+            if (playerRows.parent != viewport)
+                playerRows.SetParent(viewport, false);
 
-            if (content != null && content.name == "LeaderBoardContent")
-                content.gameObject.SetActive(false);
+            if (oldParent != null && oldParent.name == "LeaderBoardContent")
+                oldParent.gameObject.SetActive(false);
 
-            Stretch(playerRows);
-            playerRows.localScale = Vector3.one;
+            SetupScrollContent(playerRows);
             playerRows.gameObject.SetActive(true);
 
-            // Kill broken layout leftovers
-            ContentSizeFitter fitter = playerRows.GetComponent<ContentSizeFitter>();
-            if (fitter != null) Object.Destroy(fitter);
-
-            VerticalLayoutGroup vlg = playerRows.GetComponent<VerticalLayoutGroup>();
-            if (vlg == null) vlg = playerRows.gameObject.AddComponent<VerticalLayoutGroup>();
-            vlg.padding = new RectOffset(0, 0, 4, 4);
-            vlg.spacing = 6f;
-            vlg.childAlignment = TextAnchor.UpperCenter;
-            vlg.childControlWidth = true;
-            vlg.childControlHeight = true;
-            vlg.childForceExpandWidth = true;
-            vlg.childForceExpandHeight = false;
+            ScrollRect scroll = host.GetComponentInChildren<ScrollRect>(true);
+            if (scroll != null)
+                scroll.content = playerRows;
 
             for (int i = 0; i < playerRows.childCount; i++)
                 StyleRowShell(playerRows.GetChild(i) as RectTransform);
+
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(playerRows);
         }
 
         return host;
+    }
+
+    static RectTransform EnsureScrollViewport(RectTransform rowsHost)
+    {
+        RectTransform scrollRt = FindChild(rowsHost, ScrollName) as RectTransform;
+        if (scrollRt == null)
+        {
+            GameObject scrollGo = new GameObject(ScrollName, typeof(RectTransform), typeof(ScrollRect));
+            scrollRt = scrollGo.GetComponent<RectTransform>();
+            scrollRt.SetParent(rowsHost, false);
+        }
+
+        Stretch(scrollRt);
+        scrollRt.localScale = Vector3.one;
+
+        ScrollRect scroll = scrollRt.GetComponent<ScrollRect>();
+        if (scroll == null) scroll = scrollRt.gameObject.AddComponent<ScrollRect>();
+        scroll.horizontal = false;
+        scroll.vertical = true;
+        scroll.movementType = ScrollRect.MovementType.Clamped;
+        scroll.inertia = true;
+        scroll.decelerationRate = 0.135f;
+        scroll.scrollSensitivity = 35f;
+        scroll.verticalScrollbar = null;
+        scroll.horizontalScrollbar = null;
+
+        RectTransform viewport = FindChild(scrollRt, ViewportName) as RectTransform;
+        if (viewport == null)
+        {
+            GameObject vpGo = new GameObject(ViewportName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(RectMask2D));
+            viewport = vpGo.GetComponent<RectTransform>();
+            viewport.SetParent(scrollRt, false);
+        }
+
+        if (viewport.GetComponent<RectMask2D>() == null)
+            viewport.gameObject.AddComponent<RectMask2D>();
+
+        Image vpImg = viewport.GetComponent<Image>();
+        if (vpImg == null) vpImg = viewport.gameObject.AddComponent<Image>();
+        vpImg.sprite = SolidSprite;
+        vpImg.type = Image.Type.Simple;
+        vpImg.color = new Color(1f, 1f, 1f, 0.01f); // needed so ScrollRect receives drags
+        vpImg.raycastTarget = true;
+
+        Stretch(viewport);
+        viewport.localScale = Vector3.one;
+
+        scroll.viewport = viewport;
+        return viewport;
+    }
+
+    static void SetupScrollContent(RectTransform playerRows)
+    {
+        // Top-stretched content that grows downward with row count
+        playerRows.anchorMin = new Vector2(0f, 1f);
+        playerRows.anchorMax = new Vector2(1f, 1f);
+        playerRows.pivot = new Vector2(0.5f, 1f);
+        playerRows.anchoredPosition = Vector2.zero;
+        playerRows.sizeDelta = new Vector2(0f, 0f);
+        playerRows.localScale = Vector3.one;
+
+        VerticalLayoutGroup vlg = playerRows.GetComponent<VerticalLayoutGroup>();
+        if (vlg == null) vlg = playerRows.gameObject.AddComponent<VerticalLayoutGroup>();
+        vlg.padding = new RectOffset(0, 0, 4, 8);
+        vlg.spacing = 6f;
+        vlg.childAlignment = TextAnchor.UpperCenter;
+        vlg.childControlWidth = true;
+        vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
+
+        ContentSizeFitter fitter = playerRows.GetComponent<ContentSizeFitter>();
+        if (fitter == null) fitter = playerRows.gameObject.AddComponent<ContentSizeFitter>();
+        fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+        fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
     }
 
     static void StyleRowShell(RectTransform row)
@@ -607,26 +700,81 @@ public static class LeaderboardPanelChrome
         RectTransform footer = EnsureHost(card, FooterName);
         SetFixedHeight(footer, FooterHeight);
 
-        // Centered countdown stack on the left/center
-        TextMeshProUGUI label = EnsureFooterLine(footer, "FooterLabel", "Returning to lobby", TipText, 18f, 14f);
-        _footerCountdown = EnsureFooterLine(footer, "FooterCountdown", "10s", AccentYellow, 24f, -12f);
+        Image bg = footer.GetComponent<Image>();
+        if (bg == null) bg = footer.gameObject.AddComponent<Image>();
+        bg.sprite = SolidSprite;
+        bg.type = Image.Type.Simple;
+        bg.color = new Color(0.05f, 0.06f, 0.08f, 0.95f);
+        bg.raycastTarget = false;
+
+        HorizontalLayoutGroup hlg = footer.GetComponent<HorizontalLayoutGroup>();
+        if (hlg == null) hlg = footer.gameObject.AddComponent<HorizontalLayoutGroup>();
+        hlg.padding = new RectOffset(12, 12, 6, 6);
+        hlg.spacing = 12f;
+        hlg.childAlignment = TextAnchor.MiddleCenter;
+        hlg.childControlWidth = true;
+        hlg.childControlHeight = true;
+        hlg.childForceExpandWidth = false;
+        hlg.childForceExpandHeight = true;
+
+        RectTransform messageHost = EnsureFooterMessageHost(footer);
+        EnsureContinueButton(footer);
+
+        messageHost.SetSiblingIndex(0);
+        FindChild(footer, "ContinueButton")?.SetSiblingIndex(1);
+
+        return footer;
+    }
+
+    static RectTransform EnsureFooterMessageHost(RectTransform footer)
+    {
+        const string hostName = "FooterMessageHost";
+        RectTransform host = FindChild(footer, hostName) as RectTransform;
+        if (host == null)
+        {
+            GameObject go = new GameObject(hostName, typeof(RectTransform));
+            host = go.GetComponent<RectTransform>();
+            host.SetParent(footer, false);
+        }
+
+        // Flexible spacer keeps Continue on the right; inner stack centers the timer under the label
+        LayoutElement le = host.GetComponent<LayoutElement>();
+        if (le == null) le = host.gameObject.AddComponent<LayoutElement>();
+        le.flexibleWidth = 1f;
+        le.minWidth = 200f;
+        le.preferredWidth = -1f;
+        le.flexibleHeight = 1f;
+
+        VerticalLayoutGroup vlg = host.GetComponent<VerticalLayoutGroup>();
+        if (vlg == null) vlg = host.gameObject.AddComponent<VerticalLayoutGroup>();
+        vlg.padding = new RectOffset(0, 0, 0, 0);
+        vlg.spacing = 1f;
+        vlg.childAlignment = TextAnchor.MiddleCenter;
+        vlg.childControlWidth = true;
+        vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
+
+        // Move any old absolute-positioned footer labels under the message host
+        ReparentIfPresent(footer, host, "FooterLabel");
+        ReparentIfPresent(footer, host, "FooterCountdown");
+
+        TextMeshProUGUI label = EnsureFooterLine(host, "FooterLabel", "Returning to Lobby", TipText, 16f, TextAlignmentOptions.Center);
+        _footerCountdown = EnsureFooterLine(host, "FooterCountdown", "10s", AccentYellow, 22f, TextAlignmentOptions.Center);
         if (_footerCountdown != null)
             _footerCountdown.fontStyle = FontStyles.Bold;
 
-        // Leave room on the right for the Continue button
-        if (label != null)
-        {
-            RectTransform lrt = label.rectTransform;
-            lrt.offsetMax = new Vector2(-180f, lrt.offsetMax.y);
-        }
-        if (_footerCountdown != null)
-        {
-            RectTransform crt = _footerCountdown.rectTransform;
-            crt.offsetMax = new Vector2(-180f, crt.offsetMax.y);
-        }
+        label?.transform.SetSiblingIndex(0);
+        _footerCountdown?.transform.SetSiblingIndex(1);
 
-        EnsureContinueButton(footer);
-        return footer;
+        return host;
+    }
+
+    static void ReparentIfPresent(Transform from, Transform to, string childName)
+    {
+        Transform child = FindChild(from, childName);
+        if (child != null && child.parent != to)
+            child.SetParent(to, false);
     }
 
     static void EnsureContinueButton(RectTransform footer)
@@ -670,12 +818,22 @@ public static class LeaderboardPanelChrome
             }
         }
 
-        rt.anchorMin = new Vector2(1f, 0.5f);
-        rt.anchorMax = new Vector2(1f, 0.5f);
-        rt.pivot = new Vector2(1f, 0.5f);
-        rt.anchoredPosition = new Vector2(-8f, 0f);
-        rt.sizeDelta = new Vector2(160f, 52f);
+        // Clear old absolute anchors from previous chrome version
+        rt.anchorMin = new Vector2(0.5f, 0.5f);
+        rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.anchoredPosition = Vector2.zero;
+        rt.sizeDelta = new Vector2(140f, 42f);
         rt.localScale = Vector3.one;
+
+        LayoutElement le = rt.GetComponent<LayoutElement>();
+        if (le == null) le = rt.gameObject.AddComponent<LayoutElement>();
+        le.preferredWidth = 140f;
+        le.minWidth = 120f;
+        le.preferredHeight = 42f;
+        le.minHeight = 38f;
+        le.flexibleWidth = 0f;
+        le.flexibleHeight = 0f;
 
         img.sprite = SolidSprite;
         img.type = Image.Type.Simple;
@@ -698,7 +856,7 @@ public static class LeaderboardPanelChrome
         ApplyFont(label);
         label.text = "CONTINUE";
         label.enableAutoSizing = false;
-        label.fontSize = 22f;
+        label.fontSize = 18f;
         label.fontStyle = FontStyles.Bold;
         label.color = new Color(0.08f, 0.08f, 0.1f, 1f);
         label.alignment = TextAlignmentOptions.Center;
@@ -715,37 +873,41 @@ public static class LeaderboardPanelChrome
         rt.localScale = Vector3.one;
     }
 
-    static TextMeshProUGUI EnsureFooterLine(RectTransform footer, string name, string text, Color color, float size, float y)
+    static TextMeshProUGUI EnsureFooterLine(RectTransform parent, string name, string text, Color color, float size, TextAlignmentOptions align)
     {
-        Transform existing = FindChild(footer, name);
+        Transform existing = FindChild(parent, name);
         RectTransform rt;
         TextMeshProUGUI tmp;
         if (existing == null)
         {
             GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
             rt = go.GetComponent<RectTransform>();
-            rt.SetParent(footer, false);
+            rt.SetParent(parent, false);
             tmp = go.GetComponent<TextMeshProUGUI>();
         }
         else
         {
             rt = existing as RectTransform;
             tmp = existing.GetComponent<TextMeshProUGUI>();
+            if (tmp == null) tmp = existing.gameObject.AddComponent<TextMeshProUGUI>();
         }
 
-        rt.anchorMin = new Vector2(0f, 0.5f);
-        rt.anchorMax = new Vector2(1f, 0.5f);
-        rt.pivot = new Vector2(0.5f, 0.5f);
-        rt.anchoredPosition = new Vector2(0f, y);
-        rt.sizeDelta = new Vector2(0f, size + 10f);
         rt.localScale = Vector3.one;
+        LayoutElement le = rt.GetComponent<LayoutElement>();
+        if (le == null) le = rt.gameObject.AddComponent<LayoutElement>();
+        le.preferredHeight = size + 8f;
+        le.minHeight = size + 4f;
+        le.flexibleWidth = 1f;
 
         ApplyFont(tmp);
         tmp.text = text;
         tmp.enableAutoSizing = false;
         tmp.fontSize = size;
         tmp.color = color;
-        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.alignment = align;
+        tmp.horizontalAlignment = align == TextAlignmentOptions.Center
+            ? HorizontalAlignmentOptions.Center
+            : HorizontalAlignmentOptions.Left;
         tmp.margin = Vector4.zero;
         tmp.raycastTarget = false;
         return tmp;

@@ -86,9 +86,10 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     // Optimization: Track last direction to reduce network updates
     private Vector3 _lastNetworkedAimDirection;
     
-    // Network optimization
+    // Network optimization — keep aim readable without dirtying Fusion every tick
     private float _lastNetworkUpdateTime = 0f;
-    private const float NETWORK_UPDATE_INTERVAL = 0.02f; // 50Hz updates
+    private const float NETWORK_UPDATE_INTERVAL = 0.08f; // ~12.5Hz instead of 50Hz
+    private const float AimDirectionThreshold = 0.05f;
     
     // Continuous beam visual references
     private LineRenderer continuousBeam;
@@ -332,10 +333,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             if (Object.HasStateAuthority)
             {
                 // OPTIMIZATION: Only update networked aim when direction changes significantly
-                float directionThreshold = 0.01f; // Only update if direction changes by 1%
-                bool directionChanged = Vector3.Distance(_lastNetworkedAimDirection, input.aimDirection) > directionThreshold;
+                bool directionChanged = Vector3.Distance(_lastNetworkedAimDirection, input.aimDirection) > AimDirectionThreshold;
                 
-                // Rate limit network updates to reduce bandwidth
+                // Rate limit network updates to reduce bandwidth / replication cost
                 float currentTime = Time.time;
                 if ((currentTime - _lastNetworkUpdateTime >= NETWORK_UPDATE_INTERVAL) || directionChanged)
                 {
@@ -505,33 +505,52 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     {
         _nextVisualRaycastTime = 0f;
         _cachedBeamDidHit = false;
-        if (continuousBeam != null)
-        {
-            return;
-        }
 
         Transform fp = ActiveFirePoint;
-        // Local player uses camera forward for crosshair accuracy.
-        // Remote player reads the networked aim direction written by the shooter — the only reliable source.
         Vector3 direction = isLocalPlayer
             ? (PlayerCamera != null ? PlayerCamera.transform.forward : Vector3.forward)
             : (NetworkedAimDirection != Vector3.zero ? NetworkedAimDirection : transform.forward);
         Vector3 origin = isLocalPlayer
             ? (PlayerCamera != null ? PlayerCamera.transform.position : transform.position)
             : (NetworkedAimOrigin != Vector3.zero ? NetworkedAimOrigin : transform.position);
-
-        // Always start the beam at the gun barrel so it visually fires from the gun.
         Vector3 beamStart = fp != null ? fp.position : transform.position;
 
-        
-        // Create continuous beam
+        // Reuse previously created beam/impact/muzzle instead of Instantiate/Destroy each press
+        if (continuousBeam != null)
+        {
+            continuousBeam.gameObject.SetActive(true);
+            continuousBeam.useWorldSpace = true;
+            continuousBeam.positionCount = 2;
+            continuousBeam.SetPosition(0, beamStart);
+            continuousBeam.SetPosition(1, beamStart + direction * 100f);
+            continuousBeam.enabled = true;
+
+            if (continuousMuzzleFlash != null && fp != null)
+            {
+                continuousMuzzleFlash.transform.SetPositionAndRotation(fp.position, fp.rotation);
+                continuousMuzzleFlash.SetActive(true);
+                var muzzleEffect = continuousMuzzleFlash.GetComponent<MuzzleFlashEffect>();
+                if (muzzleEffect != null)
+                {
+                    muzzleEffect.SetContinuousMode(true);
+                    muzzleEffect.Play();
+                }
+            }
+
+            if (continuousLaserAudio != null && laserShootSound != null && !continuousLaserAudio.isPlaying)
+            {
+                continuousLaserAudio.clip = laserShootSound;
+                continuousLaserAudio.Play();
+            }
+            return;
+        }
+
         if (laserBeamPrefab != null)
         {
             GameObject beamObj = Instantiate(laserBeamPrefab, beamStart, Quaternion.LookRotation(direction));
             beamObj.transform.SetParent(transform);
             continuousBeam = beamObj.GetComponent<LineRenderer>();
 
-            // Local player: put beam on FPS_Hands layer so HandsCamera renders it
             if (isLocalPlayer)
             {
                 int fpsHandsLayer = LayerMask.NameToLayer("FPS_Hands");
@@ -540,11 +559,9 @@ public class NetworkLaserBehaviour : NetworkBehaviour
 
             var beamEffect = beamObj.GetComponent<LaserBeamEffect>();
             if (beamEffect != null) beamEffect.SetContinuousMode(true);
-            else // LaserBeamEffect not found on beam prefab!
 
             if (continuousBeam != null)
             {
-                // Always world space — positions updated every pre-render via RenderPipelineManager
                 continuousBeam.useWorldSpace = true;
                 continuousBeam.positionCount = 2;
                 continuousBeam.SetPosition(0, beamStart);
@@ -562,87 +579,55 @@ public class NetworkLaserBehaviour : NetworkBehaviour
         {
             Debug.LogError($"[NetworkLaserBehaviour] *** BEAM CREATION FAILED *** laserBeamPrefab is NULL!");
         }
-        
-        // Hit logic: raycast using the correct origin+direction for this player type
+
         RaycastHit visualHit;
         bool didHit = Physics.Raycast(origin, direction, out visualHit, range, hitLayers);
 
-        // Create continuous impact
         if (didHit && laserImpactPrefab != null)
         {
             continuousImpact = Instantiate(laserImpactPrefab, visualHit.point, Quaternion.LookRotation(visualHit.normal));
             continuousImpact.transform.SetParent(transform);
-            
-            // CRITICAL: Ensure the impact GameObject is active
             continuousImpact.SetActive(true);
-            
-            // NOTE: Impact stays on Default layer for ALL players.
-            // Unlike the beam/muzzle flash (which are near the gun barrel and need FPS_Hands
-            // layer for the HandsCamera), the impact spawns at a distant world-space hit point.
-            // Putting it on FPS_Hands would make it invisible — the HandsCamera's near/far clip
-            // can't reach it, and the main camera culls FPS_Hands.
-            
-            // Set continuous mode for impact particles (if LaserImpactEffect component exists)
+
             var impactEffect = continuousImpact.GetComponent<LaserImpactEffect>();
             if (impactEffect != null)
             {
                 impactEffect.SetContinuousMode(true);
             }
-            
-            // Get the particle system and make sure it plays
+
             _cachedImpactParticles = continuousImpact.GetComponent<ParticleSystem>();
             if (_cachedImpactParticles != null)
             {
                 var main = _cachedImpactParticles.main;
-                main.loop = true; // Ensure looping for continuous mode
+                main.loop = true;
                 _cachedImpactParticles.Play();
             }
-            else
-            {
-                // ParticleSystem component not found on impact prefab
-            }
-            
         }
-        else if (!didHit)
-        {
-            // NO HIT DETECTED - Impact effect not created
-        }
-        else if (laserImpactPrefab == null)
-        {
-            // LASER IMPACT PREFAB IS NULL - Assign it in Inspector!
-        }
-        
-        // Create continuous muzzle flash
+
         Transform fp2 = ActiveFirePoint;
         if (muzzleFlashPrefab != null && fp2 != null)
         {
             continuousMuzzleFlash = Instantiate(muzzleFlashPrefab, fp2.position, fp2.rotation);
             continuousMuzzleFlash.transform.SetParent(fp2);
-            
-            // Set continuous mode for muzzle flash particles
+
             var muzzleEffect = continuousMuzzleFlash.GetComponent<MuzzleFlashEffect>();
             if (muzzleEffect != null)
             {
                 muzzleEffect.SetContinuousMode(true);
                 muzzleEffect.Play();
-                // Debug.Log("[NetworkLaserBehaviour] *** CONTINUOUS MUZZLE FLASH MODE SET ***");
             }
             else
             {
-                // Fallback to old quad behavior
                 continuousMuzzleFlash.SetActive(true);
             }
         }
-        
-        // Industry-standard continuous laser sound with 3D spatial audio
+
         if (laserShootSound != null && continuousLaserAudio != null)
         {
             continuousLaserAudio.clip = laserShootSound;
-            
-            // Configure based on player type (industry standard)
+
             if (isLocalPlayer)
             {
-                // Local player: 2D centered sound for own weapon
                 continuousLaserAudio.spatialBlend = 0f;
                 continuousLaserAudio.volume = soundVolume;
                 continuousLaserAudio.rolloffMode = AudioRolloffMode.Linear;
@@ -651,7 +636,6 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             }
             else
             {
-                // Remote player: Full 3D spatial audio
                 continuousLaserAudio.spatialBlend = 1f;
                 continuousLaserAudio.volume = soundVolume;
                 continuousLaserAudio.rolloffMode = AudioRolloffMode.Logarithmic;
@@ -659,7 +643,7 @@ public class NetworkLaserBehaviour : NetworkBehaviour
                 continuousLaserAudio.maxDistance = 50f;
                 continuousLaserAudio.dopplerLevel = 0f;
             }
-            
+
             continuousLaserAudio.Play();
         }
     }
@@ -778,21 +762,31 @@ public class NetworkLaserBehaviour : NetworkBehaviour
     {
         if (continuousBeam != null)
         {
-            // Debug.Log($"[NetworkLaserBehaviour] *** ONDESTROY CALLED *** Beam was destroyed externally! #{beamDestructionCount}");
+            Destroy(continuousBeam.gameObject);
             continuousBeam = null;
+        }
+        if (continuousMuzzleFlash != null)
+        {
+            Destroy(continuousMuzzleFlash);
+            continuousMuzzleFlash = null;
+        }
+        if (continuousImpact != null)
+        {
+            Destroy(continuousImpact);
+            continuousImpact = null;
+            _cachedImpactParticles = null;
         }
     }
     
     private void StopContinuousBeam()
     {
-        // Clean up continuous beam
+        // Deactivate and keep instances for the next press (no Destroy/Instantiate churn)
         if (continuousBeam != null)
         {
-            Destroy(continuousBeam.gameObject);
-            continuousBeam = null;
+            continuousBeam.enabled = false;
+            continuousBeam.gameObject.SetActive(false);
         }
-        
-        // Clean up continuous muzzle flash
+
         if (continuousMuzzleFlash != null)
         {
             var muzzleEffect = continuousMuzzleFlash.GetComponent<MuzzleFlashEffect>();
@@ -800,20 +794,18 @@ public class NetworkLaserBehaviour : NetworkBehaviour
             {
                 muzzleEffect.Stop();
             }
-            
-            Destroy(continuousMuzzleFlash);
-            continuousMuzzleFlash = null;
+            continuousMuzzleFlash.SetActive(false);
         }
-        
-        // Clean up continuous impact
+
         if (continuousImpact != null)
         {
-            Destroy(continuousImpact);
-            continuousImpact = null;
-            _cachedImpactParticles = null;
+            if (_cachedImpactParticles != null && _cachedImpactParticles.isPlaying)
+            {
+                _cachedImpactParticles.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            }
+            continuousImpact.SetActive(false);
         }
-        
-        // Stop continuous laser sound
+
         if (continuousLaserAudio != null && continuousLaserAudio.isPlaying)
         {
             continuousLaserAudio.Stop();

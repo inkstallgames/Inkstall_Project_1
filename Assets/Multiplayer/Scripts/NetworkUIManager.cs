@@ -371,13 +371,7 @@ public class NetworkUIManager : MonoBehaviour
             UpdateBulletAmmoUI();
             UpdatePlayerStatsUI();
 
-            // Leaderboard is only shown at game-over; throttle scene scans to avoid per-frame cost.
-            leaderboardUpdateTimer -= Time.deltaTime;
-            if (leaderboardUpdateTimer <= 0f)
-            {
-                leaderboardUpdateTimer = LEADERBOARD_UPDATE_INTERVAL;
-                UpdateLeaderboardCache();
-            }
+            // Leaderboard cache is built at game-over only — skip mid-match FindObjectsOfType scans.
 
 #if UNITY_EDITOR
             // TEST KILL FEED + KILL NOTIFICATION (editor only)
@@ -983,19 +977,33 @@ public class NetworkUIManager : MonoBehaviour
             }
         }
 
-        // Timer — only rewrite TMP when the displayed second changes
-        if (timerText != null && runner != null && runner.IsRunning && gm.CurrentGameState == GameState.InProgress)
+        // Timer — show full match length until the round starts; then count down
+        if (timerText != null && runner != null && runner.IsRunning)
         {
-            float elapsed = runner.SimulationTime - gm.RoundStartTime;
-            float remaining = Mathf.Max(0f, gm.RoundTime - elapsed);
-            int totalSeconds = Mathf.FloorToInt(remaining);
+            int totalSeconds = -1;
 
-            if (totalSeconds != _lastDisplayedTimerSeconds)
+            if (gm.CurrentGameState == GameState.InProgress)
+            {
+                float elapsed = runner.SimulationTime - gm.RoundStartTime;
+                float remaining = Mathf.Max(0f, gm.RoundTime - elapsed);
+                totalSeconds = Mathf.FloorToInt(remaining);
+            }
+            else if (gm.CurrentGameState == GameState.Starting || gm.CurrentGameState == GameState.Lobby)
+            {
+                // Before "Game starting in…" finishes, show the selected match duration
+                // instead of a blank/default 00:00.
+                totalSeconds = Mathf.Max(0, gm.RoundTime);
+            }
+
+            if (totalSeconds >= 0 && totalSeconds != _lastDisplayedTimerSeconds)
             {
                 _lastDisplayedTimerSeconds = totalSeconds;
                 int minutes = totalSeconds / 60;
                 int seconds = totalSeconds % 60;
                 timerText.text = $"{minutes:00}:{seconds:00}";
+
+                if (!timerText.gameObject.activeSelf)
+                    timerText.gameObject.SetActive(true);
             }
         }
 
@@ -1337,6 +1345,10 @@ public class NetworkUIManager : MonoBehaviour
             LeaderboardPanelChrome.Apply(leaderboardPanel, OnLeaderboardContinueClicked);
         }
 
+        // Legacy countdown label sits in the old layout and overlaps rows — chrome footer owns this now
+        if (leaderboardCountdownText != null)
+            leaderboardCountdownText.gameObject.SetActive(false);
+
         PopulateLeaderboard();
 
         // Unlock cursor so players can see the leaderboard comfortably
@@ -1347,7 +1359,7 @@ public class NetworkUIManager : MonoBehaviour
         float countdown = leaderboardDisplayTime;
         while (countdown > 0f && !_skipLeaderboardWait)
         {
-            if (leaderboardCountdownText != null)
+            if (leaderboardCountdownText != null && leaderboardCountdownText.gameObject.activeInHierarchy)
                 leaderboardCountdownText.text = Mathf.CeilToInt(countdown).ToString() + "s";
             LeaderboardPanelChrome.SetCountdownSeconds(Mathf.CeilToInt(countdown));
 
@@ -1539,6 +1551,8 @@ public class NetworkUIManager : MonoBehaviour
         {
             Debug.LogWarning("[NetworkUIManager] No cached player data for leaderboard.");
         }
+
+        LeaderboardPanelChrome.RefreshScrollLayout(leaderboardPanel);
     }
     public void AddKillFeedEntry(string killerName, int killerTeam, string victimName, int victimTeam, string weaponName)
     {

@@ -358,7 +358,7 @@ public class NetworkGameManager : NetworkBehaviour
         if (Runner.SessionInfo != null)
         {
             Runner.SessionInfo.IsOpen = true;
-            Debug.Log("[NetworkGameManager] Session kept open — disconnected players can rejoin during the match.");
+            // Session stays open so disconnected players can rejoin.
         }
 
         // Register all current players' connection tokens as match participants

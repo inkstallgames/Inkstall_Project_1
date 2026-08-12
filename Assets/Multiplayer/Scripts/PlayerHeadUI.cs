@@ -42,9 +42,13 @@ public class PlayerHeadUI : MonoBehaviour
     private Camera            _cam;
     private float             _targetHealth  = 100f;
     private float             _displayHealth = 100f;
+    private float             _lastWrittenHealth = -999f;
+    private Color             _lastWrittenBarColor = new Color(0f, 0f, 0f, 0f);
     private string            _cachedName;
     private Color             _cachedNameColor;
     private int               _cachedLocalTeamId = -1;
+    private Vector3           _lastBillboardPos;
+    private bool              _hasBillboardPos;
 
     // ── Debug toggle ───────────────────────────────────────────────────
     [Header("Debug")]
@@ -130,42 +134,36 @@ public class PlayerHeadUI : MonoBehaviour
     {
         _debugFrameCounter++;
 
-        // If references aren't ready, keep the canvas hidden and wait
         if (_playerData == null || _cam == null)
         {
             if (uiCanvas != null) uiCanvas.enabled = false;
-            // Log once every 120 frames so the console doesn't spam
             if (debugLogs && _debugFrameCounter % 120 == 0)
                 Debug.LogWarning("[PlayerHeadUI] LateUpdate — _playerData or _cam is null. Canvas is hidden. Check Start() logs above.");
             return;
         }
 
-        // Read live health every frame — _playerData.Health is the [Networked] value
-        // that RPC_UpdateHealth sets on ALL clients, so this updates at the same
-        // time as the screen UI health bar.
+        // Local player uses screen HUD — skip all head-UI work
+        if (_playerData.Object != null && _playerData.Object.HasInputAuthority)
+        {
+            if (uiCanvas != null && uiCanvas.enabled)
+                uiCanvas.enabled = false;
+            return;
+        }
+
+        if (uiCanvas != null && !uiCanvas.enabled)
+            uiCanvas.enabled = true;
+
         _targetHealth = _playerData.Health;
 
-        // DISABLED - Performance killer: Log when health value changes
-        // if (debugLogs && _lastLoggedHealth != _playerData.Health)
-        // {
-        //     _lastLoggedHealth = _playerData.Health;
-        //     Debug.Log($"[PlayerHeadUI] Health changed → {_playerData.Health} for player '{_playerData.PlayerName}' (IsLocalPlayer={_playerData.Object?.HasInputAuthority})");
-        // }
-
-        // Only rebuild the TextMesh when the name actually changes
         if (_cachedName != _playerData.PlayerName)
         {
             _cachedName = _playerData.PlayerName;
             if (playerNameText != null)
                 playerNameText.text = _cachedName;
-            // DISABLED - Performance killer: if (debugLogs) Debug.Log($"[PlayerHeadUI] Name updated → '{_cachedName}'");
         }
-        
-        // Update name color based on game mode and player relationship
-        UpdateNameColor();
 
+        UpdateNameColor();
         UpdateBillboard();
-        UpdateVisibility();
         SmoothHealthBar();
     }
 
@@ -173,8 +171,19 @@ public class PlayerHeadUI : MonoBehaviour
 
     private void UpdateBillboard()
     {
-        transform.position = transform.parent.position + headOffset;
-        if (faceCamera)
+        Vector3 targetPos = transform.parent != null
+            ? transform.parent.position + headOffset
+            : transform.position;
+
+        // Avoid rewriting transform when nothing moved
+        if (!_hasBillboardPos || (targetPos - _lastBillboardPos).sqrMagnitude > 0.0001f)
+        {
+            transform.position = targetPos;
+            _lastBillboardPos = targetPos;
+            _hasBillboardPos = true;
+        }
+
+        if (faceCamera && _cam != null)
             transform.rotation = _cam.transform.rotation;
     }
 
@@ -182,47 +191,43 @@ public class PlayerHeadUI : MonoBehaviour
     {
         if (uiCanvas == null) return;
 
-        // Guard: NetworkObject.Object can be null on the very first frame
         if (_playerData.Object == null)
         {
             uiCanvas.enabled = false;
-            if (debugLogs && _debugFrameCounter % 120 == 0)
-                Debug.LogWarning("[PlayerHeadUI] UpdateVisibility — _playerData.Object is null (Fusion not ready yet). Canvas hidden.");
             return;
         }
 
         bool isLocalPlayer = _playerData.Object.HasInputAuthority;
-        bool shouldShow    = !isLocalPlayer;
-
-        // Only log when visibility actually changes
-        if (debugLogs && _lastLoggedVisibility != shouldShow)
-        {
-            _lastLoggedVisibility = shouldShow;
-            Debug.Log($"[PlayerHeadUI] Visibility changed → {(shouldShow ? "SHOWN" : "HIDDEN")} | Player='{_playerData.PlayerName}' IsLocalPlayer={isLocalPlayer}");
-        }
-
-        // Local player  → HIDE  (they use the screen HUD)
-        // Remote players → SHOW
-        uiCanvas.enabled = shouldShow;
+        uiCanvas.enabled = !isLocalPlayer;
     }
 
     private void SmoothHealthBar()
     {
         if (healthBarSlider == null) return;
 
-        // Smoothly lerp the visual bar toward the real health value
         _displayHealth = Mathf.Lerp(_displayHealth, _targetHealth, Time.deltaTime * healthLerpSpeed);
+        if (Mathf.Abs(_displayHealth - _targetHealth) < 0.05f)
+            _displayHealth = _targetHealth;
 
+        // Only dirty UI graphics when the visible value actually changes
+        if (Mathf.Abs(_displayHealth - _lastWrittenHealth) < 0.2f)
+            return;
+
+        _lastWrittenHealth = _displayHealth;
         float normalized = Mathf.Clamp01(_displayHealth / 100f);
         healthBarSlider.value = normalized;
 
-        // Color: green (100 %) → yellow-orange (50 %) → red (0 %)
         if (healthBarFill != null)
         {
             Color barColor = normalized > 0.5f
                 ? Color.Lerp(midHealthColor, highHealthColor, (normalized - 0.5f) * 2f)
-                : Color.Lerp(lowHealthColor, midHealthColor,   normalized         * 2f);
-            healthBarFill.color = barColor;
+                : Color.Lerp(lowHealthColor, midHealthColor, normalized * 2f);
+
+            if (_lastWrittenBarColor != barColor)
+            {
+                _lastWrittenBarColor = barColor;
+                healthBarFill.color = barColor;
+            }
         }
     }
 

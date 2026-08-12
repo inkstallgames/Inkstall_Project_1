@@ -297,7 +297,6 @@ public class NetworkPlayerSpawner : NetworkBehaviour
                 var availableSpawns = freeForAllSpawns.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
                 if (availableSpawns.Count == 0) availableSpawns = freeForAllSpawns;
                 var spawnPoint = availableSpawns[UnityEngine.Random.Range(0, availableSpawns.Count)];
-                Debug.Log($"[NetworkPlayerSpawner] Selected FreeForAll spawn rotation: {spawnPoint.transform.rotation}");
                 return spawnPoint.transform.rotation;
             }
         }
@@ -309,23 +308,19 @@ public class NetworkPlayerSpawner : NetworkBehaviour
             var availableSpawns = teamSpawnPoints.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
             if (availableSpawns.Count == 0) availableSpawns = teamSpawnPoints;
             var spawnPoint = availableSpawns[UnityEngine.Random.Range(0, availableSpawns.Count)];
-            Debug.Log($"[NetworkPlayerSpawner] Selected team spawn rotation: {spawnPoint.transform.rotation}");
             return spawnPoint.transform.rotation;
         }
         
         // If no team-specific spawns, use any available spawn point as fallback
         if (spawnPoints.Count > 0)
         {
-            Debug.LogWarning($"[NetworkPlayerSpawner] No spawn points found for team {teamId}. Using any available spawn point rotation.");
             var availableSpawns = spawnPoints.Where(p => !occupiedSpawnIndices.Contains(spawnPoints.IndexOf(p))).ToList();
             if (availableSpawns.Count == 0) availableSpawns = spawnPoints;
             var spawnPoint = availableSpawns[UnityEngine.Random.Range(0, availableSpawns.Count)];
-            Debug.Log($"[NetworkPlayerSpawner] Selected fallback spawn rotation: {spawnPoint.transform.rotation}");
             return spawnPoint.transform.rotation;
         }
         
         // Fallback to identity rotation if no spawn points are found at all
-        Debug.LogError("[NetworkPlayerSpawner] No spawn points found in scene. Using identity rotation as fallback.");
         return Quaternion.identity;
     }
 
@@ -539,7 +534,7 @@ public class NetworkPlayerSpawner : NetworkBehaviour
         _jumpMethodCache = type.GetMethod("Jump", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         _reflectionCached = true;
         
-        Debug.Log("[NetworkPlayerSpawner] Reflection methods cached for performance");
+        // Reflection methods cached for CharacterController access
     }
     
     /// <summary>

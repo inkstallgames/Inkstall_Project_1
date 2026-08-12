@@ -448,7 +448,7 @@ public class NetworkBombBehaviour : NetworkBehaviour
                 _currentPredictedGrenade = null;
             }
             
-            Debug.Log("[NetworkBombBehaviour] Client prediction cleared");
+            // prediction cleared — no log (keeps Console clean in play)
         }
     }
 

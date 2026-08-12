@@ -58,7 +58,7 @@ public class HUDCustomizationManager : MonoBehaviour
 
     [Header("Debugging")]
     [Tooltip("Logs every step of the Edit Controls flow. Turn off for release builds.")]
-    [SerializeField] private bool logFlow = true;
+    [SerializeField] private bool logFlow = false;
 
     [Header("Rust Game Scene — apply on load")]
     [Tooltip("In the Rust scene, assign the live HUD canvas root here so layout is applied on Awake.")]
@@ -140,9 +140,8 @@ public class HUDCustomizationManager : MonoBehaviour
             closeButton.onClick.AddListener(CloseCurrentEditor);
         }
 
-        Flow($"Awake in scene '{gameObject.scene.name}': panel={(customizationPanel != null ? customizationPanel.name : "MISSING")}, " +
-             $"save={(saveButton != null ? "ok" : "MISSING")}, reset={(resetButton != null ? "ok" : "MISSING")}, " +
-             $"close={(closeButton != null ? "ok" : "MISSING")}, liveRoot={(liveHUDCanvasRoot != null ? liveHUDCanvasRoot.name : "auto")}.");
+        // Never spam Console from serialized scene overrides
+        logFlow = false;
 
         // Start with panel hidden
         if (customizationPanel != null)

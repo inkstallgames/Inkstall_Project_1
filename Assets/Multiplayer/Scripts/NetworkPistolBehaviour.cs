@@ -72,6 +72,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     private Vector3 predictedShotDirection;
     private float predictedShotTime;
     private bool hasPredictedTrail;
+    private bool hasPredictedFx;
     private bool wantsToShoot;
     private bool wantsToReload;
     
@@ -176,41 +177,26 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     /// </summary>
     private void PlayPredictedShootEffects()
     {
-        // Instant muzzle flash
+        hasPredictedFx = true;
         var fp = ActiveFirePoint;
-        if (muzzleFlashPrefab != null && fp != null)
-        {
-            GameObject tempMuzzleFlash = Instantiate(muzzleFlashPrefab, fp.position, fp.rotation);
-            tempMuzzleFlash.transform.SetParent(fp); // Parent to fire point
-            Destroy(tempMuzzleFlash, 0.1f); // Shorter duration for predicted effect
-        }
-        
-        // Instant shooting sound
+
+        SpawnPooledMuzzleFlash(fp, predicted: true);
+
         if (shootSound != null && isLocalPlayer)
         {
-            GameObject tempAudioObject = new GameObject("PredictedShootSound");
-            AudioSource tempAudioSource = tempAudioObject.AddComponent<AudioSource>();
-            
-            tempAudioSource.clip = shootSound;
-            tempAudioSource.volume = soundVolume * 0.7f; // Slightly quieter for predicted
-            tempAudioSource.spatialBlend = 0f; // 2D sound
-            tempAudioSource.playOnAwake = false;
-            tempAudioSource.Play();
-            
-            Destroy(tempAudioObject, shootSound.length + 0.1f);
+            if (NetworkAudioManager.Instance != null)
+                NetworkAudioManager.Instance.PlaySound(shootSound, fp != null ? fp.position : transform.position, soundVolume * 0.7f, true);
+            else
+                AudioSource.PlayClipAtPoint(shootSound, transform.position, soundVolume * 0.7f);
         }
-        
-        // Instant recoil animation
+
         if (pistolRecoilAnimation != null)
         {
             pistolRecoilAnimation.TriggerPistolFire();
         }
 
-        // Instant tracer from the live muzzle so it stays glued to the gun while moving
         SpawnPredictedBulletTrail();
-        
-        // Predict ammo decrease ONLY for clients without state authority.
-        // Host applies this in FixedUpdateNetwork to prevent double-consumption.
+
         if (!Object.HasStateAuthority)
         {
             CurrentAmmo--;
@@ -460,61 +446,38 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnShot(Vector3 origin, Vector3 endPoint, bool didHit, Vector3 hitPoint, Vector3 hitNormal, bool hitPlayer)
     {
-        // Trigger pistol fire animation on FPS hands (only for local player)
-        if (isLocalPlayer && pistolRecoilAnimation != null)
-        {
-            pistolRecoilAnimation.TriggerPistolFire();
-        }
-        
-        // Get the correct fire point for this player's view
         Transform fp = ActiveFirePoint;
-        
-        // Muzzle flash at the correct shoot point
-        if (muzzleFlashPrefab != null && fp != null)
-        {
-            GameObject tempMuzzleFlash = Instantiate(muzzleFlashPrefab, fp.position, fp.rotation);
-            tempMuzzleFlash.transform.SetParent(fp);
-            
-            // CRITICAL: Ensure the GameObject is active!
-            tempMuzzleFlash.SetActive(true);
-            
-            var muzzleEffect = tempMuzzleFlash.GetComponent<MuzzleFlashEffect>();
-            if (muzzleEffect != null)
-            {
-                // Use EmitBurst() which calls ParticleSystem.Emit() directly.
-                // This guarantees particles spawn on this exact frame and never
-                // misses a trigger, unlike Play() which can fail on rapid calls.
-                muzzleEffect.EmitBurst();
-            }
-            
-            // Auto-destroy after effect finishes
-            Destroy(tempMuzzleFlash, 0.3f);
-        }
 
-        if (shootSound != null)
+        // Local player already played muzzle/sound/recoil via prediction — skip the duplicate.
+        bool skipLocalPredictedFx = isLocalPlayer && hasPredictedFx;
+        if (skipLocalPredictedFx)
         {
-            if (isLocalPlayer)
+            hasPredictedFx = false;
+        }
+        else
+        {
+            if (isLocalPlayer && pistolRecoilAnimation != null)
             {
-                // Local player: Use 2D sound for equal stereo balance (FPS hands)
-                GameObject tempAudioObject = new GameObject("TempShootSound");
-                AudioSource tempAudioSource = tempAudioObject.AddComponent<AudioSource>();
-                
-                // Configure for 2D sound (equal in both ears)
-                tempAudioSource.clip = shootSound;
-                tempAudioSource.volume = soundVolume;
-                tempAudioSource.spatialBlend = 0f; // 0 = 2D sound, 1 = 3D sound
-                tempAudioSource.playOnAwake = false;
-                
-                // Play the sound
-                tempAudioSource.Play();
-                
-                // Destroy the temporary object after sound finishes
-                Destroy(tempAudioObject, shootSound.length + 0.1f);
+                pistolRecoilAnimation.TriggerPistolFire();
             }
-            else
+
+            SpawnPooledMuzzleFlash(fp, predicted: false);
+
+            if (shootSound != null)
             {
-                // Remote player: Use 3D positioned sound so others can hear where they're shooting from
-                AudioSource.PlayClipAtPoint(shootSound, origin, soundVolume);
+                Vector3 soundPos = fp != null ? fp.position : origin;
+                if (NetworkAudioManager.Instance != null)
+                {
+                    NetworkAudioManager.Instance.PlaySound(shootSound, soundPos, soundVolume, isLocalPlayer);
+                }
+                else if (isLocalPlayer)
+                {
+                    AudioSource.PlayClipAtPoint(shootSound, soundPos, soundVolume);
+                }
+                else
+                {
+                    AudioSource.PlayClipAtPoint(shootSound, origin, soundVolume);
+                }
             }
         }
 
@@ -528,7 +491,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             }
             else
             {
-                // Prefer networked shot origin so the streak doesn't follow a moving body.
                 Vector3 trailStart = origin != Vector3.zero
                     ? origin
                     : (fp != null ? fp.position : endPoint);
@@ -541,17 +503,35 @@ public class NetworkPistolBehaviour : NetworkBehaviour
         {
             if (hitPlayer && playerHitEffectPrefab != null)
             {
-                // Player hit: spawn player-hit particle effect at the impact point
-                GameObject playerHitEffect = Instantiate(playerHitEffectPrefab, hitPoint, Quaternion.LookRotation(hitNormal));
-                Destroy(playerHitEffect, 2f);
+                GameObject playerHitEffect = CombatVfxPool.Get(
+                    playerHitEffectPrefab,
+                    hitPoint,
+                    Quaternion.LookRotation(hitNormal));
+                CombatVfxPool.Release(playerHitEffectPrefab, playerHitEffect, 2f);
             }
             else if (!hitPlayer && hitEffectPrefab != null)
             {
-                // Surface hit: spawn bullet hole decal (quad) slightly offset from the surface to prevent z-fighting
-                GameObject hitEffect = Instantiate(hitEffectPrefab, hitPoint + hitNormal * 0.01f, hitEffectPrefab.transform.rotation);
-                Destroy(hitEffect, 2f);
+                GameObject hitEffect = CombatVfxPool.Get(
+                    hitEffectPrefab,
+                    hitPoint + hitNormal * 0.01f,
+                    hitEffectPrefab.transform.rotation);
+                CombatVfxPool.Release(hitEffectPrefab, hitEffect, 2f);
             }
         }
+    }
+
+    private void SpawnPooledMuzzleFlash(Transform fp, bool predicted)
+    {
+        if (muzzleFlashPrefab == null || fp == null) return;
+
+        GameObject flash = CombatVfxPool.Get(muzzleFlashPrefab, fp.position, fp.rotation, fp);
+        if (flash == null) return;
+
+        var muzzleEffect = flash.GetComponent<MuzzleFlashEffect>();
+        if (muzzleEffect != null)
+            muzzleEffect.EmitBurst();
+
+        CombatVfxPool.Release(muzzleFlashPrefab, flash, predicted ? 0.12f : 0.3f);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -614,7 +594,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             ? Quaternion.LookRotation(direction.normalized)
             : Quaternion.identity;
 
-        GameObject trail = Instantiate(bulletTrailPrefab, startPosition, rotation);
+        GameObject trail = CombatVfxPool.Get(bulletTrailPrefab, startPosition, rotation);
         StartCoroutine(AnimateBulletTrail(trail, startPosition, endPosition));
     }
 
@@ -624,7 +604,7 @@ public class NetworkPistolBehaviour : NetworkBehaviour
     /// </summary>
     private IEnumerator AnimateBulletTrail(GameObject trailObject, Vector3 startPosition, Vector3 endPosition)
     {
-        TrailRenderer trailRenderer = trailObject.GetComponent<TrailRenderer>();
+        TrailRenderer trailRenderer = trailObject != null ? trailObject.GetComponent<TrailRenderer>() : null;
         float trailTime = bulletTrailLifetime;
 
         if (trailRenderer != null)
@@ -632,15 +612,13 @@ public class NetworkPistolBehaviour : NetworkBehaviour
             trailRenderer.emitting = false;
             trailRenderer.Clear();
             trailRenderer.time = trailTime;
-            // Prefer a tapered streak: thicker at the tip (newest), thinner at the tail.
             trailRenderer.widthMultiplier = Mathf.Max(0.04f, trailRenderer.widthMultiplier);
             trailRenderer.emitting = true;
         }
 
-        trailObject.transform.position = startPosition;
+        if (trailObject != null)
+            trailObject.transform.position = startPosition;
 
-        // One physics/render sample at the muzzle so the first vertex is anchored there,
-        // without holding the tip still long enough to look like a stuck world line.
         yield return null;
         if (trailObject == null)
         {
@@ -661,7 +639,6 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
-            // Ease out slightly so the tip spends a bit more time readable near impact.
             float eased = 1f - (1f - t) * (1f - t);
             trailObject.transform.position = Vector3.Lerp(startPosition, endPosition, eased);
             yield return null;
@@ -683,7 +660,11 @@ public class NetworkPistolBehaviour : NetworkBehaviour
 
         if (trailObject != null)
         {
-            Destroy(trailObject);
+            if (trailRenderer != null)
+            {
+                trailRenderer.Clear();
+            }
+            CombatVfxPool.Release(bulletTrailPrefab, trailObject);
         }
     }
     

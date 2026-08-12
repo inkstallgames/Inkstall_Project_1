@@ -241,7 +241,6 @@ namespace StarterAssets
                 {
                     Runner.AddCallbacks(this);
                     _callbacksRegistered = true;
-                    Debug.Log($"[ThirdPersonController] Registered input callbacks for local player.");
                 }
 
                 // 2. Dynamically enable input component when input authority is established
@@ -249,7 +248,6 @@ namespace StarterAssets
                 {
                     _nativeInput.enabled = true;
                     _inputComponentEnabled = true;
-                    Debug.Log($"[ThirdPersonController] Enabled input component for local player.");
                 }
 
                 // 3. Listen for sensitivity updates mid-game if this is our player
